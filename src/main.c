@@ -21,12 +21,13 @@ int stat_pattern_position[MUS_CHANNELS];
 MusPattern *stat_pattern[MUS_CHANNELS];
 int stat_pattern_number[MUS_CHANNELS];
 
-static const View v_info = {{0,0, SCREEN_WIDTH, SCREEN_HEIGHT}, info_view};
-static const View v_sequence = {{0,0, SCREEN_WIDTH, SCREEN_HEIGHT}, sequence_view};
-static const View v_instrument_list = {{0,0, SCREEN_WIDTH, SCREEN_HEIGHT}, instrument_list};
-static const View v_instrument_view = {{0,0, SCREEN_WIDTH, SCREEN_HEIGHT}, instrument_view};
-static const View v_pattern = {{0,0, SCREEN_WIDTH, SCREEN_HEIGHT}, pattern_view};
-static const View tab[] = { {{0,0, SCREEN_WIDTH, SCREEN_HEIGHT}, pattern_view} };
+static const View tab[] = 
+{ 
+	{{0,0, SCREEN_WIDTH, SCREEN_HEIGHT}, instrument_view},
+	{{0,0, SCREEN_WIDTH, SCREEN_HEIGHT}, instrument_view},
+	{{0,0, SCREEN_WIDTH, SCREEN_HEIGHT}, pattern_view},
+	{{0,0, SCREEN_WIDTH, SCREEN_HEIGHT}, sequence_view} 
+};
 
 // mingw kludge for console output
 #ifdef DEBUG
@@ -374,7 +375,7 @@ int main(int argc, char **argv)
 			info_line(&dest, &e);
 		}*/
 		
-		draw_view(&tab[0], &e);
+		draw_view(&tab[m], &e);
 		
 		SDL_Flip(screen);
 		SDL_Delay(1);

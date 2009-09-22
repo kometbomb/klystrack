@@ -136,9 +136,9 @@ void sequence_view(const SDL_Rect *dest, const SDL_Event *event)
 void pattern_view_inner(const SDL_Rect *dest, const SDL_Event *event, int current_pattern, int channel)
 {
 	console_set_color(mused.console,0x00000000,CON_BACKGROUND);
-	
-	console_clear(mused.console);
-		
+	console_set_clip(mused.console, dest);
+	console_reset_cursor(mused.console);
+			
 	int start = mused.current_patternstep - (int)dest->h/mused.console->font.h/2;
 	
 	if (start > (int)mused.song.pattern[current_pattern].num_steps - (int)dest->h/mused.console->font.h) start = (int)mused.song.pattern[current_pattern].num_steps - (int)dest->h/mused.console->font.h;
@@ -236,6 +236,8 @@ void pattern_view(const SDL_Rect *dest, const SDL_Event *event)
 	int pv = 0;
 	SDL_Rect pos = { dest->x, dest->y, dest->w, dest->h };
 	
+	console_clear(mused.console);
+	
 	for (int i = 0 ; i < MUS_CHANNELS ; ++i)
 	{
 		if (mused.ghost_pattern[i] != -1)
@@ -244,7 +246,7 @@ void pattern_view(const SDL_Rect *dest, const SDL_Event *event)
 			memcpy(&r, &pos, sizeof(r));
 			
 			pattern_view_inner(&r, event, mused.ghost_pattern[i], i);
-			pos.x += 146+16+5;
+			pos.x += 190;
 			pv ++;
 		}
 	}
@@ -254,8 +256,6 @@ void pattern_view(const SDL_Rect *dest, const SDL_Event *event)
 		pattern_view_inner(dest, event, mused.current_pattern, -1);
 	}
 }
-
-
 
 
 void info_view(const SDL_Rect *dest, const SDL_Event *event)
@@ -386,7 +386,8 @@ void program(const SDL_Rect *dest, MusInstrument * inst, const SDL_Event *event)
 {
 	int rows = dest->h / mused.console->font.h;
 	
-	console_clear(mused.console);
+	console_set_clip(mused.console, dest);
+	console_reset_cursor(mused.console);
 	separator("----program-----");
 	
 	int start = mused.selected_param - P_PARAMS - rows/2;

@@ -18,6 +18,8 @@ enum
 	CON_CHARACTER
 };
 
+void console_reset_cursor(Console * c);
+void console_set_clip(Console * c, const SDL_Rect *rect);
 void console_clear(Console *console);
 Console * console_create(SDL_Surface *surface);
 void console_set_color(Console* console, Uint32 color, int flags);
