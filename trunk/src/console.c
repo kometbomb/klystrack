@@ -89,3 +89,16 @@ void console_destroy(Console *c)
 	font_destroy(&c->font);
 	free(c);
 }
+
+
+void console_set_clip(Console * c, const SDL_Rect *rect)
+{
+	memcpy(&c->clip, rect, sizeof(*rect));
+}
+
+
+void console_reset_cursor(Console * c)
+{
+	c->cursor = 0;
+}
+
