@@ -33,6 +33,8 @@ extern Mused mused;
 
 #define set_edit_buffer(s) { if (mused.edit_backup_buffer) mused.edit_backup_buffer = strdup(s); mused.edit_backup_buffer = strdup(s); mused.edit_buffer = (char*)s; mused.edit_buffer_size = sizeof(s); change_mode(EDITBUFFER); } 
 
+#define swap(a,b) { a ^= b; b ^= a; a ^= b; }
+
 void editparambox(int v)
 {
 	MusInstrument *inst = &mused.song.instrument[mused.current_instrument];
@@ -288,6 +290,11 @@ void edit_instrument_event(SDL_Event *e)
 		
 		switch (e->key.keysym.sym)
 		{
+			case SDLK_LSHIFT:
+			case SDLK_RSHIFT:
+				mused.selection.keydown = mused.selected_param;
+			break;
+		
 			case SDLK_PERIOD:
 			if (mused.selected_param >= P_PARAMS) 
 				mused.song.instrument[mused.current_instrument].program[mused.selected_param-P_PARAMS] = MUS_FX_NOP;
@@ -305,14 +312,38 @@ void edit_instrument_event(SDL_Event *e)
 			case SDLK_DOWN:
 			{
 				++mused.selected_param;
-				if (mused.selected_param >= P_PARAMS+MUS_PROG_LEN) mused.selected_param = 0;
+				if (mused.selected_param >= P_PARAMS + MUS_PROG_LEN) mused.selected_param = P_PARAMS + MUS_PROG_LEN - 1;
+				
+				if (e->key.keysym.mod & KMOD_SHIFT)
+				{
+					mused.selection.start = mused.selection.keydown;
+					mused.selection.end = mused.selected_param;
+					e->key.keysym.sym = 0;
+					
+					if (mused.selection.end < mused.selection.start)
+					{
+						swap(mused.selection.start, mused.selection.end);
+					}
+				}
 			}
 			break;
 			
 			case SDLK_UP:
 			{
 				--mused.selected_param;
-				if (mused.selected_param < 0) mused.selected_param = P_PARAMS+MUS_PROG_LEN-1;
+				if (mused.selected_param < 0) mused.selected_param = 0;
+				
+				if (e->key.keysym.mod & KMOD_SHIFT)
+				{
+					mused.selection.start = mused.selection.keydown;
+					mused.selection.end = mused.selected_param;
+					e->key.keysym.sym = 0;
+					
+					if (mused.selection.end < mused.selection.start)
+					{
+						swap(mused.selection.start, mused.selection.end);
+					}
+				}
 			}
 			break;
 		
@@ -497,7 +528,7 @@ void sequence_event(SDL_Event *e)
 			
 			case SDLK_LSHIFT:
 			case SDLK_RSHIFT:
-				mused.selection_keydown = mused.current_sequencepos;
+				mused.selection.keydown = mused.current_sequencepos;
 			break;
 		
 			case SDLK_PAGEDOWN:
@@ -535,15 +566,13 @@ void sequence_event(SDL_Event *e)
 				
 				if (((e->key.keysym.mod & KMOD_SHIFT) && !(e->key.keysym.mod & KMOD_CTRL)) )
 				{
-					mused.selection_start = mused.selection_keydown;
-					mused.selection_end = mused.current_sequencepos;
+					mused.selection.start = mused.selection.keydown;
+					mused.selection.end = mused.current_sequencepos;
 					e->key.keysym.sym = 0;
 					
-					if (mused.selection_end < mused.selection_start)
+					if (mused.selection.end < mused.selection.start)
 					{
-						int tmp = mused.selection_start;
-						mused.selection_start = mused.selection_end;
-						mused.selection_end = tmp;
+						swap(mused.selection.start, mused.selection.end);
 					}
 				}
 			}
@@ -587,15 +616,13 @@ void sequence_event(SDL_Event *e)
 				
 				if (((e->key.keysym.mod & KMOD_SHIFT) && !(e->key.keysym.mod & KMOD_CTRL)) )
 				{
-					mused.selection_start = mused.selection_keydown;
-					mused.selection_end = mused.current_sequencepos;
+					mused.selection.start = mused.selection.keydown;
+					mused.selection.end = mused.current_sequencepos;
 					e->key.keysym.sym = 0;
 					
-					if (mused.selection_end < mused.selection_start)
+					if (mused.selection.end < mused.selection.start)
 					{
-						int tmp = mused.selection_start;
-						mused.selection_start = mused.selection_end;
-						mused.selection_end = tmp;
+						swap(mused.selection.start, mused.selection.end);
 					}
 				}
 			}
@@ -704,7 +731,7 @@ void pattern_event(SDL_Event *e)
 			
 			case SDLK_LSHIFT:
 			case SDLK_RSHIFT:
-				mused.selection_keydown = mused.current_patternstep;
+				mused.selection.keydown = mused.current_patternstep;
 			break;
 		
 			case SDLK_PAGEDOWN:
@@ -717,15 +744,13 @@ void pattern_event(SDL_Event *e)
 					
 					if (e->key.keysym.mod & KMOD_SHIFT)
 					{
-						mused.selection_start = mused.selection_keydown;
-						mused.selection_end = mused.current_patternstep;
+						mused.selection.start = mused.selection.keydown;
+						mused.selection.end = mused.current_patternstep;
 						e->key.keysym.sym = 0;
 						
-						if (mused.selection_end < mused.selection_start)
+						if (mused.selection.end < mused.selection.start)
 						{
-							int tmp = mused.selection_start;
-							mused.selection_start = mused.selection_end;
-							mused.selection_end = tmp;
+							swap(mused.selection.start, mused.selection.end);
 						}
 					}
 					
@@ -742,15 +767,13 @@ void pattern_event(SDL_Event *e)
 				
 					if (e->key.keysym.mod & KMOD_SHIFT)
 					{
-						mused.selection_start = mused.selection_keydown;
-						mused.selection_end = mused.current_patternstep;
+						mused.selection.start = mused.selection.keydown;
+						mused.selection.end = mused.current_patternstep;
 						e->key.keysym.sym = 0;
 						
-						if (mused.selection_end < mused.selection_start)
+						if (mused.selection.end < mused.selection.start)
 						{
-							int tmp = mused.selection_start;
-							mused.selection_start = mused.selection_end;
-							mused.selection_end = tmp;
+							swap(mused.selection.start, mused.selection.end);
 						}
 					}
 			}

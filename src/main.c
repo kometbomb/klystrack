@@ -403,7 +403,7 @@ int main(int argc, char **argv)
 		draw_view(&tab[m], &e);
 		
 		SDL_Flip(screen);
-		SDL_Delay(1);
+		SDL_Delay(got_event ? 0 : 10);
 		
 		if (done) 
 		{

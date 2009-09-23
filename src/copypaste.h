@@ -26,6 +26,13 @@ FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 OTHER DEALINGS IN THE SOFTWARE.
 */
 
+
+typedef struct
+{
+	int start, end, keydown;
+} Selection;
+
+
 void copy();
 void paste();
 void cut();
