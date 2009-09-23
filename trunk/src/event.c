@@ -33,8 +33,6 @@ extern Mused mused;
 
 #define set_edit_buffer(s) { if (mused.edit_backup_buffer) mused.edit_backup_buffer = strdup(s); mused.edit_backup_buffer = strdup(s); mused.edit_buffer = (char*)s; mused.edit_buffer_size = sizeof(s); change_mode(EDITBUFFER); } 
 
-#define swap(a,b) { a ^= b; b ^= a; a ^= b; }
-
 void editparambox(int v)
 {
 	MusInstrument *inst = &mused.song.instrument[mused.current_instrument];
@@ -292,7 +290,7 @@ void edit_instrument_event(SDL_Event *e)
 		{
 			case SDLK_LSHIFT:
 			case SDLK_RSHIFT:
-				mused.selection.keydown = mused.selected_param;
+				begin_selection(mused.selected_param);
 			break;
 		
 			case SDLK_PERIOD:
@@ -316,14 +314,7 @@ void edit_instrument_event(SDL_Event *e)
 				
 				if (e->key.keysym.mod & KMOD_SHIFT)
 				{
-					mused.selection.start = mused.selection.keydown;
-					mused.selection.end = mused.selected_param;
-					e->key.keysym.sym = 0;
-					
-					if (mused.selection.end < mused.selection.start)
-					{
-						swap(mused.selection.start, mused.selection.end);
-					}
+					select_range(mused.selected_param);
 				}
 			}
 			break;
@@ -335,14 +326,7 @@ void edit_instrument_event(SDL_Event *e)
 				
 				if (e->key.keysym.mod & KMOD_SHIFT)
 				{
-					mused.selection.start = mused.selection.keydown;
-					mused.selection.end = mused.selected_param;
-					e->key.keysym.sym = 0;
-					
-					if (mused.selection.end < mused.selection.start)
-					{
-						swap(mused.selection.start, mused.selection.end);
-					}
+					select_range(mused.selected_param);
 				}
 			}
 			break;
@@ -528,7 +512,7 @@ void sequence_event(SDL_Event *e)
 			
 			case SDLK_LSHIFT:
 			case SDLK_RSHIFT:
-				mused.selection.keydown = mused.current_sequencepos;
+				begin_selection(mused.current_sequencepos);
 			break;
 		
 			case SDLK_PAGEDOWN:
@@ -566,14 +550,7 @@ void sequence_event(SDL_Event *e)
 				
 				if (((e->key.keysym.mod & KMOD_SHIFT) && !(e->key.keysym.mod & KMOD_CTRL)) )
 				{
-					mused.selection.start = mused.selection.keydown;
-					mused.selection.end = mused.current_sequencepos;
-					e->key.keysym.sym = 0;
-					
-					if (mused.selection.end < mused.selection.start)
-					{
-						swap(mused.selection.start, mused.selection.end);
-					}
+					select_range(mused.current_sequencepos);
 				}
 			}
 			break;
@@ -616,14 +593,7 @@ void sequence_event(SDL_Event *e)
 				
 				if (((e->key.keysym.mod & KMOD_SHIFT) && !(e->key.keysym.mod & KMOD_CTRL)) )
 				{
-					mused.selection.start = mused.selection.keydown;
-					mused.selection.end = mused.current_sequencepos;
-					e->key.keysym.sym = 0;
-					
-					if (mused.selection.end < mused.selection.start)
-					{
-						swap(mused.selection.start, mused.selection.end);
-					}
+					select_range(mused.current_sequencepos);
 				}
 			}
 			break;
@@ -731,51 +701,38 @@ void pattern_event(SDL_Event *e)
 			
 			case SDLK_LSHIFT:
 			case SDLK_RSHIFT:
-				mused.selection.keydown = mused.current_patternstep;
+				begin_selection(mused.current_patternstep);
 			break;
 		
 			case SDLK_PAGEDOWN:
 			case SDLK_DOWN:
 			{
-					int steps = 1;
-					if (e->key.keysym.sym == SDLK_PAGEDOWN) steps *= 16;
-					mused.current_patternstep += steps;
-					if (mused.current_patternstep >= mused.song.pattern[mused.current_pattern].num_steps)  mused.current_patternstep = (e->key.keysym.sym == SDLK_PAGEDOWN) ? mused.song.pattern[mused.current_pattern].num_steps-1 : 0;
-					
-					if (e->key.keysym.mod & KMOD_SHIFT)
-					{
-						mused.selection.start = mused.selection.keydown;
-						mused.selection.end = mused.current_patternstep;
-						e->key.keysym.sym = 0;
-						
-						if (mused.selection.end < mused.selection.start)
-						{
-							swap(mused.selection.start, mused.selection.end);
-						}
-					}
-					
+				int steps = 1;
+				if (e->key.keysym.sym == SDLK_PAGEDOWN) steps *= 16;
+				mused.current_patternstep += steps;
+				if (mused.current_patternstep >= mused.song.pattern[mused.current_pattern].num_steps) 
+					mused.current_patternstep = mused.song.pattern[mused.current_pattern].num_steps-1;
+				
+				if (e->key.keysym.mod & KMOD_SHIFT)
+				{
+					select_range(mused.current_patternstep);
+				}
 			}
 			break;
 			
 			case SDLK_PAGEUP:
 			case SDLK_UP:
 			{
-					int steps = 1;
-					if (e->key.keysym.sym == SDLK_PAGEUP) steps *= 16;
-					mused.current_patternstep -= steps;
-					if (mused.current_patternstep < 0) mused.current_patternstep = (e->key.keysym.sym == SDLK_PAGEUP) ? 0 : mused.song.pattern[mused.current_pattern].num_steps-1;
-				
-					if (e->key.keysym.mod & KMOD_SHIFT)
-					{
-						mused.selection.start = mused.selection.keydown;
-						mused.selection.end = mused.current_patternstep;
-						e->key.keysym.sym = 0;
-						
-						if (mused.selection.end < mused.selection.start)
-						{
-							swap(mused.selection.start, mused.selection.end);
-						}
-					}
+				int steps = 1;
+				if (e->key.keysym.sym == SDLK_PAGEUP) steps *= 16;
+				mused.current_patternstep -= steps;
+				if (mused.current_patternstep < 0) 
+					mused.current_patternstep = 0;
+			
+				if (e->key.keysym.mod & KMOD_SHIFT)
+				{
+					select_range(mused.current_patternstep);
+				}
 			}
 			break;
 		
