@@ -37,5 +37,7 @@ void copy();
 void paste();
 void cut();
 void delete();
+void begin_selection(int position);
+void select_range(int position);
 
 #endif

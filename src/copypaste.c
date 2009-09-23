@@ -28,6 +28,9 @@ OTHER DEALINGS IN THE SOFTWARE.
 #include "mused.h"
 #include "event.h"
 
+#define swap(a,b) { a ^= b; b ^= a; a ^= b; }
+
+
 extern Clipboard cp;
 extern Mused mused;
 
@@ -55,7 +58,8 @@ void copy()
 		}
 		break;
 		
-		case EDITSEQUENCE:{
+		case EDITSEQUENCE:
+		{
 		
 		int first = 0, last = 0;
 		
@@ -70,7 +74,8 @@ void copy()
 		
 		cp_copy_items(&mused.cp, CP_SEQUENCE, &mused.song.sequence[mused.current_sequencetrack][first], last-first+1, sizeof(mused.song.sequence[mused.current_sequencetrack][0]));
 		
-		}break;
+		}
+		break;
 	}
 	
 	mused.selection.start = mused.selection.end = 0;
@@ -153,5 +158,27 @@ void paste()
 			}
 		}
 		break;
+	}
+}
+
+
+void begin_selection(int position)
+{
+	mused.selection.keydown = position;
+}
+
+
+void select_range(int position)
+{
+	mused.selection.start = mused.selection.keydown;
+	
+	if (mused.selection.end == position)
+		mused.selection.end = position + 1; // so we can select the last row (can't move the cursor one element after the last)
+	else
+		mused.selection.end = position;
+		
+	if (mused.selection.end < mused.selection.start)
+	{
+		swap(mused.selection.start, mused.selection.end);
 	}
 }
