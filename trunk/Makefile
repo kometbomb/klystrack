@@ -1,4 +1,4 @@
-TARGET=mused.exe
+TARGET=klystrack.exe
 VPATH=src:src
 ECHO = echo
 CFG = debug
