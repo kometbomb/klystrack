@@ -40,7 +40,7 @@ enum
 };
 
 #include "clipboard.h"
-
+#include "copypaste.h"
 
 typedef struct
 {
@@ -61,7 +61,7 @@ typedef struct
 	/*---*/
 	char * edit_backup_buffer;
 	int stat_song_position;
-	int selection_start,selection_end,selection_keydown;
+	Selection selection;
 	int stat_pattern_position[MUS_CHANNELS];
 	MusPattern *stat_pattern[MUS_CHANNELS];
 	int stat_pattern_number[MUS_CHANNELS];

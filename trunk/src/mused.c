@@ -31,8 +31,8 @@ extern Mused mused;
 
 void change_mode(int newmode)
 {
-	mused.selection_start = 0;
-	mused.selection_end = 0;
+	mused.selection.start = 0;
+	mused.selection.end = 0;
 	mused.prev_mode = mused.mode;
 	switch (newmode)
 	{
@@ -151,9 +151,7 @@ void init(MusInstrument *instrument, MusPattern *pattern, MusSeqPattern sequence
 	
 	change_mode(EDITSEQUENCE);
 	
-
 	memset(&mused.cp, 0, sizeof(mused.cp));
-
 	memset(&mused.song, 0, sizeof(mused.song));
 	mused.song.instrument = instrument;
 	mused.song.pattern = pattern;

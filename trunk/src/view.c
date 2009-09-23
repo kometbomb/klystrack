@@ -105,7 +105,7 @@ void sequence_view(const SDL_Rect *dest, const SDL_Event *event)
 				bg = BG_PLAYERPOS;
 			}
 			
-			if (c == mused.current_sequencetrack && i >= mused.selection_start && i < mused.selection_end)
+			if (c == mused.current_sequencetrack && i >= mused.selection.start && i < mused.selection.end)
 			{
 				bg = BG_SELECTION;
 			}
@@ -193,7 +193,7 @@ void pattern_view_inner(const SDL_Rect *dest, const SDL_Event *event, int curren
 			}
 		}
 		
-		if (current_pattern == mused.current_pattern && i >= mused.selection_start && i < mused.selection_end)
+		if (current_pattern == mused.current_pattern && i >= mused.selection.start && i < mused.selection.end)
 		{
 			bg = BG_SELECTION;
 		}
@@ -423,6 +423,11 @@ void program(const SDL_Rect *dest, MusInstrument * inst, const SDL_Event *event)
 	for (int i = start, s = 0 ; i < MUS_PROG_LEN && s < rows; ++i, ++s)
 	{
 		console_set_color(mused.console,mused.selected_param == (P_PARAMS+i)?0xff0000ff:0xffffffff,CON_CHARACTER);
+		
+		if (mused.selection.start - P_PARAMS <= i && mused.selection.end - P_PARAMS > i)
+			console_set_color(mused.console,0xff0000ff,CON_BACKGROUND);
+		else
+			console_set_color(mused.console,0,CON_BACKGROUND);
 		
 		char box[5];
 		
