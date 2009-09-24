@@ -36,5 +36,9 @@ void change_time_signature(void *beat, void *, void *);
 void play(void *from, void*,void*);
 void stop(void*,void*,void*);
 void change_song_speed(void *speed, void *delta, void *);
+void new_song_action(void *, void *, void *);
+void save_song_action(void *, void *, void *);
+void open_song_action(void *, void *, void *);
+void generic_action(void *func, void *, void *);
 
 #endif

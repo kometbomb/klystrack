@@ -205,10 +205,7 @@ int main(int argc, char **argv)
 							case SDLK_n:
 							if (e.key.keysym.mod & KMOD_CTRL)
 							{
-								if (confirm("Clear song and data?"))
-								{
-									new_song();
-								}
+								new_song_action(0, 0, 0);
 								e.key.keysym.sym = 0;
 							}
 							break;
@@ -216,10 +213,7 @@ int main(int argc, char **argv)
 							case SDLK_s:
 							if (e.key.keysym.mod & KMOD_CTRL)
 							{
-								mus_set_song(&mused.mus, NULL, 0);
-								cyd_lock(&mused.cyd, 1);
-								save_data();
-								cyd_lock(&mused.cyd, 0);
+								save_song_action(0, 0, 0);
 								e.key.keysym.sym = 0;
 							}
 							break;
@@ -227,10 +221,7 @@ int main(int argc, char **argv)
 							case SDLK_o:
 							if (e.key.keysym.mod & KMOD_CTRL)
 							{	
-								mus_set_song(&mused.mus, NULL, 0);
-								cyd_lock(&mused.cyd, 1);
-								open_data();
-								cyd_lock(&mused.cyd, 0);
+								open_song_action(0, 0, 0);
 								e.key.keysym.sym = 0;
 							}
 							break;
@@ -238,10 +229,7 @@ int main(int argc, char **argv)
 							case SDLK_c:
 							if (e.key.keysym.mod & KMOD_CTRL)
 							{	
-								mus_set_song(&mused.mus, NULL, 0);
-								cyd_lock(&mused.cyd, 1);
-								copy();
-								cyd_lock(&mused.cyd, 0);
+								generic_action(copy, 0, 0);
 								e.key.keysym.sym = 0;
 							}
 							break;
@@ -249,10 +237,7 @@ int main(int argc, char **argv)
 							case SDLK_v:
 							if (e.key.keysym.mod & KMOD_CTRL)
 							{	
-								mus_set_song(&mused.mus, NULL, 0);
-								cyd_lock(&mused.cyd, 1);
-								paste();
-								cyd_lock(&mused.cyd, 0);
+								generic_action(paste, 0, 0);
 								e.key.keysym.sym = 0;
 							}
 							break;
@@ -260,10 +245,7 @@ int main(int argc, char **argv)
 							case SDLK_x:
 							if (e.key.keysym.mod & KMOD_CTRL)
 							{	
-								mus_set_song(&mused.mus, NULL, 0);
-								cyd_lock(&mused.cyd, 1);
-								cut();
-								cyd_lock(&mused.cyd, 0);
+								generic_action(cut, 0, 0);
 								e.key.keysym.sym = 0;
 							}
 							break;
@@ -271,10 +253,7 @@ int main(int argc, char **argv)
 							case SDLK_DELETE:
 							if (e.key.keysym.mod & KMOD_SHIFT)
 							{	
-								mus_set_song(&mused.mus, NULL, 0);
-								cyd_lock(&mused.cyd, 1);
-								delete();
-								cyd_lock(&mused.cyd, 0);
+								generic_action(delete, 0, 0);
 								e.key.keysym.sym = 0;
 							}
 							break;
@@ -282,18 +261,12 @@ int main(int argc, char **argv)
 							case SDLK_INSERT:
 							if (e.key.keysym.mod & KMOD_SHIFT)
 							{	
-								mus_set_song(&mused.mus, NULL, 0);
-								cyd_lock(&mused.cyd, 1);
-								paste();
-								cyd_lock(&mused.cyd, 0);
+								generic_action(paste, 0, 0);
 								e.key.keysym.sym = 0;
 							}
 							else if (e.key.keysym.mod & KMOD_CTRL)
 							{	
-								mus_set_song(&mused.mus, NULL, 0);
-								cyd_lock(&mused.cyd, 1);
-								copy();
-								cyd_lock(&mused.cyd, 0);
+								generic_action(copy, 0, 0);
 								e.key.keysym.sym = 0;
 							}
 							break;
