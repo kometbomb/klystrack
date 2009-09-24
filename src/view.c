@@ -445,29 +445,30 @@ void program(const SDL_Rect *dest, MusInstrument * inst, const SDL_Event *event)
 			box[mused.editpos] = '?';
 		}
 		
-		console_write_args(mused.console, "%c%02x %s%c\n", (inst->program[i] & 0x8000) ? '(' : ' ', i, box, (inst->program[i] & 0x8000) ? ')' : ' ');
+		check_event(event, console_write_args(mused.console, "%c%02x %s%c\n", (inst->program[i] & 0x8000) ? '(' : ' ', i, box, (inst->program[i] & 0x8000) ? ')' : ' '),
+			select_instrument_param, (void*)(P_PARAMS + i), 0, 0);
 	}
 }
 
 
-static void inst_flags(int p, const char *label, int enabled)
+static void inst_flags(const SDL_Event *e, int p, const char *label, int enabled)
 {
 	console_set_color(mused.console,mused.selected_param == p?0xff0000ff:0xffffffff,CON_CHARACTER);
-	console_write_args(mused.console, label, enabled ? 'y' : 'n');
+	check_event(e, console_write_args(mused.console, label, enabled ? 'y' : 'n'), select_instrument_param, (void*)p, 0, 0);
 }
 
 
-static void inst_text(int p, const char *label, const char *value)
+static void inst_text(const SDL_Event *e, int p, const char *label, const char *value)
 {
 	console_set_color(mused.console,mused.selected_param == p?0xff0000ff:0xffffffff,CON_CHARACTER);
-	console_write_args(mused.console, label, value);
+	check_event(e, console_write_args(mused.console, label, value), select_instrument_param, (void*)p, 0, 0);
 }
 
 
-static void inst_hex(int p, const char *label, int value)
+static void inst_hex(const SDL_Event *e, int p, const char *label, int value)
 {
 	console_set_color(mused.console,mused.selected_param == p?0xff0000ff:0xffffffff,CON_CHARACTER);
-	console_write_args(mused.console, label, value);
+	check_event(e, console_write_args(mused.console, label, value), select_instrument_param, (void*)p, 0, 0);
 }
 
 
@@ -479,58 +480,58 @@ void instrument_view(const SDL_Rect *dest, const SDL_Event *event)
 	MusInstrument *inst = &mused.song.instrument[mused.current_instrument];
 	
 	separator("------name------");
-	inst_text(P_NAME, "%s\n", inst->name);
+	inst_text(event, P_NAME, "%-16s\n", inst->name);
 	
 	separator("---attributes---");
 	
-	inst_text(P_BASENOTE, "Base: %s ", notename(inst->base_note));
-	inst_flags(P_LOCKNOTE, "Lk: %c\n", inst->flags & MUS_INST_LOCK_NOTE);
-	inst_flags(P_DRUM, "Drm: %c  ", inst->flags & MUS_INST_DRUM);
-	inst_flags(P_METAL, "Mtl: %c\n", inst->cydflags & CYD_CHN_ENABLE_METAL);
-	inst_flags(P_KEYSYNC, "Key: %c  ", inst->cydflags & CYD_CHN_ENABLE_KEY_SYNC);
-	inst_flags(P_INVVIB, "Vib: %c\n", inst->flags & MUS_INST_INVERT_VIBRATO_BIT);
-	inst_flags(P_SETPW, "Set PW: %c\n", inst->flags & MUS_INST_SET_PW);
-	inst_flags(P_SETCUTOFF, "Set cutoff: %c\n", inst->flags & MUS_INST_SET_CUTOFF);
+	inst_text(event, P_BASENOTE, "Base: %s ", notename(inst->base_note));
+	inst_flags(event, P_LOCKNOTE, "Lk: %c\n", inst->flags & MUS_INST_LOCK_NOTE);
+	inst_flags(event, P_DRUM, "Drm: %c  ", inst->flags & MUS_INST_DRUM);
+	inst_flags(event, P_METAL, "Mtl: %c\n", inst->cydflags & CYD_CHN_ENABLE_METAL);
+	inst_flags(event, P_KEYSYNC, "Key: %c  ", inst->cydflags & CYD_CHN_ENABLE_KEY_SYNC);
+	inst_flags(event, P_INVVIB, "Vib: %c\n", inst->flags & MUS_INST_INVERT_VIBRATO_BIT);
+	inst_flags(event, P_SETPW, "Set PW: %c\n", inst->flags & MUS_INST_SET_PW);
+	inst_flags(event, P_SETCUTOFF, "Set cutoff: %c\n", inst->flags & MUS_INST_SET_CUTOFF);
 	
 	separator("------sync------");
-	inst_flags(P_SYNC, "Snc: %c  ", inst->cydflags & CYD_CHN_ENABLE_SYNC);
-	inst_hex(P_SYNCSRC, "Src: %x\n", inst->sync_source);
+	inst_flags(event, P_SYNC, "Snc: %c  ", inst->cydflags & CYD_CHN_ENABLE_SYNC);
+	inst_hex(event, P_SYNCSRC, "Src: %x\n", inst->sync_source);
 	
 	separator("----ring mod----");
-	inst_flags(P_RINGMOD, "Mod: %c  ", inst->cydflags & CYD_CHN_ENABLE_RING_MODULATION ? 'y' : 'n');
-	inst_hex(P_RINGMODSRC, "Src: %x\n", inst->ring_mod);
+	inst_flags(event, P_RINGMOD, "Mod: %c  ", inst->cydflags & CYD_CHN_ENABLE_RING_MODULATION ? 'y' : 'n');
+	inst_hex(event, P_RINGMODSRC, "Src: %x\n", inst->ring_mod);
 	
 	
 	separator("----waveform----");
-	inst_flags(P_PULSE, "Pul: %c  ", inst->cydflags & CYD_CHN_ENABLE_PULSE);
-	inst_flags(P_SAW, "Saw: %c\n", inst->cydflags & CYD_CHN_ENABLE_SAW);
-	inst_flags(P_TRIANGLE, "Tri: %c  ", inst->cydflags & CYD_CHN_ENABLE_TRIANGLE);
-	inst_flags(P_NOISE, "Noi: %c\n", inst->cydflags & CYD_CHN_ENABLE_NOISE);
+	inst_flags(event, P_PULSE, "Pul: %c  ", inst->cydflags & CYD_CHN_ENABLE_PULSE);
+	inst_flags(event, P_SAW, "Saw: %c\n", inst->cydflags & CYD_CHN_ENABLE_SAW);
+	inst_flags(event, P_TRIANGLE, "Tri: %c  ", inst->cydflags & CYD_CHN_ENABLE_TRIANGLE);
+	inst_flags(event, P_NOISE, "Noi: %c\n", inst->cydflags & CYD_CHN_ENABLE_NOISE);
 	
 	separator("----envelope----");
-	inst_hex(P_ATTACK, "Atk: %02x ", inst->adsr.a);
-	inst_hex(P_DECAY, "Dec: %02x\n", inst->adsr.d);
-	inst_hex(P_SUSTAIN, "Sus: %02x ", inst->adsr.s);
-	inst_hex(P_RELEASE, "Rel: %02x\n", inst->adsr.r);
+	inst_hex(event, P_ATTACK, "Atk: %02x ", inst->adsr.a);
+	inst_hex(event, P_DECAY, "Dec: %02x\n", inst->adsr.d);
+	inst_hex(event, P_SUSTAIN, "Sus: %02x ", inst->adsr.s);
+	inst_hex(event, P_RELEASE, "Rel: %02x\n", inst->adsr.r);
 	
 	separator("------misc------");
-	inst_hex(P_PW, "PW: %03x ", inst->pw);
-	inst_hex(P_VOLUME, "Vol: %02x\n", inst->volume);
-	inst_hex(P_SLIDESPEED, "Slide speed: %02x\n", inst->slide_speed);
-	inst_hex(P_VIBSPEED, "Vib. speed:  %02x\n", inst->vibrato_speed);
-	inst_hex(P_VIBDEPTH, "Vib. depth:  %02x\n", inst->vibrato_depth);
-	inst_hex(P_PWMSPEED, "PWM speed:   %02x\n", inst->pwm_speed);
-	inst_hex(P_PWMDEPTH, "PWM depth:   %02x\n", inst->pwm_depth);
-	inst_hex(P_PROGPERIOD, "Prg. period: %02x\n", inst->prog_period);
+	inst_hex(event, P_PW, "PW: %03x ", inst->pw);
+	inst_hex(event, P_VOLUME, "Vol: %02x\n", inst->volume);
+	inst_hex(event, P_SLIDESPEED, "Slide speed: %02x\n", inst->slide_speed);
+	inst_hex(event, P_VIBSPEED, "Vib. speed:  %02x\n", inst->vibrato_speed);
+	inst_hex(event, P_VIBDEPTH, "Vib. depth:  %02x\n", inst->vibrato_depth);
+	inst_hex(event, P_PWMSPEED, "PWM speed:   %02x\n", inst->pwm_speed);
+	inst_hex(event, P_PWMDEPTH, "PWM depth:   %02x\n", inst->pwm_depth);
+	inst_hex(event, P_PROGPERIOD, "Prg. period: %02x\n", inst->prog_period);
 	
 	separator("-----filter-----");
-	inst_flags(P_FILTER, "On: %c ", inst->cydflags & CYD_CHN_ENABLE_FILTER);
+	inst_flags(event, P_FILTER, "On: %c ", inst->cydflags & CYD_CHN_ENABLE_FILTER);
 	
 	static const char* flttype[] = {"LP", "HP", "BP"};
 	
-	inst_text(P_FLTTYPE, "Type: %s\n", flttype[inst->flttype]);
-	inst_hex(P_CUTOFF, "Cutoff: %03x\n", inst->cutoff);
-	inst_hex(P_RESONANCE, "Res: %1x\n", inst->resonance);
+	inst_text(event, P_FLTTYPE, "Type: %s\n", flttype[inst->flttype]);
+	inst_hex(event, P_CUTOFF, "Cutoff: %03x\n", inst->cutoff);
+	inst_hex(event, P_RESONANCE, "Res: %1x\n", inst->resonance);
 	
 	{
 		SDL_Rect p = {dest->x+150, dest->y, 300, 300};

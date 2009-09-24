@@ -111,3 +111,9 @@ void change_song_speed(void *speed, void *delta, void *unused)
 		mused.song.song_speed2 += (int)delta;
 	}
 }
+
+
+void select_instrument_param(void *idx, void *unused1, void *unused2)
+{
+	mused.selected_param = idx;
+}
