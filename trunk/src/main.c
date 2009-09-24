@@ -100,6 +100,8 @@ int main(int argc, char **argv)
 				
 				case SDL_KEYDOWN:
 				{
+					// TODO: refactor into a clean struct with keys and function pointers
+				
 					// key events should go only to the edited text field
 					
 					if (mused.mode != EDITBUFFER) 
