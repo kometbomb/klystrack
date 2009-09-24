@@ -134,6 +134,7 @@ void default_instrument(MusInstrument *inst)
 
 void init(MusInstrument *instrument, MusPattern *pattern, MusSeqPattern sequence[MUS_CHANNELS][NUM_SEQUENCES])
 {
+	mused.done = 0;
 	mused.octave = 4;
 	mused.current_instrument = 0;
 	mused.selected_param = 0;

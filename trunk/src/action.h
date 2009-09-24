@@ -29,16 +29,18 @@ OTHER DEALINGS IN THE SOFTWARE.
 void select_sequence_position(void *channel, void *position, void *);
 void select_pattern_param(void *id, void *position, void *pattern);
 void select_instrument_param(void *idx, void *, void *);
-void select_instrument(void *idx, void *, void *);
+void select_instrument(void *idx, void *relative, void *);
 void change_octave(void *delta, void *, void *);
 void change_song_rate(void *delta, void *, void *);
 void change_time_signature(void *beat, void *, void *);
-void play(void *from, void*,void*);
+void play(void *from_cursor, void*,void*);
 void stop(void*,void*,void*);
 void change_song_speed(void *speed, void *delta, void *);
 void new_song_action(void *, void *, void *);
 void save_song_action(void *, void *, void *);
 void open_song_action(void *, void *, void *);
 void generic_action(void *func, void *, void *);
+void quit_action(void *, void *, void *);
+void change_mode_action(void *mode, void *, void *);
 
 #endif
