@@ -44,6 +44,7 @@ enum
 
 typedef struct
 {
+	int done;
 	Console *console;
 	MusSong song;
 	CydEngine cyd;

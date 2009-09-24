@@ -54,6 +54,42 @@ static const View tab[] =
 	{{0,0, SCREEN_WIDTH, SCREEN_HEIGHT}, sequence_view} 
 };
 
+static const struct { int mod, key; void (*action)(void*,void*,void*); int p1, p2, p3; } shortcuts[] =
+{
+	{ 0, SDLK_ESCAPE, quit_action, 0, 0, 0 },
+	{ KMOD_ALT, SDLK_F4, quit_action, 0, 0, 0 },
+	{ 0, SDLK_F2, change_mode_action, EDITPATTERN, 0, 0},
+	{ 0, SDLK_F3, change_mode_action, EDITINSTRUMENT, 0, 0},
+	{ 0, SDLK_F4, change_mode_action, EDITSEQUENCE, 0, 0},
+	{ 0, SDLK_F5, play, 0, 0, 0 },
+	{ 0, SDLK_F6, play, 1, 0, 0 },
+	{ 0, SDLK_F8, stop, 0, 0, 0 },
+	{ 0, SDLK_F9, change_octave, -1, 0, 0 },
+	{ KMOD_SHIFT, SDLK_F9, change_song_rate, -1, 0, 0 },
+	{ KMOD_SHIFT|KMOD_CTRL, SDLK_F9, change_time_signature, -1, 0, 0 },
+	{ 0, SDLK_F9, change_octave, +1, 0, 0 },
+	{ KMOD_SHIFT, SDLK_F9, change_song_rate, +1, 0, 0 },
+	{ KMOD_SHIFT|KMOD_CTRL, SDLK_F9, change_time_signature, +1, 0, 0 },
+	{ 0, SDLK_KP_PLUS, select_instrument, +1, 1, 0 },
+	{ KMOD_CTRL, SDLK_KP_PLUS, change_song_speed, 0, +1, 0 },
+	{ KMOD_ALT, SDLK_KP_PLUS, change_song_speed, 1, +1, 0 },
+	{ 0, SDLK_KP_MINUS, select_instrument, -1, 1, 0 },
+	{ KMOD_CTRL, SDLK_KP_MINUS, change_song_speed, 0, -1, 0 },
+	{ KMOD_ALT, SDLK_KP_MINUS, change_song_speed, 1, -1, 0 },
+	{ KMOD_CTRL, SDLK_n, new_song_action, 0, 0, 0 },
+	{ KMOD_CTRL, SDLK_s, save_song_action, 0, 0, 0 },
+	{ KMOD_CTRL,  SDLK_o, open_song_action, 0, 0, 0 },
+	{ KMOD_CTRL,  SDLK_c, generic_action, (int)copy, 0, 0 },
+	{ KMOD_CTRL, SDLK_v, generic_action, (int)paste, 0, 0 },
+	{ KMOD_CTRL, SDLK_x, generic_action, (int)cut, 0, 0 },
+	{ KMOD_SHIFT, SDLK_DELETE, generic_action, (int)delete, 0, 0 },
+	{ KMOD_SHIFT, SDLK_INSERT, generic_action, (int)paste, 0, 0 },
+	{ KMOD_CTRL, SDLK_INSERT, generic_action, (int)copy, 0, 0 },
+
+	/* Null terminated */
+	{ 0, 0, NULL, 0, 0, 0 }
+};
+
 // mingw kludge for console output
 #ifdef DEBUG
 #undef main
@@ -68,7 +104,6 @@ int main(int argc, char **argv)
 	SDL_EnableKeyRepeat(SDL_DEFAULT_REPEAT_DELAY, SDL_DEFAULT_REPEAT_INTERVAL);
 	SDL_EnableUNICODE(1);
 	
-	int done = 0;
 	mused.console = console_create(screen);
 	
 	MusInstrument instrument[NUM_INSTRUMENTS];
@@ -95,186 +130,27 @@ int main(int argc, char **argv)
 			switch (e.type)
 			{
 				case SDL_QUIT:
-				done = 1;
+				quit_action(0,0,0);
 				break;
 				
 				case SDL_KEYDOWN:
 				{
-					// TODO: refactor into a clean struct with keys and function pointers
-				
 					// key events should go only to the edited text field
-					
+									
 					if (mused.mode != EDITBUFFER) 
 					{
-						switch (e.key.keysym.sym)
+						for (int i = 0 ; shortcuts[i].action ; ++i)
 						{
-							case SDLK_ESCAPE:
-							done = 1;
-							break;
-							
-							case SDLK_F9:
-							
-							if ((e.key.keysym.mod & (KMOD_CTRL|KMOD_SHIFT)) == (KMOD_CTRL|KMOD_SHIFT))
+							if (e.key.keysym.sym == shortcuts[i].key
+								&& (!(e.key.keysym.mod & KMOD_SHIFT) == !(shortcuts[i].mod & KMOD_SHIFT))
+								&& (!(e.key.keysym.mod & KMOD_CTRL) == !(shortcuts[i].mod & KMOD_CTRL))
+								&& (!(e.key.keysym.mod & KMOD_ALT) == !(shortcuts[i].mod & KMOD_ALT))
+							)
 							{
-								change_time_signature((void*)0, 0, 0);
-							}
-							else if (e.key.keysym.mod & KMOD_SHIFT)
-							{
-								change_song_rate((void*)-1, 0, 0);
-							}
-							else
-							{
-								change_octave((void*)-1, 0, 0);
-							}
-							
-							break;
-							
-							case SDLK_F10:
-							
-							if ((e.key.keysym.mod & (KMOD_CTRL|KMOD_SHIFT)) == (KMOD_CTRL|KMOD_SHIFT))
-							{
-								change_time_signature((void*)1, 0, 0);
-							}
-							else if (e.key.keysym.mod & KMOD_SHIFT)
-							{
-								change_song_rate((void*)+1, 0, 0);
-							}
-							else
-							{
-								change_octave((void*)+1, 0, 0);
-							}
-							
-							break;
-							
-							case SDLK_KP_PLUS:
-							
-							if (e.key.keysym.mod & KMOD_CTRL)
-							{
-								change_song_speed(0, (void*)+1, 0);
-							}
-							else if (e.key.keysym.mod & KMOD_ALT)
-							{
-								change_song_speed((void*)1, (void*)+1, 0);
-							}
-							else
-							{
-								select_instrument((void*)(mused.current_instrument + 1), 0, 0);
-							}
-							
-							break;
-							
-							case SDLK_KP_MINUS:
-							
-							if (e.key.keysym.mod & KMOD_CTRL)
-							{
-								change_song_speed(0, (void*)-1, 0);
-							}
-							else if (e.key.keysym.mod & KMOD_ALT)
-							{
-								change_song_speed((void*)1, (void*)-1, 0);
-							}
-							else
-							{
-								select_instrument((void*)(mused.current_instrument - 1), 0, 0);
-							}
-							
-							break;
-							
-							case SDLK_F2:
-							change_mode(EDITPATTERN);
-							break;
-							
-							case SDLK_F3:
-							change_mode(EDITINSTRUMENT);
-							break;
-							
-							case SDLK_F4:
-							change_mode(EDITSEQUENCE);
-							break;
-							
-							case SDLK_F5:
-							play(0, 0, 0);
-							break;
-							
-							case SDLK_F6:
-							play((void*)mused.current_sequencepos, 0, 0);
-							break;
-							
-							case SDLK_F8:
-							stop(0, 0, 0);
-							break;
-							
-							case SDLK_n:
-							if (e.key.keysym.mod & KMOD_CTRL)
-							{
-								new_song_action(0, 0, 0);
+								shortcuts[i].action((void*)shortcuts[i].p1, (void*)shortcuts[i].p2, (void*)shortcuts[i].p3);
 								e.key.keysym.sym = 0;
+								break;
 							}
-							break;
-							
-							case SDLK_s:
-							if (e.key.keysym.mod & KMOD_CTRL)
-							{
-								save_song_action(0, 0, 0);
-								e.key.keysym.sym = 0;
-							}
-							break;
-							
-							case SDLK_o:
-							if (e.key.keysym.mod & KMOD_CTRL)
-							{	
-								open_song_action(0, 0, 0);
-								e.key.keysym.sym = 0;
-							}
-							break;
-							
-							case SDLK_c:
-							if (e.key.keysym.mod & KMOD_CTRL)
-							{	
-								generic_action(copy, 0, 0);
-								e.key.keysym.sym = 0;
-							}
-							break;
-							
-							case SDLK_v:
-							if (e.key.keysym.mod & KMOD_CTRL)
-							{	
-								generic_action(paste, 0, 0);
-								e.key.keysym.sym = 0;
-							}
-							break;
-							
-							case SDLK_x:
-							if (e.key.keysym.mod & KMOD_CTRL)
-							{	
-								generic_action(cut, 0, 0);
-								e.key.keysym.sym = 0;
-							}
-							break;
-							
-							case SDLK_DELETE:
-							if (e.key.keysym.mod & KMOD_SHIFT)
-							{	
-								generic_action(delete, 0, 0);
-								e.key.keysym.sym = 0;
-							}
-							break;
-							
-							case SDLK_INSERT:
-							if (e.key.keysym.mod & KMOD_SHIFT)
-							{	
-								generic_action(paste, 0, 0);
-								e.key.keysym.sym = 0;
-							}
-							else if (e.key.keysym.mod & KMOD_CTRL)
-							{	
-								generic_action(copy, 0, 0);
-								e.key.keysym.sym = 0;
-							}
-							break;
-							
-							default:
-							break;
 						}
 					}
 					
@@ -304,6 +180,7 @@ int main(int argc, char **argv)
 							sequence_event(&e);
 							break;
 						}
+						
 						cyd_lock(&mused.cyd, 0);
 					}
 				}
@@ -361,13 +238,13 @@ int main(int argc, char **argv)
 		SDL_Flip(screen);
 		SDL_Delay(got_event ? 0 : 10);
 		
-		if (done) 
+		if (mused.done) 
 		{
 			int r = confirm_ync("Save song?");
 			
-			if (r == 0) done = 0;
+			if (r == 0) mused.done = 0;
 			if (r == -1) break;
-			if (r == 1) { change_mode(EDITSEQUENCE); if (!save_data()) done = 0; else break; }
+			if (r == 1) { change_mode(EDITSEQUENCE); if (!save_data()) mused.done = 0; else break; }
 		}
 	}
 	

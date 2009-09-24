@@ -46,9 +46,13 @@ void select_pattern_param(void *id, void *position, void *pattern)
 }
 
 
-void select_instrument(void *idx, void *unused1, void *unused2)
+void select_instrument(void *idx, void *relative, void *unused2)
 {
-	mused.current_instrument = (int)idx;
+	if (relative)
+		mused.current_instrument += (int)idx;
+	else
+		mused.current_instrument = (int)idx;
+		
 	if (mused.current_instrument >= NUM_INSTRUMENTS) mused.current_instrument = NUM_INSTRUMENTS-1;
 	else if (mused.current_instrument < 0) mused.current_instrument = 0;
 }
@@ -87,10 +91,10 @@ void change_time_signature(void *beat, void *unused1, void *unused2)
 }
 
 
-void play(void *from, void *unused1, void *unused2)
+void play(void *from_cursor, void *unused1, void *unused2)
 {
 	cyd_set_callback(&mused.cyd, mus_advance_tick, &mused.mus, mused.song.song_rate);
-	mus_set_song(&mused.mus, &mused.song, (int)from);
+	mus_set_song(&mused.mus, &mused.song, from_cursor ? mused.current_sequencepos : 0);
 }
 
 
@@ -158,3 +162,14 @@ void generic_action(void *func, void *unused1, void *unused2)
 	cyd_lock(&mused.cyd, 0);
 }
 
+
+void quit_action(void *unused1, void *unused2, void *unused3)
+{
+	mused.done = 1;
+}
+
+
+void change_mode_action(void *mode, void *unused1, void *unused2)
+{
+	change_mode((int)mode);
+}
