@@ -25,6 +25,8 @@ OTHER DEALINGS IN THE SOFTWARE.
 
 #include "action.h"
 #include "mused.h"
+#include "diskop.h"
+#include "toolutil.h"
 
 extern Mused mused;
 
@@ -115,5 +117,44 @@ void change_song_speed(void *speed, void *delta, void *unused)
 
 void select_instrument_param(void *idx, void *unused1, void *unused2)
 {
-	mused.selected_param = idx;
+	mused.selected_param = (int)idx;
 }
+
+
+void new_song_action(void *unused1, void *unused2, void *unused3)
+{
+	if (confirm("Clear song and data?"))
+	{
+		new_song();
+	}
+}
+
+
+void save_song_action(void *unused1, void *unused2, void *unused3)
+{
+	mus_set_song(&mused.mus, NULL, 0);
+	cyd_lock(&mused.cyd, 1);
+	save_data();
+	cyd_lock(&mused.cyd, 0);
+}
+
+
+void open_song_action(void *unused1, void *unused2, void *unused3)
+{
+	mus_set_song(&mused.mus, NULL, 0);
+	cyd_lock(&mused.cyd, 1);
+	open_data();
+	cyd_lock(&mused.cyd, 0);
+}
+
+
+void generic_action(void *func, void *unused1, void *unused2)
+{
+	mus_set_song(&mused.mus, NULL, 0);
+	cyd_lock(&mused.cyd, 1);
+	
+	((void *(*)(void))func)(); /* I love the smell of C in the morning */
+	
+	cyd_lock(&mused.cyd, 0);
+}
+
