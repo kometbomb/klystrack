@@ -32,6 +32,7 @@ OTHER DEALINGS IN THE SOFTWARE.
 #include "diskop.h"
 #include "event.h"
 #include "view.h"
+#include "action.h"
 
 #define SCREEN_WIDTH 640
 #define SCREEN_HEIGHT 480
@@ -48,7 +49,6 @@ int stat_pattern_number[MUS_CHANNELS];
 
 static const View tab[] = 
 { 
-	{{0,0, SCREEN_WIDTH, SCREEN_HEIGHT}, instrument_view},
 	{{0,0, SCREEN_WIDTH, SCREEN_HEIGHT}, instrument_view},
 	{{0,0, SCREEN_WIDTH, SCREEN_HEIGHT}, pattern_view},
 	{{0,0, SCREEN_WIDTH, SCREEN_HEIGHT}, sequence_view} 
@@ -114,19 +114,15 @@ int main(int argc, char **argv)
 							
 							if ((e.key.keysym.mod & (KMOD_CTRL|KMOD_SHIFT)) == (KMOD_CTRL|KMOD_SHIFT))
 							{
-								mused.time_signature = (mused.time_signature & 0x00ff) | (((((mused.time_signature >> 8) + 1) & 0xff) % 17) << 8);
-								if ((mused.time_signature & 0xff00) == 0) mused.time_signature |= 0x100;
+								change_time_signature((void*)0, 0, 0);
 							}
 							else if (e.key.keysym.mod & KMOD_SHIFT)
 							{
-								if (mused.song.song_rate > 1)
-									--mused.song.song_rate;
-								cyd_set_callback(&mused.cyd, mus_advance_tick, &mused.mus, mused.song.song_rate);
+								change_song_rate((void*)-1, 0, 0);
 							}
 							else
 							{
-							--mused.octave;
-							if (mused.octave < 0) mused.octave = 0;
+								change_octave((void*)-1, 0, 0);
 							}
 							
 							break;
@@ -135,19 +131,15 @@ int main(int argc, char **argv)
 							
 							if ((e.key.keysym.mod & (KMOD_CTRL|KMOD_SHIFT)) == (KMOD_CTRL|KMOD_SHIFT))
 							{
-								mused.time_signature = (mused.time_signature & 0xff00) | ((((mused.time_signature & 0xff) + 1) & 0xff) % 17);
-								if ((mused.time_signature & 0xff) == 0) mused.time_signature |= 1;
+								change_time_signature((void*)1, 0, 0);
 							}
 							else if (e.key.keysym.mod & KMOD_SHIFT)
 							{
-								if (mused.song.song_rate < 0xff)
-									++mused.song.song_rate;
-								cyd_set_callback(&mused.cyd, mus_advance_tick, &mused.mus, mused.song.song_rate);
+								change_song_rate((void*)+1, 0, 0);
 							}
 							else
 							{
-								++mused.octave;
-								if (mused.octave > 7) mused.octave = 7;
+								change_octave((void*)+1, 0, 0);
 							}
 							
 							break;
@@ -156,18 +148,15 @@ int main(int argc, char **argv)
 							
 							if (e.key.keysym.mod & KMOD_CTRL)
 							{
-								if (mused.song.song_speed < 255)
-									++mused.song.song_speed;
+								change_song_speed(0, (void*)+1, 0);
 							}
 							else if (e.key.keysym.mod & KMOD_ALT)
 							{
-								if (mused.song.song_speed2 < 255)
-									++mused.song.song_speed2;
+								change_song_speed((void*)1, (void*)+1, 0);
 							}
 							else
 							{
-								++mused.current_instrument;
-								if (mused.current_instrument >= NUM_INSTRUMENTS) mused.current_instrument = NUM_INSTRUMENTS-1;
+								select_instrument((void*)(mused.current_instrument + 1), 0, 0);
 							}
 							
 							break;
@@ -176,18 +165,15 @@ int main(int argc, char **argv)
 							
 							if (e.key.keysym.mod & KMOD_CTRL)
 							{
-								if (mused.song.song_speed > 1)
-									--mused.song.song_speed;
+								change_song_speed(0, (void*)-1, 0);
 							}
 							else if (e.key.keysym.mod & KMOD_ALT)
 							{
-								if (mused.song.song_speed2 > 1)
-									--mused.song.song_speed2;
+								change_song_speed((void*)1, (void*)-1, 0);
 							}
 							else
 							{
-								--mused.current_instrument;
-								if (mused.current_instrument < 0) mused.current_instrument = 0;
+								select_instrument((void*)(mused.current_instrument - 1), 0, 0);
 							}
 							
 							break;
@@ -205,17 +191,15 @@ int main(int argc, char **argv)
 							break;
 							
 							case SDLK_F5:
-							cyd_set_callback(&mused.cyd, mus_advance_tick, &mused.mus, mused.song.song_rate);
-							mus_set_song(&mused.mus, &mused.song, 0);
+							play(0, 0, 0);
 							break;
 							
 							case SDLK_F6:
-							cyd_set_callback(&mused.cyd, mus_advance_tick, &mused.mus, mused.song.song_rate);
-							mus_set_song(&mused.mus, &mused.song, mused.current_sequencepos);
+							play((void*)mused.current_sequencepos, 0, 0);
 							break;
 							
 							case SDLK_F8:
-							mus_set_song(&mused.mus, NULL, 0);
+							stop(0, 0, 0);
 							break;
 							
 							case SDLK_n:
@@ -315,9 +299,6 @@ int main(int argc, char **argv)
 							break;
 							
 							default:
-							
-							
-					
 							break;
 						}
 					}
@@ -368,7 +349,7 @@ int main(int argc, char **argv)
 			stat_pattern_number[i] = (stat_pattern[i] - &mused.song.pattern[0])/sizeof(mused.song.pattern[0]);
 		}
 		
-		int m = mused.mode == EDITBUFFER ? mused.prev_mode : mused.mode;
+		int m = (mused.mode == EDITBUFFER || mused.mode == EDITPROG) ? mused.prev_mode : mused.mode;
 		
 		/*{
 			SDL_Rect dest = {0,0, SCREEN_WIDTH, SCREEN_HEIGHT-12};

@@ -55,7 +55,7 @@ const SDL_Rect * console_write_args(Console* console, const char *string, ...)
 
 void console_clear(Console *console)
 {
-	SDL_FillRect(console->surface, NULL, 0);
+	SDL_FillRect(console->surface, &console->clip, 0);
 	console->cursor = 0;
 }
 

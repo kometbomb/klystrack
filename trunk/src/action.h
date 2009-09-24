@@ -29,5 +29,11 @@ OTHER DEALINGS IN THE SOFTWARE.
 void select_sequence_position(void *channel, void *position, void *);
 void select_pattern_param(void *id, void *position, void *pattern);
 void select_instrument(void *idx, void *, void *);
+void change_octave(void *delta, void *, void *);
+void change_song_rate(void *delta, void *, void *);
+void change_time_signature(void *beat, void *, void *);
+void play(void *from, void*,void*);
+void stop(void*,void*,void*);
+void change_song_speed(void *speed, void *delta, void *);
 
 #endif
