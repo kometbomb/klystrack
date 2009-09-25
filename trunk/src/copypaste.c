@@ -94,14 +94,14 @@ void delete()
 {
 	switch (mused.mode)
 	{
-		/*case EDITPATTERN:
+		case EDITPATTERN:
 		
-		if (mused.selection_start == mused.selection_end)
+		if (mused.selection.start == mused.selection.end)
 			clear_pattern(&mused.song.pattern[mused.current_pattern]);
 		else
-			cp_copy_items(&mused.cp, CP_PATTERNSEGMENT, &mused.song.pattern[mused.current_pattern].step[mused.selection_start], sizeof(mused.song.pattern[mused.current_pattern].step[0]), mused.selection_end-mused.selection_start);
+			clear_pattern_range(&mused.song.pattern[mused.current_pattern], mused.selection.start, mused.selection.end + 1);
 		
-		break;*/
+		break;
 		
 		case EDITSEQUENCE:
 		

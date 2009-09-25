@@ -92,7 +92,13 @@ void change_mode(int newmode)
 
 void clear_pattern(MusPattern *pat)
 {
-	for (int i = 0 ; i< pat->num_steps ; ++i)
+	clear_pattern_range(pat, 0, pat->num_steps);
+}
+
+
+void clear_pattern_range(MusPattern *pat, int first, int last)
+{
+	for (int i = first ; i < last ; ++i)
 	{
 		pat->step[i].note = MUS_NOTE_NONE;
 		pat->step[i].instrument = MUS_NOTE_NO_INSTRUMENT;
