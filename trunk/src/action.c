@@ -173,3 +173,8 @@ void change_mode_action(void *mode, void *unused1, void *unused2)
 {
 	change_mode((int)mode);
 }
+
+
+void enable_channel(void *channel, void *unused1, void *unused2)
+{
+}
