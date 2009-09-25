@@ -90,11 +90,22 @@ void sequence_view(const SDL_Rect *dest, const SDL_Event *event)
 	
 	int draw_colon[MUS_CHANNELS] = {0};
 	int draw_colon_id[MUS_CHANNELS] = {0xff};
-	for (int i = start, s = 0 ; s < (int)dest->h / mused.console->font.h; i += mused.sequenceview_steps, ++s)
+	
+	console_write(mused.console, "     ");
+	
+	for (int c = 0 ; c < MUS_CHANNELS ; ++c)
+	{
+		console_set_color(mused.console, 0xffffffff, CON_CHARACTER);
+		check_event(event, console_write_args(mused.console, "  %02X  ", c), enable_channel, (void*)c, 0, 0);
+	}
+	
+	console_write(mused.console, "\n");
+	
+	for (int i = start, s = 1 ; s < (int)dest->h / mused.console->font.h; i += mused.sequenceview_steps, ++s)
 	{
 		console_set_color(mused.console,(mused.current_sequencepos != i)?timesig((start/mused.sequenceview_steps+s), ((i < mused.song.song_length)?0xffffffff:0xff809090),((i < mused.song.song_length)?0xffc0c0e0:0xff806090), ((i < mused.song.song_length)?0xffc0c0c0:0xff606090)):0xff0000ff,CON_CHARACTER);
 		console_set_color(mused.console,0,CON_BACKGROUND);
-		check_event(event, console_write_args(mused.console, "%04X ", i), select_sequence_position, (void*)-1, (void*)i, 0);
+		check_event(event, console_write_args(mused.console, "%04X|", i), select_sequence_position, (void*)-1, (void*)i, 0);
 		
 		for (int c = 0 ; c < MUS_CHANNELS ; ++c)
 		{
@@ -131,7 +142,7 @@ void sequence_view(const SDL_Rect *dest, const SDL_Event *event)
 					if (mused.song.sequence[c][p[c]].position != i )
 					{	
 						//sprintf(text, "%02x+%02x %+3d ", mused.song.sequence[c][p[c]].pattern, mused.song.sequence[c][p[c]].position - i, mused.song.sequence[c][p[c]].note_offset);
-						sprintf(text, "%02x+%02x ", mused.song.sequence[c][p[c]].pattern, mused.song.sequence[c][p[c]].position - i);
+						sprintf(text, "%02x+%02x", mused.song.sequence[c][p[c]].pattern, mused.song.sequence[c][p[c]].position - i);
 					}
 					else
 					{
@@ -151,7 +162,7 @@ void sequence_view(const SDL_Rect *dest, const SDL_Event *event)
 			
 			check_event(event, console_write(mused.console,text), select_sequence_position, (void*)c, (void*)i, 0);
 			console_set_color(mused.console,bg,CON_BACKGROUND);
-			console_write(mused.console," ");
+			console_write(mused.console,"|");
 		}
 		
 		console_write(mused.console,"\n");
@@ -172,7 +183,7 @@ void pattern_view_inner(const SDL_Rect *dest, const SDL_Event *event, int curren
 	console_set_color(mused.console,0xff808080,CON_CHARACTER);
 	if (channel != -1) 
 	{
-		console_write_args(mused.console, "--Ch:%x-Pat:%2x--\n", channel, current_pattern);
+		check_event(event, console_write_args(mused.console, "--Ch:%x-Pat:%2x--\n", channel, current_pattern), enable_channel, (void*)channel, 0, 0);
 	}
 	else
 	{

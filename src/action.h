@@ -42,5 +42,6 @@ void open_song_action(void *, void *, void *);
 void generic_action(void *func, void *, void *);
 void quit_action(void *, void *, void *);
 void change_mode_action(void *mode, void *, void *);
+void enable_channel(void *channel, void *, void *);
 
 #endif
