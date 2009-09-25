@@ -31,11 +31,12 @@ OTHER DEALINGS IN THE SOFTWARE.
 #define swap(a,b) { a ^= b; b ^= a; a ^= b; }
 
 
-extern Clipboard cp;
 extern Mused mused;
 
 void copy()
 {
+	cp_clear(&mused.cp);
+
 	switch (mused.mode)
 	{
 		case EDITPATTERN:
@@ -60,25 +61,26 @@ void copy()
 		
 		case EDITSEQUENCE:
 		{
-		
-		int first = 0, last = 0;
-		
-		for (int i = 0 ; i < mused.song.num_sequences[mused.current_sequencetrack] ; ++i)
-		{
-			if (mused.song.sequence[mused.current_sequencetrack][i].position < mused.selection.start)
-				first = i + 1;
-				
-			if (mused.song.sequence[mused.current_sequencetrack][i].position >= mused.selection.start && mused.song.sequence[mused.current_sequencetrack][i].position < mused.selection.end)
-				last = i;
-		}
-		
-		cp_copy_items(&mused.cp, CP_SEQUENCE, &mused.song.sequence[mused.current_sequencetrack][first], last-first+1, sizeof(mused.song.sequence[mused.current_sequencetrack][0]));
-		
+			int first = -1, last = -1;
+			
+			for (int i = 0 ; i < mused.song.num_sequences[mused.current_sequencetrack] ; ++i)
+			{
+				if (first == -1 && mused.song.sequence[mused.current_sequencetrack][i].position >= mused.selection.start && mused.song.sequence[mused.current_sequencetrack][i].position < mused.selection.end)
+					first = i;
+					
+				if (mused.song.sequence[mused.current_sequencetrack][i].position < mused.selection.end)
+					last = i;
+			}
+			
+			// Check if no items inside the selection
+			
+			if (first == -1 || first >= mused.song.num_sequences[mused.current_sequencetrack]) 
+				break;
+			
+			cp_copy_items(&mused.cp, CP_SEQUENCE, &mused.song.sequence[mused.current_sequencetrack][first], last-first+1, sizeof(mused.song.sequence[mused.current_sequencetrack][0]));
 		}
 		break;
 	}
-	
-	mused.selection.start = mused.selection.end = 0;
 }
 
 void cut()
@@ -90,23 +92,25 @@ void cut()
 
 void delete()
 {
-/*	switch (mused.mode)
+	switch (mused.mode)
 	{
-		case EDITPATTERN:
+		/*case EDITPATTERN:
 		
 		if (mused.selection_start == mused.selection_end)
 			clear_pattern(&mused.song.pattern[mused.current_pattern]);
 		else
 			cp_copy_items(&mused.cp, CP_PATTERNSEGMENT, &mused.song.pattern[mused.current_pattern].step[mused.selection_start], sizeof(mused.song.pattern[mused.current_pattern].step[0]), mused.selection_end-mused.selection_start);
 		
+		break;*/
+		
+		case EDITSEQUENCE:
+		
+		del_sequence(mused.selection.start, mused.selection.end, mused.current_sequencetrack);
+		
 		break;
-		
-		case EDITINSTRUMENT:
-		
-		cp_copy(&mused.cp, CP_INSTRUMENT, &mused.song.instrument[mused.current_instrument], sizeof(mused.song.instrument[mused.current_instrument]));
-		
-		break;
-	}*/
+	}
+	
+	mused.selection.start = mused.selection.end = 0;
 }
 
 
@@ -118,7 +122,7 @@ void paste()
 		{
 			if (mused.cp.type != CP_SEQUENCE) break;
 			
-			int items = cp_get_item_count(&mused.cp, sizeof(mused.song.sequence[0]));
+			size_t items = cp_get_item_count(&mused.cp, sizeof(mused.song.sequence[0][0]));
 			
 			if (items < 1) break;
 			
