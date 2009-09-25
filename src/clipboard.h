@@ -51,6 +51,7 @@ enum
 
 #define ALL_ITEMS 0xffffffff
 
+void cp_clear(Clipboard *cp);
 void cp_copy(Clipboard *cp, int type, void *data, const size_t size);
 void cp_copy_items(Clipboard *cp, int type, void *data, const size_t dest_items, const size_t item_size);
 void cp_paste(Clipboard *cp, int dest_type, void *dest, const size_t buffer_size);
