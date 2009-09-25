@@ -538,7 +538,7 @@ void sequence_event(SDL_Event *e)
 					else
 					{
 						if (mused.song.song_length < 0xfffe - steps)
-							mused.song.song_length += mused.sequenceview_steps;
+							mused.song.song_length += steps;
 					}
 				}
 				else
