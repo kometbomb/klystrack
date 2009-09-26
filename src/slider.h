@@ -36,6 +36,9 @@ typedef struct
 	int visible_first, visible_last;
 	// Ye int that shall be modified by the slider
 	int *position;
+	
+	/* internal */
+	int drag_begin_coordinate, drag_begin_position, drag_area_size;	
 } SliderParam;
 
 void slider(const SDL_Rect *area, const SDL_Event *event, void *param);

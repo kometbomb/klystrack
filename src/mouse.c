@@ -31,9 +31,36 @@ void check_event(const SDL_Event *event, const SDL_Rect *rect, void (*action)(vo
 	{
 		case SDL_MOUSEBUTTONDOWN:
 		{
-			if ((event->button.x >= rect->x) && (event->button.y >= rect->y) 
-				&& (event->button.x <= rect->x + rect->w) && (event->button.y <= rect->y + rect->h))
-				action(param1, param2, param3);
+			if (event->button.button == SDL_BUTTON_LEFT)
+			{
+				if ((event->button.x >= rect->x) && (event->button.y >= rect->y) 
+					&& (event->button.x <= rect->x + rect->w) && (event->button.y <= rect->y + rect->h))
+				{
+					action(param1, param2, param3);
+				}
+			}
+		}
+		break;
+	}
+}
+
+
+void check_drag_event(const SDL_Event *event, const SDL_Rect *rect, void (*action)(int,int,void*), void *param)
+{
+	switch (event->type) 
+	{
+		case SDL_MOUSEMOTION:
+		{
+			if (event->motion.state & SDL_BUTTON(SDL_BUTTON_LEFT))
+			{
+				int x = event->motion.x - event->motion.xrel;
+				int y = event->motion.y - event->motion.yrel;
+				if ((x >= rect->x) && (y >= rect->y) 
+					&& (x <= rect->x + rect->w) && (y <= rect->y + rect->h))
+				{
+					action(event->motion.x, event->motion.y, param);
+				}
+			}
 		}
 		break;
 	}
