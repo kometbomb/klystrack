@@ -101,7 +101,7 @@ void sequence_view(const SDL_Rect *dest, const SDL_Event *event)
 	
 	console_write(mused.console, "\n");
 	
-	for (int i = start, s = 1 ; s < (int)dest->h / mused.console->font.h; i += mused.sequenceview_steps, ++s)
+	for (int i = start, s = 0, y = mused.console->font.h ; y < dest->h ; i += mused.sequenceview_steps, ++s, y += mused.console->font.h)
 	{
 		console_set_color(mused.console,(mused.current_sequencepos != i)?timesig((start/mused.sequenceview_steps+s), ((i < mused.song.song_length)?0xffffffff:0xff809090),((i < mused.song.song_length)?0xffc0c0e0:0xff806090), ((i < mused.song.song_length)?0xffc0c0c0:0xff606090)):0xff0000ff,CON_CHARACTER);
 		console_set_color(mused.console,0,CON_BACKGROUND);
