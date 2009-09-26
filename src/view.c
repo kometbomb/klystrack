@@ -95,7 +95,7 @@ void sequence_view(const SDL_Rect *dest, const SDL_Event *event)
 	
 	for (int c = 0 ; c < MUS_CHANNELS ; ++c)
 	{
-		console_set_color(mused.console, 0xffffffff, CON_CHARACTER);
+		console_set_color(mused.console, mused.mus.channel[c].flags & MUS_CHN_DISABLED ? 0xff808080 : 0xffffffff, CON_CHARACTER);
 		check_event(event, console_write_args(mused.console, "  %02X  ", c), enable_channel, (void*)c, 0, 0);
 	}
 	

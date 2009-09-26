@@ -177,4 +177,5 @@ void change_mode_action(void *mode, void *unused1, void *unused2)
 
 void enable_channel(void *channel, void *unused1, void *unused2)
 {
+	mused.mus.channel[(int)channel].flags ^= MUS_CHN_DISABLED;
 }
