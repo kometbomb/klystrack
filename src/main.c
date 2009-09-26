@@ -57,7 +57,8 @@ static const View instrument_view_tab[] =
 
 static const View pattern_view_tab[] =
 {
-	{{0, 0, SCREEN_WIDTH, SCREEN_HEIGHT}, pattern_view},
+	{{0, 0, SCREEN_WIDTH-16, SCREEN_HEIGHT}, pattern_view},
+	{{SCREEN_WIDTH-16, 0, 16, SCREEN_HEIGHT}, slider, &mused.pattern_slider_param},
 	{{0, 0, 0, 0}, NULL}
 };
 

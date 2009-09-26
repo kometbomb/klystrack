@@ -30,10 +30,15 @@ OTHER DEALINGS IN THE SOFTWARE.
 
 extern Mused mused;
 
+static int quant(int v, int g)
+{
+	return v - v % (g);
+}
+
 static void modify_position(void *delta, void *_param, void *unused)
 {
 	SliderParam *param = _param;
-	*param->position += (int)delta;
+	*param->position = quant(*param->position + (int)delta, param->granularity);
 	if (*param->position < param->first) *param->position = param->first;
 	if (*param->position > param->last) *param->position = param->last;
 }
@@ -52,7 +57,7 @@ static void drag_motion(int x, int y, void *_param)
 {
 	SliderParam *param = _param;
 	int delta = y - param->drag_begin_coordinate;
-	*param->position = param->drag_begin_position + delta * (param->last - param->first) / param->drag_area_size;
+	*param->position = quant(param->drag_begin_position + delta * (param->last - param->first) / param->drag_area_size, param->granularity);
 	if (*param->position < param->first) *param->position = param->first;
 	if (*param->position > param->last) *param->position = param->last;
 }
@@ -81,8 +86,8 @@ void slider(const SDL_Rect *_area, const SDL_Event *event, void *_param)
 	
 	{
 		SDL_Rect area = { _area->x, _area->y + bar_top, _area->w, bar_size };
-		check_event(event, &area, drag_begin, event, param, _area);
-		check_drag_event(event, &area, drag_motion, param);
+		check_event(event, &area, drag_begin, (void*)event, param, (void*)_area);
+		check_drag_event(event, &area, drag_motion, (void*)param);
 		SDL_FillRect(mused.console->surface, &area, 0xffffffff);
 	}
 	
@@ -94,11 +99,12 @@ void slider(const SDL_Rect *_area, const SDL_Event *event, void *_param)
 }
 
 
-void slider_set_params(SliderParam *param, int first, int last, int first_visible, int last_visible, int *position)
+void slider_set_params(SliderParam *param, int first, int last, int first_visible, int last_visible, int *position, int granularity)
 {
 	param->first = first;
 	param->last = last;
 	param->visible_first = first_visible;
 	param->visible_last = last_visible;
 	param->position = position;
+	param->granularity = granularity;
 }
