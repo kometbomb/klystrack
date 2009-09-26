@@ -38,6 +38,26 @@ static void modify_position(void *delta, void *_param, void *unused)
 	if (*param->position > param->last) *param->position = param->last;
 }
 
+
+static void drag_begin(void *event, void *_param, void *area)
+{
+	SliderParam *param = _param;
+	param->drag_begin_coordinate = ((SDL_Event*)event)->button.y;
+	param->drag_begin_position = *param->position;
+	param->drag_area_size = ((SDL_Rect*)area)->h;
+}
+
+
+static void drag_motion(int x, int y, void *_param)
+{
+	SliderParam *param = _param;
+	int delta = y - param->drag_begin_coordinate;
+	*param->position = param->drag_begin_position + delta * (param->last - param->first) / param->drag_area_size;
+	if (*param->position < param->first) *param->position = param->first;
+	if (*param->position > param->last) *param->position = param->last;
+}
+
+
 void slider(const SDL_Rect *_area, const SDL_Event *event, void *_param)
 {
 	SliderParam *param = _param;
@@ -61,6 +81,8 @@ void slider(const SDL_Rect *_area, const SDL_Event *event, void *_param)
 	
 	{
 		SDL_Rect area = { _area->x, _area->y + bar_top, _area->w, bar_size };
+		check_event(event, &area, drag_begin, event, param, _area);
+		check_drag_event(event, &area, drag_motion, param);
 		SDL_FillRect(mused.console->surface, &area, 0xffffffff);
 	}
 	

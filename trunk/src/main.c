@@ -212,7 +212,7 @@ int main(int argc, char **argv)
 			
 			// ensure the last event is a mouse click so it gets passed to the draw/event code
 			
-			if (e.type == SDL_MOUSEBUTTONDOWN) break; 
+			if (e.type == SDL_MOUSEBUTTONDOWN || e.type == SDL_MOUSEMOTION) break; 
 		}
 		
 		mus_poll_status(&mused.mus, &mused.stat_song_position, mused.stat_pattern_position, mused.stat_pattern);
