@@ -27,6 +27,7 @@ OTHER DEALINGS IN THE SOFTWARE.
 #include "event.h"
 #include "mused.h"
 #include "action.h"
+#include "mouse.h"
 
 #define BG_CURSOR 0xffff4040
 #define BG_PLAYERPOS 0xff004000
@@ -36,23 +37,16 @@ OTHER DEALINGS IN THE SOFTWARE.
 
 extern Mused mused;
 
-
-static void check_event(const SDL_Event *event, const SDL_Rect *rect, void (*handler)(void*,void*,void*), void *param1, void *param2, void *param3)
+void draw_view(const View* views, const SDL_Event *event)
 {
-	if (event->type == SDL_MOUSEBUTTONDOWN)
+	for (int i = 0 ; views[i].handler ; ++i)
 	{
-		if ((event->button.x >= rect->x) && (event->button.y >= rect->y) 
-			&& (event->button.x <= rect->x + rect->w) && (event->button.y <= rect->y + rect->h))
-			handler(param1, param2, param3);
+		const View *view = &views[i];
+
+		memcpy(&mused.console->clip, &view->position, sizeof(view->position));
+		view->handler(&view->position, event, view->param);
+		SDL_UpdateRect(mused.console->surface, view->position.x, view->position.y, view->position.w, view->position.h);
 	}
-}
-
-
-void draw_view(const View* view, const SDL_Event *event)
-{
-	memcpy(&mused.console->clip, &view->position, sizeof(view->position));
-	view->handler(&view->position, event);
-	SDL_UpdateRect(mused.console->surface, view->position.x, view->position.y, view->position.w, view->position.h);
 }
 
 
@@ -75,7 +69,7 @@ char * notename(Uint8 note)
 }
 
 
-void sequence_view(const SDL_Rect *dest, const SDL_Event *event)
+void sequence_view(const SDL_Rect *dest, const SDL_Event *event, void *param)
 {
 	char text[200];
 	
@@ -100,6 +94,8 @@ void sequence_view(const SDL_Rect *dest, const SDL_Event *event)
 	}
 	
 	console_write(mused.console, "\n");
+	
+	mused.sequence_slider_param.visible_first = start;
 	
 	for (int i = start, s = 0, y = mused.console->font.h ; y < dest->h ; i += mused.sequenceview_steps, ++s, y += mused.console->font.h)
 	{
@@ -166,6 +162,8 @@ void sequence_view(const SDL_Rect *dest, const SDL_Event *event)
 		}
 		
 		console_write(mused.console,"\n");
+		
+		slider_set_params(&mused.sequence_slider_param, 0, mused.song.song_length, start, i, &mused.current_sequencepos);
 	}
 }
 
@@ -267,7 +265,7 @@ void pattern_view_inner(const SDL_Rect *dest, const SDL_Event *event, int curren
 }
 
 
-void pattern_view(const SDL_Rect *dest, const SDL_Event *event)
+void pattern_view(const SDL_Rect *dest, const SDL_Event *event, void *param)
 {
 	int pv = 0;
 	SDL_Rect pos = { dest->x, dest->y, dest->w, dest->h };
@@ -294,7 +292,7 @@ void pattern_view(const SDL_Rect *dest, const SDL_Event *event)
 }
 
 
-void info_view(const SDL_Rect *dest, const SDL_Event *event)
+void info_view(const SDL_Rect *dest, const SDL_Event *event, void *param)
 {
 	char text[200];
 	
@@ -381,7 +379,7 @@ void get_command_desc(char *text, Uint16 inst)
 }
 
 
-void info_line(const SDL_Rect *dest, const SDL_Event *event)
+void info_line(const SDL_Rect *dest, const SDL_Event *event, void *param)
 {
 	console_set_color(mused.console,0x00000000,CON_BACKGROUND);
 	console_set_color(mused.console,0xffffffff,CON_CHARACTER);
@@ -483,7 +481,7 @@ static void inst_hex(const SDL_Event *e, int p, const char *label, int value)
 }
 
 
-void instrument_view(const SDL_Rect *dest, const SDL_Event *event)
+void instrument_view(const SDL_Rect *dest, const SDL_Event *event, void *param)
 {
 	console_set_color(mused.console,0x00000000,CON_BACKGROUND);
 	console_clear(mused.console);
@@ -551,7 +549,7 @@ void instrument_view(const SDL_Rect *dest, const SDL_Event *event)
 }
 
 
-void instrument_list(const SDL_Rect *dest, const SDL_Event *event)
+void instrument_list(const SDL_Rect *dest, const SDL_Event *event, void *param)
 {
 	console_clear(mused.console);
 	int y = 0;

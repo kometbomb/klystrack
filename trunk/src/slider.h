@@ -1,5 +1,5 @@
-#ifndef VIEW_H
-#define VIEW_H
+#ifndef SLIDER_H
+#define SLIDER_H
 
 /*
 Copyright (c) 2009 Tero Lindeman (kometbomb)
@@ -30,28 +30,15 @@ OTHER DEALINGS IN THE SOFTWARE.
 
 typedef struct
 {
-	const SDL_Rect position;
-	
-	/*
-	This is a combined drawing and mouse event handler.
-	*/
-	
-	void (*handler)(const SDL_Rect *dest, const SDL_Event *event, void *param);
-	void *param;
-} View;
+	// Total elements (bounds) of target
+	int first, last;
+	// First and last visible elements
+	int visible_first, visible_last;
+	// Ye int that shall be modified by the slider
+	int *position;
+} SliderParam;
 
-
-void draw_view(const View* views, const SDL_Event *event);
-
-/* 
-"Controls"
-*/
-
-void info_line(const SDL_Rect *dest, const SDL_Event *event, void *param);
-void sequence_view(const SDL_Rect *dest, const SDL_Event *event, void *param);
-void pattern_view(const SDL_Rect *dest, const SDL_Event *event, void *param);
-void info_view(const SDL_Rect *dest, const SDL_Event *event, void *param);
-void instrument_view(const SDL_Rect *dest, const SDL_Event *event, void *param);
-void instrument_list(const SDL_Rect *dest, const SDL_Event *event, void *param);
+void slider(const SDL_Rect *area, const SDL_Event *event, void *param);
+void slider_set_params(SliderParam *param, int first, int last, int first_visible, int last_visible, int *position);
 
 #endif

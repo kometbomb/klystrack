@@ -1,5 +1,5 @@
-#ifndef VIEW_H
-#define VIEW_H
+#ifndef MOUSE_H
+#define MOUSE_H
 
 /*
 Copyright (c) 2009 Tero Lindeman (kometbomb)
@@ -28,30 +28,6 @@ OTHER DEALINGS IN THE SOFTWARE.
 
 #include "SDL.h"
 
-typedef struct
-{
-	const SDL_Rect position;
-	
-	/*
-	This is a combined drawing and mouse event handler.
-	*/
-	
-	void (*handler)(const SDL_Rect *dest, const SDL_Event *event, void *param);
-	void *param;
-} View;
-
-
-void draw_view(const View* views, const SDL_Event *event);
-
-/* 
-"Controls"
-*/
-
-void info_line(const SDL_Rect *dest, const SDL_Event *event, void *param);
-void sequence_view(const SDL_Rect *dest, const SDL_Event *event, void *param);
-void pattern_view(const SDL_Rect *dest, const SDL_Event *event, void *param);
-void info_view(const SDL_Rect *dest, const SDL_Event *event, void *param);
-void instrument_view(const SDL_Rect *dest, const SDL_Event *event, void *param);
-void instrument_list(const SDL_Rect *dest, const SDL_Event *event, void *param);
+void check_event(const SDL_Event *event, const SDL_Rect *rect, void (*action)(void*,void*,void*), void *param1, void *param2, void *param3);
 
 #endif

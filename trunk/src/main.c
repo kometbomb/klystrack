@@ -32,6 +32,7 @@ OTHER DEALINGS IN THE SOFTWARE.
 #include "diskop.h"
 #include "event.h"
 #include "view.h"
+#include "slider.h"
 #include "action.h"
 
 #define SCREEN_WIDTH 640
@@ -47,11 +48,31 @@ int stat_pattern_position[MUS_CHANNELS];
 MusPattern *stat_pattern[MUS_CHANNELS];
 int stat_pattern_number[MUS_CHANNELS];
 
-static const View tab[] = 
+
+static const View instrument_view_tab[] =
+{
+	{{0, 0, SCREEN_WIDTH, SCREEN_HEIGHT}, instrument_view},
+	{{0, 0, 0, 0}, NULL}
+};
+
+static const View pattern_view_tab[] =
+{
+	{{0, 0, SCREEN_WIDTH, SCREEN_HEIGHT}, pattern_view},
+	{{0, 0, 0, 0}, NULL}
+};
+
+static const View sequence_view_tab[] =
+{
+	{{0, 0, SCREEN_WIDTH-16, SCREEN_HEIGHT}, sequence_view},
+	{{SCREEN_WIDTH-16, 0, 16, SCREEN_HEIGHT}, slider, &mused.sequence_slider_param},
+	{{0, 0, 0, 0}, NULL}
+};
+
+static const View *tab[] = 
 { 
-	{{0,0, SCREEN_WIDTH, SCREEN_HEIGHT}, instrument_view},
-	{{0,0, SCREEN_WIDTH, SCREEN_HEIGHT}, pattern_view},
-	{{0,0, SCREEN_WIDTH, SCREEN_HEIGHT}, sequence_view} 
+	instrument_view_tab,
+	pattern_view_tab,
+	sequence_view_tab 
 };
 
 static const struct { int mod, key; void (*action)(void*,void*,void*); int p1, p2, p3; } shortcuts[] =
@@ -233,7 +254,7 @@ int main(int argc, char **argv)
 			info_line(&dest, &e);
 		}*/
 		
-		draw_view(&tab[m], &e);
+		draw_view(tab[m], &e);
 		
 		SDL_Flip(screen);
 		SDL_Delay(got_event ? 0 : 10);
