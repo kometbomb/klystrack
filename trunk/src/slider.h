@@ -36,12 +36,14 @@ typedef struct
 	int visible_first, visible_last;
 	// Ye int that shall be modified by the slider
 	int *position;
+	// Snap to this resolution
+	int granularity;
 	
 	/* internal */
 	int drag_begin_coordinate, drag_begin_position, drag_area_size;	
 } SliderParam;
 
 void slider(const SDL_Rect *area, const SDL_Event *event, void *param);
-void slider_set_params(SliderParam *param, int first, int last, int first_visible, int last_visible, int *position);
+void slider_set_params(SliderParam *param, int first, int last, int first_visible, int last_visible, int *position, int granularity);
 
 #endif

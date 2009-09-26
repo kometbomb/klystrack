@@ -163,7 +163,7 @@ void sequence_view(const SDL_Rect *dest, const SDL_Event *event, void *param)
 		
 		console_write(mused.console,"\n");
 		
-		slider_set_params(&mused.sequence_slider_param, 0, mused.song.song_length, start, i, &mused.current_sequencepos);
+		slider_set_params(&mused.sequence_slider_param, 0, mused.song.song_length, start, i, &mused.current_sequencepos, mused.sequenceview_steps);
 	}
 }
 
@@ -179,6 +179,7 @@ void pattern_view_inner(const SDL_Rect *dest, const SDL_Event *event, int curren
 	if (start < 0 ) start = 0;
 	
 	console_set_color(mused.console,0xff808080,CON_CHARACTER);
+	
 	if (channel != -1) 
 	{
 		check_event(event, console_write_args(mused.console, "--Ch:%x-Pat:%2x--\n", channel, current_pattern), enable_channel, (void*)channel, 0, 0);
@@ -261,6 +262,8 @@ void pattern_view_inner(const SDL_Rect *dest, const SDL_Event *event, int curren
 		}
 		
 		console_write(mused.console,"\n");
+		
+		slider_set_params(&mused.pattern_slider_param, 0, mused.song.pattern[current_pattern].num_steps, start, i, &mused.current_patternstep, 1);
 	}
 }
 
