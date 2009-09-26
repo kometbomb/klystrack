@@ -29,6 +29,7 @@ OTHER DEALINGS IN THE SOFTWARE.
 #include "snd/music.h"
 #include "gfx/font.h"
 #include "console.h"
+#include "slider.h"
 
 enum
 {
@@ -59,6 +60,7 @@ typedef struct
 	Clipboard cp;
 	char * edit_buffer;
 	int edit_buffer_size;
+	SliderParam sequence_slider_param;
 	/*---*/
 	char * edit_backup_buffer;
 	int stat_song_position;

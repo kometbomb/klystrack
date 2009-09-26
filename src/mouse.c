@@ -1,6 +1,3 @@
-#ifndef VIEW_H
-#define VIEW_H
-
 /*
 Copyright (c) 2009 Tero Lindeman (kometbomb)
 
@@ -26,32 +23,18 @@ FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 OTHER DEALINGS IN THE SOFTWARE.
 */
 
-#include "SDL.h"
+#include "mouse.h"
 
-typedef struct
+void check_event(const SDL_Event *event, const SDL_Rect *rect, void (*action)(void*,void*,void*), void *param1, void *param2, void *param3)
 {
-	const SDL_Rect position;
-	
-	/*
-	This is a combined drawing and mouse event handler.
-	*/
-	
-	void (*handler)(const SDL_Rect *dest, const SDL_Event *event, void *param);
-	void *param;
-} View;
-
-
-void draw_view(const View* views, const SDL_Event *event);
-
-/* 
-"Controls"
-*/
-
-void info_line(const SDL_Rect *dest, const SDL_Event *event, void *param);
-void sequence_view(const SDL_Rect *dest, const SDL_Event *event, void *param);
-void pattern_view(const SDL_Rect *dest, const SDL_Event *event, void *param);
-void info_view(const SDL_Rect *dest, const SDL_Event *event, void *param);
-void instrument_view(const SDL_Rect *dest, const SDL_Event *event, void *param);
-void instrument_list(const SDL_Rect *dest, const SDL_Event *event, void *param);
-
-#endif
+	switch (event->type) 
+	{
+		case SDL_MOUSEBUTTONDOWN:
+		{
+			if ((event->button.x >= rect->x) && (event->button.y >= rect->y) 
+				&& (event->button.x <= rect->x + rect->w) && (event->button.y <= rect->y + rect->h))
+				action(param1, param2, param3);
+		}
+		break;
+	}
+}
