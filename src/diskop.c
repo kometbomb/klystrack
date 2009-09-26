@@ -71,7 +71,8 @@ int save_data()
 			if (f)
 			{
 				const Uint8 version = MUS_VERSION;
-				fwrite("cyd!inst", 8, sizeof(char), f);
+				
+				fwrite(MUS_INST_SIG, strlen(MUS_INST_SIG), sizeof(MUS_INST_SIG[0]), f);
 				
 				fwrite(&version, 1, sizeof(version), f);
 				
@@ -103,7 +104,7 @@ int save_data()
 					mused.song.num_patterns = maxpat + 1;
 				}
 			
-				fwrite("cyd!song", 8, sizeof(char), f);
+				fwrite(MUS_SONG_SIG, strlen(MUS_SONG_SIG), sizeof(MUS_SONG_SIG[0]), f);
 				
 				const Uint8 version = MUS_VERSION;
 				
