@@ -163,7 +163,7 @@ void sequence_view(const SDL_Rect *dest, const SDL_Event *event, void *param)
 		
 		console_write(mused.console,"\n");
 		
-		slider_set_params(&mused.sequence_slider_param, 0, mused.song.song_length, start, i, &mused.current_sequencepos, mused.sequenceview_steps);
+		slider_set_params(&mused.sequence_slider_param, 0, mused.song.song_length, start, i, &mused.current_sequencepos, mused.sequenceview_steps, (int)dest->h/mused.console->font.h/2 * mused.sequenceview_steps);
 	}
 }
 
@@ -263,7 +263,7 @@ void pattern_view_inner(const SDL_Rect *dest, const SDL_Event *event, int curren
 		
 		console_write(mused.console,"\n");
 		
-		slider_set_params(&mused.pattern_slider_param, 0, mused.song.pattern[current_pattern].num_steps, start, i, &mused.current_patternstep, 1);
+		slider_set_params(&mused.pattern_slider_param, 0, mused.song.pattern[current_pattern].num_steps - 1, start, i, &mused.current_patternstep, 1, (int)dest->h/mused.console->font.h/2);
 	}
 }
 

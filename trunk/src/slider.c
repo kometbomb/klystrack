@@ -49,6 +49,8 @@ static void drag_begin(void *event, void *_param, void *area)
 	SliderParam *param = _param;
 	param->drag_begin_coordinate = ((SDL_Event*)event)->button.y;
 	param->drag_begin_position = *param->position;
+	if (param->drag_begin_position > param->last - param->margin) param->drag_begin_position = param->last - param->margin;
+	if (param->drag_begin_position < param->first + param->margin) param->drag_begin_position = param->first + param->margin;
 	param->drag_area_size = ((SDL_Rect*)area)->h;
 }
 
@@ -56,10 +58,12 @@ static void drag_begin(void *event, void *_param, void *area)
 static void drag_motion(int x, int y, void *_param)
 {
 	SliderParam *param = _param;
+	if (param->visible_first == param->first && param->visible_last == param->last)
+		return;
 	int delta = y - param->drag_begin_coordinate;
 	*param->position = quant(param->drag_begin_position + delta * (param->last - param->first) / param->drag_area_size, param->granularity);
-	if (*param->position < param->first) *param->position = param->first;
-	if (*param->position > param->last) *param->position = param->last;
+	if (*param->position > param->last - param->margin) *param->position = param->last - param->margin;
+	if (*param->position < param->first + param->margin) *param->position = param->first + param->margin;
 }
 
 
@@ -69,19 +73,25 @@ void slider(const SDL_Rect *_area, const SDL_Event *event, void *_param)
 	int bar_top = 0;
 	int bar_size = _area->h;
 	
-	if (param->last > param->first)
+	if (param->visible_last > param->visible_first)
 	{
-		bar_top = (param->visible_first) * _area->h / (param->last - param->first);
-		int bar_bottom = (param->visible_last) * _area->h / (param->last - param->first);
+		bar_top = (param->visible_first - param->first) * _area->h / (param->last - param->first);
+		int bar_bottom;
+		
+		if (param->visible_last < param->last) 
+			bar_bottom = (param->visible_last - param->first) * _area->h / (param->last - param->first);
+		else
+			bar_bottom = _area->h + _area->y;
+			
 		bar_size = bar_bottom - bar_top;
-		if (bar_size < 1) bar_size = 1;
+		if (bar_size < 4) bar_size = 4;
 		if (bar_top + bar_size > _area->h) bar_top = _area->h - bar_size;
 	}
 	
 	{
 		SDL_Rect area = { _area->x, _area->y, _area->w, bar_top };
 		check_event(event, &area, modify_position, (void*)-(param->visible_last - param->visible_first), param, 0);
-		SDL_FillRect(mused.console->surface, &area, 0xff808080);
+		SDL_FillRect(mused.console->surface, &area, 0);
 	}
 	
 	{
@@ -94,17 +104,22 @@ void slider(const SDL_Rect *_area, const SDL_Event *event, void *_param)
 	{
 		SDL_Rect area = { _area->x, _area->y + bar_top + bar_size, _area->w, _area->h - (bar_top + bar_size) };
 		check_event(event, &area, modify_position, (void*)(param->visible_last - param->visible_first), param, 0);
-		SDL_FillRect(mused.console->surface, &area, 0xff8080f0);
+		SDL_FillRect(mused.console->surface, &area, 0);
 	}
 }
 
 
-void slider_set_params(SliderParam *param, int first, int last, int first_visible, int last_visible, int *position, int granularity)
+void slider_set_params(SliderParam *param, int first, int last, int first_visible, int last_visible, int *position, int granularity, int margin)
 {
 	param->first = first;
 	param->last = last;
 	param->visible_first = first_visible;
 	param->visible_last = last_visible;
+	param->margin = margin;
+	
+	if (param->visible_first < param->first) param->visible_first = param->first;
+	if (param->visible_last > param->last) param->visible_last = param->last;
+	
 	param->position = position;
 	param->granularity = granularity;
 }
