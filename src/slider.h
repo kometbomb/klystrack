@@ -38,12 +38,15 @@ typedef struct
 	int *position;
 	// Snap to this resolution
 	int granularity;
+	// Fixes issues with combined curson position + scroll position
+	// I don't like this either -- but it works (in this situation)
+	int margin;
 	
 	/* internal */
 	int drag_begin_coordinate, drag_begin_position, drag_area_size;	
 } SliderParam;
 
 void slider(const SDL_Rect *area, const SDL_Event *event, void *param);
-void slider_set_params(SliderParam *param, int first, int last, int first_visible, int last_visible, int *position, int granularity);
+void slider_set_params(SliderParam *param, int first, int last, int first_visible, int last_visible, int *position, int granularity, int margin);
 
 #endif
