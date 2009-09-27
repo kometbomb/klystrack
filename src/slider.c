@@ -73,17 +73,23 @@ void slider(const SDL_Rect *_area, const SDL_Event *event, void *_param)
 	int bar_top = 0;
 	int bar_size = _area->h;
 	
-	if (param->visible_last > param->visible_first)
+	if (param->visible_last > param->visible_first && param->last != param->first)
 	{
 		bar_top = (param->visible_first - param->first) * _area->h / (param->last - param->first);
 		int bar_bottom;
 		
 		if (param->visible_last < param->last) 
+		{
 			bar_bottom = (param->visible_last - param->first) * _area->h / (param->last - param->first);
+		}
 		else
+		{
 			bar_bottom = _area->h + _area->y;
-			
+			bar_top = bar_bottom - (((param->visible_last - param->visible_first))) * _area->h / (param->last - param->first);
+		}
+		
 		bar_size = bar_bottom - bar_top;
+		
 		if (bar_size < 4) bar_size = 4;
 		if (bar_top + bar_size > _area->h) bar_top = _area->h - bar_size;
 	}
@@ -117,8 +123,8 @@ void slider_set_params(SliderParam *param, int first, int last, int first_visibl
 	param->visible_last = last_visible;
 	param->margin = margin;
 	
-	if (param->visible_first < param->first) param->visible_first = param->first;
-	if (param->visible_last > param->last) param->visible_last = param->last;
+	/*if (param->visible_first < param->first) param->visible_first = param->first;
+	if (param->visible_last > param->last) param->visible_last = param->last;*/
 	
 	param->position = position;
 	param->granularity = granularity;
