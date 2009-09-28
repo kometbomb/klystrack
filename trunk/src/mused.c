@@ -31,6 +31,8 @@ extern Mused mused;
 
 void change_mode(int newmode)
 {
+	SDL_FillRect(mused.console->surface, NULL, 0);
+
 	mused.selection.start = 0;
 	mused.selection.end = 0;
 	mused.prev_mode = mused.mode;

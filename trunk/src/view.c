@@ -555,12 +555,24 @@ void instrument_view(const SDL_Rect *dest, const SDL_Event *event, void *param)
 void instrument_list(const SDL_Rect *dest, const SDL_Event *event, void *param)
 {
 	console_clear(mused.console);
-	int y = 0;
-	for (int i = 0 ; i < NUM_INSTRUMENTS && y < dest->h ; ++i)
+	int y = mused.console->font.h;
+	
+	int rows = dest->h / mused.console->font.h - 1;
+	
+	separator("----instruments----");
+	
+	int start = mused.instrument_list_position - rows/2;
+	
+	if (start > NUM_INSTRUMENTS - rows ) start = NUM_INSTRUMENTS - rows;
+	if (start < 0 ) start = 0;
+	
+	for (int i = start ; i < NUM_INSTRUMENTS && y < dest->h ; ++i, y += mused.console->font.h)
 	{
 		console_set_color(mused.console, i == mused.current_instrument ? 0xffff0000 : 0x0, CON_BACKGROUND);
 		console_set_color(mused.console, 0xffffffff, CON_CHARACTER);
 		check_event(event, console_write_args(mused.console, "%02x %-32s\n", i + 1, mused.song.instrument[i].name), select_instrument, (void*)i, 0, 0);
+		
+		slider_set_params(&mused.instrument_list_slider_param, 0, NUM_INSTRUMENTS, start, i, &mused.instrument_list_position, 1, rows / 2);
 	}
 }
 
