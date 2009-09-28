@@ -15,7 +15,8 @@ Group0_SRC = $(notdir ${wildcard src/*.c})
 # the .cpp extension to .d for dependency files, and .o for 
 # object files.
 Group0_DEP = $(patsubst %.c, deps/Group0_%.d, ${Group0_SRC})
-Group0_OBJ = $(patsubst %.c, objs.$(CFG)/Group0_%.o, ${Group0_SRC}) ../klystron/objs.$(CFG)/Group0_music.o ../klystron/objs.$(CFG)/Group0_cyd.o ../klystron/objs.$(CFG)/Group0_cydflt.o ../klystron/objs.$(CFG)/Group2_rnd.o\
+Group0_OBJ = $(patsubst %.c, objs.$(CFG)/Group0_%.o, ${Group0_SRC}) ../klystron/objs.$(CFG)/Group0_music.o ../klystron/objs.$(CFG)/Group0_cyd.o\
+../klystron/objs.$(CFG)/Group0_cydflt.o ../klystron/objs.$(CFG)/Group0_cydrvb.o ../klystron/objs.$(CFG)/Group2_rnd.o\
 ../klystron/objs.$(CFG)/Group2_bundle.o ../klystron/objs.$(CFG)/Group1_font.o ../klystron/objs.$(CFG)/Group1_gfx.o
 
 
