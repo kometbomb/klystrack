@@ -34,6 +34,7 @@ OTHER DEALINGS IN THE SOFTWARE.
 #include "view.h"
 #include "slider.h"
 #include "action.h"
+#include "mouse.h"
 
 #define SCREEN_WIDTH 640
 #define SCREEN_HEIGHT 480
@@ -73,11 +74,18 @@ static const View sequence_view_tab[] =
 	{{0, 0, 0, 0}, NULL}
 };
 
+static const View reverb_view_tab[] =
+{
+	{{0, 0, SCREEN_WIDTH, SCREEN_HEIGHT}, reverb_view},
+	{{0, 0, 0, 0}, NULL}
+};
+
 static const View *tab[] = 
 { 
 	instrument_view_tab,
 	pattern_view_tab,
-	sequence_view_tab 
+	sequence_view_tab,
+	reverb_view_tab
 };
 
 static const struct { int mod, key; void (*action)(void*,void*,void*); int p1, p2, p3; } shortcuts[] =
@@ -86,6 +94,7 @@ static const struct { int mod, key; void (*action)(void*,void*,void*); int p1, p
 	{ KMOD_ALT, SDLK_F4, quit_action, 0, 0, 0 },
 	{ 0, SDLK_F2, change_mode_action, EDITPATTERN, 0, 0},
 	{ 0, SDLK_F3, change_mode_action, EDITINSTRUMENT, 0, 0},
+	{ KMOD_SHIFT, SDLK_F3, change_mode_action, EDITREVERB, 0, 0},
 	{ 0, SDLK_F4, change_mode_action, EDITSEQUENCE, 0, 0},
 	{ 0, SDLK_F5, play, 0, 0, 0 },
 	{ 0, SDLK_F6, play, 1, 0, 0 },
@@ -159,6 +168,12 @@ int main(int argc, char **argv)
 				quit_action(0,0,0);
 				break;
 				
+				case SDL_MOUSEBUTTONUP:
+				
+				mouse_released(&e);
+				
+				break;
+				
 				case SDL_KEYDOWN:
 				{
 					// key events should go only to the edited text field
@@ -204,6 +219,10 @@ int main(int argc, char **argv)
 							
 							case EDITSEQUENCE:
 							sequence_event(&e);
+							break;
+							
+							case EDITREVERB:
+							reverb_event(&e);
 							break;
 						}
 						

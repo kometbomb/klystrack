@@ -181,3 +181,14 @@ void enable_channel(void *channel, void *unused1, void *unused2)
 {
 	mused.mus.channel[(int)channel].flags ^= MUS_CHN_DISABLED;
 }
+
+
+void enable_reverb(void *unused1, void *unused2, void *unused3)
+{
+	mused.cyd.flags ^= CYD_ENABLE_REVERB;
+
+	if (mused.cyd.flags & CYD_ENABLE_REVERB)
+		mused.song.flags |= MUS_ENABLE_REVERB;
+	else
+		mused.song.flags &= ~MUS_ENABLE_REVERB;
+}
