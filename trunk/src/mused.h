@@ -60,7 +60,7 @@ typedef struct
 	Clipboard cp;
 	char * edit_buffer;
 	int edit_buffer_size;
-	SliderParam sequence_slider_param, pattern_slider_param;
+	SliderParam sequence_slider_param, pattern_slider_param, program_slider_param;
 	/*---*/
 	char * edit_backup_buffer;
 	int stat_song_position;

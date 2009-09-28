@@ -47,6 +47,7 @@ void draw_view(const View* views, const SDL_Event *event);
 "Controls"
 */
 
+void program_view(const SDL_Rect *dest, const SDL_Event *event, void *param);
 void info_line(const SDL_Rect *dest, const SDL_Event *event, void *param);
 void sequence_view(const SDL_Rect *dest, const SDL_Event *event, void *param);
 void pattern_view(const SDL_Rect *dest, const SDL_Event *event, void *param);
