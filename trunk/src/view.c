@@ -509,6 +509,7 @@ void instrument_view(const SDL_Rect *dest, const SDL_Event *event, void *param)
 	inst_flags(event, P_INVVIB, "Vib: %c\n", inst->flags & MUS_INST_INVERT_VIBRATO_BIT);
 	inst_flags(event, P_SETPW, "Set PW: %c\n", inst->flags & MUS_INST_SET_PW);
 	inst_flags(event, P_SETCUTOFF, "Set cutoff: %c\n", inst->flags & MUS_INST_SET_CUTOFF);
+	inst_flags(event, P_REVERB, "Rvb: %c\n", inst->cydflags & CYD_CHN_ENABLE_REVERB);
 	
 	separator("------sync------");
 	inst_flags(event, P_SYNC, "Snc: %c  ", inst->cydflags & CYD_CHN_ENABLE_SYNC);

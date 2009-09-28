@@ -144,6 +144,12 @@ void add_param(int a)
 		flipbit(i->cydflags, CYD_CHN_ENABLE_NOISE);
 		
 		break;
+		
+		case P_REVERB:
+		
+		flipbit(i->cydflags, CYD_CHN_ENABLE_REVERB);
+		
+		break;
 	
 		case P_ATTACK:
 		

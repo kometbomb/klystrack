@@ -229,40 +229,14 @@ int main(int argc, char **argv)
 		
 		int m = (mused.mode == EDITBUFFER || mused.mode == EDITPROG) ? mused.prev_mode : mused.mode;
 		
-		/*{
-			SDL_Rect dest = {0,0, SCREEN_WIDTH, SCREEN_HEIGHT-12};
-			
-			switch (m)
-			{
-				
-				case EDITPATTERN:
-				pattern_view(&dest, &e);
-				break;
-				
-				case EDITSEQUENCE:
-				sequence_view(&dest, &e);
-				break;
-			
-				case EDITPROG:
-				case EDITINSTRUMENT:
-				instrument_view(&dest, &e);
-				break;
-			}
-			
-			dest.x = SCREEN_WIDTH - 200;
-			
-			info_view(&dest, &e);
-		}
-		
+		if (got_event)
 		{
-			SDL_Rect dest = {0,SCREEN_HEIGHT-12, SCREEN_WIDTH, 12};
-			info_line(&dest, &e);
-		}*/
-		
-		draw_view(tab[m], &e);
-		
-		SDL_Flip(screen);
-		SDL_Delay(got_event ? 0 : 10);
+			draw_view(tab[m], &e);
+			
+			SDL_Flip(screen);
+		}
+		else
+			SDL_Delay(1);
 		
 		if (mused.done) 
 		{
