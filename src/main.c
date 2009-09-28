@@ -54,6 +54,8 @@ static const View instrument_view_tab[] =
 	{{0, 0, 150, SCREEN_HEIGHT}, instrument_view},
 	{{150, 0, 120, SCREEN_HEIGHT}, program_view},
 	{{150+120, 0, 16, SCREEN_HEIGHT}, slider, &mused.program_slider_param},
+	{{150+120+16, 0, 8*32 + 24, 9*11 }, instrument_list},
+	{{150+120+16+8*32 + 24, 0, 16, 100}, slider, &mused.instrument_list_slider_param},
 	{{0, 0, 0, 0}, NULL}
 };
 

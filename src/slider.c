@@ -58,7 +58,7 @@ static void drag_begin(void *event, void *_param, void *area)
 static void drag_motion(int x, int y, void *_param)
 {
 	SliderParam *param = _param;
-	if (param->visible_first == param->first && param->visible_last == param->last)
+	if ((param->visible_first == param->first && param->visible_last == param->last) || param->drag_area_size == 0)
 		return;
 	int delta = y - param->drag_begin_coordinate;
 	*param->position = quant(param->drag_begin_position + delta * (param->last - param->first) / param->drag_area_size, param->granularity);
