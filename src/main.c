@@ -51,7 +51,9 @@ int stat_pattern_number[MUS_CHANNELS];
 
 static const View instrument_view_tab[] =
 {
-	{{0, 0, SCREEN_WIDTH, SCREEN_HEIGHT}, instrument_view},
+	{{0, 0, 150, SCREEN_HEIGHT}, instrument_view},
+	{{150, 0, 120, SCREEN_HEIGHT}, program_view},
+	{{150+120, 0, 16, SCREEN_HEIGHT}, slider, &mused.program_slider_param},
 	{{0, 0, 0, 0}, NULL}
 };
 
@@ -89,9 +91,9 @@ static const struct { int mod, key; void (*action)(void*,void*,void*); int p1, p
 	{ 0, SDLK_F9, change_octave, -1, 0, 0 },
 	{ KMOD_SHIFT, SDLK_F9, change_song_rate, -1, 0, 0 },
 	{ KMOD_SHIFT|KMOD_CTRL, SDLK_F9, change_time_signature, -1, 0, 0 },
-	{ 0, SDLK_F9, change_octave, +1, 0, 0 },
-	{ KMOD_SHIFT, SDLK_F9, change_song_rate, +1, 0, 0 },
-	{ KMOD_SHIFT|KMOD_CTRL, SDLK_F9, change_time_signature, +1, 0, 0 },
+	{ 0, SDLK_F10, change_octave, +1, 0, 0 },
+	{ KMOD_SHIFT, SDLK_F10, change_song_rate, +1, 0, 0 },
+	{ KMOD_SHIFT|KMOD_CTRL, SDLK_F10, change_time_signature, +1, 0, 0 },
 	{ 0, SDLK_KP_PLUS, select_instrument, +1, 1, 0 },
 	{ KMOD_CTRL, SDLK_KP_PLUS, change_song_speed, 0, +1, 0 },
 	{ KMOD_ALT, SDLK_KP_PLUS, change_song_speed, 1, +1, 0 },

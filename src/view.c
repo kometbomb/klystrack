@@ -419,12 +419,15 @@ void info_line(const SDL_Rect *dest, const SDL_Event *event, void *param)
 }
 
 
-void program(const SDL_Rect *dest, MusInstrument * inst, const SDL_Event *event)
+void program_view(const SDL_Rect *dest, const SDL_Event *event, void *param)
 {
+	console_set_color(mused.console,0x00000000,CON_BACKGROUND);
+	console_clear(mused.console);
+	
+	MusInstrument *inst = &mused.song.instrument[mused.current_instrument];
+
 	int rows = dest->h / mused.console->font.h;
 	
-	console_set_clip(mused.console, dest);
-	console_reset_cursor(mused.console);
 	separator("----program-----");
 	
 	int start = mused.selected_param - P_PARAMS - rows/2;
@@ -459,6 +462,8 @@ void program(const SDL_Rect *dest, MusInstrument * inst, const SDL_Event *event)
 		
 		check_event(event, console_write_args(mused.console, "%c%02x %s%c\n", (inst->program[i] & 0x8000) ? '(' : ' ', i, box, (inst->program[i] & 0x8000) ? ')' : ' '),
 			select_instrument_param, (void*)(P_PARAMS + i), 0, 0);
+			
+		slider_set_params(&mused.program_slider_param, P_PARAMS, MUS_PROG_LEN - 1 + P_PARAMS, start + P_PARAMS, i + P_PARAMS, &mused.selected_param, 1, rows / 2);
 	}
 }
 
@@ -544,11 +549,6 @@ void instrument_view(const SDL_Rect *dest, const SDL_Event *event, void *param)
 	inst_text(event, P_FLTTYPE, "Type: %s\n", flttype[inst->flttype]);
 	inst_hex(event, P_CUTOFF, "Cutoff: %03x\n", inst->cutoff);
 	inst_hex(event, P_RESONANCE, "Res: %1x\n", inst->resonance);
-	
-	{
-		SDL_Rect p = {dest->x+150, dest->y, 300, 300};
-		program(&p, inst, event);
-	}
 }
 
 
