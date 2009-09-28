@@ -36,6 +36,7 @@ enum
 	EDITINSTRUMENT,
 	EDITPATTERN,
 	EDITSEQUENCE,
+	EDITREVERB,
 	EDITBUFFER,
 	EDITPROG
 };
@@ -53,7 +54,8 @@ typedef struct
 	int octave, current_instrument, selected_param, editpos, mode, 
 		current_patternstep, current_pattern, current_patternx, 
 		current_sequencepos, sequenceview_steps, single_pattern_edit, 
-		prev_mode, current_sequenceparam, instrument_list_position;
+		prev_mode, current_sequenceparam, instrument_list_position,
+		edit_reverb_param;
 	int ghost_pattern[MUS_CHANNELS];
 	int current_sequencetrack;
 	Uint16 time_signature;

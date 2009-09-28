@@ -577,3 +577,39 @@ void instrument_list(const SDL_Rect *dest, const SDL_Event *event, void *param)
 	}
 }
 
+
+void reverb_view(const SDL_Rect *dest, const SDL_Event *event, void *param)
+{
+	console_set_color(mused.console,0x00000000,CON_BACKGROUND);
+	console_set_color(mused.console,0xffffffff,CON_CHARACTER);
+	console_clear(mused.console);
+	
+	separator("----reverb----");
+	
+	console_set_color(mused.console, mused.edit_reverb_param == R_ENABLE ? 0xff0000ff:0xffffffff,CON_CHARACTER);
+	check_event(event, console_write_args(mused.console, "Enabled: %c\n", mused.song.flags & MUS_ENABLE_REVERB ? 'y' : 'n'), enable_reverb, 0, 0, 0);
+	
+	int p = R_DELAY;
+	
+	for (int i = 0 ; i < CYDRVB_TAPS ; ++i)
+	{
+		if ((i % 3) == 0 && i > 0) console_write(mused.console, "\n");
+		
+		console_set_color(mused.console,0xffffffff,CON_CHARACTER);
+		console_write_args(mused.console, "Tap %x:", i);
+	
+		console_set_color(mused.console,mused.edit_reverb_param == p ? 0xff0000ff:0xffffffff,CON_CHARACTER);
+		console_write_args(mused.console, " %4d ms ", mused.song.rvbtap[i].delay);
+		
+		++p;
+		
+		console_set_color(mused.console,mused.edit_reverb_param == p ? 0xff0000ff:0xffffffff,CON_CHARACTER);
+		
+		if (mused.song.rvbtap[i].gain <= CYDRVB_LOW_LIMIT)
+			console_write(mused.console, "-INF dB");
+		else
+			console_write_args(mused.console, "%+5.1f dB", (double)mused.song.rvbtap[i].gain * 0.1);
+		
+		++p;
+	}
+}

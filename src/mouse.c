@@ -25,6 +25,18 @@ OTHER DEALINGS IN THE SOFTWARE.
 
 #include "mouse.h"
 
+
+static void (*motion_target)(int,int,void*) = NULL;
+static void *motion_param = NULL;
+
+
+void mouse_released(const SDL_Event *event)
+{
+	motion_target = NULL;
+	motion_param = NULL;
+}
+
+
 void check_event(const SDL_Event *event, const SDL_Rect *rect, void (*action)(void*,void*,void*), void *param1, void *param2, void *param3)
 {
 	switch (event->type) 
@@ -53,13 +65,19 @@ void check_drag_event(const SDL_Event *event, const SDL_Rect *rect, void (*actio
 		{
 			if (event->motion.state & SDL_BUTTON(SDL_BUTTON_LEFT))
 			{
-				int x = event->motion.x - event->motion.xrel;
-				int y = event->motion.y - event->motion.yrel;
-				if ((x >= rect->x) && (y >= rect->y) 
-					&& (x <= rect->x + rect->w) && (y <= rect->y + rect->h))
+				if (!motion_target)
 				{
-					action(event->motion.x, event->motion.y, param);
+					int x = event->motion.x - event->motion.xrel;
+					int y = event->motion.y - event->motion.yrel;
+					if ((x >= rect->x) && (y >= rect->y) 
+						&& (x <= rect->x + rect->w) && (y <= rect->y + rect->h))
+					{
+						motion_target = action;
+						motion_param = param;
+					}
 				}
+				
+				motion_target(event->motion.x, event->motion.y, motion_param);
 			}
 		}
 		break;

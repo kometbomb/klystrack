@@ -32,6 +32,8 @@ OTHER DEALINGS IN THE SOFTWARE.
 extern Mused mused;
 
 #define set_edit_buffer(s) { if (mused.edit_backup_buffer) mused.edit_backup_buffer = strdup(s); mused.edit_backup_buffer = strdup(s); mused.edit_buffer = (char*)s; mused.edit_buffer_size = sizeof(s); change_mode(EDITBUFFER); } 
+#define clamp(val, add, _min, _max) { if ((int)val+(add) > _max) val = _max; else if ((int)val+(add) < _min) val = _min; else val+=(add); } 
+#define flipbit(val, bit) { val ^= bit; };
 
 void editparambox(int v)
 {
@@ -68,10 +70,7 @@ int find_note(int sym, int oct)
 }
 
 
-#define clamp(val, add, _min, _max) { if ((int)val+(add) > _max) val = _max; else if ((int)val+(add) < _min) val = _min; else val+=(add); } 
-#define flipbit(val, bit) { val ^= bit; };
-
-void add_param(int a)
+static void instrument_add_param(int a)
 {
 	MusInstrument *i = &mused.song.instrument[mused.current_instrument];
 
@@ -361,7 +360,7 @@ void edit_instrument_event(SDL_Event *e)
 		
 			case SDLK_RIGHT:
 			{
-				add_param(+1);
+				instrument_add_param(+1);
 			}
 			break;
 			
@@ -372,7 +371,7 @@ void edit_instrument_event(SDL_Event *e)
 			
 			case SDLK_LEFT:
 			{
-				add_param(-1);
+				instrument_add_param(-1);
 			}
 			break;
 		
@@ -392,7 +391,7 @@ void edit_instrument_event(SDL_Event *e)
 }
 
 
-int gethex(int key)
+static int gethex(int key)
 {
 	if (key >= SDLK_0 && key <= SDLK_9)
 	{
@@ -410,7 +409,7 @@ int gethex(int key)
 }
 
 
-int getalphanum(int key)
+static int getalphanum(int key)
 {
 	if (key >= SDLK_0 && key <= SDLK_9)
 	{
@@ -428,7 +427,7 @@ int getalphanum(int key)
 }
 
 
-int seqsort(const void *_a, const void *_b)
+static int seqsort(const void *_a, const void *_b)
 {
 	const MusSeqPattern *a = _a;
 	const MusSeqPattern *b = _b;
@@ -1098,6 +1097,72 @@ void edit_text(SDL_Event *e)
 				}
 			}
 			break;
+		}
+		
+		break;
+	}
+}
+
+
+static void reverb_add_param(int d)
+{
+	if (mused.edit_reverb_param == R_ENABLE)
+	{
+		flipbit(mused.song.flags, MUS_ENABLE_REVERB);
+	}
+	else
+	{
+		int p = mused.edit_reverb_param - R_DELAY;
+		int tap = (p & ~1) / 2;
+		if (!(p & 1))
+		{
+			clamp(mused.song.rvbtap[tap].delay, d * 1, 0, CYDRVB_SIZE - 1);
+		}
+		else
+		{
+			clamp(mused.song.rvbtap[tap].gain, d * 1, CYDRVB_LOW_LIMIT, 0);
+		}
+	}
+	
+	mus_set_reverb(&mused.mus, &mused.song);
+}
+
+
+void reverb_event(SDL_Event *e)
+{
+	switch (e->type)
+	{
+		case SDL_KEYDOWN:
+		
+		switch (e->key.keysym.sym)
+		{
+			case SDLK_DOWN:
+			{
+				++mused.edit_reverb_param;
+				if (mused.edit_reverb_param >= R_DELAY + CYDRVB_TAPS * 2) mused.edit_reverb_param = R_DELAY + CYDRVB_TAPS * 2 - 1;
+			}
+			break;
+			
+			case SDLK_UP:
+			{
+				--mused.edit_reverb_param;
+				if (mused.edit_reverb_param < 0) mused.edit_reverb_param = 0;
+			}
+			break;
+		
+			case SDLK_RIGHT:
+			{
+				reverb_add_param(+1);
+			}
+			break;
+			
+			case SDLK_LEFT:
+			{
+				reverb_add_param(-1);
+			}
+			break;
+		
+			default: break;
 		}
 		
 		break;

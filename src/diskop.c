@@ -119,6 +119,16 @@ int save_data()
 				fwrite(&mused.song.song_speed, 1, sizeof(mused.song.song_speed), f);
 				fwrite(&mused.song.song_speed2, 1, sizeof(mused.song.song_speed2), f);
 				fwrite(&mused.song.song_rate, 1, sizeof(mused.song.song_rate), f);
+				fwrite(&mused.song.flags, 1, sizeof(mused.song.flags), f);
+				
+				if (mused.song.flags & MUS_ENABLE_REVERB)
+				{
+					for (int i = 0 ; i < CYDRVB_TAPS ; ++i)	
+					{
+						fwrite(&mused.cyd.rvb.tap[i].gain, 1, sizeof(mused.cyd.rvb.tap[i].gain), f);
+						fwrite(&mused.cyd.rvb.tap[i].delay, 1, sizeof(mused.cyd.rvb.tap[i].delay), f);
+					}
+				}
 				
 				for (int i = 0 ; i < mused.song.num_instruments; ++i)
 				{
@@ -194,6 +204,7 @@ void open_data()
 				mused.song.num_patterns = NUM_PATTERNS;
 				mused.song.num_instruments = NUM_INSTRUMENTS;
 				
+				mus_set_reverb(&mused.mus, &mused.song);
 				cyd_set_callback(&mused.cyd, mus_advance_tick, &mused.mus, mused.song.song_rate);
 			}		
 		}
