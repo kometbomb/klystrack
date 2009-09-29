@@ -29,14 +29,6 @@ OTHER DEALINGS IN THE SOFTWARE.
 #include "mouse.h"
 #include "bevel.h"
 
-#define BEV_SLIDER_BG 0
-#define BEV_SLIDER_HANDLE 16
-#define BEV_SLIDER_HANDLE_ACTIVE 32
-#define DECAL_UPARROW 0 
-#define DECAL_DOWNARROW 16
-#define DECAL_GRAB_VERT 32
-#define DECAL_GRAB_HORIZ 64
-
 extern Mused mused;
 
 static int quant(int v, int g)
