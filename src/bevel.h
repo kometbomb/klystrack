@@ -28,6 +28,6 @@ OTHER DEALINGS IN THE SOFTWARE.
 
 #include "SDL.h"
 
-void bevel(const SDL_Rect *area, SDL_Surface *gfx);
+void bevel(const SDL_Rect *area, SDL_Surface *gfx, int offset);
 
 #endif
