@@ -32,6 +32,10 @@ OTHER DEALINGS IN THE SOFTWARE.
 #define BEV_SLIDER_BG 0
 #define BEV_SLIDER_HANDLE 16
 #define BEV_SLIDER_HANDLE_ACTIVE 32
+#define DECAL_UPARROW 0 
+#define DECAL_DOWNARROW 16
+#define DECAL_GRAB_VERT 32
+#define DECAL_GRAB_HORIZ 64
 
 extern Mused mused;
 
@@ -46,7 +50,7 @@ static void modify_position(void *delta, void *_param, void *unused)
 	SliderParam *param = _param;
 	*param->position = quant(*param->position + (int)delta, param->granularity);
 	if (*param->position < param->first) *param->position = param->first;
-	if (*param->position > param->last) *param->position = param->last;
+	if (*param->position > param->last - param->margin) *param->position = param->last - param->margin;
 }
 
 
@@ -59,6 +63,12 @@ static void drag_motion(int x, int y, void *_param)
 	*param->position = quant(param->drag_begin_position + delta * (param->last - param->first) / param->drag_area_size, param->granularity);
 	if (*param->position > param->last - param->margin) *param->position = param->last - param->margin;
 	if (*param->position < param->first) *param->position = param->first;
+}
+
+
+static void modify_position_step(void *delta, void *_param)
+{
+	modify_position(delta, _param, NULL);
 }
 
 
@@ -77,19 +87,21 @@ static void drag_begin(void *event, void *_param, void *area)
 void slider(const SDL_Rect *_area, const SDL_Event *event, void *_param)
 {
 	SliderParam *param = _param;
-	int bar_top = 0;
-	int area_size = param->orientation == SLIDER_HORIZONTAL ? _area->w : _area->h;
-	int area_start = param->orientation == SLIDER_HORIZONTAL ? _area->x : _area->y;
+	
+	int button_size = param->orientation == SLIDER_HORIZONTAL ? _area->h : _area->w;
+	int bar_top = button_size;
+	int area_size = (param->orientation == SLIDER_HORIZONTAL ? _area->w : _area->h) - button_size * 2;
+	int area_start = (param->orientation == SLIDER_HORIZONTAL ? _area->x : _area->y) + button_size;
 	int bar_size = area_size;
 	
 	if (param->visible_last > param->visible_first && param->last != param->first)
 	{
-		bar_top = (param->visible_first - param->first) * area_size / (param->last - param->first);
+		bar_top = (param->visible_first - param->first) * area_size / (param->last - param->first) + area_start;
 		int bar_bottom;
 		
 		if (param->visible_last < param->last) 
 		{
-			bar_bottom = (param->visible_last - param->first) * area_size / (param->last - param->first);
+			bar_bottom = (param->visible_last - param->first) * area_size / (param->last - param->first) + area_start;
 		}
 		else
 		{
@@ -100,18 +112,37 @@ void slider(const SDL_Rect *_area, const SDL_Event *event, void *_param)
 		bar_size = bar_bottom - bar_top;
 		
 		if (bar_size < 4) bar_size = 4;
-		if (bar_top + bar_size > area_size) bar_top = area_size - bar_size;
+		if (bar_top + bar_size > area_size + area_start) bar_top = area_size - bar_size + area_start;
 	}
 	
-	bevel(_area, mused.slider_bevel, BEV_SLIDER_BG);
+	SDL_Rect dragarea = { _area->x, _area->y, _area->w, _area->h };
+	
+	if (param->orientation == SLIDER_HORIZONTAL)
+	{
+		dragarea.x += button_size;
+		dragarea.w -= button_size * 2;
+	}
+	else
+	{
+		dragarea.y += button_size;
+		dragarea.h -= button_size * 2;
+	}
+	
+	bevel(&dragarea, mused.slider_bevel, BEV_SLIDER_BG);
 	
 	{
 		SDL_Rect area = { _area->x, _area->y, _area->w, _area->h };
 		
 		if (param->orientation == SLIDER_HORIZONTAL)
-			area.w = bar_top;
+		{
+			area.w = bar_top - button_size;
+			area.x += button_size;
+		}
 		else
-			area.h = bar_top;
+		{
+			area.h = bar_top - button_size;
+			area.y += button_size;
+		}
 		
 		check_event(event, &area, modify_position, (void*)-(param->visible_last - param->visible_first), param, 0);
 	}
@@ -130,9 +161,9 @@ void slider(const SDL_Rect *_area, const SDL_Event *event, void *_param)
 			area.h = bar_size;
 		}
 		
-		int pressed = check_event(event, &area, drag_begin, (void*)event, param, (void*)_area);
+		int pressed = check_event(event, &area, drag_begin, (void*)event, param, (void*)&dragarea);
 		pressed |= check_drag_event(event, &area, drag_motion, (void*)param);
-		bevel(&area, mused.slider_bevel, pressed ? BEV_SLIDER_HANDLE_ACTIVE : BEV_SLIDER_HANDLE);
+		button(&area, mused.slider_bevel, pressed ? BEV_SLIDER_HANDLE_ACTIVE : BEV_SLIDER_HANDLE, param->orientation == SLIDER_HORIZONTAL ? DECAL_GRAB_HORIZ : DECAL_GRAB_VERT);
 	}
 	
 	{
@@ -141,15 +172,32 @@ void slider(const SDL_Rect *_area, const SDL_Event *event, void *_param)
 		if (param->orientation == SLIDER_HORIZONTAL)
 		{
 			area.x += bar_top + bar_size;
-			area.w -= bar_size + bar_top;
+			area.w -= bar_size + bar_top + button_size;
 		}
 		else
 		{
 			area.y += bar_top + bar_size;
-			area.h -= bar_size + bar_top;
+			area.h -= bar_size + bar_top + button_size;
 		}
 		
 		check_event(event, &area, modify_position, (void*)(param->visible_last - param->visible_first), param, 0);
+	}
+	
+	{
+		SDL_Rect area = { _area->x, _area->y, 16, 16 };
+		
+		button_event(event, &area, mused.slider_bevel, BEV_SLIDER_HANDLE, BEV_SLIDER_HANDLE_ACTIVE, DECAL_UPARROW, modify_position_step, (void*)-param->granularity, param);
+		
+		if (param->orientation == SLIDER_HORIZONTAL)
+		{
+			area.x += area_size + button_size;
+		}
+		else
+		{
+			area.y += area_size + button_size;
+		}
+		
+		button_event(event, &area, mused.slider_bevel, BEV_SLIDER_HANDLE, BEV_SLIDER_HANDLE_ACTIVE, DECAL_DOWNARROW, modify_position_step, (void*)param->granularity, param);
 	}
 }
 

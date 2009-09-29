@@ -29,5 +29,7 @@ OTHER DEALINGS IN THE SOFTWARE.
 #include "SDL.h"
 
 void bevel(const SDL_Rect *area, SDL_Surface *gfx, int offset);
+void button(const SDL_Rect *area, SDL_Surface *gfx, int offset, int decal);
+void button_event(const SDL_Event *event, const SDL_Rect *area, SDL_Surface *gfx, int offset, int offset_pressed, int decal, void (*action)(void*,void*), void *param1, void *param2);
 
 #endif
