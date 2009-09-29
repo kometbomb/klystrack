@@ -126,10 +126,17 @@ void new_song()
 	mused.song.song_rate = 50;
 	mused.song.song_length = 0;
 	mused.song.loop_point = 0;
+	mused.song.flags = 0;
 	
 	for (int i = 0 ; i < NUM_PATTERNS ; ++i)
 	{
 		clear_pattern(&mused.song.pattern[i]);
+	}
+	
+	for (int i = 0 ; i < CYDRVB_TAPS ; ++i)
+	{
+		mused.song.rvbtap[i].delay = i * 100 + 50;
+		mused.song.rvbtap[i].gain = (i + 1) * -30;
 	}
 }
 
