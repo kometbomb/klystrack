@@ -169,21 +169,8 @@ void open_data()
 			
 			if (f)
 			{
-				char id[9];
+				mus_load_instrument_file2(f, &mused.song.instrument[mused.current_instrument]);
 				
-				id[8] = '\0';
-			
-				fread(id, 8, sizeof(id[0]), f);
-				
-				if (strcmp(id, MUS_INST_SIG) == 0)
-				{
-				
-					Uint8 version = 0;
-					fread(&version, 1, sizeof(version), f);
-				
-					mus_load_instrument_file(version, f, &mused.song.instrument[mused.current_instrument]);
-				}
-			
 				fclose(f);
 			}
 		}
@@ -203,6 +190,17 @@ void open_data()
 				
 				mused.song.num_patterns = NUM_PATTERNS;
 				mused.song.num_instruments = NUM_INSTRUMENTS;
+				
+				// Use kewlkool heuristics to determine sequence spacing
+				
+				mused.sequenceview_steps = 128;
+				
+				for (int c = 0 ; c < MUS_CHANNELS ; ++c)
+					for (int s = 1 ; s < mused.song.num_sequences[c] ; ++s)
+						if (mused.sequenceview_steps > mused.song.sequence[c][s].position - mused.song.sequence[c][s-1].position)
+						{
+							mused.sequenceview_steps = mused.song.sequence[c][s].position - mused.song.sequence[c][s-1].position;
+						}
 				
 				mus_set_reverb(&mused.mus, &mused.song);
 				cyd_set_callback(&mused.cyd, mus_advance_tick, &mused.mus, mused.song.song_rate);
