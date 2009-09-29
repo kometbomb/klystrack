@@ -25,6 +25,7 @@ OTHER DEALINGS IN THE SOFTWARE.
 
 #include "SDL.h"
 #include "SDL_mixer.h"
+#include "gfx/gfx.h"
 #include "snd/music.h"
 #include "toolutil.h"
 #include "copypaste.h"
@@ -135,11 +136,15 @@ int main(int argc, char **argv)
 	SDL_Init(SDL_INIT_AUDIO|SDL_INIT_NOPARACHUTE);
 	atexit(SDL_Quit);
 
-	SDL_Surface *screen=SDL_SetVideoMode(SCREEN_WIDTH, SCREEN_HEIGHT, 32, SDL_SWSURFACE);
+	GfxDomain *domain = gfx_create_domain();
+	domain->screen_w = SCREEN_WIDTH;
+	domain->screen_h = SCREEN_HEIGHT;
+	gfx_domain_update(domain);
+	
 	SDL_EnableKeyRepeat(SDL_DEFAULT_REPEAT_DELAY, SDL_DEFAULT_REPEAT_INTERVAL);
 	SDL_EnableUNICODE(1);
 	
-	mused.console = console_create(screen);
+	mused.console = console_create(gfx_domain_get_surface(domain));
 	
 	MusInstrument instrument[NUM_INSTRUMENTS];
 	MusPattern pattern[NUM_PATTERNS];
@@ -239,20 +244,20 @@ int main(int argc, char **argv)
 			if (e.type == SDL_MOUSEBUTTONDOWN || e.type == SDL_MOUSEMOTION) break; 
 		}
 		
-		mus_poll_status(&mused.mus, &mused.stat_song_position, mused.stat_pattern_position, mused.stat_pattern);
-		
-		for (int i = 0 ; i < MUS_CHANNELS ; ++i)
+		if (got_event || gfx_domain_is_next_frame(domain))
 		{
-			stat_pattern_number[i] = (stat_pattern[i] - &mused.song.pattern[0])/sizeof(mused.song.pattern[0]);
-		}
+			mus_poll_status(&mused.mus, &mused.stat_song_position, mused.stat_pattern_position, mused.stat_pattern);
 		
-		int m = (mused.mode == EDITBUFFER || mused.mode == EDITPROG) ? mused.prev_mode : mused.mode;
+			for (int i = 0 ; i < MUS_CHANNELS ; ++i)
+			{
+				stat_pattern_number[i] = (stat_pattern[i] - &mused.song.pattern[0])/sizeof(mused.song.pattern[0]);
+			}
+			
+			int m = (mused.mode == EDITBUFFER || mused.mode == EDITPROG) ? mused.prev_mode : mused.mode;
 		
-		if (got_event)
-		{
 			draw_view(tab[m], &e);
 			
-			SDL_Flip(screen);
+			gfx_domain_flip(domain);
 		}
 		else
 			SDL_Delay(1);
@@ -272,6 +277,8 @@ int main(int argc, char **argv)
 	console_destroy(mused.console);
 	cyd_unregister(&mused.cyd);
 	cyd_deinit(&mused.cyd);
+	
+	gfx_domain_free(domain);
 	
 	return 0;
 }
