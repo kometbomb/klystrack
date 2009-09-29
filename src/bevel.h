@@ -28,8 +28,17 @@ OTHER DEALINGS IN THE SOFTWARE.
 
 #include "SDL.h"
 
+#define BEV_SLIDER_BG 0
+#define BEV_SLIDER_HANDLE 16
+#define BEV_SLIDER_HANDLE_ACTIVE 32
+#define DECAL_UPARROW 0 
+#define DECAL_DOWNARROW 16
+#define DECAL_GRAB_VERT 32
+#define DECAL_GRAB_HORIZ 64
+
 void bevel(const SDL_Rect *area, SDL_Surface *gfx, int offset);
 void button(const SDL_Rect *area, SDL_Surface *gfx, int offset, int decal);
 void button_event(const SDL_Event *event, const SDL_Rect *area, SDL_Surface *gfx, int offset, int offset_pressed, int decal, void (*action)(void*,void*), void *param1, void *param2);
+void checkbox(const SDL_Event *event, const char* label, Uint32 *flags, Uint32 mask);
 
 #endif

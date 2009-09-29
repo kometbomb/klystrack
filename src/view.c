@@ -28,6 +28,7 @@ OTHER DEALINGS IN THE SOFTWARE.
 #include "mused.h"
 #include "action.h"
 #include "mouse.h"
+#include "bevel.h"
 
 #define BG_CURSOR 0xffff4040
 #define BG_PLAYERPOS 0xff004000
@@ -465,10 +466,10 @@ void program_view(const SDL_Rect *dest, const SDL_Event *event, void *param)
 }
 
 
-static void inst_flags(const SDL_Event *e, int p, const char *label, int enabled)
+static void inst_flags(const SDL_Event *e, int p, const char *label, Uint32 *flags, Uint32 mask)
 {
 	console_set_color(mused.console,mused.selected_param == p?0xff0000ff:0xffffffff,CON_CHARACTER);
-	check_event(e, console_write_args(mused.console, label, enabled ? 'y' : 'n'), select_instrument_param, (void*)p, 0, 0);
+	checkbox(e, label, flags, mask);
 }
 
 
@@ -498,30 +499,30 @@ void instrument_view(const SDL_Rect *dest, const SDL_Event *event, void *param)
 	
 	separator("---attributes---");
 	
-	inst_text(event, P_BASENOTE, "Base: %s ", notename(inst->base_note));
-	inst_flags(event, P_LOCKNOTE, "Lk: %c\n", inst->flags & MUS_INST_LOCK_NOTE);
-	inst_flags(event, P_DRUM, "Drm: %c  ", inst->flags & MUS_INST_DRUM);
-	inst_flags(event, P_METAL, "Mtl: %c\n", inst->cydflags & CYD_CHN_ENABLE_METAL);
-	inst_flags(event, P_KEYSYNC, "Key: %c  ", inst->cydflags & CYD_CHN_ENABLE_KEY_SYNC);
-	inst_flags(event, P_INVVIB, "Vib: %c\n", inst->flags & MUS_INST_INVERT_VIBRATO_BIT);
-	inst_flags(event, P_SETPW, "Set PW: %c\n", inst->flags & MUS_INST_SET_PW);
-	inst_flags(event, P_SETCUTOFF, "Set cutoff: %c\n", inst->flags & MUS_INST_SET_CUTOFF);
-	inst_flags(event, P_REVERB, "Rvb: %c\n", inst->cydflags & CYD_CHN_ENABLE_REVERB);
+	inst_text(event, P_BASENOTE, "Base: %s", notename(inst->base_note));
+	inst_flags(event, P_LOCKNOTE, "Lock\n", &inst->flags, MUS_INST_LOCK_NOTE);
+	inst_flags(event, P_DRUM, "Drum ", &inst->flags, MUS_INST_DRUM);
+	inst_flags(event, P_METAL, "Metal\n", &inst->cydflags, CYD_CHN_ENABLE_METAL);
+	inst_flags(event, P_KEYSYNC, "KSync ", &inst->cydflags, CYD_CHN_ENABLE_KEY_SYNC);
+	inst_flags(event, P_INVVIB, "Vib\n", &inst->flags, MUS_INST_INVERT_VIBRATO_BIT);
+	inst_flags(event, P_SETPW, "Set PW\n", &inst->flags, MUS_INST_SET_PW);
+	inst_flags(event, P_SETCUTOFF, "Set cutoff\n", &inst->flags, MUS_INST_SET_CUTOFF);
+	inst_flags(event, P_REVERB, "Rvb\n", &inst->cydflags, CYD_CHN_ENABLE_REVERB);
 	
 	separator("------sync------");
-	inst_flags(event, P_SYNC, "Snc: %c  ", inst->cydflags & CYD_CHN_ENABLE_SYNC);
+	inst_flags(event, P_SYNC, "Enable\n", &inst->cydflags, CYD_CHN_ENABLE_SYNC);
 	inst_hex(event, P_SYNCSRC, "Src: %x\n", inst->sync_source);
 	
 	separator("----ring mod----");
-	inst_flags(event, P_RINGMOD, "Mod: %c  ", inst->cydflags & CYD_CHN_ENABLE_RING_MODULATION ? 'y' : 'n');
+	inst_flags(event, P_RINGMOD, "Enable\n", &inst->cydflags, CYD_CHN_ENABLE_RING_MODULATION ? 'y' : 'n');
 	inst_hex(event, P_RINGMODSRC, "Src: %x\n", inst->ring_mod);
 	
 	
 	separator("----waveform----");
-	inst_flags(event, P_PULSE, "Pul: %c  ", inst->cydflags & CYD_CHN_ENABLE_PULSE);
-	inst_flags(event, P_SAW, "Saw: %c\n", inst->cydflags & CYD_CHN_ENABLE_SAW);
-	inst_flags(event, P_TRIANGLE, "Tri: %c  ", inst->cydflags & CYD_CHN_ENABLE_TRIANGLE);
-	inst_flags(event, P_NOISE, "Noi: %c\n", inst->cydflags & CYD_CHN_ENABLE_NOISE);
+	inst_flags(event, P_PULSE, "Pul", &inst->cydflags, CYD_CHN_ENABLE_PULSE);
+	inst_flags(event, P_SAW, "Saw\n", &inst->cydflags, CYD_CHN_ENABLE_SAW);
+	inst_flags(event, P_TRIANGLE, "Tri", &inst->cydflags, CYD_CHN_ENABLE_TRIANGLE);
+	inst_flags(event, P_NOISE, "Noi\n", &inst->cydflags, CYD_CHN_ENABLE_NOISE);
 	
 	separator("----envelope----");
 	inst_hex(event, P_ATTACK, "Atk: %02x ", inst->adsr.a);
@@ -540,7 +541,7 @@ void instrument_view(const SDL_Rect *dest, const SDL_Event *event, void *param)
 	inst_hex(event, P_PROGPERIOD, "Prg. period: %02x\n", inst->prog_period);
 	
 	separator("-----filter-----");
-	inst_flags(event, P_FILTER, "On: %c ", inst->cydflags & CYD_CHN_ENABLE_FILTER);
+	inst_flags(event, P_FILTER, "Enabled\n", &inst->cydflags, CYD_CHN_ENABLE_FILTER);
 	
 	static const char* flttype[] = {"LP", "HP", "BP"};
 	
@@ -582,7 +583,15 @@ void reverb_view(const SDL_Rect *dest, const SDL_Event *event, void *param)
 	separator("----reverb----");
 	
 	console_set_color(mused.console, mused.edit_reverb_param == R_ENABLE ? 0xff0000ff:0xffffffff,CON_CHARACTER);
-	check_event(event, console_write_args(mused.console, "Enabled: %c\n", mused.song.flags & MUS_ENABLE_REVERB ? 'y' : 'n'), enable_reverb, 0, 0, 0);
+	
+	checkbox(event, "Enabled", &mused.song.flags, MUS_ENABLE_REVERB);
+	
+	// We need to mirror the reverb flag to the corresponding Cyd flag
+	
+	if (mused.song.flags & MUS_ENABLE_REVERB)
+		mused.cyd.flags |= MUS_ENABLE_REVERB;
+	else
+		mused.cyd.flags &= ~MUS_ENABLE_REVERB;
 	
 	int p = R_DELAY;
 	
