@@ -41,12 +41,19 @@ typedef struct
 	// Fixes issues with combined curson position + scroll position
 	// I don't like this either -- but it works (in this situation)
 	int margin;
+	// Direction
+	int orientation;
 	
 	/* internal */
 	int drag_begin_coordinate, drag_begin_position, drag_area_size;	
 } SliderParam;
 
+enum
+{
+	SLIDER_VERTICAL, SLIDER_HORIZONTAL
+};
+
 void slider(const SDL_Rect *area, const SDL_Event *event, void *param);
-void slider_set_params(SliderParam *param, int first, int last, int first_visible, int last_visible, int *position, int granularity, int margin);
+void slider_set_params(SliderParam *param, int first, int last, int first_visible, int last_visible, int *position, int granularity, int margin, int orientation);
 
 #endif
