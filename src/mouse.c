@@ -49,7 +49,7 @@ int check_event(const SDL_Event *event, const SDL_Rect *rect, void (*action)(voi
 			if (event->button.button == SDL_BUTTON_LEFT)
 			{
 				if ((event->button.x >= rect->x) && (event->button.y >= rect->y) 
-					&& (event->button.x <= rect->x + rect->w) && (event->button.y <= rect->y + rect->h))
+					&& (event->button.x < rect->x + rect->w) && (event->button.y < rect->y + rect->h))
 				{
 					action(param1, param2, param3);
 					return 1;
@@ -83,7 +83,7 @@ int check_drag_event(const SDL_Event *event, const SDL_Rect *rect, void (*action
 					int x = event->motion.x - event->motion.xrel;
 					int y = event->motion.y - event->motion.yrel;
 					if ((x >= rect->x) && (y >= rect->y) 
-						&& (x <= rect->x + rect->w) && (y <= rect->y + rect->h))
+						&& (x < rect->x + rect->w) && (y < rect->y + rect->h))
 					{
 						set_motion_target(action, motion_param);
 					}

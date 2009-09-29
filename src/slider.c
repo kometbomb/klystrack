@@ -58,12 +58,6 @@ static void drag_motion(int x, int y, void *_param)
 }
 
 
-static void modify_position_step(void *delta, void *_param)
-{
-	modify_position(delta, _param, NULL);
-}
-
-
 static void drag_begin(void *event, void *_param, void *area)
 {
 	set_motion_target(drag_motion, _param);
@@ -178,7 +172,7 @@ void slider(const SDL_Rect *_area, const SDL_Event *event, void *_param)
 	{
 		SDL_Rect area = { _area->x, _area->y, 16, 16 };
 		
-		button_event(event, &area, mused.slider_bevel, BEV_SLIDER_HANDLE, BEV_SLIDER_HANDLE_ACTIVE, DECAL_UPARROW, modify_position_step, (void*)-param->granularity, param);
+		button_event(event, &area, mused.slider_bevel, BEV_SLIDER_HANDLE, BEV_SLIDER_HANDLE_ACTIVE, DECAL_UPARROW, modify_position, (void*)-param->granularity, param, 0);
 		
 		if (param->orientation == SLIDER_HORIZONTAL)
 		{
@@ -189,7 +183,7 @@ void slider(const SDL_Rect *_area, const SDL_Event *event, void *_param)
 			area.y += area_size + button_size;
 		}
 		
-		button_event(event, &area, mused.slider_bevel, BEV_SLIDER_HANDLE, BEV_SLIDER_HANDLE_ACTIVE, DECAL_DOWNARROW, modify_position_step, (void*)param->granularity, param);
+		button_event(event, &area, mused.slider_bevel, BEV_SLIDER_HANDLE, BEV_SLIDER_HANDLE_ACTIVE, DECAL_DOWNARROW, modify_position, (void*)param->granularity, param, 0);
 	}
 }
 
