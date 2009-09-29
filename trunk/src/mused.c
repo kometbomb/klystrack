@@ -190,5 +190,9 @@ void init(MusInstrument *instrument, MusPattern *pattern, MusSeqPattern sequence
 	new_song();
 	
 	mused.slider_bevel = gfx_load_surface("bevel.bmp", 0);
+	
+	slider_set_params(&mused.sequence_slider_param, 0, 0, 0, 0, &mused.sequence_position, 1, SLIDER_VERTICAL);
+	slider_set_params(&mused.pattern_slider_param, 0, 0, 0, 0, &mused.sequence_position, 1, SLIDER_VERTICAL);
+	slider_set_params(&mused.instrument_list_slider_param, 0, 0, 0, 0, &mused.sequence_position, 1, SLIDER_VERTICAL);
 }
 

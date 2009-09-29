@@ -29,7 +29,8 @@ OTHER DEALINGS IN THE SOFTWARE.
 #include "SDL.h"
 
 void mouse_released(const SDL_Event *event);
-void check_event(const SDL_Event *event, const SDL_Rect *rect, void (*action)(void*,void*,void*), void *param1, void *param2, void *param3);
-void check_drag_event(const SDL_Event *event, const SDL_Rect *rect, void (*action)(int,int,void*), void *param);
+void set_motion_target(void (*action)(int,int,void*), void *param);
+int check_event(const SDL_Event *event, const SDL_Rect *rect, void (*action)(void*,void*,void*), void *param1, void *param2, void *param3);
+int check_drag_event(const SDL_Event *event, const SDL_Rect *rect, void (*action)(int,int,void*), void *param);
 
 #endif

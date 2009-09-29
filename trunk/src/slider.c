@@ -29,6 +29,10 @@ OTHER DEALINGS IN THE SOFTWARE.
 #include "mouse.h"
 #include "bevel.h"
 
+#define BEV_SLIDER_BG 0
+#define BEV_SLIDER_HANDLE 16
+#define BEV_SLIDER_HANDLE_ACTIVE 32
+
 extern Mused mused;
 
 static int quant(int v, int g)
@@ -36,23 +40,13 @@ static int quant(int v, int g)
 	return v - v % (g);
 }
 
+
 static void modify_position(void *delta, void *_param, void *unused)
 {
 	SliderParam *param = _param;
 	*param->position = quant(*param->position + (int)delta, param->granularity);
 	if (*param->position < param->first) *param->position = param->first;
 	if (*param->position > param->last) *param->position = param->last;
-}
-
-
-static void drag_begin(void *event, void *_param, void *area)
-{
-	SliderParam *param = _param;
-	param->drag_begin_coordinate = param->orientation == SLIDER_HORIZONTAL ? ((SDL_Event*)event)->button.x : ((SDL_Event*)event)->button.y;
-	param->drag_begin_position = *param->position;
-	if (param->drag_begin_position > param->last - param->margin) param->drag_begin_position = param->last - param->margin;
-	if (param->drag_begin_position < param->first) param->drag_begin_position = param->first;
-	param->drag_area_size = param->orientation == SLIDER_HORIZONTAL ? ((SDL_Rect*)area)->w : ((SDL_Rect*)area)->h;
 }
 
 
@@ -65,6 +59,18 @@ static void drag_motion(int x, int y, void *_param)
 	*param->position = quant(param->drag_begin_position + delta * (param->last - param->first) / param->drag_area_size, param->granularity);
 	if (*param->position > param->last - param->margin) *param->position = param->last - param->margin;
 	if (*param->position < param->first) *param->position = param->first;
+}
+
+
+static void drag_begin(void *event, void *_param, void *area)
+{
+	set_motion_target(drag_motion, _param);
+	SliderParam *param = _param;
+	param->drag_begin_coordinate = param->orientation == SLIDER_HORIZONTAL ? ((SDL_Event*)event)->button.x : ((SDL_Event*)event)->button.y;
+	param->drag_begin_position = *param->position;
+	if (param->drag_begin_position > param->last - param->margin) param->drag_begin_position = param->last - param->margin;
+	if (param->drag_begin_position < param->first) param->drag_begin_position = param->first;
+	param->drag_area_size = param->orientation == SLIDER_HORIZONTAL ? ((SDL_Rect*)area)->w : ((SDL_Rect*)area)->h;
 }
 
 
@@ -97,7 +103,7 @@ void slider(const SDL_Rect *_area, const SDL_Event *event, void *_param)
 		if (bar_top + bar_size > area_size) bar_top = area_size - bar_size;
 	}
 	
-	bevel(_area, mused.slider_bevel);
+	bevel(_area, mused.slider_bevel, BEV_SLIDER_BG);
 	
 	{
 		SDL_Rect area = { _area->x, _area->y, _area->w, _area->h };
@@ -124,9 +130,9 @@ void slider(const SDL_Rect *_area, const SDL_Event *event, void *_param)
 			area.h = bar_size;
 		}
 		
-		check_event(event, &area, drag_begin, (void*)event, param, (void*)_area);
-		check_drag_event(event, &area, drag_motion, (void*)param);
-		bevel(&area, mused.slider_bevel);
+		int pressed = check_event(event, &area, drag_begin, (void*)event, param, (void*)_area);
+		pressed |= check_drag_event(event, &area, drag_motion, (void*)param);
+		bevel(&area, mused.slider_bevel, pressed ? BEV_SLIDER_HANDLE_ACTIVE : BEV_SLIDER_HANDLE);
 	}
 	
 	{

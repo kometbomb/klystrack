@@ -28,7 +28,7 @@ OTHER DEALINGS IN THE SOFTWARE.
 
 extern Mused mused;
 
-void bevel(const SDL_Rect *area, SDL_Surface *gfx)
+void bevel(const SDL_Rect *area, SDL_Surface *gfx, int offset)
 {
 	/* Center */
 	{
@@ -36,7 +36,7 @@ void bevel(const SDL_Rect *area, SDL_Surface *gfx)
 		{
 			for (int x = 4 ; x < area->w - 4 ; x += 8)
 			{
-				SDL_Rect src = { 4, 4, my_min(8, area->w - x), my_min(8, area->h - y) };
+				SDL_Rect src = { 4 + offset, 4, my_min(8, area->w - x), my_min(8, area->h - y) };
 				SDL_Rect dest = { x + area->x, y + area->y };
 				SDL_BlitSurface(gfx, &src, mused.console->surface, &dest);
 			}
@@ -48,13 +48,13 @@ void bevel(const SDL_Rect *area, SDL_Surface *gfx)
 		for (int y = 4 ; y < area->h - 4 ; y += 8)
 		{	
 			{
-				SDL_Rect src = { 0, 4, 4, my_min(8, area->h - y) };
+				SDL_Rect src = { offset, 4, 4, my_min(8, area->h - y) };
 				SDL_Rect dest = { area->x, y + area->y };
 				SDL_BlitSurface(gfx, &src, mused.console->surface, &dest);
 			}
 			
 			{
-				SDL_Rect src = { 12, 4, 4, my_min(8, area->h - y) };
+				SDL_Rect src = { 12 + offset, 4, 4, my_min(8, area->h - y) };
 				SDL_Rect dest = { area->x + area->w - 4, y + area->y };
 				SDL_BlitSurface(gfx, &src, mused.console->surface, &dest);
 			}
@@ -63,13 +63,13 @@ void bevel(const SDL_Rect *area, SDL_Surface *gfx)
 		for (int x = 4 ; x < area->w - 4 ; x += 8)
 		{	
 			{
-				SDL_Rect src = { 4, 0, my_min(8, area->w - x), 4 };
+				SDL_Rect src = { 4 + offset, 0, my_min(8, area->w - x), 4 };
 				SDL_Rect dest = { area->x + x, area->y };
 				SDL_BlitSurface(gfx, &src, mused.console->surface, &dest);
 			}
 			
 			{
-				SDL_Rect src = { 4, 12, my_min(8, area->w - x), 4 };
+				SDL_Rect src = { 4 + offset, 12, my_min(8, area->w - x), 4 };
 				SDL_Rect dest = { x + area->x, area->y + area->h - 4 };
 				SDL_BlitSurface(gfx, &src, mused.console->surface, &dest);
 			}
@@ -78,25 +78,25 @@ void bevel(const SDL_Rect *area, SDL_Surface *gfx)
 	
 	/* Corners */
 	{
-		SDL_Rect src = { 0, 0, 4, 4 };
+		SDL_Rect src = { offset, 0, 4, 4 };
 		SDL_Rect dest = { area->x, area->y };
 		SDL_BlitSurface(gfx, &src, mused.console->surface, &dest);
 	}
 	
 	{
-		SDL_Rect src = { 12, 0, 4, 4 };
+		SDL_Rect src = { 12 + offset, 0, 4, 4 };
 		SDL_Rect dest = { area->x + area->w - 4, area->y};
 		SDL_BlitSurface(gfx, &src, mused.console->surface, &dest);
 	}
 	
 	{
-		SDL_Rect src = { 12, 12, 4, 4 };
+		SDL_Rect src = { 12 + offset, 12, 4, 4 };
 		SDL_Rect dest = { area->x + area->w - 4, area->y + area->h - 4};
 		SDL_BlitSurface(gfx, &src, mused.console->surface, &dest);
 	}
 	
 	{
-		SDL_Rect src = { 0, 12, 4, 4 };
+		SDL_Rect src = { offset, 12, 4, 4 };
 		SDL_Rect dest = { area->x, area->y + area->h - 4};
 		SDL_BlitSurface(gfx, &src, mused.console->surface, &dest);
 	}
