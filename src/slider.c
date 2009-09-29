@@ -27,6 +27,7 @@ OTHER DEALINGS IN THE SOFTWARE.
 #include "slider.h"
 #include "mused.h"
 #include "mouse.h"
+#include "bevel.h"
 
 extern Mused mused;
 
@@ -47,10 +48,10 @@ static void modify_position(void *delta, void *_param, void *unused)
 static void drag_begin(void *event, void *_param, void *area)
 {
 	SliderParam *param = _param;
-	param->drag_begin_coordinate = ((SDL_Event*)event)->button.y;
+	param->drag_begin_coordinate = param->orientation == SLIDER_HORIZONTAL ? ((SDL_Event*)event)->button.x : ((SDL_Event*)event)->button.y;
 	param->drag_begin_position = *param->position;
 	if (param->drag_begin_position > param->last - param->margin) param->drag_begin_position = param->last - param->margin;
-	if (param->drag_begin_position < param->first + param->margin) param->drag_begin_position = param->first + param->margin;
+	if (param->drag_begin_position < param->first) param->drag_begin_position = param->first;
 	param->drag_area_size = param->orientation == SLIDER_HORIZONTAL ? ((SDL_Rect*)area)->w : ((SDL_Rect*)area)->h;
 }
 
@@ -63,7 +64,7 @@ static void drag_motion(int x, int y, void *_param)
 	int delta = (param->orientation == SLIDER_HORIZONTAL ? x : y) - param->drag_begin_coordinate;
 	*param->position = quant(param->drag_begin_position + delta * (param->last - param->first) / param->drag_area_size, param->granularity);
 	if (*param->position > param->last - param->margin) *param->position = param->last - param->margin;
-	if (*param->position < param->first + param->margin) *param->position = param->first + param->margin;
+	if (*param->position < param->first) *param->position = param->first;
 }
 
 
@@ -96,16 +97,17 @@ void slider(const SDL_Rect *_area, const SDL_Event *event, void *_param)
 		if (bar_top + bar_size > area_size) bar_top = area_size - bar_size;
 	}
 	
+	bevel(_area, mused.slider_bevel);
+	
 	{
 		SDL_Rect area = { _area->x, _area->y, _area->w, _area->h };
 		
 		if (param->orientation == SLIDER_HORIZONTAL)
-			area.w += bar_top;
+			area.w = bar_top;
 		else
-			area.h += bar_top;
+			area.h = bar_top;
 		
 		check_event(event, &area, modify_position, (void*)-(param->visible_last - param->visible_first), param, 0);
-		SDL_FillRect(mused.console->surface, &area, 0);
 	}
 	
 	{
@@ -124,7 +126,7 @@ void slider(const SDL_Rect *_area, const SDL_Event *event, void *_param)
 		
 		check_event(event, &area, drag_begin, (void*)event, param, (void*)_area);
 		check_drag_event(event, &area, drag_motion, (void*)param);
-		SDL_FillRect(mused.console->surface, &area, 0xffffffff);
+		bevel(&area, mused.slider_bevel);
 	}
 	
 	{
@@ -142,18 +144,18 @@ void slider(const SDL_Rect *_area, const SDL_Event *event, void *_param)
 		}
 		
 		check_event(event, &area, modify_position, (void*)(param->visible_last - param->visible_first), param, 0);
-		SDL_FillRect(mused.console->surface, &area, 0);
 	}
 }
 
 
-void slider_set_params(SliderParam *param, int first, int last, int first_visible, int last_visible, int *position, int granularity, int margin, int orientation)
+void slider_set_params(SliderParam *param, int first, int last, int first_visible, int last_visible, int *position, int granularity, int orientation)
 {
 	param->first = first;
 	param->last = last;
 	param->visible_first = first_visible;
 	param->visible_last = last_visible;
-	param->margin = margin;
+	param->margin = (last_visible - first_visible);
+	
 	param->orientation = orientation;
 	
 	param->position = position;

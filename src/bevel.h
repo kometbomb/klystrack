@@ -1,5 +1,5 @@
-#ifndef SLIDER_H
-#define SLIDER_H
+#ifndef BEVEL_H
+#define BEVEL_H
 
 /*
 Copyright (c) 2009 Tero Lindeman (kometbomb)
@@ -28,32 +28,6 @@ OTHER DEALINGS IN THE SOFTWARE.
 
 #include "SDL.h"
 
-typedef struct
-{
-	// Total elements (bounds) of target
-	int first, last;
-	// First and last visible elements
-	int visible_first, visible_last;
-	// Ye int that shall be modified by the slider
-	int *position;
-	// Snap to this resolution
-	int granularity;
-	// Fixes issues with combined curson position + scroll position
-	// I don't like this either -- but it works (in this situation)
-	int margin;
-	// Direction
-	int orientation;
-	
-	/* internal */
-	int drag_begin_coordinate, drag_begin_position, drag_area_size;	
-} SliderParam;
-
-enum
-{
-	SLIDER_VERTICAL, SLIDER_HORIZONTAL
-};
-
-void slider(const SDL_Rect *area, const SDL_Event *event, void *param);
-void slider_set_params(SliderParam *param, int first, int last, int first_visible, int last_visible, int *position, int granularity, int orientation);
+void bevel(const SDL_Rect *area, SDL_Surface *gfx);
 
 #endif

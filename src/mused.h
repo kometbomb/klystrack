@@ -55,6 +55,7 @@ typedef struct
 		current_patternstep, current_pattern, current_patternx, 
 		current_sequencepos, sequenceview_steps, single_pattern_edit, 
 		prev_mode, current_sequenceparam, instrument_list_position,
+		pattern_position, sequence_position,
 		edit_reverb_param;
 	int ghost_pattern[MUS_CHANNELS];
 	int current_sequencetrack;
@@ -70,6 +71,7 @@ typedef struct
 	int stat_pattern_position[MUS_CHANNELS];
 	MusPattern *stat_pattern[MUS_CHANNELS];
 	int stat_pattern_number[MUS_CHANNELS];
+	SDL_Surface *slider_bevel;
 } Mused;
 
 #define NUM_STEPS 256
@@ -80,7 +82,7 @@ typedef struct
 void change_mode(int newmode);
 void clear_pattern(MusPattern *pat);
 void clear_pattern_range(MusPattern *pat, int first, int last);
-void init(MusInstrument *instrument, MusPattern *pattern, MusSeqPattern sequence[MUS_CHANNELS][NUM_SEQUENCES]);
+void init(MusInstrument *instrument, MusPattern *pattern, MusSeqPattern sequence[MUS_CHANNELS][NUM_SEQUENCES], SDL_Surface *screen);
 void new_song();
 void default_instrument(MusInstrument *instrument);
 
