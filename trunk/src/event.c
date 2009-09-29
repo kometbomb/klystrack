@@ -1152,13 +1152,13 @@ void reverb_event(SDL_Event *e)
 		
 			case SDLK_RIGHT:
 			{
-				reverb_add_param(+1);
+				reverb_add_param(e->key.keysym.mod & KMOD_SHIFT ? +10 : +1);
 			}
 			break;
 			
 			case SDLK_LEFT:
 			{
-				reverb_add_param(-1);
+				reverb_add_param(e->key.keysym.mod & KMOD_SHIFT ? -10 : -1);
 			}
 			break;
 		
