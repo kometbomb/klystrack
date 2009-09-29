@@ -606,7 +606,7 @@ void reverb_view(const SDL_Rect *dest, const SDL_Event *event, void *param)
 		console_set_color(mused.console,mused.edit_reverb_param == p ? 0xff0000ff:0xffffffff,CON_CHARACTER);
 		
 		if (mused.song.rvbtap[i].gain <= CYDRVB_LOW_LIMIT)
-			console_write(mused.console, "-INF dB");
+			console_write(mused.console, "- INF dB");
 		else
 			console_write_args(mused.console, "%+5.1f dB", (double)mused.song.rvbtap[i].gain * 0.1);
 		
