@@ -77,7 +77,8 @@ void check_drag_event(const SDL_Event *event, const SDL_Rect *rect, void (*actio
 					}
 				}
 				
-				motion_target(event->motion.x, event->motion.y, motion_param);
+				if (motion_target)
+					motion_target(event->motion.x, event->motion.y, motion_param);
 			}
 		}
 		break;
