@@ -34,7 +34,7 @@ void select_sequence_position(void *channel, void *position, void* unused)
 {
 	if ((int)channel != -1)
 		mused.current_sequencetrack = (int)channel;
-		
+	
 	if ((int)position < mused.song.song_length)
 		mused.current_sequencepos = (int)position;
 }

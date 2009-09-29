@@ -51,6 +51,21 @@ void editparambox(int v)
 }
 
 
+static void move_position(int *cursor, int *scroll, SliderParam *param, int d, int top)
+{
+	if (*cursor + d < top)
+		*cursor += d;
+	
+	if (*cursor < 0) *cursor = 0;
+	
+	if (param->visible_first > *cursor)
+		*scroll = *cursor;
+		
+	if (param->visible_last < *cursor)
+		*scroll = *cursor - (param->visible_last - param->visible_first);
+}
+
+
 int find_note(int sym, int oct)
 {
 	static const int keys[] = 
@@ -460,6 +475,7 @@ void add_sequence(int position, int pattern, int offset)
 	qsort(mused.song.sequence[mused.current_sequencetrack], mused.song.num_sequences[mused.current_sequencetrack], sizeof(mused.song.sequence[mused.current_sequencetrack][0]), seqsort);
 }
 
+
 void del_sequence(int first,int last,int track)
 {
 	if (mused.song.num_sequences[track] == 0) return;
@@ -548,9 +564,7 @@ void sequence_event(SDL_Event *e)
 				}
 				else
 				{
-					if (mused.song.song_length > mused.current_sequencepos + steps)
-						mused.current_sequencepos += steps;
-					
+					move_position(&mused.current_sequencepos, &mused.sequence_position, &mused.sequence_slider_param, steps, mused.song.song_length);
 				}
 				
 				if (((e->key.keysym.mod & KMOD_SHIFT) && !(e->key.keysym.mod & KMOD_CTRL)) )
@@ -591,9 +605,7 @@ void sequence_event(SDL_Event *e)
 				}
 				else
 				{
-					mused.current_sequencepos -= steps;
-					
-					if (mused.current_sequencepos < 0) mused.current_sequencepos = 0;
+					move_position(&mused.current_sequencepos, &mused.sequence_position, &mused.sequence_slider_param, -steps, mused.song.song_length);
 				}
 				
 				if (((e->key.keysym.mod & KMOD_SHIFT) && !(e->key.keysym.mod & KMOD_CTRL)) )
@@ -714,9 +726,8 @@ void pattern_event(SDL_Event *e)
 			{
 				int steps = 1;
 				if (e->key.keysym.sym == SDLK_PAGEDOWN) steps *= 16;
-				mused.current_patternstep += steps;
-				if (mused.current_patternstep >= mused.song.pattern[mused.current_pattern].num_steps) 
-					mused.current_patternstep = mused.song.pattern[mused.current_pattern].num_steps-1;
+				
+				move_position(&mused.current_patternstep, &mused.pattern_position, &mused.pattern_slider_param, +steps, mused.song.pattern[mused.current_pattern].num_steps);
 				
 				if (e->key.keysym.mod & KMOD_SHIFT)
 				{
@@ -730,9 +741,8 @@ void pattern_event(SDL_Event *e)
 			{
 				int steps = 1;
 				if (e->key.keysym.sym == SDLK_PAGEUP) steps *= 16;
-				mused.current_patternstep -= steps;
-				if (mused.current_patternstep < 0) 
-					mused.current_patternstep = 0;
+				
+				move_position(&mused.current_patternstep, &mused.pattern_position, &mused.pattern_slider_param, -steps, mused.song.pattern[mused.current_pattern].num_steps);
 			
 				if (e->key.keysym.mod & KMOD_SHIFT)
 				{
@@ -763,7 +773,7 @@ void pattern_event(SDL_Event *e)
 			{
 				if (e->key.keysym.sym == SDLK_BACKSPACE)
 				{
-					if (mused.current_patternstep > 0) --mused.current_patternstep;
+					if (mused.current_patternstep > 0) move_position(&mused.current_patternstep, &mused.pattern_position, &mused.pattern_slider_param, -1, mused.song.pattern[mused.current_pattern].num_steps);
 					else break;
 				}
 				
@@ -871,15 +881,13 @@ void pattern_event(SDL_Event *e)
 					{
 						mused.song.pattern[mused.current_pattern].step[mused.current_patternstep].note = MUS_NOTE_NONE;				
 							
-						++mused.current_patternstep;
-						if (mused.current_patternstep >= mused.song.pattern[mused.current_pattern].num_steps) mused.current_patternstep = 0;
+						move_position(&mused.current_patternstep, &mused.pattern_position, &mused.pattern_slider_param, +1, mused.song.pattern[mused.current_pattern].num_steps);
 					}
 					else if (e->key.keysym.sym == SDLK_TAB)
 					{
 						mused.song.pattern[mused.current_pattern].step[mused.current_patternstep].note = MUS_NOTE_RELEASE;
 							
-						++mused.current_patternstep;
-						if (mused.current_patternstep >= mused.song.pattern[mused.current_pattern].num_steps) mused.current_patternstep = 0;
+						move_position(&mused.current_patternstep, &mused.pattern_position, &mused.pattern_slider_param, +1, mused.song.pattern[mused.current_pattern].num_steps);
 					}
 					else
 					{
@@ -891,8 +899,7 @@ void pattern_event(SDL_Event *e)
 							mused.song.pattern[mused.current_pattern].step[mused.current_patternstep].note = note;				
 							mused.song.pattern[mused.current_pattern].step[mused.current_patternstep].instrument = mused.current_instrument;
 							
-							++mused.current_patternstep;
-							if (mused.current_patternstep >= mused.song.pattern[mused.current_pattern].num_steps) mused.current_patternstep = 0;
+							move_position(&mused.current_patternstep, &mused.pattern_position, &mused.pattern_slider_param, +1, mused.song.pattern[mused.current_pattern].num_steps);
 						}
 					}
 				}
@@ -902,8 +909,7 @@ void pattern_event(SDL_Event *e)
 					{
 						mused.song.pattern[mused.current_pattern].step[mused.current_patternstep].instrument = MUS_NOTE_NO_INSTRUMENT;				
 							
-						++mused.current_patternstep;
-						if (mused.current_patternstep >= mused.song.pattern[mused.current_pattern].num_steps) mused.current_patternstep = 0;
+						move_position(&mused.current_patternstep, &mused.pattern_position, &mused.pattern_slider_param, +1, mused.song.pattern[mused.current_pattern].num_steps);
 					}
 					else if (gethex(e->key.keysym.sym) != -1)
 					{
@@ -929,8 +935,7 @@ void pattern_event(SDL_Event *e)
 							mused.current_instrument = inst % mused.song.num_instruments;
 						}
 					
-						++mused.current_patternstep;
-						if (mused.current_patternstep >= mused.song.pattern[mused.current_pattern].num_steps) mused.current_patternstep = 0;
+						move_position(&mused.current_patternstep, &mused.pattern_position, &mused.pattern_slider_param, +1, mused.song.pattern[mused.current_pattern].num_steps);
 					}
 				}
 				else if (mused.current_patternx >= PED_COMMAND1 && mused.current_patternx <= PED_COMMAND4)
@@ -960,8 +965,7 @@ void pattern_event(SDL_Event *e)
 						
 						mused.song.pattern[mused.current_pattern].step[mused.current_patternstep].command = inst; 
 						
-						++mused.current_patternstep;
-						if (mused.current_patternstep >= mused.song.pattern[mused.current_pattern].num_steps) mused.current_patternstep = 0;
+						move_position(&mused.current_patternstep, &mused.pattern_position, &mused.pattern_slider_param, +1, mused.song.pattern[mused.current_pattern].num_steps);
 					}
 				}
 				else if (mused.current_patternx >= PED_CTRL && mused.current_patternx < PED_COMMAND1)
@@ -970,15 +974,13 @@ void pattern_event(SDL_Event *e)
 					{
 						mused.song.pattern[mused.current_pattern].step[mused.current_patternstep].ctrl &= ~(MUS_CTRL_BIT << (mused.current_patternx - PED_CTRL));				
 							
-						++mused.current_patternstep;
-						if (mused.current_patternstep >= mused.song.pattern[mused.current_pattern].num_steps) mused.current_patternstep = 0;
+						move_position(&mused.current_patternstep, &mused.pattern_position, &mused.pattern_slider_param, +1, mused.song.pattern[mused.current_pattern].num_steps);
 					}
 					if (e->key.keysym.sym == SDLK_1)
 					{
 						mused.song.pattern[mused.current_pattern].step[mused.current_patternstep].ctrl |= (MUS_CTRL_BIT << (mused.current_patternx - PED_CTRL));				
 							
-						++mused.current_patternstep;
-						if (mused.current_patternstep >= mused.song.pattern[mused.current_pattern].num_steps) mused.current_patternstep = 0;
+						move_position(&mused.current_patternstep, &mused.pattern_position, &mused.pattern_slider_param, +1, mused.song.pattern[mused.current_pattern].num_steps);
 					}
 				}
 			}

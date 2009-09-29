@@ -25,6 +25,7 @@ OTHER DEALINGS IN THE SOFTWARE.
 
 #include "mused.h"
 #include "gfx/font.h"
+#include "gfx/gfx.h"
 #include "util/bundle.h"
 
 extern Mused mused;
@@ -147,8 +148,11 @@ void default_instrument(MusInstrument *inst)
 }
 
 
-void init(MusInstrument *instrument, MusPattern *pattern, MusSeqPattern sequence[MUS_CHANNELS][NUM_SEQUENCES])
+void init(MusInstrument *instrument, MusPattern *pattern, MusSeqPattern sequence[MUS_CHANNELS][NUM_SEQUENCES], SDL_Surface *screen)
 {
+	memset(&mused, 0, sizeof(mused));
+	
+	mused.console = console_create(screen);
 	mused.done = 0;
 	mused.octave = 4;
 	mused.current_instrument = 0;
@@ -184,5 +188,7 @@ void init(MusInstrument *instrument, MusPattern *pattern, MusSeqPattern sequence
 	}
 	
 	new_song();
+	
+	mused.slider_bevel = gfx_load_surface("bevel.bmp", 0);
 }
 

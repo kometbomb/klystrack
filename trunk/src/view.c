@@ -76,9 +76,7 @@ void sequence_view(const SDL_Rect *dest, const SDL_Event *event, void *param)
 	console_set_color(mused.console,0,CON_BACKGROUND);
 	console_clear(mused.console);
 	
-	int start = (mused.current_sequencepos / mused.sequenceview_steps - (int)dest->h/mused.console->font.h/2) * mused.sequenceview_steps;
-	
-	if (start < 0 ) start = 0;
+	int start = mused.sequence_position;
 	
 	int p[MUS_CHANNELS] ={ 0 };
 	
@@ -163,7 +161,8 @@ void sequence_view(const SDL_Rect *dest, const SDL_Event *event, void *param)
 		
 		console_write(mused.console,"\n");
 		
-		slider_set_params(&mused.sequence_slider_param, 0, mused.song.song_length, start, i, &mused.current_sequencepos, mused.sequenceview_steps, (int)dest->h/mused.console->font.h/2 * mused.sequenceview_steps, SLIDER_VERTICAL);
+		if (i < mused.song.song_length)
+			slider_set_params(&mused.sequence_slider_param, 0, mused.song.song_length - mused.sequenceview_steps, start, i, &mused.sequence_position, mused.sequenceview_steps, SLIDER_VERTICAL);
 	}
 }
 
@@ -173,10 +172,7 @@ void pattern_view_inner(const SDL_Rect *dest, const SDL_Event *event, int curren
 	console_set_clip(mused.console, dest);
 	console_reset_cursor(mused.console);
 			
-	int start = mused.current_patternstep - (int)dest->h/mused.console->font.h/2;
-	
-	if (start > (int)mused.song.pattern[current_pattern].num_steps - (int)dest->h/mused.console->font.h) start = (int)mused.song.pattern[current_pattern].num_steps - (int)dest->h/mused.console->font.h;
-	if (start < 0 ) start = 0;
+	int start = mused.pattern_position;
 	
 	console_set_color(mused.console,0xff808080,CON_CHARACTER);
 	
@@ -263,7 +259,8 @@ void pattern_view_inner(const SDL_Rect *dest, const SDL_Event *event, int curren
 		
 		console_write(mused.console,"\n");
 		
-		slider_set_params(&mused.pattern_slider_param, 0, mused.song.pattern[current_pattern].num_steps - 1, start, i, &mused.current_patternstep, 1, (int)dest->h/mused.console->font.h/2, SLIDER_VERTICAL);
+		if (current_pattern == mused.current_pattern)
+			slider_set_params(&mused.pattern_slider_param, 0, mused.song.pattern[current_pattern].num_steps - 1, start, i, &mused.pattern_position, 1, SLIDER_VERTICAL);
 	}
 }
 
@@ -463,7 +460,7 @@ void program_view(const SDL_Rect *dest, const SDL_Event *event, void *param)
 		check_event(event, console_write_args(mused.console, "%c%02x %s%c\n", (inst->program[i] & 0x8000) ? '(' : ' ', i, box, (inst->program[i] & 0x8000) ? ')' : ' '),
 			select_instrument_param, (void*)(P_PARAMS + i), 0, 0);
 			
-		slider_set_params(&mused.program_slider_param, P_PARAMS, MUS_PROG_LEN - 1 + P_PARAMS, start + P_PARAMS, i + P_PARAMS, &mused.selected_param, 1, rows / 2, SLIDER_VERTICAL);
+		slider_set_params(&mused.program_slider_param, P_PARAMS, MUS_PROG_LEN - 1 + P_PARAMS, start + P_PARAMS, i + P_PARAMS, &mused.selected_param, 1, SLIDER_VERTICAL);
 	}
 }
 
@@ -558,14 +555,12 @@ void instrument_list(const SDL_Rect *dest, const SDL_Event *event, void *param)
 	console_clear(mused.console);
 	int y = mused.console->font.h;
 	
-	int rows = dest->h / mused.console->font.h - 1;
-	
 	separator("----instruments----");
 	
-	int start = mused.instrument_list_position - rows/2;
+	int start = mused.instrument_list_position;
 	
-	if (start > NUM_INSTRUMENTS - rows ) start = NUM_INSTRUMENTS - rows;
-	if (start < 0 ) start = 0;
+	/*if (start > NUM_INSTRUMENTS - rows ) start = NUM_INSTRUMENTS - rows;
+	if (start < 0 ) start = 0;*/
 	
 	for (int i = start ; i < NUM_INSTRUMENTS && y < dest->h ; ++i, y += mused.console->font.h)
 	{
@@ -573,7 +568,7 @@ void instrument_list(const SDL_Rect *dest, const SDL_Event *event, void *param)
 		console_set_color(mused.console, 0xffffffff, CON_CHARACTER);
 		check_event(event, console_write_args(mused.console, "%02x %-32s\n", i + 1, mused.song.instrument[i].name), select_instrument, (void*)i, 0, 0);
 		
-		slider_set_params(&mused.instrument_list_slider_param, 0, NUM_INSTRUMENTS, start, i, &mused.instrument_list_position, 1, rows / 2, SLIDER_VERTICAL);
+		slider_set_params(&mused.instrument_list_slider_param, 0, NUM_INSTRUMENTS - 1, start, i, &mused.instrument_list_position, 1, SLIDER_VERTICAL);
 	}
 }
 

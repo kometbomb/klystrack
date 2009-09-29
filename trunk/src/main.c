@@ -144,13 +144,11 @@ int main(int argc, char **argv)
 	SDL_EnableKeyRepeat(SDL_DEFAULT_REPEAT_DELAY, SDL_DEFAULT_REPEAT_INTERVAL);
 	SDL_EnableUNICODE(1);
 	
-	mused.console = console_create(gfx_domain_get_surface(domain));
-	
 	MusInstrument instrument[NUM_INSTRUMENTS];
 	MusPattern pattern[NUM_PATTERNS];
 	MusSeqPattern sequence[MUS_CHANNELS][NUM_SEQUENCES];
 	
-	init(instrument, pattern, sequence);
+	init(instrument, pattern, sequence, gfx_domain_get_surface(domain));
 	
 	Mix_OpenAudio(44100, AUDIO_S16SYS, 1, 2048);
 	Mix_AllocateChannels(1);
