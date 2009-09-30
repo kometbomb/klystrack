@@ -83,6 +83,7 @@ void change_mode(int newmode);
 void clear_pattern(MusPattern *pat);
 void clear_pattern_range(MusPattern *pat, int first, int last);
 void init(MusInstrument *instrument, MusPattern *pattern, MusSeqPattern sequence[MUS_CHANNELS][NUM_SEQUENCES], SDL_Surface *screen);
+void deinit();
 void new_song();
 void default_instrument(MusInstrument *instrument);
 

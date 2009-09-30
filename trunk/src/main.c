@@ -278,5 +278,7 @@ int main(int argc, char **argv)
 	
 	gfx_domain_free(domain);
 	
+	deinit();
+	
 	return 0;
 }

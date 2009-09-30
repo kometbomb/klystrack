@@ -469,7 +469,7 @@ void program_view(const SDL_Rect *dest, const SDL_Event *event, void *param)
 static void inst_flags(const SDL_Event *e, int p, const char *label, Uint32 *flags, Uint32 mask)
 {
 	console_set_color(mused.console,mused.selected_param == p?0xff0000ff:0xffffffff,CON_CHARACTER);
-	checkbox(e, label, flags, mask);
+	if (checkbox(e, label, flags, mask)) mused.selected_param = p;
 }
 
 
@@ -567,7 +567,7 @@ void instrument_list(const SDL_Rect *dest, const SDL_Event *event, void *param)
 	{
 		console_set_color(mused.console, i == mused.current_instrument ? 0xffff0000 : 0x0, CON_BACKGROUND);
 		console_set_color(mused.console, 0xffffffff, CON_CHARACTER);
-		check_event(event, console_write_args(mused.console, "%02x %-32s\n", i + 1, mused.song.instrument[i].name), select_instrument, (void*)i, 0, 0);
+		check_event(event, console_write_args(mused.console, "%02x %-16s\n", i + 1, mused.song.instrument[i].name), select_instrument, (void*)i, 0, 0);
 		
 		slider_set_params(&mused.instrument_list_slider_param, 0, NUM_INSTRUMENTS - 1, start, i, &mused.instrument_list_position, 1, SLIDER_VERTICAL);
 	}
