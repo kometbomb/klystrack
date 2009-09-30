@@ -1,5 +1,5 @@
-#ifndef BEVEL_H
-#define BEVEL_H
+#ifndef DIALOG_H
+#define DIALOG_H
 
 /*
 Copyright (c) 2009 Tero Lindeman (kometbomb)
@@ -28,15 +28,7 @@ OTHER DEALINGS IN THE SOFTWARE.
 
 #include "SDL.h"
 
-#define BEV_SLIDER_BG 0
-#define BEV_SLIDER_HANDLE 16
-#define BEV_SLIDER_HANDLE_ACTIVE 32
-#define DECAL_UPARROW 0 
-#define DECAL_DOWNARROW 16
-#define DECAL_GRAB_VERT 32
-#define DECAL_GRAB_HORIZ 64
-
-void bevel(const SDL_Rect *area, SDL_Surface *gfx, int offset);
-void button(const SDL_Rect *area, SDL_Surface *gfx, int offset, int decal);
+int checkbox(const SDL_Event *event, const char* label, Uint32 *flags, Uint32 mask);
+int button_event(const SDL_Event *event, const SDL_Rect *area, SDL_Surface *gfx, int offset, int offset_pressed, int decal, void (*action)(void*,void*,void*), void *param1, void *param2, void *param3);
 
 #endif
