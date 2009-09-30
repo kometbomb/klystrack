@@ -38,7 +38,7 @@ OTHER DEALINGS IN THE SOFTWARE.
 
 void bevel(const SDL_Rect *area, SDL_Surface *gfx, int offset);
 void button(const SDL_Rect *area, SDL_Surface *gfx, int offset, int decal);
-void button_event(const SDL_Event *event, const SDL_Rect *area, SDL_Surface *gfx, int offset, int offset_pressed, int decal, void (*action)(void*,void*,void*), void *param1, void *param2, void *param3);
-void checkbox(const SDL_Event *event, const char* label, Uint32 *flags, Uint32 mask);
+int button_event(const SDL_Event *event, const SDL_Rect *area, SDL_Surface *gfx, int offset, int offset_pressed, int decal, void (*action)(void*,void*,void*), void *param1, void *param2, void *param3);
+int checkbox(const SDL_Event *event, const char* label, Uint32 *flags, Uint32 mask);
 
 #endif

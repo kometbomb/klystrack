@@ -124,13 +124,15 @@ static void delegate(void *p1, void *p2, void *p3)
 }
 
 
-void button_event(const SDL_Event *event, const SDL_Rect *area, SDL_Surface *gfx, int offset, int offset_pressed, int decal, void (*action)(void*,void*,void*), void *param1, void *param2, void *param3)
+int button_event(const SDL_Event *event, const SDL_Rect *area, SDL_Surface *gfx, int offset, int offset_pressed, int decal, void (*action)(void*,void*,void*), void *param1, void *param2, void *param3)
 {
 	Uint32 mask = (Uint32)param1 ^ (Uint32)param2;
 	void *p[3] = { param1, param2, param3 };
 	int pressed = check_event(event, area, delegate, action, p, (void*)mask);
 	pressed |= check_drag_event(event, area, NULL, (void*)mask);
 	button(area, mused.slider_bevel, pressed ? offset_pressed : offset, decal);
+	
+	return pressed;
 }
 
 
@@ -140,10 +142,12 @@ static void flip(void *bits, void *mask, void *unused)
 }
 
 
-void checkbox(const SDL_Event *event, const char* label, Uint32 *flags, Uint32 mask)
+int checkbox(const SDL_Event *event, const char* label, Uint32 *flags, Uint32 mask)
 {
 	SDL_Rect area = { (mused.console->font.w * (mused.console->cursor & 0xff)), mused.console->font.h * (mused.console->cursor >> 8) , 8, 8 };
-	button_event(event, &area, mused.slider_bevel, BEV_SLIDER_HANDLE, BEV_SLIDER_HANDLE_ACTIVE, *flags & mask ? DECAL_GRAB_VERT : -1, flip, flags, (void*)mask, 0);
+	int pressed = button_event(event, &area, mused.slider_bevel, BEV_SLIDER_HANDLE, BEV_SLIDER_HANDLE_ACTIVE, *flags & mask ? DECAL_GRAB_VERT : -1, flip, flags, (void*)mask, 0);
 	mused.console->cursor += 0x01;
-	check_event(event, console_write(mused.console, label), flip, flags, (void*)mask, 0);
+	pressed |= check_event(event, console_write(mused.console, label), flip, flags, (void*)mask, 0);
+	
+	return pressed;
 }
