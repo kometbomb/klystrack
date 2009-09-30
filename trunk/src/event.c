@@ -85,7 +85,7 @@ int find_note(int sym, int oct)
 }
 
 
-static void instrument_add_param(int a)
+void instrument_add_param(int a)
 {
 	MusInstrument *i = &mused.song.instrument[mused.current_instrument];
 

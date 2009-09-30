@@ -29,6 +29,7 @@ OTHER DEALINGS IN THE SOFTWARE.
 #include "SDL.h"
 
 int checkbox(const SDL_Event *event, const char* label, Uint32 *flags, Uint32 mask);
+int spinner(const SDL_Event *event, int param);
 int button_event(const SDL_Event *event, const SDL_Rect *area, SDL_Surface *gfx, int offset, int offset_pressed, int decal, void (*action)(void*,void*,void*), void *param1, void *param2, void *param3);
 
 #endif

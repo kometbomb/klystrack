@@ -51,7 +51,9 @@ int checkbox(const SDL_Event *event, const char* label, Uint32 *flags, Uint32 ma
 static void delegate(void *p1, void *p2, void *p3)
 {
 	set_motion_target(NULL, p3);
-	((void(*)(void*,void*,void*))p1)(((void **)p2)[0], ((void **)p2)[1], ((void **)p2)[2]);
+	
+	if (p1)
+		((void(*)(void*,void*,void*))p1)(((void **)p2)[0], ((void **)p2)[1], ((void **)p2)[2]);
 }
 
 
@@ -64,4 +66,23 @@ int button_event(const SDL_Event *event, const SDL_Rect *area, SDL_Surface *gfx,
 	button(area, mused.slider_bevel, pressed ? offset_pressed : offset, decal);
 	
 	return pressed;
+}
+
+
+int spinner(const SDL_Event *event, int param)
+{
+	int plus, minus;
+	{
+		SDL_Rect area = { (mused.console->font.w * (mused.console->cursor & 0xff)), mused.console->font.h * (mused.console->cursor >> 8) , 8, 8 };
+		plus = button_event(event, &area, mused.slider_bevel, BEV_SLIDER_HANDLE, BEV_SLIDER_HANDLE_ACTIVE, -1, NULL, (void*)(0x80000000 | param), 0, NULL);
+		mused.console->cursor += 0x01;
+	}
+	
+	{
+		SDL_Rect area = { (mused.console->font.w * (mused.console->cursor & 0xff)), mused.console->font.h * (mused.console->cursor >> 8) , 8, 8 };
+		minus = button_event(event, &area, mused.slider_bevel, BEV_SLIDER_HANDLE, BEV_SLIDER_HANDLE_ACTIVE, -1, NULL, (void*)(0x81000000 | param), 0, NULL);
+		mused.console->cursor += 0x01;
+	}
+	
+	return plus ? +1 : (minus ? -1 : 0);
 }
