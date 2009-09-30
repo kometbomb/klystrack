@@ -34,7 +34,10 @@ OTHER DEALINGS IN THE SOFTWARE.
 #define DECAL_UPARROW 0 
 #define DECAL_DOWNARROW 16
 #define DECAL_GRAB_VERT 32
-#define DECAL_GRAB_HORIZ 64
+#define DECAL_GRAB_HORIZ 48
+#define DECAL_TICK 64
+#define DECAL_PLUS 80
+#define DECAL_MINUS 96
 
 void bevel(const SDL_Rect *area, SDL_Surface *gfx, int offset);
 void button(const SDL_Rect *area, SDL_Surface *gfx, int offset, int decal);

@@ -40,7 +40,7 @@ static void flip(void *bits, void *mask, void *unused)
 int checkbox(const SDL_Event *event, const char* label, Uint32 *flags, Uint32 mask)
 {
 	SDL_Rect area = { (mused.console->font.w * (mused.console->cursor & 0xff)), mused.console->font.h * (mused.console->cursor >> 8) , 8, 8 };
-	int pressed = button_event(event, &area, mused.slider_bevel, BEV_SLIDER_HANDLE, BEV_SLIDER_HANDLE_ACTIVE, *flags & mask ? DECAL_GRAB_VERT : -1, flip, flags, (void*)mask, 0);
+	int pressed = button_event(event, &area, mused.slider_bevel, BEV_SLIDER_HANDLE, BEV_SLIDER_HANDLE_ACTIVE, (*flags & mask) ? DECAL_TICK : -1, flip, flags, (void*)mask, 0);
 	mused.console->cursor += 0x01;
 	pressed |= check_event(event, console_write(mused.console, label), flip, flags, (void*)mask, 0);
 	
@@ -62,7 +62,7 @@ int button_event(const SDL_Event *event, const SDL_Rect *area, SDL_Surface *gfx,
 	Uint32 mask = (Uint32)param1 ^ (Uint32)param2;
 	void *p[3] = { param1, param2, param3 };
 	int pressed = check_event(event, area, delegate, action, p, (void*)mask);
-	pressed |= check_drag_event(event, area, NULL, (void*)mask);
+	pressed |= check_drag_event(event, area, NULL, (void*)mask) << 1;
 	button(area, mused.slider_bevel, pressed ? offset_pressed : offset, decal);
 	
 	return pressed;
@@ -74,13 +74,13 @@ int spinner(const SDL_Event *event, int param)
 	int plus, minus;
 	{
 		SDL_Rect area = { (mused.console->font.w * (mused.console->cursor & 0xff)), mused.console->font.h * (mused.console->cursor >> 8) , 8, 8 };
-		plus = button_event(event, &area, mused.slider_bevel, BEV_SLIDER_HANDLE, BEV_SLIDER_HANDLE_ACTIVE, -1, NULL, (void*)(0x80000000 | param), 0, NULL);
+		minus = button_event(event, &area, mused.slider_bevel, BEV_SLIDER_HANDLE, BEV_SLIDER_HANDLE_ACTIVE, DECAL_MINUS, NULL, (void*)(0x80000000 | param), 0, NULL) & 1;
 		mused.console->cursor += 0x01;
 	}
 	
 	{
 		SDL_Rect area = { (mused.console->font.w * (mused.console->cursor & 0xff)), mused.console->font.h * (mused.console->cursor >> 8) , 8, 8 };
-		minus = button_event(event, &area, mused.slider_bevel, BEV_SLIDER_HANDLE, BEV_SLIDER_HANDLE_ACTIVE, -1, NULL, (void*)(0x81000000 | param), 0, NULL);
+		plus = button_event(event, &area, mused.slider_bevel, BEV_SLIDER_HANDLE, BEV_SLIDER_HANDLE_ACTIVE, DECAL_PLUS, NULL, (void*)(0x81000000 | param), 0, NULL) & 1;
 		mused.console->cursor += 0x01;
 	}
 	
