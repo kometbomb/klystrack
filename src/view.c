@@ -601,7 +601,7 @@ void reverb_view(const SDL_Rect *dest, const SDL_Event *event, void *param)
 	
 	console_set_color(mused.console, mused.edit_reverb_param == R_ENABLE ? 0xff0000ff:0xffffffff,CON_CHARACTER);
 	
-	if (checkbox(event, "Enabled", &mused.song.flags, MUS_ENABLE_REVERB)) mused.edit_reverb_param = R_ENABLE;
+	if (checkbox(event, "Enabled\n", &mused.song.flags, MUS_ENABLE_REVERB)) mused.edit_reverb_param = R_ENABLE;
 	
 	// We need to mirror the reverb flag to the corresponding Cyd flag
 	

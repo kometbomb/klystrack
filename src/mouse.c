@@ -85,7 +85,7 @@ int check_drag_event(const SDL_Event *event, const SDL_Rect *rect, void (*action
 					if ((x >= rect->x) && (y >= rect->y) 
 						&& (x < rect->x + rect->w) && (y < rect->y + rect->h))
 					{
-						set_motion_target(action, motion_param);
+						set_motion_target(action, param);
 					}
 				}
 				
