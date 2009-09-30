@@ -133,7 +133,7 @@ static const struct { int mod, key; void (*action)(void*,void*,void*); int p1, p
 
 int main(int argc, char **argv)
 {
-	SDL_Init(SDL_INIT_AUDIO|SDL_INIT_NOPARACHUTE);
+	SDL_Init(SDL_INIT_AUDIO|SDL_INIT_NOPARACHUTE|SDL_INIT_TIMER);
 	atexit(SDL_Quit);
 
 	GfxDomain *domain = gfx_create_domain();

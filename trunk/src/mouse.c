@@ -28,12 +28,44 @@ OTHER DEALINGS IN THE SOFTWARE.
 
 static void (*motion_target)(int,int,void*) = NULL;
 static void *motion_param = NULL;
+static SDL_TimerID repeat_timer_id = 0;
+static SDL_Event repeat_event;
+
+
+static void set_repeat_timer(const SDL_Event *event);
+
+
+Uint32 repeat_timer(Uint32 interval, void *param)
+{
+	SDL_PushEvent(&repeat_event);
+	return 0;
+}
+
+
+void set_repeat_timer(const SDL_Event *event)
+{
+	if (repeat_timer_id != 0)
+	{
+		SDL_RemoveTimer(repeat_timer_id);
+	}
+	
+	if (event)
+	{
+		memcpy(&repeat_event, event, sizeof(repeat_event));
+		repeat_timer_id = SDL_AddTimer(repeat_timer_id ? 100 : 300, repeat_timer, NULL);
+	}
+	else
+	{
+		repeat_timer_id = 0;
+	}
+}
 
 
 void mouse_released(const SDL_Event *event)
 {
 	if (event->button.button == SDL_BUTTON_LEFT)
 	{
+		set_repeat_timer(NULL);
 		motion_target = NULL;
 		motion_param = NULL;
 	}
@@ -51,6 +83,7 @@ int check_event(const SDL_Event *event, const SDL_Rect *rect, void (*action)(voi
 				if ((event->button.x >= rect->x) && (event->button.y >= rect->y) 
 					&& (event->button.x < rect->x + rect->w) && (event->button.y < rect->y + rect->h))
 				{
+					set_repeat_timer(event);
 					action(param1, param2, param3);
 					return 1;
 				}
@@ -76,6 +109,8 @@ int check_drag_event(const SDL_Event *event, const SDL_Rect *rect, void (*action
 	{
 		case SDL_MOUSEMOTION:
 		{
+			set_repeat_timer(NULL);
+			
 			if (event->motion.state & SDL_BUTTON(SDL_BUTTON_LEFT))
 			{
 				if (!motion_target)
