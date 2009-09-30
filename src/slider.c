@@ -28,6 +28,7 @@ OTHER DEALINGS IN THE SOFTWARE.
 #include "mused.h"
 #include "mouse.h"
 #include "bevel.h"
+#include "dialog.h"
 
 extern Mused mused;
 

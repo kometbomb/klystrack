@@ -28,7 +28,7 @@ OTHER DEALINGS IN THE SOFTWARE.
 #include "mused.h"
 #include "action.h"
 #include "mouse.h"
-#include "bevel.h"
+#include "dialog.h"
 
 #define BG_CURSOR 0xffff4040
 #define BG_PLAYERPOS 0xff004000
@@ -514,7 +514,7 @@ void instrument_view(const SDL_Rect *dest, const SDL_Event *event, void *param)
 	inst_hex(event, P_SYNCSRC, "Src: %x\n", inst->sync_source);
 	
 	separator("----ring mod----");
-	inst_flags(event, P_RINGMOD, "Enable\n", &inst->cydflags, CYD_CHN_ENABLE_RING_MODULATION ? 'y' : 'n');
+	inst_flags(event, P_RINGMOD, "Enable\n", &inst->cydflags, CYD_CHN_ENABLE_RING_MODULATION);
 	inst_hex(event, P_RINGMODSRC, "Src: %x\n", inst->ring_mod);
 	
 	
@@ -584,7 +584,7 @@ void reverb_view(const SDL_Rect *dest, const SDL_Event *event, void *param)
 	
 	console_set_color(mused.console, mused.edit_reverb_param == R_ENABLE ? 0xff0000ff:0xffffffff,CON_CHARACTER);
 	
-	checkbox(event, "Enabled", &mused.song.flags, MUS_ENABLE_REVERB);
+	if (checkbox(event, "Enabled", &mused.song.flags, MUS_ENABLE_REVERB)) mused.edit_reverb_param = R_ENABLE;
 	
 	// We need to mirror the reverb flag to the corresponding Cyd flag
 	

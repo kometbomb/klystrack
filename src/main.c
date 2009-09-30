@@ -272,7 +272,6 @@ int main(int argc, char **argv)
 	
 	Mix_CloseAudio();
 	
-	console_destroy(mused.console);
 	cyd_unregister(&mused.cyd);
 	cyd_deinit(&mused.cyd);
 	
