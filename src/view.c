@@ -480,10 +480,27 @@ static void inst_text(const SDL_Event *e, int p, const char *label, const char *
 }
 
 
-static void inst_hex(const SDL_Event *e, int p, const char *label, int value)
+static void inst_hex8(const SDL_Event *e, int p, const char *label, Uint8 *value)
 {
 	console_set_color(mused.console,mused.selected_param == p?0xff0000ff:0xffffffff,CON_CHARACTER);
-	check_event(e, console_write_args(mused.console, label, value), select_instrument_param, (void*)p, 0, 0);
+	check_event(e, console_write_args(mused.console, label, *value), select_instrument_param, (void*)p, 0, 0);
+	int d = spinner(e, (int)value);
+	
+	if (d) mused.selected_param = p;
+	if (d < 0) instrument_add_param(-1);
+	else if (d >0) instrument_add_param(1);
+}
+
+
+static void inst_hex16(const SDL_Event *e, int p, const char *label, Uint16 *value)
+{
+	console_set_color(mused.console,mused.selected_param == p?0xff0000ff:0xffffffff,CON_CHARACTER);
+	check_event(e, console_write_args(mused.console, label, *value), select_instrument_param, (void*)p, 0, 0);
+	int d = spinner(e, (int)value);
+	
+	if (d) mused.selected_param = p;
+	if (d < 0) instrument_add_param(-1);
+	else if (d >0) instrument_add_param(1);
 }
 
 
@@ -511,11 +528,11 @@ void instrument_view(const SDL_Rect *dest, const SDL_Event *event, void *param)
 	
 	separator("------sync------");
 	inst_flags(event, P_SYNC, "Enable\n", &inst->cydflags, CYD_CHN_ENABLE_SYNC);
-	inst_hex(event, P_SYNCSRC, "Src: %x\n", inst->sync_source);
+	inst_hex8(event, P_SYNCSRC, "Src: %x\n", &inst->sync_source);
 	
 	separator("----ring mod----");
 	inst_flags(event, P_RINGMOD, "Enable\n", &inst->cydflags, CYD_CHN_ENABLE_RING_MODULATION);
-	inst_hex(event, P_RINGMODSRC, "Src: %x\n", inst->ring_mod);
+	inst_hex8(event, P_RINGMODSRC, "Src: %x\n", &inst->ring_mod);
 	
 	
 	separator("----waveform----");
@@ -525,20 +542,20 @@ void instrument_view(const SDL_Rect *dest, const SDL_Event *event, void *param)
 	inst_flags(event, P_NOISE, "Noi\n", &inst->cydflags, CYD_CHN_ENABLE_NOISE);
 	
 	separator("----envelope----");
-	inst_hex(event, P_ATTACK, "Atk: %02x ", inst->adsr.a);
-	inst_hex(event, P_DECAY, "Dec: %02x\n", inst->adsr.d);
-	inst_hex(event, P_SUSTAIN, "Sus: %02x ", inst->adsr.s);
-	inst_hex(event, P_RELEASE, "Rel: %02x\n", inst->adsr.r);
+	inst_hex8(event, P_ATTACK, "Atk: %02x ", &inst->adsr.a);
+	inst_hex8(event, P_DECAY, "Dec: %02x\n", &inst->adsr.d);
+	inst_hex8(event, P_SUSTAIN, "Sus: %02x ", &inst->adsr.s);
+	inst_hex8(event, P_RELEASE, "Rel: %02x\n", &inst->adsr.r);
 	
 	separator("------misc------");
-	inst_hex(event, P_PW, "PW: %03x ", inst->pw);
-	inst_hex(event, P_VOLUME, "Vol: %02x\n", inst->volume);
-	inst_hex(event, P_SLIDESPEED, "Slide speed: %02x\n", inst->slide_speed);
-	inst_hex(event, P_VIBSPEED, "Vib. speed:  %02x\n", inst->vibrato_speed);
-	inst_hex(event, P_VIBDEPTH, "Vib. depth:  %02x\n", inst->vibrato_depth);
-	inst_hex(event, P_PWMSPEED, "PWM speed:   %02x\n", inst->pwm_speed);
-	inst_hex(event, P_PWMDEPTH, "PWM depth:   %02x\n", inst->pwm_depth);
-	inst_hex(event, P_PROGPERIOD, "Prg. period: %02x\n", inst->prog_period);
+	inst_hex16(event, P_PW, "PW: %03x ", &inst->pw);
+	inst_hex8(event, P_VOLUME, "Vol: %02x\n", &inst->volume);
+	inst_hex8(event, P_SLIDESPEED, "Slide speed: %02x\n", &inst->slide_speed);
+	inst_hex8(event, P_VIBSPEED, "Vib. speed:  %02x\n", &inst->vibrato_speed);
+	inst_hex8(event, P_VIBDEPTH, "Vib. depth:  %02x\n", &inst->vibrato_depth);
+	inst_hex8(event, P_PWMSPEED, "PWM speed:   %02x\n", &inst->pwm_speed);
+	inst_hex8(event, P_PWMDEPTH, "PWM depth:   %02x\n", &inst->pwm_depth);
+	inst_hex8(event, P_PROGPERIOD, "Prg. period: %02x\n", &inst->prog_period);
 	
 	separator("-----filter-----");
 	inst_flags(event, P_FILTER, "Enabled\n", &inst->cydflags, CYD_CHN_ENABLE_FILTER);
@@ -546,8 +563,8 @@ void instrument_view(const SDL_Rect *dest, const SDL_Event *event, void *param)
 	static const char* flttype[] = {"LP", "HP", "BP"};
 	
 	inst_text(event, P_FLTTYPE, "Type: %s\n", flttype[inst->flttype]);
-	inst_hex(event, P_CUTOFF, "Cutoff: %03x\n", inst->cutoff);
-	inst_hex(event, P_RESONANCE, "Res: %1x\n", inst->resonance);
+	inst_hex16(event, P_CUTOFF, "Cutoff: %03x\n", &inst->cutoff);
+	inst_hex8(event, P_RESONANCE, "Res: %1x\n", &inst->resonance);
 }
 
 
@@ -589,9 +606,9 @@ void reverb_view(const SDL_Rect *dest, const SDL_Event *event, void *param)
 	// We need to mirror the reverb flag to the corresponding Cyd flag
 	
 	if (mused.song.flags & MUS_ENABLE_REVERB)
-		mused.cyd.flags |= MUS_ENABLE_REVERB;
+		mused.cyd.flags |= CYD_ENABLE_REVERB;
 	else
-		mused.cyd.flags &= ~MUS_ENABLE_REVERB;
+		mused.cyd.flags &= ~CYD_ENABLE_REVERB;
 	
 	int p = R_DELAY;
 	
