@@ -191,7 +191,9 @@ int main(int argc, char **argv)
 								&& (!(e.key.keysym.mod & KMOD_ALT) == !(shortcuts[i].mod & KMOD_ALT))
 							)
 							{
+								cyd_lock(&mused.cyd, 1);
 								shortcuts[i].action((void*)shortcuts[i].p1, (void*)shortcuts[i].p2, (void*)shortcuts[i].p3);
+								cyd_lock(&mused.cyd, 0);
 								e.key.keysym.sym = 0;
 								break;
 							}
