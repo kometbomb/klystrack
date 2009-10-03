@@ -75,9 +75,9 @@ typedef struct
 } Mused;
 
 #define NUM_STEPS 256
-#define NUM_PATTERNS 32
+#define NUM_PATTERNS 256
 #define NUM_INSTRUMENTS 32
-#define NUM_SEQUENCES 256
+#define NUM_SEQUENCES 1024
 
 void change_mode(int newmode);
 void clear_pattern(MusPattern *pat);
