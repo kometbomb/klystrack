@@ -24,6 +24,7 @@ OTHER DEALINGS IN THE SOFTWARE.
 */
 
 #include "console.h"
+#include "util/bundle.h"
 
 void console_set_color(Console* console, Uint32 color, int idx)
 {
@@ -68,9 +69,11 @@ Console * console_create(SDL_Surface *surface)
 		
 	Bundle b;
 	
-	bnd_open(&b, "c:\\code\\repo\\thrust\\main\\data.bundle");
-	font_load(&c->font, &b, "8x8.fnt");
-	bnd_free(&b);
+	if (bnd_open(&b, "res/data"))
+	{
+		font_load(&c->font, &b, "8x8.fnt");
+		bnd_free(&b);
+	}
 	
 	// let's use a 8-bit surface so we can change the text color using the per surface palette
 	
@@ -79,8 +82,8 @@ Console * console_create(SDL_Surface *surface)
 	if (paletted)
 	{
 		{
-			SDL_Color rgb = { 255, 255, 255 };
-			SDL_SetColors(paletted, &rgb, 1, 1);
+			SDL_Color palette[2] = {{0, 0, 0}, { 255, 255, 255 }};
+			SDL_SetColors(paletted, palette, 0, 2);
 		}
 	
 		SDL_BlitSurface(c->font.surface, NULL, paletted, NULL);

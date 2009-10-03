@@ -24,6 +24,7 @@ OTHER DEALINGS IN THE SOFTWARE.
 */
 
 #include "mused.h"
+#include "util/bundle.h"
 #include "gfx/font.h"
 #include "gfx/gfx.h"
 #include "util/bundle.h"
@@ -189,7 +190,19 @@ void init(MusInstrument *instrument, MusPattern *pattern, MusSeqPattern sequence
 	
 	new_song();
 	
-	mused.slider_bevel = gfx_load_surface("data/bevel.bmp", GFX_KEYED);
+	Bundle res;
+	if (bnd_open(&res, "res/data"))
+	{
+		SDL_RWops *rw = SDL_RWFromBundle(&res, "bevel.bmp");
+		
+		if (rw)
+		{
+			mused.slider_bevel = gfx_load_surface_RW(rw, GFX_KEYED);
+			SDL_FreeRW(rw);
+		}
+		
+		bnd_free(&res);
+	}
 	
 	slider_set_params(&mused.sequence_slider_param, 0, 0, 0, 0, &mused.sequence_position, 1, SLIDER_VERTICAL);
 	slider_set_params(&mused.pattern_slider_param, 0, 0, 0, 0, &mused.sequence_position, 1, SLIDER_VERTICAL);
