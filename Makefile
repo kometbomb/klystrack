@@ -55,7 +55,7 @@ endif
 # A common link flag for all configurations
 LDFLAGS = -lmingw32 -lSDLmain -lSDL -lSDL_mixer -lcomdlg32
 
-all:	inform bin.$(CFG)/$(TARGET)
+all:	inform bin.$(CFG)/$(TARGET) res/data
 
 inform:
 	@echo "Configuration "$(CFG)
@@ -76,9 +76,18 @@ deps/Group0_%.d: %.c
 	sed 's,\($*\)\.o[ :]*,objs.$(CFG)\/Group0_\1.o $@ : ,g' \
 		< $@.$$$$ > $@; \
 	rm -f $@.$$$$
+	
+res/data: data/bevel.bmp temp/8x8.fnt
+	@mkdir -p res
+	@mkdir -p temp
+	cp -f data/bevel.bmp temp
+	../klystron/tools/bin/makebundle res/data temp
+
+temp/8x8.fnt: data/font/*
+	../klystron/tools/bin/makebundle temp/8x8.fnt data/font
 
 clean:
-	@rm -rf deps objs.$(CFG) bin.$(CFG)
+	@rm -rf deps objs.$(CFG) bin.$(CFG) res temp
 
 # Unless "make clean" is called, include the dependency files
 # which are auto-generated. Don't fail if they are missing
