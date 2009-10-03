@@ -137,12 +137,12 @@ void sequence_view(const SDL_Rect *dest, const SDL_Event *event, void *param)
 					if (mused.song.sequence[c][p[c]].position != i )
 					{	
 						//sprintf(text, "%02x+%02x %+3d ", mused.song.sequence[c][p[c]].pattern, mused.song.sequence[c][p[c]].position - i, mused.song.sequence[c][p[c]].note_offset);
-						sprintf(text, "%02x+%02x", mused.song.sequence[c][p[c]].pattern, mused.song.sequence[c][p[c]].position - i);
+						sprintf(text, "%02X+%02X", mused.song.sequence[c][p[c]].pattern, mused.song.sequence[c][p[c]].position - i);
 					}
 					else
 					{
 						//sprintf(text, "%02x   %+3d  ", mused.song.sequence[c][p[c]].pattern, mused.song.sequence[c][p[c]].note_offset);
-						sprintf(text, "%02x   ", mused.song.sequence[c][p[c]].pattern);
+						sprintf(text, "%02X   ", mused.song.sequence[c][p[c]].pattern);
 					}
 					draw_colon[c] = mused.song.pattern[mused.song.sequence[c][p[c]].pattern].num_steps;
 					draw_colon_id[c] = mused.song.sequence[c][p[c]].position;
@@ -224,7 +224,7 @@ void pattern_view_inner(const SDL_Rect *dest, const SDL_Event *event, int curren
 		console_set_color(mused.console,(mused.current_pattern == current_pattern && mused.current_patternstep == i && mused.current_patternx == PED_INSTRUMENT1)?BG_CURSOR:bg,CON_BACKGROUND);
 		
 		if (mused.song.pattern[current_pattern].step[i].instrument != MUS_NOTE_NO_INSTRUMENT)
-			r = console_write_args(mused.console, "%x", mused.song.pattern[current_pattern].step[i].instrument >> 4);
+			r = console_write_args(mused.console, "%X", mused.song.pattern[current_pattern].step[i].instrument >> 4);
 		else
 			r = console_write(mused.console, ".");
 			
@@ -233,7 +233,7 @@ void pattern_view_inner(const SDL_Rect *dest, const SDL_Event *event, int curren
 		console_set_color(mused.console,(mused.current_pattern == current_pattern && mused.current_patternstep == i && mused.current_patternx == PED_INSTRUMENT2)?BG_CURSOR:bg,CON_BACKGROUND);
 		
 		if (mused.song.pattern[current_pattern].step[i].instrument != MUS_NOTE_NO_INSTRUMENT)
-			r = console_write_args(mused.console, "%x", mused.song.pattern[current_pattern].step[i].instrument & 0xf);
+			r = console_write_args(mused.console, "%X", mused.song.pattern[current_pattern].step[i].instrument & 0xf);
 		else
 			r = console_write(mused.console, ".");
 			
@@ -254,7 +254,7 @@ void pattern_view_inner(const SDL_Rect *dest, const SDL_Event *event, int curren
 		for (int p = 0 ; p < 4 ; ++p)
 		{
 			console_set_color(mused.console,(mused.current_pattern == current_pattern && mused.current_patternstep == i && mused.current_patternx == (PED_COMMAND1+p))?BG_CURSOR:bg,CON_BACKGROUND);
-			check_event(event, console_write_args(mused.console, "%x", (mused.song.pattern[current_pattern].step[i].command >> ((3-p)*4)) & 0xf), 
+			check_event(event, console_write_args(mused.console, "%X", (mused.song.pattern[current_pattern].step[i].command >> ((3-p)*4)) & 0xf), 
 				select_pattern_param, (void*)(PED_COMMAND1 + p), (void*)i, (void*)current_pattern);
 		}
 		
@@ -313,16 +313,16 @@ void info_view(const SDL_Rect *dest, const SDL_Event *event, void *param)
 	}
 	
 	
-	sprintf(text, "Song length: %04x\n"
-	              "Loop point:  %04x\n"
+	sprintf(text, "Song length: %04X\n"
+	              "Loop point:  %04X\n"
 	              "Speed:     %6s\n"
 				  "Rate:      %3d hz\n"
 				  "Time sig.:  %2d/%2d\n\n"
-				  "Sel.instrument:%02x\n"
+				  "Sel.instrument:%02X\n"
 				  ":%-16s\n"
-				  "Sel.pattern:   %02x\n"
-				  "Sequence step: %02x\n"
-				  "Octave:        %02x\n",
+				  "Sel.pattern:   %02X\n"
+				  "Sequence step: %02X\n"
+				  "Octave:        %02X\n",
 				  
 				  
 				  
@@ -348,14 +348,17 @@ void get_command_desc(char *text, Uint16 inst)
 		{MUS_FX_PW_DN, "PW down"},
 		{MUS_FX_PW_UP, "PW up"},
 		{MUS_FX_PW_SET, "Set PW"},
-		{MUS_FX_PORTA_VOLUME_SET, "Set volume"},
-		{MUS_FX_PORTA_WAVEFORM_SET, "Set waveform"},
+		{MUS_FX_SET_VOLUME, "Set volume"},
+		{MUS_FX_SET_WAVEFORM, "Set waveform"},
 		{MUS_FX_END, "Program end"},
 		{MUS_FX_JUMP, "Goto"},
 		{MUS_FX_LABEL, "Loop begin"},
 		{MUS_FX_LOOP, "Loop end"},
 		{MUS_FX_NOP, "No operation"},
 		{MUS_FX_TRIGGER_RELEASE, "Trigger release"},
+		{MUS_FX_FADE_VOLUME, "Fade volume"},
+		{MUS_FX_EXT_FADE_VOLUME_UP, "Fine fade volume in"},
+		{MUS_FX_EXT_FADE_VOLUME_DN, "Fine fade volume out"},
 		{0, NULL}
 	};
 	
@@ -363,7 +366,7 @@ void get_command_desc(char *text, Uint16 inst)
 	Uint16 fi = 0;
 	for (int i = 0 ; instructions[i].name != NULL ; ++i)
 	{
-		if (instructions[i].opcode == inst || instructions[i].opcode == (inst & 0x7f00))
+		if (instructions[i].opcode == inst || instructions[i].opcode == (inst & 0x7f00) || instructions[i].opcode == (inst & 0x7ff0))
 		{
 			name = instructions[i].name;
 			fi = instructions[i].opcode;
@@ -371,7 +374,7 @@ void get_command_desc(char *text, Uint16 inst)
 		}
 	}
 
-	if ((fi & 0x7f00) == MUS_FX_PORTA_WAVEFORM_SET)
+	if ((fi & 0x7f00) == MUS_FX_SET_WAVEFORM)
 	{
 		sprintf(text, "%s (%s%s%s%s)\n", name, (inst & CYD_CHN_ENABLE_NOISE) ? "N" : "", (inst & CYD_CHN_ENABLE_SAW) ? "S" : "", (inst & CYD_CHN_ENABLE_TRIANGLE) ? "T" : "", (inst & CYD_CHN_ENABLE_PULSE) ? "P" : "");
 	}
@@ -450,7 +453,7 @@ void program_view(const SDL_Rect *dest, const SDL_Event *event, void *param)
 		}
 		else
 		{
-			sprintf(box, "%04x", inst->program[i]);
+			sprintf(box, "%04X", inst->program[i]);
 		}
 		
 		if (mused.mode == EDITPROG && mused.selected_param == (P_PARAMS+i))
@@ -458,7 +461,7 @@ void program_view(const SDL_Rect *dest, const SDL_Event *event, void *param)
 			box[mused.editpos] = '?';
 		}
 		
-		check_event(event, console_write_args(mused.console, "%c%02x %s%c\n", (inst->program[i] & 0x8000) ? '(' : ' ', i, box, (inst->program[i] & 0x8000) ? ')' : ' '),
+		check_event(event, console_write_args(mused.console, "%c%02X %s%c\n", (inst->program[i] & 0x8000) ? '(' : ' ', i, box, (inst->program[i] & 0x8000) ? ')' : ' '),
 			select_instrument_param, (void*)(P_PARAMS + i), 0, 0);
 			
 		slider_set_params(&mused.program_slider_param, P_PARAMS, MUS_PROG_LEN - 1 + P_PARAMS, start + P_PARAMS, i + P_PARAMS, &mused.selected_param, 1, SLIDER_VERTICAL);
@@ -544,12 +547,12 @@ void instrument_view(const SDL_Rect *dest, const SDL_Event *event, void *param)
 	separator("------sync------");
 	inst_flags(event, P_SYNC, "Enable", &inst->cydflags, CYD_CHN_ENABLE_SYNC);
 	cr();
-	inst_hex8(event, P_SYNCSRC, "Src: %x", &inst->sync_source);
+	inst_hex8(event, P_SYNCSRC, "Src: %X", &inst->sync_source);
 	
 	separator("\n----ring mod----");
 	inst_flags(event, P_RINGMOD, "Enable", &inst->cydflags, CYD_CHN_ENABLE_RING_MODULATION);
 	cr();
-	inst_hex8(event, P_RINGMODSRC, "Src: %x", &inst->ring_mod);
+	inst_hex8(event, P_RINGMODSRC, "Src: %X", &inst->ring_mod);
 	
 	
 	separator("\n----waveform----");
@@ -559,30 +562,30 @@ void instrument_view(const SDL_Rect *dest, const SDL_Event *event, void *param)
 	inst_flags(event, P_NOISE, "Noi\n", &inst->cydflags, CYD_CHN_ENABLE_NOISE);
 	
 	separator("----envelope----");
-	inst_hex8(event, P_ATTACK,  "Atk: %02x", &inst->adsr.a);
+	inst_hex8(event, P_ATTACK,  "Atk: %02X", &inst->adsr.a);
 	cr();
-	inst_hex8(event, P_DECAY,   "Dec: %02x", &inst->adsr.d);
+	inst_hex8(event, P_DECAY,   "Dec: %02X", &inst->adsr.d);
 	cr();
-	inst_hex8(event, P_SUSTAIN, "Sus: %02x", &inst->adsr.s);
+	inst_hex8(event, P_SUSTAIN, "Sus: %02X", &inst->adsr.s);
 	cr();
-	inst_hex8(event, P_RELEASE, "Rel: %02x", &inst->adsr.r);
+	inst_hex8(event, P_RELEASE, "Rel: %02X", &inst->adsr.r);
 	
 	separator("\n------misc------");
-	inst_hex16(event, P_PW,        "PW:         %03x", &inst->pw);
+	inst_hex16(event, P_PW,        "PW:         %03X", &inst->pw);
 	cr();
-	inst_hex8(event, P_VOLUME,     "Volume:      %02x", &inst->volume);
+	inst_hex8(event, P_VOLUME,     "Volume:      %02X", &inst->volume);
 	cr();
-	inst_hex8(event, P_SLIDESPEED, "Slide speed: %02x", &inst->slide_speed);
+	inst_hex8(event, P_SLIDESPEED, "Slide speed: %02X", &inst->slide_speed);
 	cr();
-	inst_hex8(event, P_VIBSPEED,   "Vib. speed:  %02x", &inst->vibrato_speed);
+	inst_hex8(event, P_VIBSPEED,   "Vib. speed:  %02X", &inst->vibrato_speed);
 	cr();
-	inst_hex8(event, P_VIBDEPTH,   "Vib. depth:  %02x", &inst->vibrato_depth);
+	inst_hex8(event, P_VIBDEPTH,   "Vib. depth:  %02X", &inst->vibrato_depth);
 	cr();
-	inst_hex8(event, P_PWMSPEED,   "PWM speed:   %02x", &inst->pwm_speed);
+	inst_hex8(event, P_PWMSPEED,   "PWM speed:   %02X", &inst->pwm_speed);
 	cr();
-	inst_hex8(event, P_PWMDEPTH,   "PWM depth:   %02x", &inst->pwm_depth);
+	inst_hex8(event, P_PWMDEPTH,   "PWM depth:   %02X", &inst->pwm_depth);
 	cr();
-	inst_hex8(event, P_PROGPERIOD, "Prg. period: %02x", &inst->prog_period);
+	inst_hex8(event, P_PROGPERIOD, "Prg. period: %02X", &inst->prog_period);
 	
 	separator("\n-----filter-----");
 	inst_flags(event, P_FILTER, "Enabled\n", &inst->cydflags, CYD_CHN_ENABLE_FILTER);
@@ -591,9 +594,9 @@ void instrument_view(const SDL_Rect *dest, const SDL_Event *event, void *param)
 	
 	inst_text(event, P_FLTTYPE, "Type: %s", flttype[inst->flttype], 1);
 	cr();
-	inst_hex16(event, P_CUTOFF, "Cutoff: %03x", &inst->cutoff);
+	inst_hex16(event, P_CUTOFF, "Cutoff: %03X", &inst->cutoff);
 	cr();
-	inst_hex8(event, P_RESONANCE, "Res: %1x", &inst->resonance);
+	inst_hex8(event, P_RESONANCE, "Res: %1X", &inst->resonance);
 }
 
 
@@ -613,7 +616,7 @@ void instrument_list(const SDL_Rect *dest, const SDL_Event *event, void *param)
 	{
 		console_set_color(mused.console, i == mused.current_instrument ? 0xffff0000 : 0x0, CON_BACKGROUND);
 		console_set_color(mused.console, 0xffffffff, CON_CHARACTER);
-		check_event(event, console_write_args(mused.console, "%02x %-16s\n", i + 1, mused.song.instrument[i].name), select_instrument, (void*)i, 0, 0);
+		check_event(event, console_write_args(mused.console, "%02X %-16s\n", i + 1, mused.song.instrument[i].name), select_instrument, (void*)i, 0, 0);
 		
 		slider_set_params(&mused.instrument_list_slider_param, 0, NUM_INSTRUMENTS - 1, start, i, &mused.instrument_list_position, 1, SLIDER_VERTICAL);
 	}

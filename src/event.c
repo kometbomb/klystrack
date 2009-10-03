@@ -197,7 +197,7 @@ void instrument_add_param(int a)
 		
 		case P_VOLUME:
 		
-		clamp(i->volume, a, 0, 0x7f);
+		clamp(i->volume, a, 0, MAX_VOLUME);
 			
 		break;
 		
@@ -424,8 +424,10 @@ static int gethex(int key)
 }
 
 
-static int getalphanum(int key)
+static int getalphanum(const SDL_keysym *keysym)
 {
+	int key = keysym->sym;
+
 	if (key >= SDLK_0 && key <= SDLK_9)
 	{
 		return key - SDLK_0;
@@ -434,9 +436,13 @@ static int getalphanum(int key)
 	{
 		return key - SDLK_KP0;
 	}
-	else if (key >= SDLK_a && key <= SDLK_z)
+	else if (!(keysym->mod & KMOD_SHIFT) && key >= SDLK_a && key <= SDLK_z)
 	{
 		return key - SDLK_a + 0xa;
+	}
+	else if ((keysym->mod & KMOD_SHIFT) && key >= SDLK_a && key <= SDLK_z)
+	{
+		return key - SDLK_a + 0xa + SDLK_z + 1;
 	}
 	else return -1;
 }
@@ -684,11 +690,10 @@ void sequence_event(SDL_Event *e)
 		
 			default:
 			{
-				
-				
-				if (getalphanum(e->key.keysym.sym) != -1 && getalphanum(e->key.keysym.sym) < NUM_PATTERNS)
+				int p = getalphanum(&e->key.keysym);
+				if (p != -1 && p < NUM_PATTERNS)
 				{
-					add_sequence(mused.current_sequencepos, getalphanum(e->key.keysym.sym), 0);
+					add_sequence(mused.current_sequencepos, p, 0);
 					if (mused.song.song_length > mused.current_sequencepos + mused.sequenceview_steps)
 						mused.current_sequencepos += mused.sequenceview_steps;
 				}
@@ -962,6 +967,8 @@ void pattern_event(SDL_Event *e)
 							inst = (inst & 0xfff0) | gethex(e->key.keysym.sym);
 							break;
 						}
+						
+						if ((inst & 0xff00) == MUS_FX_SET_VOLUME && (inst & 0xff) > MAX_VOLUME) inst = MUS_FX_SET_VOLUME | MAX_VOLUME;
 						
 						mused.song.pattern[mused.current_pattern].step[mused.current_patternstep].command = inst; 
 						
