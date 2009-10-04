@@ -37,7 +37,10 @@ void change_mode(int newmode)
 
 	mused.selection.start = 0;
 	mused.selection.end = 0;
-	mused.prev_mode = mused.mode;
+	
+	if (mused.mode < VIRTUAL_MODE)
+		mused.prev_mode = mused.mode;
+	
 	switch (newmode)
 	{
 		case EDITBUFFER:
@@ -151,6 +154,8 @@ void default_instrument(MusInstrument *inst)
 
 void init(MusInstrument *instrument, MusPattern *pattern, MusSeqPattern sequence[MUS_CHANNELS][NUM_SEQUENCES], SDL_Surface *screen)
 {
+	debug("init");
+	
 	memset(&mused, 0, sizeof(mused));
 	
 	mused.console = console_create(screen);
@@ -198,7 +203,6 @@ void init(MusInstrument *instrument, MusPattern *pattern, MusSeqPattern sequence
 		if (rw)
 		{
 			mused.slider_bevel = gfx_load_surface_RW(rw, GFX_KEYED);
-			SDL_FreeRW(rw);
 		}
 		
 		bnd_free(&res);
@@ -207,6 +211,8 @@ void init(MusInstrument *instrument, MusPattern *pattern, MusSeqPattern sequence
 	slider_set_params(&mused.sequence_slider_param, 0, 0, 0, 0, &mused.sequence_position, 1, SLIDER_VERTICAL);
 	slider_set_params(&mused.pattern_slider_param, 0, 0, 0, 0, &mused.sequence_position, 1, SLIDER_VERTICAL);
 	slider_set_params(&mused.instrument_list_slider_param, 0, 0, 0, 0, &mused.sequence_position, 1, SLIDER_VERTICAL);
+	
+	debug("init done");
 }
 
 

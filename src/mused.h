@@ -37,9 +37,12 @@ enum
 	EDITPATTERN,
 	EDITSEQUENCE,
 	EDITREVERB,
+	/* Virtual modes, i.e. what are not modes itself but should be considered happening "inside" prev_mode */
 	EDITBUFFER,
 	EDITPROG
 };
+
+#define VIRTUAL_MODE EDITBUFFER
 
 #include "clipboard.h"
 #include "copypaste.h"
