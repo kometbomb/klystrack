@@ -458,7 +458,7 @@ void program_view(const SDL_Rect *dest, const SDL_Event *event, void *param)
 		
 		if (mused.mode == EDITPROG && mused.selected_param == (P_PARAMS+i))
 		{
-			box[mused.editpos] = '?';
+			box[mused.editpos] = '§'; // Cursor character
 		}
 		
 		check_event(event, console_write_args(mused.console, "%c%02X %s%c\n", (inst->program[i] & 0x8000) ? '(' : ' ', i, box, (inst->program[i] & 0x8000) ? ')' : ' '),
@@ -515,6 +515,26 @@ static void inst_hex16(const SDL_Event *e, int p, const char *label, Uint16 *val
 }
 
 
+static void inst_field(const SDL_Event *e, int p, int length, const char *text)
+{
+	console_set_color(mused.console,mused.selected_param == p?0xff0000ff:0xffffffff,CON_CHARACTER);
+	if (mused.edit_buffer == text && mused.mode == EDITBUFFER)
+	{
+		int i = 0;
+		for ( ; text[i] && i < length ; ++i)
+		{
+			console_write_args(mused.console, "%c", mused.editpos == i ? '§' : text[i]);
+		}
+		
+		if (mused.editpos == i && i < length) console_write(mused.console, "§");
+	}
+	else
+	{
+		console_write_args(mused.console, "%*s", -length, text);
+	}
+}
+
+
 static void cr()
 {
 	// Fixes bug with text bouding rect starting from prev line
@@ -530,7 +550,8 @@ void instrument_view(const SDL_Rect *dest, const SDL_Event *event, void *param)
 	MusInstrument *inst = &mused.song.instrument[mused.current_instrument];
 	
 	separator("------name------");
-	inst_text(event, P_NAME, "%-16s\n", inst->name, 0);
+	inst_field(event, P_NAME, 16, inst->name);
+	cr();
 	
 	separator("---attributes---");
 	

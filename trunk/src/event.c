@@ -1073,6 +1073,7 @@ void edit_text(SDL_Event *e)
 				change_mode(mused.prev_mode);
 			}
 			break;
+			
 			case SDLK_RETURN:
 			{
 				change_mode(mused.prev_mode);
@@ -1080,19 +1081,17 @@ void edit_text(SDL_Event *e)
 			break;
 			
 			case SDLK_BACKSPACE:
-				clamp(mused.editpos,-1,0,mused.edit_buffer_size-1);
-				mused.edit_buffer[mused.editpos] = '\0';
+				clamp(mused.editpos, -1, 0, mused.edit_buffer_size - 1);
+				/* Fallthru */
+			case SDLK_DELETE:
+				memmove(&mused.edit_buffer[mused.editpos], &mused.edit_buffer[mused.editpos + 1], mused.edit_buffer_size - mused.editpos);
+				mused.edit_buffer[mused.edit_buffer_size - 1] = '\0';
 			break;
 		
-			case SDLK_RIGHT:
-			{
-				clamp(mused.editpos,+1,0,mused.edit_buffer_size-1);
-			}
-			break;
-			
 			case SDLK_LEFT:
-			{
-				clamp(mused.editpos,-1,0,mused.edit_buffer_size-1);
+			case SDLK_RIGHT:
+			{ 
+				clamp(mused.editpos, e->key.keysym.sym == SDLK_LEFT ? -1 : +1, 0, my_min(mused.edit_buffer_size-1, strlen(mused.edit_buffer)));
 			}
 			break;
 		
@@ -1100,9 +1099,9 @@ void edit_text(SDL_Event *e)
 			{
 				if (mused.editpos < mused.edit_buffer_size && isprint(e->key.keysym.unicode))
 				{
+					memmove(&mused.edit_buffer[mused.editpos + 1], &mused.edit_buffer[mused.editpos], mused.edit_buffer_size - mused.editpos);
 					mused.edit_buffer[mused.editpos] = e->key.keysym.unicode;
-					mused.edit_buffer[mused.editpos + 1] = '\0';
-					clamp(mused.editpos,+1,0,mused.edit_buffer_size);
+					clamp(mused.editpos, +1, 0,mused.edit_buffer_size);
 				}
 			}
 			break;
