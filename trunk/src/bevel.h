@@ -44,6 +44,8 @@ OTHER DEALINGS IN THE SOFTWARE.
 #define DECAL_TICK 64
 #define DECAL_PLUS 80
 #define DECAL_MINUS 96
+#define DECAL_AUDIO_ENABLED 112
+#define DECAL_AUDIO_DISABLED 128
 
 void bevel(const SDL_Rect *area, SDL_Surface *gfx, int offset);
 void button(const SDL_Rect *area, SDL_Surface *gfx, int offset, int decal);
