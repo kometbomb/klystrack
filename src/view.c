@@ -250,8 +250,6 @@ void pattern_view_inner(const SDL_Rect *dest, const SDL_Event *event, int curren
 	copy_rect(&content, dest);
 	adjust_rect(&content, 2);
 	
-	bevel(dest, mused.slider_bevel, BEV_THIN_FRAME);
-	
 	console_set_color(mused.console,0x00000000,CON_BACKGROUND);
 	console_set_clip(mused.console, &content);
 	console_clear(mused.console);
@@ -267,6 +265,8 @@ void pattern_view_inner(const SDL_Rect *dest, const SDL_Event *event, int curren
 	
 	for (int i = start, y = 0 ; i < mused.song.pattern[current_pattern].num_steps && y < content.h; ++i, y += mused.console->font.h)
 	{
+		console_set_clip(mused.console, &content);
+	
 		if (mused.current_patternstep == i)
 		{
 			SDL_Rect row = { content.x - 2, content.y + y - 1, content.w + 4, mused.console->font.h + 1};
@@ -310,7 +310,7 @@ void pattern_view_inner(const SDL_Rect *dest, const SDL_Event *event, int curren
 			
 		check_event(event, r, select_pattern_param, (void*)PED_NOTE, (void*)i, (void*)current_pattern);
 		
-		console_write(mused.console," ");
+		mused.console->clip.x += 4;
 		
 		if (mused.song.pattern[current_pattern].step[i].instrument != MUS_NOTE_NO_INSTRUMENT)
 			r = console_write_args(mused.console, "%X", mused.song.pattern[current_pattern].step[i].instrument >> 4);
@@ -330,7 +330,7 @@ void pattern_view_inner(const SDL_Rect *dest, const SDL_Event *event, int curren
 		
 		update_pattern_cursor(r, &selected_rect, current_pattern, i, PED_INSTRUMENT2);
 		
-		console_write(mused.console," ");
+		mused.console->clip.x += 4;
 		
 		for (int p = PED_CTRL ; p < PED_COMMAND1 ; ++p)
 		{
@@ -343,7 +343,7 @@ void pattern_view_inner(const SDL_Rect *dest, const SDL_Event *event, int curren
 		}
 		
 		console_set_color(mused.console,bg,CON_BACKGROUND);
-		console_write(mused.console," ");
+		mused.console->clip.x += 4;
 		
 		for (int p = 0 ; p < 4 ; ++p)
 		{
@@ -363,13 +363,13 @@ void pattern_view_inner(const SDL_Rect *dest, const SDL_Event *event, int curren
 	{
 		bevel(&selected_rect, mused.slider_bevel, BEV_CURSOR);
 	}
+	
+	bevel(dest, mused.slider_bevel, BEV_THIN_FRAME);
 }
 
 
 void pattern_view_stepcounter(const SDL_Rect *dest, const SDL_Event *event, void *param)
 {
-	bevel(dest, mused.slider_bevel, BEV_THIN_FRAME);
-
 	SDL_Rect content;
 	copy_rect(&content, dest);
 	
@@ -397,13 +397,28 @@ void pattern_view_stepcounter(const SDL_Rect *dest, const SDL_Event *event, void
 		
 		console_write_args(mused.console, "%03X\n", row);
 	}
+	
+	bevel(dest, mused.slider_bevel, BEV_THIN_FRAME);
+}
+
+
+static void pattern_header(const SDL_Event *event, int x, int channel, const SDL_Rect *topleft)
+{
+	SDL_Rect button;
+	copy_rect(&button, topleft);
+			
+	button.x = x;
+	
+	if (channel != -1)
+	button_event(event, &button, mused.slider_bevel, BEV_SLIDER_HANDLE, BEV_SLIDER_HANDLE_ACTIVE, 
+		(mused.mus.channel[channel].flags & MUS_CHN_DISABLED) ? DECAL_AUDIO_DISABLED : DECAL_AUDIO_ENABLED, enable_channel, (void*)channel, 0, 0);
 }
 
 
 void pattern_view(const SDL_Rect *dest, const SDL_Event *event, void *param)
 {
 	int pv = 0;
-	const int pattern_width = 128;
+	const int pattern_width = 128 - 4 - 4 - 4;
 	
 	for (int i = 0 ; i < MUS_CHANNELS ; ++i)
 	{
@@ -421,16 +436,29 @@ void pattern_view(const SDL_Rect *dest, const SDL_Event *event, void *param)
 	int vert_scrollbar = 0;
 	SDL_Rect scrollbar;
 	
+	const int track_header_size = 12;
+	
+	pos.y += track_header_size;
+	pos.h -= track_header_size;
+	
+	console_set_clip(mused.console, dest);
+	console_clear(mused.console);
+	
+	SDL_Rect button_topleft = { dest->x + pos.w, dest->y, track_header_size, track_header_size };
+	
 	if (pattern_width * pv + pos.w > dest->w)
 	{
 		pos.h -= SCROLLBAR;
 		SDL_Rect temp = { pos.w + dest->x, dest->y + dest->h - SCROLLBAR, dest->w - pos.w, SCROLLBAR };
 		copy_rect(&scrollbar, &temp);
 		vert_scrollbar = 1;
-		SDL_SetClipRect(mused.console->surface, dest);
 	}
 	
+	SDL_SetClipRect(mused.console->surface, &pos);
+	
 	pattern_view_stepcounter(&pos, event, param);
+	
+	SDL_SetClipRect(mused.console->surface, dest);
 	
 	pos.x += pos.w - 2;
 	pos.w = pattern_width;
@@ -440,6 +468,8 @@ void pattern_view(const SDL_Rect *dest, const SDL_Event *event, void *param)
 	{
 		if (mused.ghost_pattern[i] != -1)
 		{
+			pattern_header(event, pos.x, i, &button_topleft);
+	
 			console_set_clip(mused.console, &pos);
 			console_clear(mused.console);
 	
@@ -457,9 +487,10 @@ void pattern_view(const SDL_Rect *dest, const SDL_Event *event, void *param)
 		}
 	}
 	
+	SDL_SetClipRect(mused.console->surface, NULL);
+	
 	if (vert_scrollbar) 
 	{
-		SDL_SetClipRect(mused.console->surface, NULL);
 		slider(&scrollbar, event, &mused.pattern_horiz_slider_param); 
 	}
 	
@@ -467,6 +498,8 @@ void pattern_view(const SDL_Rect *dest, const SDL_Event *event, void *param)
 	{
 		console_set_clip(mused.console, &pos);
 		console_clear(mused.console);
+		
+		pattern_header(event, 0, -1, &button_topleft);
 	
 		pattern_view_inner(&pos, event, mused.current_pattern, -1);
 	}
