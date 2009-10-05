@@ -89,5 +89,6 @@ void init(MusInstrument *instrument, MusPattern *pattern, MusSeqPattern sequence
 void deinit();
 void new_song();
 void default_instrument(MusInstrument *instrument);
+void set_edit_buffer(char *buffer, size_t size);
 
 #endif

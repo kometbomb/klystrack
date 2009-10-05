@@ -31,6 +31,20 @@ OTHER DEALINGS IN THE SOFTWARE.
 
 extern Mused mused;
 
+
+void set_edit_buffer(char *buffer, size_t size)
+{ 
+	if (mused.edit_backup_buffer) 
+		free(mused.edit_backup_buffer); 
+		
+	mused.edit_backup_buffer = strdup(buffer); 
+	mused.edit_buffer = buffer; 
+	mused.edit_buffer_size = size; 
+	mused.editpos = strlen(mused.edit_buffer);
+	change_mode(EDITBUFFER); 
+} 
+
+
 void change_mode(int newmode)
 {
 	SDL_FillRect(mused.console->surface, NULL, 0);
@@ -43,13 +57,6 @@ void change_mode(int newmode)
 	
 	switch (newmode)
 	{
-		case EDITBUFFER:
-		case EDITPROG:
-		
-		mused.editpos = 0;
-		
-		break;
-		
 		case EDITINSTRUMENT:
 		
 		break;

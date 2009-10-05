@@ -26,6 +26,18 @@ OTHER DEALINGS IN THE SOFTWARE.
 #include "console.h"
 #include "util/bundle.h"
 
+void console_set_background(Console * c, int enabled)
+{
+	c->background = enabled;
+	c->font.surface = c->fontsurface[enabled];
+	
+	int l = strlen(c->font.charmap);
+			
+	for (int i = 0 ; i < l ; ++i)
+		c->font.tiledescriptor[i].surface = c->font.surface;
+}
+
+
 void console_set_color(Console* console, Uint32 color, int idx)
 {
 	SDL_Color rgb = { color, color >> 8, color >> 16 };
@@ -77,29 +89,32 @@ Console * console_create(SDL_Surface *surface)
 	
 	// let's use a 8-bit surface so we can change the text color using the per surface palette
 	
-	SDL_Surface * paletted = SDL_CreateRGBSurface(SDL_HWSURFACE, c->font.surface->w, c->font.surface->h, 8, 0, 0, 0, 0);
-	
-	if (paletted)
+	for (int i = 0 ; i < 2 ; ++i)
 	{
+		SDL_Surface * paletted = SDL_CreateRGBSurface(SDL_HWSURFACE, c->font.surface->w, c->font.surface->h, 8, 0, 0, 0, 0);
+		
+		if (paletted)
 		{
-			SDL_Color palette[2] = {{0, 0, 0}, { 255, 255, 255 }};
-			SDL_SetColors(paletted, palette, 0, 2);
+			{
+				SDL_Color palette[2] = {{0, 0, 0}, { 255, 255, 255 }};
+				SDL_SetColors(paletted, palette, 0, 2);
+			}
+		
+			SDL_BlitSurface(c->font.surface, NULL, paletted, NULL);
+			
+			if (i == 0) SDL_SetColorKey(paletted, SDL_SRCCOLORKEY|SDL_RLEACCEL, SDL_MapRGB(paletted->format, 0, 0, 0));
+			
+			c->fontsurface[i] = paletted;
 		}
+		else
+		{
+			exit(1);
+		}
+	}
 	
-		SDL_BlitSurface(c->font.surface, NULL, paletted, NULL);
-		SDL_FreeSurface(c->font.surface);
-		
-		int l = strlen(c->font.charmap);
-		
-		for (int i = 0 ; i < l ; ++i)
-			c->font.tiledescriptor[i].surface = paletted;
-		
-		c->font.surface = paletted;
-	}
-	else
-	{
-		exit(1);
-	}
+	SDL_FreeSurface(c->font.surface);
+	
+	console_set_background(c, 0);
 	
 	c->surface = surface;
 	
@@ -114,7 +129,9 @@ Console * console_create(SDL_Surface *surface)
 
 void console_destroy(Console *c)
 {
+	c->font.surface = c->fontsurface[0];
 	font_destroy(&c->font);
+	SDL_FreeSurface(c->fontsurface[1]);
 	free(c);
 }
 

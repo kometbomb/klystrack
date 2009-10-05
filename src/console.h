@@ -31,10 +31,11 @@ OTHER DEALINGS IN THE SOFTWARE.
 
 typedef struct
 {
-	SDL_Surface *surface;
+	SDL_Surface *surface, *fontsurface[2];
 	Uint16 cursor;
 	Font font;
 	SDL_Rect clip;
+	int background;
 } Console;
 
 enum 
@@ -43,6 +44,7 @@ enum
 	CON_CHARACTER
 };
 
+void console_set_background(Console * c, int enabled);
 void console_reset_cursor(Console * c);
 void console_set_clip(Console * c, const SDL_Rect *rect);
 void console_clear(Console *console);
