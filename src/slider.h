@@ -28,6 +28,8 @@ OTHER DEALINGS IN THE SOFTWARE.
 
 #include "SDL.h"
 
+#define SCROLLBAR 8 // width
+
 typedef struct
 {
 	// Total elements (bounds) of target
