@@ -239,6 +239,7 @@ static void update_pattern_cursor(const SDL_Rect *area, SDL_Rect *selected_rect,
 	{
 		copy_rect(selected_rect, area);
 		adjust_rect(selected_rect, -2);
+		--selected_rect->h;
 	}
 }
 
@@ -299,15 +300,17 @@ void pattern_view_inner(const SDL_Rect *dest, const SDL_Event *event, int curren
 		const SDL_Rect *r;
 		
 		if (mused.song.pattern[current_pattern].step[i].note == MUS_NOTE_RELEASE)
-			r = console_write(mused.console, "--- ");
+			r = console_write(mused.console, "---");
 		else if (mused.song.pattern[current_pattern].step[i].note == MUS_NOTE_NONE)
-			r = console_write(mused.console, "... ");
+			r = console_write(mused.console, "...");
 		else
-			r = console_write_args(mused.console, "%s ", notename(mused.song.pattern[current_pattern].step[i].note));
+			r = console_write(mused.console, notename(mused.song.pattern[current_pattern].step[i].note));
 			
 		update_pattern_cursor(r, &selected_rect, current_pattern, i, PED_NOTE);
 			
 		check_event(event, r, select_pattern_param, (void*)PED_NOTE, (void*)i, (void*)current_pattern);
+		
+		console_write(mused.console," ");
 		
 		if (mused.song.pattern[current_pattern].step[i].instrument != MUS_NOTE_NO_INSTRUMENT)
 			r = console_write_args(mused.console, "%X", mused.song.pattern[current_pattern].step[i].instrument >> 4);
@@ -376,6 +379,7 @@ void pattern_view_stepcounter(const SDL_Rect *dest, const SDL_Event *event, void
 	
 	adjust_rect(&content, 2);
 	console_set_clip(mused.console, &content);
+	console_set_background(mused.console, 0);
 	
 	int y = 0;
 	for (int row = mused.pattern_position ; y < content.h ; ++row, y += mused.console->font.h)
@@ -391,7 +395,7 @@ void pattern_view_stepcounter(const SDL_Rect *dest, const SDL_Event *event, void
 			console_set_color(mused.console, timesig(row, 0xffffffff, 0xffffffc0, 0xffc0c0c0), CON_CHARACTER);
 		}
 		
-		console_write_args(mused.console, "%02X\n", row);
+		console_write_args(mused.console, "%03X\n", row);
 	}
 }
 
@@ -399,16 +403,39 @@ void pattern_view_stepcounter(const SDL_Rect *dest, const SDL_Event *event, void
 void pattern_view(const SDL_Rect *dest, const SDL_Event *event, void *param)
 {
 	int pv = 0;
+	const int pattern_width = 128;
+	
+	for (int i = 0 ; i < MUS_CHANNELS ; ++i)
+	{
+		if (mused.ghost_pattern[i] != -1)
+		{
+			++pv;
+		}
+	}
+	
 	SDL_Rect pos;
 	copy_rect(&pos, dest);
 	
-	pos.w = 16 + 2 * 3 + 2;
+	pos.w = mused.console->font.w * 3 + 2 * 3 + 2;
+	
+	int vert_scrollbar = 0;
+	SDL_Rect scrollbar;
+	
+	if (pattern_width * pv + pos.w > dest->w)
+	{
+		pos.h -= SCROLLBAR;
+		SDL_Rect temp = { pos.w + dest->x, dest->y + dest->h - SCROLLBAR, dest->w - pos.w, SCROLLBAR };
+		copy_rect(&scrollbar, &temp);
+		vert_scrollbar = 1;
+		SDL_SetClipRect(mused.console->surface, dest);
+	}
 	
 	pattern_view_stepcounter(&pos, event, param);
 	
 	pos.x += pos.w - 2;
-	pos.w = 128;
+	pos.w = pattern_width;
 	
+	int first = MUS_CHANNELS, last = 0;
 	for (int i = 0 ; i < MUS_CHANNELS ; ++i)
 	{
 		if (mused.ghost_pattern[i] != -1)
@@ -416,10 +443,24 @@ void pattern_view(const SDL_Rect *dest, const SDL_Event *event, void *param)
 			console_set_clip(mused.console, &pos);
 			console_clear(mused.console);
 	
-			pattern_view_inner(&pos, event, mused.ghost_pattern[i], i);
-			pos.x += pos.w - 2;
-			pv ++;
+			if (mused.pattern_horiz_position <= i)
+			{
+				first = my_min(first, i);
+				// Only consider fully visible pattern drawn
+				if (pos.x + pos.w < dest->x + dest->w) last = my_max(last, i);
+				
+				pattern_view_inner(&pos, event, mused.ghost_pattern[i], i);
+				pos.x += pos.w - 2;
+								
+				if (vert_scrollbar) slider_set_params(&mused.pattern_horiz_slider_param, 0, pv - 1, first, last, &mused.pattern_horiz_position, 1, SLIDER_HORIZONTAL);
+			}
 		}
+	}
+	
+	if (vert_scrollbar) 
+	{
+		SDL_SetClipRect(mused.console->surface, NULL);
+		slider(&scrollbar, event, &mused.pattern_horiz_slider_param); 
 	}
 	
 	if (!pv)

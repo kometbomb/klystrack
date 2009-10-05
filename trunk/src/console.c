@@ -41,7 +41,8 @@ void console_set_background(Console * c, int enabled)
 void console_set_color(Console* console, Uint32 color, int idx)
 {
 	SDL_Color rgb = { color, color >> 8, color >> 16 };
-	SDL_SetColors(console->font.surface, &rgb, idx, 1);
+	SDL_SetColors(console->fontsurface[0], &rgb, idx, 1);
+	SDL_SetColors(console->fontsurface[1], &rgb, idx, 1);
 }
 
 

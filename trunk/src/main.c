@@ -37,8 +37,8 @@ OTHER DEALINGS IN THE SOFTWARE.
 #include "action.h"
 #include "mouse.h"
 
-#define SCREEN_WIDTH 640
-#define SCREEN_HEIGHT 480
+#define SCREEN_WIDTH 320
+#define SCREEN_HEIGHT 240
 
 #include "mused.h"
 Mused mused;
@@ -55,23 +55,23 @@ static const View instrument_view_tab[] =
 {
 	{{0, 0, 150, SCREEN_HEIGHT}, instrument_view},
 	{{150, 0, 120, SCREEN_HEIGHT}, program_view},
-	{{150+120, 0, 16, SCREEN_HEIGHT}, slider, &mused.program_slider_param},
-	{{150+120+16, 0, 8*32 + 24, 9*11 }, instrument_list},
-	{{150+120+16+8*32 + 24, 0, 16, 100}, slider, &mused.instrument_list_slider_param},
+	{{150+120, 0, SCROLLBAR, SCREEN_HEIGHT}, slider, &mused.program_slider_param},
+	{{150+120+SCROLLBAR, 0, 8*32 + 24, 9*11 }, instrument_list},
+	{{150+120+SCROLLBAR+8*32 + 24, 0, SCROLLBAR, 100}, slider, &mused.instrument_list_slider_param},
 	{{0, 0, 0, 0}, NULL}
 };
 
 static const View pattern_view_tab[] =
 {
-	{{0, 0, SCREEN_WIDTH-16, SCREEN_HEIGHT}, pattern_view},
-	{{SCREEN_WIDTH-16, 0, 16, SCREEN_HEIGHT}, slider, &mused.pattern_slider_param},
+	{{0, 0, SCREEN_WIDTH-SCROLLBAR, SCREEN_HEIGHT}, pattern_view},
+	{{SCREEN_WIDTH-SCROLLBAR, 0, SCROLLBAR, SCREEN_HEIGHT}, slider, &mused.pattern_slider_param},
 	{{0, 0, 0, 0}, NULL}
 };
 
 static const View sequence_view_tab[] =
 {
-	{{0, 0, SCREEN_WIDTH-16, SCREEN_HEIGHT}, sequence_view},
-	{{SCREEN_WIDTH-16, 0, 16, SCREEN_HEIGHT}, slider, &mused.sequence_slider_param},
+	{{0, 0, SCREEN_WIDTH-SCROLLBAR, SCREEN_HEIGHT}, sequence_view},
+	{{SCREEN_WIDTH-SCROLLBAR, 0, SCROLLBAR, SCREEN_HEIGHT}, slider, &mused.sequence_slider_param},
 	{{0, 0, 0, 0}, NULL}
 };
 
