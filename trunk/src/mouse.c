@@ -83,8 +83,11 @@ int check_event(const SDL_Event *event, const SDL_Rect *rect, void (*action)(voi
 				if ((event->button.x >= rect->x) && (event->button.y >= rect->y) 
 					&& (event->button.x < rect->x + rect->w) && (event->button.y < rect->y + rect->h))
 				{
-					set_repeat_timer(event);
-					action(param1, param2, param3);
+					if (action) 
+					{	
+						set_repeat_timer(event);
+						action(param1, param2, param3);
+					}
 					return 1;
 				}
 			}

@@ -31,7 +31,6 @@ OTHER DEALINGS IN THE SOFTWARE.
 
 extern Mused mused;
 
-#define set_edit_buffer(s) { if (mused.edit_backup_buffer) mused.edit_backup_buffer = strdup(s); mused.edit_backup_buffer = strdup(s); mused.edit_buffer = (char*)s; mused.edit_buffer_size = sizeof(s); change_mode(EDITBUFFER); } 
 #define clamp(val, add, _min, _max) { if ((int)val+(add) > _max) val = _max; else if ((int)val+(add) < _min) val = _min; else val+=(add); } 
 #define flipbit(val, bit) { val ^= bit; };
 
@@ -323,7 +322,7 @@ void edit_instrument_event(SDL_Event *e)
 				if (mused.selected_param >= P_PARAMS) change_mode(EDITPROG);
 				else
 				if (mused.selected_param == P_NAME) 
-					set_edit_buffer(mused.song.instrument[mused.current_instrument].name);
+					set_edit_buffer(mused.song.instrument[mused.current_instrument].name, sizeof(mused.song.instrument[mused.current_instrument].name));
 			}
 			break;
 			
@@ -558,7 +557,7 @@ void sequence_event(SDL_Event *e)
 				{
 					if (e->key.keysym.mod & KMOD_SHIFT)
 					{
-						++mused.song.loop_point;
+						mused.song.loop_point += steps;
 						if (mused.song.loop_point >= mused.song.song_length)
 							mused.song.loop_point = mused.song.song_length;
 					}
@@ -597,8 +596,8 @@ void sequence_event(SDL_Event *e)
 				{
 					if (e->key.keysym.mod & KMOD_SHIFT)
 					{
-						if (mused.song.loop_point > 0)
-							--mused.song.loop_point;
+						if (mused.song.loop_point >= steps)
+							mused.song.loop_point -= steps;
 					}
 					else
 					{
