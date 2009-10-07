@@ -712,6 +712,48 @@ void info_line(const SDL_Rect *dest, const SDL_Event *event, void *param)
 			Uint16 inst = mused.song.instrument[mused.current_instrument].program[mused.selected_param-P_PARAMS];
 			get_command_desc(text, inst);
 		}
+		else
+		{
+			static const char * param_desc[] = 
+			{
+				"Select instrument",
+				"Edit instrument name",
+				"Base note",
+				"Lock to base note",
+				"Drum",
+				"Sync oscillator on keydown",
+				"Reverse vibrato bit",
+				"Set PW on keydown",
+				"Set cutoff on keydown",
+				"Send signal to reverb",
+				"Pulse wave",
+				"Pulse width",
+				"Saw wave",
+				"Triangle wave",
+				"Noise",
+				"Loop noise",
+				"Volume",
+				"Envelope attack",
+				"Envelope decay",
+				"Envelope sustain",
+				"Envelope release",
+				"Sync channel",
+				"Sync master channel",
+				"Ring modulation",
+				"Ring modulation source",
+				"Slide speed",
+				"Vibrato speed",
+				"Vibrato depth",
+				"Pulse width modulation speed",
+				"Pulse width modulation depth",
+				"Program period",
+				"Enable filter",
+				"Filter type",
+				"Filter cutoff frequency",
+				"Filter resonance",
+			};
+			strcpy(text, param_desc[mused.selected_param]);
+		}
 		
 		break;
 		
@@ -725,7 +767,6 @@ void info_line(const SDL_Rect *dest, const SDL_Event *event, void *param)
 		
 		break;
 	}
-	
 	
 	console_write(mused.console,text);
 }
