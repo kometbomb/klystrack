@@ -475,7 +475,7 @@ static void pattern_header(const SDL_Event *event, int x, int channel, const SDL
 	copy_rect(&button, topleft);
 	copy_rect(&pattern, topleft);
 			
-	pattern.w = 50;
+	pattern.w = 8 * 2 + 2 + 16; 
 	pattern.x = x;
 	
 	int d = generic_field(event, &pattern, channel, "", "%02X", (void*)*pattern_var, 2);
@@ -580,7 +580,7 @@ void pattern_view(const SDL_Rect *dest, const SDL_Event *event, void *param)
 		console_set_clip(mused.console, &pos);
 		console_clear(mused.console);
 		
-		pattern_header(event, 0, -1, &button_topleft, pattern_width, &mused.current_pattern);
+		pattern_header(event, pos.x, -1, &button_topleft, pattern_width, &mused.current_pattern);
 	
 		pattern_view_inner(&pos, event, mused.current_pattern, -1);
 	}
