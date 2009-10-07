@@ -888,6 +888,15 @@ void instrument_name_view(const SDL_Rect *dest, const SDL_Event *event, void *pa
 	area.x += area.w;
 	area.w = dest->x + dest->w - area.x;
 	inst_field(event, &area, P_NAME, 16, mused.song.instrument[mused.current_instrument].name);
+	if (mused.selected_param == P_NAME)
+	{
+		SDL_Rect r;
+		copy_rect(&r, &area);
+		adjust_rect(&r, -2);
+		r.h -= 2;
+		r.w -= 2;
+		bevel(&r, mused.slider_bevel, BEV_CURSOR);
+	}
 }
 
 
@@ -1050,7 +1059,7 @@ void reverb_view(const SDL_Rect *dest, const SDL_Event *event, void *param)
 	copy_rect(&area, dest);
 	console_set_clip(mused.console, &area);
 	console_clear(mused.console);
-	bevel(&area, mused.slider_bevel, BEV_THIN_FRAME);
+	bevel(&area, mused.slider_bevel, BEV_SLIDER_HANDLE);
 	adjust_rect(&area, 3);
 	console_set_clip(mused.console, &area);
 	SDL_Rect r;
@@ -1058,7 +1067,7 @@ void reverb_view(const SDL_Rect *dest, const SDL_Event *event, void *param)
 	
 	r.h = 10;
 	
-	if (checkbox(event, &r, "ENABLED\n", &mused.song.flags, MUS_ENABLE_REVERB)) mused.edit_reverb_param = R_ENABLE;
+	if (checkbox(event, &r, "ENABLED", &mused.song.flags, MUS_ENABLE_REVERB)) mused.edit_reverb_param = R_ENABLE;
 	update_rect(&area, &r);
 	
 	// We need to mirror the reverb flag to the corresponding Cyd flag
@@ -1072,7 +1081,7 @@ void reverb_view(const SDL_Rect *dest, const SDL_Event *event, void *param)
 	
 	for (int i = 0 ; i < CYDRVB_TAPS ; ++i)
 	{
-		if (i) separator(&area, &r);
+		separator(&area, &r);
 	
 		char label[20], value[20];
 		
