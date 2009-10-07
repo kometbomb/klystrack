@@ -70,12 +70,12 @@ void change_mode(int newmode)
 			int p = 0;				
 			for (int i = 0 ; i < MUS_CHANNELS ; ++i)
 			{
-				mused.ghost_pattern[i] = -1;
+				mused.ghost_pattern[i] = NULL;
 				
 				for (int e = 0 ; e < mused.song.num_sequences[i] ; ++e)
 					if (mused.song.sequence[i][e].position == mused.current_sequencepos)
 					{
-						mused.ghost_pattern[i] = mused.song.sequence[i][e].pattern;
+						mused.ghost_pattern[i] = &mused.song.sequence[i][e].pattern;
 						++p;
 					}
 			}
@@ -88,7 +88,7 @@ void change_mode(int newmode)
 			mused.single_pattern_edit = 1;
 			for (int i = 0 ; i < MUS_CHANNELS ; ++i)
 			{
-				mused.ghost_pattern[i] = -1;
+				mused.ghost_pattern[i] = NULL;
 			}
 			mused.current_patternstep = 0;
 			mused.current_patternx = 0;
