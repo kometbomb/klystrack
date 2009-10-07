@@ -50,14 +50,24 @@ OTHER DEALINGS IN THE SOFTWARE.
 
 extern Mused mused;
 
-void draw_view(const View* views, const SDL_Event *event)
+extern int event_hit;
+
+void draw_view(const View* views, const SDL_Event *_event)
 {
+	SDL_Event event;
+	memcpy(&event, _event, sizeof(event));
 	for (int i = 0 ; views[i].handler ; ++i)
 	{
 		const View *view = &views[i];
 
 		memcpy(&mused.console->clip, &view->position, sizeof(view->position));
-		view->handler(&view->position, event, view->param);
+		do
+		{
+			event_hit = 0;
+			view->handler(&view->position, &event, view->param);
+			if (event_hit) event.type = 0;
+		}
+		while (event_hit);
 		SDL_UpdateRect(mused.console->surface, view->position.x, view->position.y, view->position.w, view->position.h);
 	}
 }

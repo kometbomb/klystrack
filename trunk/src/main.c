@@ -144,7 +144,7 @@ int main(int argc, char **argv)
 	GfxDomain *domain = gfx_create_domain();
 	domain->screen_w = SCREEN_WIDTH;
 	domain->screen_h = SCREEN_HEIGHT;
-	domain->fps = 10;
+	domain->fps = 4;
 	gfx_domain_update(domain);
 	
 	SDL_EnableKeyRepeat(SDL_DEFAULT_REPEAT_DELAY, SDL_DEFAULT_REPEAT_INTERVAL);
