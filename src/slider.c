@@ -122,13 +122,13 @@ void slider(const SDL_Rect *_area, const SDL_Event *event, void *_param)
 		
 		if (param->orientation == SLIDER_HORIZONTAL)
 		{
-			area.w = bar_top - button_size;
-			area.x += button_size;
+			area.w = bar_top - dragarea.x;
+			area.x = dragarea.x;
 		}
 		else
 		{
-			area.h = bar_top - button_size;
-			area.y += button_size;
+			area.h = bar_top - dragarea.y;
+			area.y = dragarea.y;
 		}
 		
 		check_event(event, &area, modify_position, (void*)-(param->visible_last - param->visible_first), param, 0);
@@ -158,13 +158,13 @@ void slider(const SDL_Rect *_area, const SDL_Event *event, void *_param)
 		
 		if (param->orientation == SLIDER_HORIZONTAL)
 		{
-			area.x += bar_top + bar_size;
-			area.w -= bar_size + bar_top + button_size;
+			area.x = bar_top + bar_size;
+			area.w = dragarea.x + dragarea.w - bar_size - bar_top;
 		}
 		else
 		{
-			area.y += bar_top + bar_size;
-			area.h -= bar_size + bar_top + button_size;
+			area.y = bar_top + bar_size;
+			area.h = dragarea.y + dragarea.h - bar_size - bar_top;
 		}
 		
 		check_event(event, &area, modify_position, (void*)(param->visible_last - param->visible_first), param, 0);
