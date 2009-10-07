@@ -34,6 +34,7 @@ void pattern_event(SDL_Event *e);
 void edit_program_event(SDL_Event *e);
 void edit_text(SDL_Event *e);
 void reverb_event(SDL_Event *e);
+void reverb_add_param(int d);
 void instrument_add_param(int a);
 void del_sequence(int first,int last,int track);
 void add_sequence(int position, int pattern, int offset);
