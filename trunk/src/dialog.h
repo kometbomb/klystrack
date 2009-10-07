@@ -31,5 +31,6 @@ OTHER DEALINGS IN THE SOFTWARE.
 int checkbox(const SDL_Event *event, const SDL_Rect *area, const char* label, Uint32 *flags, Uint32 mask);
 int spinner(const SDL_Event *event, const SDL_Rect *area, int param);
 int button_event(const SDL_Event *event, const SDL_Rect *area, SDL_Surface *gfx, int offset, int offset_pressed, int decal, void (*action)(void*,void*,void*), void *param1, void *param2, void *param3);
+int button_text_event(const SDL_Event *event, const SDL_Rect *area, SDL_Surface *gfx, int offset, int offset_pressed, const char *label, void (*action)(void*,void*,void*), void *param1, void *param2, void *param3);
 
 #endif

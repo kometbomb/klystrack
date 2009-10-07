@@ -51,5 +51,6 @@ OTHER DEALINGS IN THE SOFTWARE.
 
 void bevel(const SDL_Rect *area, SDL_Surface *gfx, int offset);
 void button(const SDL_Rect *area, SDL_Surface *gfx, int offset, int decal);
+void button_text(const SDL_Rect *area, SDL_Surface *gfx, int offset, const char *label);
 
 #endif

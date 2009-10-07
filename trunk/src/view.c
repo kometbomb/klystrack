@@ -62,9 +62,9 @@ void draw_view(const View* views, const SDL_Event *event)
 
 static void update_rect(const SDL_Rect *parent, SDL_Rect *rect)
 {
-	rect->x += rect->w;
+	rect->x += rect->w + 4;
 	
-	if (rect->x + rect->w >= parent->x + parent->w)
+	if (rect->x + rect->w - 4 >= parent->x + parent->w)
 	{
 		rect->x = parent->x;
 		rect->y += rect->h;
@@ -620,6 +620,13 @@ void get_command_desc(char *text, Uint16 inst)
 
 void info_line(const SDL_Rect *dest, const SDL_Event *event, void *param)
 {
+	SDL_Rect area;
+	copy_rect(&area, dest);
+	console_set_clip(mused.console, &area);
+	console_clear(mused.console);
+	bevel(&area, mused.slider_bevel, BEV_THIN_FRAME);
+	adjust_rect(&area, 3);
+	console_set_clip(mused.console, &area);
 	console_set_color(mused.console,0x00000000,CON_BACKGROUND);
 	console_set_color(mused.console,0xffffffff,CON_CHARACTER);
 	
@@ -657,23 +664,41 @@ void info_line(const SDL_Rect *dest, const SDL_Event *event, void *param)
 
 void program_view(const SDL_Rect *dest, const SDL_Event *event, void *param)
 {
-	console_set_color(mused.console,0x00000000,CON_BACKGROUND);
+	SDL_Rect area;
+	copy_rect(&area, dest);
+	console_set_clip(mused.console, &area);
 	console_clear(mused.console);
+	bevel(&area, mused.slider_bevel, BEV_THIN_FRAME);
+	adjust_rect(&area, 2);
+	console_set_clip(mused.console, &area);
 	
 	MusInstrument *inst = &mused.song.instrument[mused.current_instrument];
 
-	int rows = dest->h / mused.console->font.h;
-	
 	//separator("----program-----");
 	
 	int start = mused.program_position;
 	
-	if (start > MUS_PROG_LEN - rows ) start = MUS_PROG_LEN - rows;
-	if (start < 0 ) start = 0;
+	int pos = 0, prev_pos = -1;
 	
-	for (int i = start, s = 0 ; i < MUS_PROG_LEN && s < rows; ++i, ++s)
+	for (int i = 0 ; i < start ; ++i)
 	{
-		console_set_color(mused.console,mused.selected_param == (P_PARAMS+i)?0xff0000ff:0xffffffff,CON_CHARACTER);
+		prev_pos = pos;
+		if (!(inst->program[i] & 0x8000)) ++pos;
+	}
+	
+	SDL_SetClipRect(mused.console->surface, &area);
+	
+	for (int i = start, s = 0, y = 0 ; i < MUS_PROG_LEN && y < area.h; ++i, ++s, y += mused.console->font.h)
+	{
+		if (mused.selected_param == (P_PARAMS+i))
+		{
+			console_set_color(mused.console,0xffffffff,CON_CHARACTER);
+			SDL_Rect row = { area.x - 1, area.y + y - 1, area.w + 2, mused.console->font.h + 1};
+			bevel(&row, mused.slider_bevel, BEV_SELECTED_PATTERN_ROW);
+			console_set_color(mused.console, 0xffffffff, CON_CHARACTER);
+		}
+		else
+			console_set_color(mused.console,pos & 1 ? 0xffc0c0c0 : 0xffd0d0d0,CON_CHARACTER);
 		
 		if (mused.selection.start - P_PARAMS <= i && mused.selection.end - P_PARAMS > i)
 			console_set_color(mused.console,0xff0000ff,CON_BACKGROUND);
@@ -696,11 +721,21 @@ void program_view(const SDL_Rect *dest, const SDL_Event *event, void *param)
 			box[mused.editpos] = '§'; // Cursor character
 		}
 		
-		check_event(event, console_write_args(mused.console, "%c%02X %s%c\n", (inst->program[i] & 0x8000) ? '(' : ' ', i, box, (inst->program[i] & 0x8000) ? ')' : ' '),
-			select_instrument_param, (void*)(P_PARAMS + i), 0, 0);
+		if (pos == prev_pos)
+			check_event(event, console_write_args(mused.console, "%02X    %s\n", i, box),
+				select_instrument_param, (void*)(P_PARAMS + i), 0, 0);
+		else
+			check_event(event, console_write_args(mused.console, "%02X %02X %s\n", i, pos, box),
+				select_instrument_param, (void*)(P_PARAMS + i), 0, 0);
 			
 		slider_set_params(&mused.program_slider_param, 0, MUS_PROG_LEN - 1, start, i, &mused.program_position, 1, SLIDER_VERTICAL);
+		
+		prev_pos = pos;
+		
+		if (!(inst->program[i] & 0x8000)) ++pos;
 	}
+	
+	SDL_SetClipRect(mused.console->surface, NULL);
 }
 
 
@@ -719,6 +754,15 @@ static void label(const char *_label, const SDL_Rect *area)
 static void inst_flags(const SDL_Event *e, const SDL_Rect *area, int p, const char *label, Uint32 *flags, Uint32 mask)
 {
 	if (checkbox(e, area, label, flags, mask)) mused.selected_param = p;
+	if (p == mused.selected_param)
+	{
+		SDL_Rect r;
+		copy_rect(&r, area);
+		adjust_rect(&r, -2);
+		r.h -= 2;
+		r.w -= 2;
+		bevel(&r, mused.slider_bevel, BEV_CURSOR);
+	}
 }
 
 
@@ -732,7 +776,7 @@ static void inst_text(const SDL_Event *e, const SDL_Rect *area, int p, const cha
 	copy_rect(&field, area);
 	
 	field.w = width * mused.console->font.w + 2;
-	field.x = area->x + area->w - field.w - 4;
+	field.x = area->x + area->w - field.w;
 	
 	copy_rect(&spinner_area, &field);
 	
@@ -751,6 +795,16 @@ static void inst_text(const SDL_Event *e, const SDL_Rect *area, int p, const cha
 	if (d) mused.selected_param = p;
 	if (d < 0) instrument_add_param(-1);
 	else if (d >0) instrument_add_param(1);
+	
+	if (p == mused.selected_param)
+	{
+		SDL_Rect r;
+		copy_rect(&r, area);
+		adjust_rect(&r, -2);
+		r.h -= 2;
+		r.w -= 2;
+		bevel(&r, mused.slider_bevel, BEV_CURSOR);
+	}
 }
 
 
@@ -795,7 +849,7 @@ void instrument_name_view(const SDL_Rect *dest, const SDL_Event *event, void *pa
 	copy_rect(&area,dest);
 	area.w = 2 * mused.console->font.w + 2 + 16;
 	inst_text(event, &area, P_INSTRUMENT, "", "%02x", (void*)mused.current_instrument, 2);
-	area.x += area.w - 4;
+	area.x += area.w;
 	area.w = dest->x + dest->w - area.x;
 	inst_field(event, &area, P_NAME, 16, mused.song.instrument[mused.current_instrument].name);
 }
@@ -808,22 +862,22 @@ void instrument_view(const SDL_Rect *dest, const SDL_Event *event, void *param)
 	SDL_Rect r, frame;
 	copy_rect(&frame, dest);
 	bevel(&frame, mused.slider_bevel, BEV_SLIDER_HANDLE);
-	adjust_rect(&frame, 2);
+	adjust_rect(&frame, 4);
 	
 	{
 		copy_rect(&r, &frame);
 		SDL_Rect note;
 		copy_rect(&note, &frame);
 		
-		r.w = r.w / 2 - 1;
+		r.w = r.w / 2 - 2;
 		r.h = 10;
 		r.y += r.h + 1;
 		
-		note.w = frame.w / 2 + 4;
+		note.w = frame.w / 2 + 2;
 		note.h = 10;
 		
 		inst_text(event, &note, P_BASENOTE, "BASE", "%s", notename(inst->base_note), 3);
-		note.x += note.w;
+		note.x += note.w + 2;
 		note.y += 1;
 		note.w = frame.w - note.x;
 		
@@ -844,14 +898,14 @@ void instrument_view(const SDL_Rect *dest, const SDL_Event *event, void *param)
 	
 	{
 		int tmp = r.w;
-		r.w = frame.w / 3 - 1;
+		r.w = frame.w / 3 - 2;
 		separator(&frame, &r);
 		inst_flags(event, &r, P_PULSE, "PUL", &inst->cydflags, CYD_CHN_ENABLE_PULSE);
 		update_rect(&frame, &r);
-		r.w = frame.w / 2 - 1;
+		r.w = frame.w / 2 - 2;
 		inst_text(event, &r, P_PW, "PW", "%03X", (void*)inst->pw, 3);
 		update_rect(&frame, &r);
-		r.w = frame.w / 3 - 1;
+		r.w = frame.w / 3 - 2;
 		inst_flags(event, &r, P_SAW, "SAW", &inst->cydflags, CYD_CHN_ENABLE_SAW);
 		update_rect(&frame, &r);
 		inst_flags(event, &r, P_TRIANGLE, "TRI", &inst->cydflags, CYD_CHN_ENABLE_TRIANGLE);
@@ -917,9 +971,15 @@ void instrument_view(const SDL_Rect *dest, const SDL_Event *event, void *param)
 
 void instrument_list(const SDL_Rect *dest, const SDL_Event *event, void *param)
 {
-	console_set_clip(mused.console, dest);
+	SDL_Rect area;
+	copy_rect(&area, dest);
+	console_set_clip(mused.console, &area);
 	console_clear(mused.console);
-	int y = dest->y;
+	bevel(&area, mused.slider_bevel, BEV_THIN_FRAME);
+	adjust_rect(&area, 3);
+	console_set_clip(mused.console, &area);
+	
+	int y = area.y;
 	
 	//separator("----instruments----");
 	
@@ -928,10 +988,19 @@ void instrument_list(const SDL_Rect *dest, const SDL_Event *event, void *param)
 	/*if (start > NUM_INSTRUMENTS - rows ) start = NUM_INSTRUMENTS - rows;
 	if (start < 0 ) start = 0;*/
 	
-	for (int i = start ; i < NUM_INSTRUMENTS && y < dest->h + dest->y ; ++i, y += mused.console->font.h)
+	for (int i = start ; i < NUM_INSTRUMENTS && y < area.h + area.y ; ++i, y += mused.console->font.h)
 	{
-		console_set_color(mused.console, i == mused.current_instrument ? 0xffff0000 : 0x0, CON_BACKGROUND);
-		console_set_color(mused.console, 0xffffffff, CON_CHARACTER);
+		if (i == mused.current_instrument)
+		{
+			SDL_Rect row = { area.x - 1, y - 1, area.w + 2, mused.console->font.h + 1};
+			bevel(&row, mused.slider_bevel, BEV_SELECTED_PATTERN_ROW);
+			console_set_color(mused.console, 0xffffffff, CON_CHARACTER);
+		}
+		else
+		{
+			console_set_color(mused.console, 0xffc0c0c0, CON_CHARACTER);
+		}
+			
 		check_event(event, console_write_args(mused.console, "%02X %-16s\n", i, mused.song.instrument[i].name), select_instrument, (void*)i, 0, 0);
 		
 		slider_set_params(&mused.instrument_list_slider_param, 0, NUM_INSTRUMENTS - 1, start, i, &mused.instrument_list_position, 1, SLIDER_VERTICAL);
@@ -982,3 +1051,22 @@ void reverb_view(const SDL_Rect *dest, const SDL_Event *event, void *param)
 		++p;
 	}
 }
+
+
+void instrument_disk_view(const SDL_Rect *dest, const SDL_Event *event, void *param)
+{
+	SDL_Rect area;
+	copy_rect(&area, dest);
+	console_set_clip(mused.console, &area);
+	console_clear(mused.console);
+	bevel(&area, mused.slider_bevel, BEV_SLIDER_HANDLE);
+	adjust_rect(&area, 1);
+	
+	SDL_Rect button = { area.x, area.y, 50, area.h };
+	
+	button_text_event(event, &button, mused.slider_bevel, BEV_SLIDER_HANDLE, BEV_SLIDER_HANDLE_ACTIVE, "LOAD", open_song_action, NULL, NULL, NULL);
+	update_rect(&area, &button);
+	button_text_event(event, &button, mused.slider_bevel, BEV_SLIDER_HANDLE, BEV_SLIDER_HANDLE_ACTIVE, "SAVE", save_song_action, NULL, NULL, NULL);
+	update_rect(&area, &button);
+}
+
