@@ -863,7 +863,7 @@ void instrument_view(const SDL_Rect *dest, const SDL_Event *event, void *param)
 	update_rect(&frame, &r);
 	inst_text(event, &r, P_SYNCSRC, "SRC", "%02X", (void*)inst->sync_source, 2);
 	update_rect(&frame, &r);
-	inst_flags(event, &r, P_RINGMOD, "RING", &inst->cydflags, CYD_CHN_ENABLE_RING_MODULATION);
+	inst_flags(event, &r, P_RINGMOD, "RING MOD", &inst->cydflags, CYD_CHN_ENABLE_RING_MODULATION);
 	update_rect(&frame, &r);
 	inst_text(event, &r, P_RINGMODSRC, "SRC", "%02X", (void*)inst->ring_mod, 2);
 	update_rect(&frame, &r);
@@ -889,7 +889,7 @@ void instrument_view(const SDL_Rect *dest, const SDL_Event *event, void *param)
 	update_rect(&frame, &r);
 	inst_text(event, &r, P_FLTTYPE, "TYPE", "%s", (char*)flttype[inst->flttype], 2);
 	update_rect(&frame, &r);
-	inst_text(event, &r, P_CUTOFF, "CUTOFF", "%03X", (void*)inst->cutoff, 3);
+	inst_text(event, &r, P_CUTOFF, "FRQ", "%03X", (void*)inst->cutoff, 3);
 	update_rect(&frame, &r);
 	inst_text(event, &r, P_RESONANCE, "RES", "%1X", (void*)inst->resonance, 1);
 	update_rect(&frame, &r);
@@ -913,7 +913,7 @@ void instrument_list(const SDL_Rect *dest, const SDL_Event *event, void *param)
 	{
 		console_set_color(mused.console, i == mused.current_instrument ? 0xffff0000 : 0x0, CON_BACKGROUND);
 		console_set_color(mused.console, 0xffffffff, CON_CHARACTER);
-		check_event(event, console_write_args(mused.console, "%02X %-16s\n", i + 1, mused.song.instrument[i].name), select_instrument, (void*)i, 0, 0);
+		check_event(event, console_write_args(mused.console, "%02X %-16s\n", i, mused.song.instrument[i].name), select_instrument, (void*)i, 0, 0);
 		
 		slider_set_params(&mused.instrument_list_slider_param, 0, NUM_INSTRUMENTS - 1, start, i, &mused.instrument_list_position, 1, SLIDER_VERTICAL);
 	}
