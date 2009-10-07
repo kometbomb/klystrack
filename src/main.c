@@ -50,15 +50,16 @@ int stat_pattern_position[MUS_CHANNELS];
 MusPattern *stat_pattern[MUS_CHANNELS];
 int stat_pattern_number[MUS_CHANNELS];
 
+#define INST_LIST 6*8
 
 static const View instrument_view_tab[] =
 {
 	{{4, 0, 162, 10}, instrument_name_view},
 	{{0, 10, 158, SCREEN_HEIGHT-10}, instrument_view},
-	{{158, 10, SCREEN_WIDTH - 158 - SCROLLBAR, 5*8 }, instrument_list},
-	{{158, 10 + 9*11, SCREEN_WIDTH - 158 - SCROLLBAR, SCREEN_HEIGHT-(10 + 5*8)}, program_view},
-	{{SCREEN_WIDTH - SCROLLBAR, 10 + 5*8, SCROLLBAR, SCREEN_HEIGHT-(10 + 5*8)}, slider, &mused.program_slider_param},
-	{{SCREEN_WIDTH - SCROLLBAR, 10, SCROLLBAR, 5*8 }, slider, &mused.instrument_list_slider_param},
+	{{158, 10, SCREEN_WIDTH - 158 - SCROLLBAR, INST_LIST }, instrument_list},
+	{{158, 10 + INST_LIST, SCREEN_WIDTH - 158 - SCROLLBAR, SCREEN_HEIGHT-(10 + INST_LIST)}, program_view},
+	{{SCREEN_WIDTH - SCROLLBAR, 10 + INST_LIST, SCROLLBAR, SCREEN_HEIGHT-(10 + INST_LIST)}, slider, &mused.program_slider_param},
+	{{SCREEN_WIDTH - SCROLLBAR, 10, SCROLLBAR, INST_LIST }, slider, &mused.instrument_list_slider_param},
 	{{0, 0, 0, 0}, NULL}
 };
 

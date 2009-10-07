@@ -334,7 +334,17 @@ void edit_instrument_event(SDL_Event *e)
 			
 			case SDLK_DOWN:
 			{
-				++mused.selected_param;
+				if (mused.selected_param >= P_PARAMS)
+				{
+					mused.selected_param -= P_PARAMS;
+					move_position(&mused.selected_param, &mused.program_position, &mused.program_slider_param, 1, MUS_PROG_LEN);
+					mused.selected_param += P_PARAMS;
+				}
+				else
+				{
+					++mused.selected_param;
+				}
+				
 				if (mused.selected_param >= P_PARAMS + MUS_PROG_LEN) mused.selected_param = P_PARAMS + MUS_PROG_LEN - 1;
 				
 				if (e->key.keysym.mod & KMOD_SHIFT)
@@ -346,7 +356,17 @@ void edit_instrument_event(SDL_Event *e)
 			
 			case SDLK_UP:
 			{
-				--mused.selected_param;
+				if (mused.selected_param >= P_PARAMS)
+				{
+					mused.selected_param -= P_PARAMS;
+					move_position(&mused.selected_param, &mused.program_position, &mused.program_slider_param, -1, MUS_PROG_LEN);
+					mused.selected_param += P_PARAMS;
+				}
+				else
+				{
+					--mused.selected_param;
+				}
+				
 				if (mused.selected_param < 0) mused.selected_param = 0;
 				
 				if (e->key.keysym.mod & KMOD_SHIFT)
