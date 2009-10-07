@@ -75,7 +75,7 @@ void change_mode(int newmode)
 				for (int e = 0 ; e < mused.song.num_sequences[i] ; ++e)
 					if (mused.song.sequence[i][e].position == mused.current_sequencepos)
 					{
-						mused.ghost_pattern[i] = &mused.song.sequence[i][e].pattern;
+						mused.ghost_pattern[i] = (int*)&mused.song.sequence[i][e].pattern;
 						++p;
 					}
 			}

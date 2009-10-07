@@ -45,6 +45,9 @@ OTHER DEALINGS IN THE SOFTWARE.
 
 #define timesig(i, bar, beat, normal) ((((i)%((mused.time_signature>>8)*(mused.time_signature&0xff))) == 0)?(bar):((((i)%(mused.time_signature&0xff))==0)?(beat):(normal)))
 
+// Makes "warning: cast to pointer from integer of different size" disappear
+#define MAKEPTR(x) ((void*)(Uint32)(x))
+
 extern Mused mused;
 
 void draw_view(const View* views, const SDL_Event *event)
@@ -926,7 +929,7 @@ void instrument_view(const SDL_Rect *dest, const SDL_Event *event, void *param)
 		inst_flags(event, &r, P_PULSE, "PUL", &inst->cydflags, CYD_CHN_ENABLE_PULSE);
 		update_rect(&frame, &r);
 		r.w = frame.w / 2 - 2;
-		inst_text(event, &r, P_PW, "PW", "%03X", (void*)inst->pw, 3);
+		inst_text(event, &r, P_PW, "PW", "%03X", MAKEPTR(inst->pw), 3);
 		update_rect(&frame, &r);
 		r.w = frame.w / 3 - 2;
 		inst_flags(event, &r, P_SAW, "SAW", &inst->cydflags, CYD_CHN_ENABLE_SAW);
@@ -942,39 +945,39 @@ void instrument_view(const SDL_Rect *dest, const SDL_Event *event, void *param)
 	}
 	
 	separator(&frame, &r);
-	inst_text(event, &r, P_VOLUME, "VOL", "%02X", (void*)inst->volume, 2);
+	inst_text(event, &r, P_VOLUME, "VOL", "%02X", MAKEPTR(inst->volume), 2);
 	update_rect(&frame, &r);
-	inst_text(event, &r, P_ATTACK, "ATK", "%02X", (void*)inst->adsr.a, 2);
+	inst_text(event, &r, P_ATTACK, "ATK", "%02X", MAKEPTR(inst->adsr.a), 2);
 	update_rect(&frame, &r);
-	inst_text(event, &r, P_DECAY, "DEC", "%02X", (void*)inst->adsr.d, 2);
+	inst_text(event, &r, P_DECAY, "DEC", "%02X", MAKEPTR(inst->adsr.d), 2);
 	update_rect(&frame, &r);
-	inst_text(event, &r, P_SUSTAIN, "SUS", "%02X", (void*)inst->adsr.s, 2);
+	inst_text(event, &r, P_SUSTAIN, "SUS", "%02X", MAKEPTR(inst->adsr.s), 2);
 	update_rect(&frame, &r);
-	inst_text(event, &r, P_RELEASE, "REL", "%02X", (void*)inst->adsr.r, 2);
+	inst_text(event, &r, P_RELEASE, "REL", "%02X", MAKEPTR(inst->adsr.r), 2);
 	update_rect(&frame, &r);
 	
 	separator(&frame, &r);
 	inst_flags(event, &r, P_SYNC, "SYNC", &inst->cydflags, CYD_CHN_ENABLE_SYNC);
 	update_rect(&frame, &r);
-	inst_text(event, &r, P_SYNCSRC, "SRC", "%02X", (void*)inst->sync_source, 2);
+	inst_text(event, &r, P_SYNCSRC, "SRC", "%02X", MAKEPTR(inst->sync_source), 2);
 	update_rect(&frame, &r);
 	inst_flags(event, &r, P_RINGMOD, "RING MOD", &inst->cydflags, CYD_CHN_ENABLE_RING_MODULATION);
 	update_rect(&frame, &r);
-	inst_text(event, &r, P_RINGMODSRC, "SRC", "%02X", (void*)inst->ring_mod, 2);
+	inst_text(event, &r, P_RINGMODSRC, "SRC", "%02X", MAKEPTR(inst->ring_mod), 2);
 	update_rect(&frame, &r);
 	
 	separator(&frame, &r);
-	inst_text(event, &r, P_SLIDESPEED, "SLIDE", "%02X", (void*)inst->slide_speed, 2);
+	inst_text(event, &r, P_SLIDESPEED, "SLIDE", "%02X", MAKEPTR(inst->slide_speed), 2);
 	update_rect(&frame, &r);
-	inst_text(event, &r, P_VIBSPEED,   "V SPD", "%02X", (void*)inst->vibrato_speed, 2);
+	inst_text(event, &r, P_VIBSPEED,   "V SPD", "%02X", MAKEPTR(inst->vibrato_speed), 2);
 	update_rect(&frame, &r);
-	inst_text(event, &r, P_VIBDEPTH,   "V DPT", "%02X", (void*)inst->vibrato_depth, 2);
+	inst_text(event, &r, P_VIBDEPTH,   "V DPT", "%02X", MAKEPTR(inst->vibrato_depth), 2);
 	update_rect(&frame, &r);
-	inst_text(event, &r, P_PWMSPEED,   "PWM SPD", "%02X", (void*)inst->pwm_speed, 2);
+	inst_text(event, &r, P_PWMSPEED,   "PWM SPD", "%02X", MAKEPTR(inst->pwm_speed), 2);
 	update_rect(&frame, &r);
-	inst_text(event, &r, P_PWMDEPTH,   "PWM DPT", "%02X", (void*)inst->pwm_depth, 2);
+	inst_text(event, &r, P_PWMDEPTH,   "PWM DPT", "%02X", MAKEPTR(inst->pwm_depth), 2);
 	update_rect(&frame, &r);
-	inst_text(event, &r, P_PROGPERIOD, "P PERIOD", "%02X", (void*)inst->prog_period, 2);
+	inst_text(event, &r, P_PROGPERIOD, "P PERIOD", "%02X", MAKEPTR(inst->prog_period), 2);
 	update_rect(&frame, &r);
 	
 	static const char *flttype[] = { "LP", "HP", "BP" };
@@ -984,9 +987,9 @@ void instrument_view(const SDL_Rect *dest, const SDL_Event *event, void *param)
 	update_rect(&frame, &r);
 	inst_text(event, &r, P_FLTTYPE, "TYPE", "%s", (char*)flttype[inst->flttype], 2);
 	update_rect(&frame, &r);
-	inst_text(event, &r, P_CUTOFF, "FRQ", "%03X", (void*)inst->cutoff, 3);
+	inst_text(event, &r, P_CUTOFF, "FRQ", "%03X", MAKEPTR(inst->cutoff), 3);
 	update_rect(&frame, &r);
-	inst_text(event, &r, P_RESONANCE, "RES", "%1X", (void*)inst->resonance, 1);
+	inst_text(event, &r, P_RESONANCE, "RES", "%1X", MAKEPTR(inst->resonance), 1);
 	update_rect(&frame, &r);
 	
 }
