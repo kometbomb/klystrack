@@ -42,11 +42,14 @@ typedef struct
 
 
 void draw_view(const View* views, const SDL_Event *event);
+void adjust_rect(SDL_Rect *rect, int margin);
+void copy_rect(SDL_Rect *dest, const SDL_Rect *src);
 
 /* 
 "Controls"
 */
 
+void instrument_name_view(const SDL_Rect *dest, const SDL_Event *event, void *param);
 void program_view(const SDL_Rect *dest, const SDL_Event *event, void *param);
 void info_line(const SDL_Rect *dest, const SDL_Event *event, void *param);
 void sequence_view(const SDL_Rect *dest, const SDL_Event *event, void *param);

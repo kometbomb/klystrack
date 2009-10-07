@@ -27,6 +27,8 @@ OTHER DEALINGS IN THE SOFTWARE.
 #include "bevel.h"
 #include "mused.h"
 #include "mouse.h"
+#include "view.h"
+#include "gfx/font.h"
 
 extern Mused mused;
 
@@ -37,12 +39,19 @@ static void flip(void *bits, void *mask, void *unused)
 }
 
 
-int checkbox(const SDL_Event *event, const char* label, Uint32 *flags, Uint32 mask)
+int checkbox(const SDL_Event *event, const SDL_Rect *area, const char* _label, Uint32 *flags, Uint32 mask)
 {
-	SDL_Rect area = { (mused.console->font.w * (mused.console->cursor & 0xff)), mused.console->font.h * (mused.console->cursor >> 8) , 8, 8 };
-	int pressed = button_event(event, &area, mused.slider_bevel, BEV_SLIDER_HANDLE, BEV_SLIDER_HANDLE_ACTIVE, (*flags & mask) ? DECAL_TICK : -1, flip, flags, (void*)mask, 0);
-	mused.console->cursor += 0x01;
-	pressed |= check_event(event, console_write(mused.console, label), flip, flags, (void*)mask, 0);
+	SDL_Rect tick, label;
+	copy_rect(&tick, area);
+	copy_rect(&label, area);
+	tick.h = tick.w = 8;
+	label.w -= tick.w + 4;
+	label.x += tick.w + 4;
+	label.y += 1;
+	label.h -= 1;
+	int pressed = button_event(event, &tick, mused.slider_bevel, BEV_SLIDER_HANDLE, BEV_SLIDER_HANDLE_ACTIVE, (*flags & mask) ? DECAL_TICK : -1, flip, flags, (void*)mask, 0);
+	font_write(&mused.smallfont, mused.console->surface, &label, _label);
+	pressed |= check_event(event, &label, flip, flags, (void*)mask, 0);
 	
 	return pressed;
 }
@@ -69,20 +78,16 @@ int button_event(const SDL_Event *event, const SDL_Rect *area, SDL_Surface *gfx,
 }
 
 
-int spinner(const SDL_Event *event, int param)
+int spinner(const SDL_Event *event, const SDL_Rect *_area, int param)
 {
 	int plus, minus;
-	{
-		SDL_Rect area = { (mused.console->font.w * (mused.console->cursor & 0xff)), mused.console->font.h * (mused.console->cursor >> 8) , 8, 8 };
-		minus = button_event(event, &area, mused.slider_bevel, BEV_SLIDER_HANDLE, BEV_SLIDER_HANDLE_ACTIVE, DECAL_MINUS, NULL, (void*)(0x80000000 | param), 0, NULL) & 1;
-		mused.console->cursor += 0x01;
-	}
-	
-	{
-		SDL_Rect area = { (mused.console->font.w * (mused.console->cursor & 0xff)), mused.console->font.h * (mused.console->cursor >> 8) , 8, 8 };
-		plus = button_event(event, &area, mused.slider_bevel, BEV_SLIDER_HANDLE, BEV_SLIDER_HANDLE_ACTIVE, DECAL_PLUS, NULL, (void*)(0x81000000 | param), 0, NULL) & 1;
-		mused.console->cursor += 0x01;
-	}
+	SDL_Rect area;
+	copy_rect(&area, _area);
+	area.w /= 2;
+	minus = button_event(event, &area, mused.slider_bevel, BEV_SLIDER_HANDLE, BEV_SLIDER_HANDLE_ACTIVE, DECAL_MINUS, NULL, (void*)(0x80000000 | param), 0, NULL) & 1;
+
+	area.x += area.w;
+	plus = button_event(event, &area, mused.slider_bevel, BEV_SLIDER_HANDLE, BEV_SLIDER_HANDLE_ACTIVE, DECAL_PLUS, NULL, (void*)(0x81000000 | param), 0, NULL) & 1;
 	
 	return plus ? +1 : (minus ? -1 : 0);
 }

@@ -53,8 +53,9 @@ int stat_pattern_number[MUS_CHANNELS];
 
 static const View instrument_view_tab[] =
 {
-	{{0, 0, 150, SCREEN_HEIGHT}, instrument_view},
-	{{150, 0, 120, SCREEN_HEIGHT}, program_view},
+	{{4, 0, 170, 10}, instrument_name_view},
+	{{0, 10, 150, SCREEN_HEIGHT-10}, instrument_view},
+	{{150, 10, 120, SCREEN_HEIGHT-10}, program_view},
 	{{150+120, 0, SCROLLBAR, SCREEN_HEIGHT}, slider, &mused.program_slider_param},
 	{{150+120+SCROLLBAR, 0, 8*32 + 24, 9*11 }, instrument_list},
 	{{150+120+SCROLLBAR+8*32 + 24, 0, SCROLLBAR, 100}, slider, &mused.instrument_list_slider_param},
@@ -139,6 +140,7 @@ int main(int argc, char **argv)
 	GfxDomain *domain = gfx_create_domain();
 	domain->screen_w = SCREEN_WIDTH;
 	domain->screen_h = SCREEN_HEIGHT;
+	domain->fps = 10;
 	gfx_domain_update(domain);
 	
 	SDL_EnableKeyRepeat(SDL_DEFAULT_REPEAT_DELAY, SDL_DEFAULT_REPEAT_INTERVAL);
@@ -237,11 +239,11 @@ int main(int argc, char **argv)
 				break;
 			}
 			
-			++got_event;
+			if (e.type != SDL_MOUSEMOTION || (e.motion.state)) ++got_event;
 			
 			// ensure the last event is a mouse click so it gets passed to the draw/event code
 			
-			if (e.type == SDL_MOUSEBUTTONDOWN || e.type == SDL_MOUSEMOTION) break; 
+			if (e.type == SDL_MOUSEBUTTONDOWN || (e.type == SDL_MOUSEMOTION && e.motion.state)) break; 
 		}
 		
 		if (got_event || gfx_domain_is_next_frame(domain))

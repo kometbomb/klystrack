@@ -75,6 +75,7 @@ typedef struct
 	MusPattern *stat_pattern[MUS_CHANNELS];
 	int stat_pattern_number[MUS_CHANNELS];
 	SDL_Surface *slider_bevel;
+	Font smallfont, largefont;
 } Mused;
 
 #define NUM_STEPS 256
