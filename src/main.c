@@ -55,10 +55,11 @@ static const View instrument_view_tab[] =
 {
 	{{4, 0, 170, 10}, instrument_name_view},
 	{{0, 10, 150, SCREEN_HEIGHT-10}, instrument_view},
-	{{150, 10, 120, SCREEN_HEIGHT-10}, program_view},
-	{{150+120, 0, SCROLLBAR, SCREEN_HEIGHT}, slider, &mused.program_slider_param},
-	{{150+120+SCROLLBAR, 0, 8*32 + 24, 9*11 }, instrument_list},
-	{{150+120+SCROLLBAR+8*32 + 24, 0, SCROLLBAR, 100}, slider, &mused.instrument_list_slider_param},
+	{{150, 10, SCREEN_WIDTH - 150, 9*11 }, instrument_list},
+	{{150, 10 + 9*11, SCREEN_WIDTH - 150, SCREEN_HEIGHT-(10 + 9*11)}, program_view},
+	//{{150+120, 0, SCROLLBAR, SCREEN_HEIGHT}, slider, &mused.program_slider_param},
+	
+	//{{150+120+SCROLLBAR+8*32 + 24, 0, SCROLLBAR, 100}, slider, &mused.instrument_list_slider_param},
 	{{0, 0, 0, 0}, NULL}
 };
 
