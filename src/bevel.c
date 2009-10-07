@@ -115,3 +115,12 @@ void button(const SDL_Rect *area, SDL_Surface *gfx, int offset, int decal)
 		SDL_BlitSurface(gfx, &src, mused.console->surface, &dest);
 	}
 }
+
+
+void button_text(const SDL_Rect *area, SDL_Surface *gfx, int offset, const char *label)
+{
+	bevel(area, gfx, offset);
+	
+	SDL_Rect dest = { area->x + area->w / 2 - (mused.smallfont.w*strlen(label)) / 2, area->y + area->h / 2 - mused.smallfont.h / 2, 1000, 1000 };
+	font_write(&mused.smallfont, mused.console->surface, &dest, label);
+}

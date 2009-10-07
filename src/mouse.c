@@ -85,8 +85,8 @@ int check_event(const SDL_Event *event, const SDL_Rect *rect, void (*action)(voi
 				{
 					if (action) 
 					{	
-						set_repeat_timer(event);
 						action(param1, param2, param3);
+						set_repeat_timer(event);
 					}
 					return 1;
 				}
