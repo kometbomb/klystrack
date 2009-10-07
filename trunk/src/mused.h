@@ -59,6 +59,7 @@ typedef struct
 		current_sequencepos, sequenceview_steps, single_pattern_edit, 
 		prev_mode, current_sequenceparam, instrument_list_position,
 		pattern_position, sequence_position, pattern_horiz_position,
+		program_position,
 		edit_reverb_param;
 	int ghost_pattern[MUS_CHANNELS];
 	int current_sequencetrack;

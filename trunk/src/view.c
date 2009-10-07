@@ -666,7 +666,7 @@ void program_view(const SDL_Rect *dest, const SDL_Event *event, void *param)
 	
 	//separator("----program-----");
 	
-	int start = mused.selected_param - P_PARAMS - rows/2;
+	int start = mused.program_position;
 	
 	if (start > MUS_PROG_LEN - rows ) start = MUS_PROG_LEN - rows;
 	if (start < 0 ) start = 0;
@@ -699,7 +699,7 @@ void program_view(const SDL_Rect *dest, const SDL_Event *event, void *param)
 		check_event(event, console_write_args(mused.console, "%c%02X %s%c\n", (inst->program[i] & 0x8000) ? '(' : ' ', i, box, (inst->program[i] & 0x8000) ? ')' : ' '),
 			select_instrument_param, (void*)(P_PARAMS + i), 0, 0);
 			
-		slider_set_params(&mused.program_slider_param, P_PARAMS, MUS_PROG_LEN - 1 + P_PARAMS, start + P_PARAMS, i + P_PARAMS, &mused.selected_param, 1, SLIDER_VERTICAL);
+		slider_set_params(&mused.program_slider_param, 0, MUS_PROG_LEN - 1, start, i, &mused.program_position, 1, SLIDER_VERTICAL);
 	}
 }
 
@@ -917,8 +917,9 @@ void instrument_view(const SDL_Rect *dest, const SDL_Event *event, void *param)
 
 void instrument_list(const SDL_Rect *dest, const SDL_Event *event, void *param)
 {
+	console_set_clip(mused.console, dest);
 	console_clear(mused.console);
-	int y = mused.console->font.h;
+	int y = dest->y;
 	
 	//separator("----instruments----");
 	
@@ -927,7 +928,7 @@ void instrument_list(const SDL_Rect *dest, const SDL_Event *event, void *param)
 	/*if (start > NUM_INSTRUMENTS - rows ) start = NUM_INSTRUMENTS - rows;
 	if (start < 0 ) start = 0;*/
 	
-	for (int i = start ; i < NUM_INSTRUMENTS && y < dest->h ; ++i, y += mused.console->font.h)
+	for (int i = start ; i < NUM_INSTRUMENTS && y < dest->h + dest->y ; ++i, y += mused.console->font.h)
 	{
 		console_set_color(mused.console, i == mused.current_instrument ? 0xffff0000 : 0x0, CON_BACKGROUND);
 		console_set_color(mused.console, 0xffffffff, CON_CHARACTER);
