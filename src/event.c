@@ -854,9 +854,9 @@ void pattern_event(SDL_Event *e)
 							{
 								mused.current_sequencetrack = (mused.current_sequencetrack + 1) % MUS_CHANNELS;
 							}
-							while (mused.ghost_pattern[mused.current_sequencetrack] == -1) ;
+							while (mused.ghost_pattern[mused.current_sequencetrack] == NULL) ;
 							
-							mused.current_pattern = mused.ghost_pattern[mused.current_sequencetrack];
+							mused.current_pattern = *mused.ghost_pattern[mused.current_sequencetrack];
 							
 							if (mused.current_patternstep >= mused.song.pattern[mused.current_pattern].num_steps)
 								mused.current_patternstep = mused.song.pattern[mused.current_pattern].num_steps - 1;
@@ -890,9 +890,9 @@ void pattern_event(SDL_Event *e)
 							{
 								mused.current_sequencetrack = (mused.current_sequencetrack + MUS_CHANNELS - 1) % MUS_CHANNELS;
 							}
-							while (mused.ghost_pattern[mused.current_sequencetrack] == -1); 
+							while (mused.ghost_pattern[mused.current_sequencetrack] == NULL); 
 							
-							mused.current_pattern = mused.ghost_pattern[mused.current_sequencetrack];
+							mused.current_pattern = *mused.ghost_pattern[mused.current_sequencetrack];
 							
 							if (mused.current_patternstep >= mused.song.pattern[mused.current_pattern].num_steps)
 								mused.current_patternstep = mused.song.pattern[mused.current_pattern].num_steps - 1;

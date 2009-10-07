@@ -117,6 +117,47 @@ void copy_rect(SDL_Rect *dest, const SDL_Rect *src)
 }
 
 
+static void label(const char *_label, const SDL_Rect *area)
+{
+	SDL_Rect r;
+	
+	copy_rect(&r, area);
+	
+	r.y = r.y + area->h / 2 - mused.smallfont.h / 2;
+	
+	font_write(&mused.smallfont, mused.console->surface, &r, _label);
+}
+
+
+
+static int generic_field(const SDL_Event *e, const SDL_Rect *area, int param, const char *_label, const char *format, void *value, int width)
+{
+	label(_label, area);
+	
+	SDL_Rect field, spinner_area;
+	copy_rect(&field, area);
+	
+	field.w = width * mused.console->font.w + 2;
+	field.x = area->x + area->w - field.w;
+	
+	copy_rect(&spinner_area, &field);
+	
+	spinner_area.x += field.w;
+	spinner_area.w = 16;
+	field.x -= spinner_area.w;
+	spinner_area.x -= spinner_area.w;
+	
+	bevel(&field, mused.slider_bevel, BEV_FIELD);
+	
+	adjust_rect(&field, 1);
+	
+	font_write_args(&mused.largefont, mused.console->surface, &field, format, value);
+
+	return spinner(e, &spinner_area, param);
+}
+
+
+
 void sequence_view(const SDL_Rect *dest, const SDL_Event *event, void *param)
 {
 	char text[200];
@@ -425,10 +466,25 @@ void pattern_view_stepcounter(const SDL_Rect *dest, const SDL_Event *event, void
 }
 
 
-static void pattern_header(const SDL_Event *event, int x, int channel, const SDL_Rect *topleft, int pattern_width)
+static void pattern_header(const SDL_Event *event, int x, int channel, const SDL_Rect *topleft, int pattern_width, int *pattern_var)
 {
-	SDL_Rect button;
+	SDL_Rect button, pattern;
 	copy_rect(&button, topleft);
+	copy_rect(&pattern, topleft);
+			
+	pattern.w = 50;
+	pattern.x = x;
+	
+	int d = generic_field(event, &pattern, channel, "", "%02X", (void*)*pattern_var, 2);
+	
+	if (d < 0)
+	{
+		*pattern_var = my_max(0, *pattern_var - 1);
+	}
+	else if (d > 0)
+	{
+		*pattern_var = my_min(NUM_PATTERNS - 1, *pattern_var + 1);
+	}
 			
 	button.x = x + pattern_width - button.w;
 	
@@ -445,7 +501,7 @@ void pattern_view(const SDL_Rect *dest, const SDL_Event *event, void *param)
 	
 	for (int i = 0 ; i < MUS_CHANNELS ; ++i)
 	{
-		if (mused.ghost_pattern[i] != -1)
+		if (mused.ghost_pattern[i] != NULL)
 		{
 			++pv;
 		}
@@ -489,19 +545,19 @@ void pattern_view(const SDL_Rect *dest, const SDL_Event *event, void *param)
 	int first = MUS_CHANNELS, last = 0;
 	for (int i = 0 ; i < MUS_CHANNELS ; ++i)
 	{
-		if (mused.ghost_pattern[i] != -1)
+		if (mused.ghost_pattern[i] != NULL)
 		{
 			console_set_clip(mused.console, &pos);
 			console_clear(mused.console);
 	
 			if (mused.pattern_horiz_position <= i)
 			{
-				pattern_header(event, pos.x, i, &button_topleft, pattern_width);
+				pattern_header(event, pos.x, i, &button_topleft, pattern_width, mused.ghost_pattern[i]);
 				first = my_min(first, i);
 				// Only consider fully visible pattern drawn
 				if (pos.x + pos.w < dest->x + dest->w) last = my_max(last, i);
 				
-				pattern_view_inner(&pos, event, mused.ghost_pattern[i], i);
+				pattern_view_inner(&pos, event, *mused.ghost_pattern[i], i);
 				pos.x += pos.w - 2;
 								
 				if (vert_scrollbar) slider_set_params(&mused.pattern_horiz_slider_param, 0, pv - 1, first, last, &mused.pattern_horiz_position, 1, SLIDER_HORIZONTAL);
@@ -521,7 +577,7 @@ void pattern_view(const SDL_Rect *dest, const SDL_Event *event, void *param)
 		console_set_clip(mused.console, &pos);
 		console_clear(mused.console);
 		
-		pattern_header(event, 0, -1, &button_topleft, pattern_width);
+		pattern_header(event, 0, -1, &button_topleft, pattern_width, &mused.current_pattern);
 	
 		pattern_view_inner(&pos, event, mused.current_pattern, -1);
 	}
@@ -739,18 +795,6 @@ void program_view(const SDL_Rect *dest, const SDL_Event *event, void *param)
 }
 
 
-static void label(const char *_label, const SDL_Rect *area)
-{
-	SDL_Rect r;
-	
-	copy_rect(&r, area);
-	
-	r.y = r.y + area->h / 2 - mused.smallfont.h / 2;
-	
-	font_write(&mused.smallfont, mused.console->surface, &r, _label);
-}
-
-
 static void inst_flags(const SDL_Event *e, const SDL_Rect *area, int p, const char *label, Uint32 *flags, Uint32 mask)
 {
 	if (checkbox(e, area, label, flags, mask)) mused.selected_param = p;
@@ -768,30 +812,9 @@ static void inst_flags(const SDL_Event *e, const SDL_Rect *area, int p, const ch
 
 static void inst_text(const SDL_Event *e, const SDL_Rect *area, int p, const char *_label, const char *format, void *value, int width)
 {
-	label(_label, area);
-	
 	check_event(e, area, select_instrument_param, (void*)p, 0, 0);
 	
-	SDL_Rect field, spinner_area;
-	copy_rect(&field, area);
-	
-	field.w = width * mused.console->font.w + 2;
-	field.x = area->x + area->w - field.w;
-	
-	copy_rect(&spinner_area, &field);
-	
-	spinner_area.x += field.w;
-	spinner_area.w = 16;
-	field.x -= spinner_area.w;
-	spinner_area.x -= spinner_area.w;
-	
-	bevel(&field, mused.slider_bevel, BEV_FIELD);
-	
-	adjust_rect(&field, 1);
-	
-	font_write_args(&mused.largefont, mused.console->surface, &field, format, value);
-
-	int d = spinner(e, &spinner_area, p);
+	int d = generic_field(e, area, p, _label, format, value, width);
 	if (d) mused.selected_param = p;
 	if (d < 0) instrument_add_param(-1);
 	else if (d >0) instrument_add_param(1);
