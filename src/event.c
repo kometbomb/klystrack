@@ -1137,7 +1137,7 @@ void edit_text(SDL_Event *e)
 }
 
 
-static void reverb_add_param(int d)
+void reverb_add_param(int d)
 {
 	if (mused.edit_reverb_param == R_ENABLE)
 	{

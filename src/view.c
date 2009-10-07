@@ -1046,15 +1046,20 @@ void instrument_list(const SDL_Rect *dest, const SDL_Event *event, void *param)
 
 void reverb_view(const SDL_Rect *dest, const SDL_Event *event, void *param)
 {
-	console_set_color(mused.console,0x00000000,CON_BACKGROUND);
-	console_set_color(mused.console,0xffffffff,CON_CHARACTER);
+	SDL_Rect area;
+	copy_rect(&area, dest);
+	console_set_clip(mused.console, &area);
 	console_clear(mused.console);
+	bevel(&area, mused.slider_bevel, BEV_THIN_FRAME);
+	adjust_rect(&area, 3);
+	console_set_clip(mused.console, &area);
+	SDL_Rect r;
+	copy_rect(&r, &area);
 	
-	//separator("----reverb----");
+	r.h = 10;
 	
-	console_set_color(mused.console, mused.edit_reverb_param == R_ENABLE ? 0xff0000ff:0xffffffff,CON_CHARACTER);
-	
-	//if (checkbox(event, "Enabled\n", &mused.song.flags, MUS_ENABLE_REVERB)) mused.edit_reverb_param = R_ENABLE;
+	if (checkbox(event, &r, "ENABLED\n", &mused.song.flags, MUS_ENABLE_REVERB)) mused.edit_reverb_param = R_ENABLE;
+	update_rect(&area, &r);
 	
 	// We need to mirror the reverb flag to the corresponding Cyd flag
 	
@@ -1067,22 +1072,34 @@ void reverb_view(const SDL_Rect *dest, const SDL_Event *event, void *param)
 	
 	for (int i = 0 ; i < CYDRVB_TAPS ; ++i)
 	{
-		if ((i % 3) == 0 && i > 0) console_write(mused.console, "\n");
-		
-		console_set_color(mused.console,0xffffffff,CON_CHARACTER);
-		console_write_args(mused.console, "Tap %x:", i);
+		if (i) separator(&area, &r);
 	
-		console_set_color(mused.console,mused.edit_reverb_param == p ? 0xff0000ff:0xffffffff,CON_CHARACTER);
-		console_write_args(mused.console, " %4d ms ", mused.song.rvbtap[i].delay);
+		char label[20], value[20];
+		
+		sprintf(label, "TAP %d", i);
+		
+		r.w = 120;
+		
+		int d = generic_field(event, &r, p, label, "%4d ms", MAKEPTR(mused.song.rvbtap[i].delay), 7);
+		
+		if (d) mused.edit_reverb_param = p;
+		if (d < 0) reverb_add_param(-1);
+		else if (d > 0) reverb_add_param(1);
+		
+		update_rect(&area, &r);
+		
+		r.w = 80;
 		
 		++p;
 		
-		console_set_color(mused.console,mused.edit_reverb_param == p ? 0xff0000ff:0xffffffff,CON_CHARACTER);
-		
 		if (mused.song.rvbtap[i].gain <= CYDRVB_LOW_LIMIT)
-			console_write(mused.console, "- INF dB");
+			strcpy(value, "- INF");
 		else
-			console_write_args(mused.console, "%+5.1f dB", (double)mused.song.rvbtap[i].gain * 0.1);
+			sprintf(value, "%+5.1f", (double)mused.song.rvbtap[i].gain * 0.1);
+			
+		generic_field(event, &r, p, "", "%s dB", value, 8);
+		
+		update_rect(&area, &r);
 		
 		++p;
 	}
