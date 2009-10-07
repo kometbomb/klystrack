@@ -30,7 +30,7 @@ static void (*motion_target)(int,int,void*) = NULL;
 static void *motion_param = NULL;
 static SDL_TimerID repeat_timer_id = 0;
 static SDL_Event repeat_event;
-
+int event_hit = 0;
 
 static void set_repeat_timer(const SDL_Event *event);
 
@@ -85,6 +85,7 @@ int check_event(const SDL_Event *event, const SDL_Rect *rect, void (*action)(voi
 				{
 					if (action) 
 					{	
+						event_hit = 1;
 						action(param1, param2, param3);
 						set_repeat_timer(event);
 					}
