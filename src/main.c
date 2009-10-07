@@ -53,13 +53,12 @@ int stat_pattern_number[MUS_CHANNELS];
 
 static const View instrument_view_tab[] =
 {
-	{{4, 0, 170, 10}, instrument_name_view},
-	{{0, 10, 150, SCREEN_HEIGHT-10}, instrument_view},
-	{{150, 10, SCREEN_WIDTH - 150, 9*11 }, instrument_list},
-	{{150, 10 + 9*11, SCREEN_WIDTH - 150, SCREEN_HEIGHT-(10 + 9*11)}, program_view},
-	//{{150+120, 0, SCROLLBAR, SCREEN_HEIGHT}, slider, &mused.program_slider_param},
-	
-	//{{150+120+SCROLLBAR+8*32 + 24, 0, SCROLLBAR, 100}, slider, &mused.instrument_list_slider_param},
+	{{4, 0, 162, 10}, instrument_name_view},
+	{{0, 10, 158, SCREEN_HEIGHT-10}, instrument_view},
+	{{158, 10, SCREEN_WIDTH - 158 - SCROLLBAR, 5*8 }, instrument_list},
+	{{158, 10 + 9*11, SCREEN_WIDTH - 158 - SCROLLBAR, SCREEN_HEIGHT-(10 + 5*8)}, program_view},
+	{{SCREEN_WIDTH - SCROLLBAR, 10 + 5*8, SCROLLBAR, SCREEN_HEIGHT-(10 + 5*8)}, slider, &mused.program_slider_param},
+	{{SCREEN_WIDTH - SCROLLBAR, 10, SCROLLBAR, 5*8 }, slider, &mused.instrument_list_slider_param},
 	{{0, 0, 0, 0}, NULL}
 };
 

@@ -75,8 +75,18 @@ static void update_rect(const SDL_Rect *parent, SDL_Rect *rect)
 static void separator(const SDL_Rect *parent, SDL_Rect *rect)
 {
 	while (rect->x > parent->x) update_rect(parent, rect);
+	
+	SDL_Rect r;
+	copy_rect(&r, rect);
+	
 	rect->x = parent->x;
-	rect->y += 8;
+	rect->y += 6;
+	
+	r.y += 2;
+	r.h = 4;
+	r.w = parent->w;
+	
+	bevel(&r, mused.slider_bevel, BEV_SEPARATOR);
 }
 
 
@@ -832,19 +842,27 @@ void instrument_view(const SDL_Rect *dest, const SDL_Event *event, void *param)
 		update_rect(&frame, &r);
 	}
 	
-	separator(&frame, &r);
-	inst_flags(event, &r, P_PULSE, "PUL", &inst->cydflags, CYD_CHN_ENABLE_PULSE);
-	update_rect(&frame, &r);
-	inst_text(event, &r, P_PW, "PW", "%03X", (void*)inst->pw, 3);
-	update_rect(&frame, &r);
-	inst_flags(event, &r, P_SAW, "SAW", &inst->cydflags, CYD_CHN_ENABLE_SAW);
-	update_rect(&frame, &r);
-	inst_flags(event, &r, P_TRIANGLE, "TRI", &inst->cydflags, CYD_CHN_ENABLE_TRIANGLE);
-	update_rect(&frame, &r);
-	inst_flags(event, &r, P_NOISE, "NOI", &inst->cydflags, CYD_CHN_ENABLE_NOISE);
-	update_rect(&frame, &r);
-	inst_flags(event, &r, P_METAL, "METAL", &inst->cydflags, CYD_CHN_ENABLE_METAL);
-	update_rect(&frame, &r);
+	{
+		int tmp = r.w;
+		r.w = frame.w / 3 - 1;
+		separator(&frame, &r);
+		inst_flags(event, &r, P_PULSE, "PUL", &inst->cydflags, CYD_CHN_ENABLE_PULSE);
+		update_rect(&frame, &r);
+		r.w = frame.w / 2 - 1;
+		inst_text(event, &r, P_PW, "PW", "%03X", (void*)inst->pw, 3);
+		update_rect(&frame, &r);
+		r.w = frame.w / 3 - 1;
+		inst_flags(event, &r, P_SAW, "SAW", &inst->cydflags, CYD_CHN_ENABLE_SAW);
+		update_rect(&frame, &r);
+		inst_flags(event, &r, P_TRIANGLE, "TRI", &inst->cydflags, CYD_CHN_ENABLE_TRIANGLE);
+		update_rect(&frame, &r);
+		inst_flags(event, &r, P_NOISE, "NOI", &inst->cydflags, CYD_CHN_ENABLE_NOISE);
+		update_rect(&frame, &r);
+		inst_flags(event, &r, P_METAL, "METAL", &inst->cydflags, CYD_CHN_ENABLE_METAL);
+		update_rect(&frame, &r);
+		
+		r.w = tmp;
+	}
 	
 	separator(&frame, &r);
 	inst_text(event, &r, P_VOLUME, "VOL", "%02X", (void*)inst->volume, 2);
