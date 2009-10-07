@@ -77,7 +77,7 @@ deps/Group0_%.d: %.c
 		< $@.$$$$ > $@; \
 	rm -f $@.$$$$
 	
-res/data: data/bevel.bmp temp/8x8.fnt
+res/data: data/bevel.bmp temp/8x8.fnt temp/7x6.fnt
 	@mkdir -p res
 	@mkdir -p temp
 	cp -f data/bevel.bmp temp
@@ -86,6 +86,9 @@ res/data: data/bevel.bmp temp/8x8.fnt
 temp/8x8.fnt: data/font/*
 	../klystron/tools/bin/makebundle temp/8x8.fnt data/font
 
+temp/7x6.fnt: data/font7x6/*
+	../klystron/tools/bin/makebundle temp/7x6.fnt data/font7x6
+	
 clean:
 	@rm -rf deps objs.$(CFG) bin.$(CFG) res temp
 

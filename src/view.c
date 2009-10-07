@@ -60,10 +60,23 @@ void draw_view(const View* views, const SDL_Event *event)
 }
 
 
-static void separator(const char * label)
+static void update_rect(const SDL_Rect *parent, SDL_Rect *rect)
 {
-	console_set_color(mused.console,0xff808080,CON_CHARACTER);
-	console_write_args(mused.console, "%s\n", label);
+	rect->x += rect->w;
+	
+	if (rect->x + rect->w >= parent->x + parent->w)
+	{
+		rect->x = parent->x;
+		rect->y += rect->h;
+	}
+}
+
+
+static void separator(const SDL_Rect *parent, SDL_Rect *rect)
+{
+	while (rect->x > parent->x) update_rect(parent, rect);
+	rect->x = parent->x;
+	rect->y += 8;
 }
 
 
@@ -79,7 +92,7 @@ char * notename(Uint8 note)
 }
 
 
-static void adjust_rect(SDL_Rect *rect, int margin)
+void adjust_rect(SDL_Rect *rect, int margin)
 {
 	rect->x += margin;
 	rect->y += margin;
@@ -88,7 +101,7 @@ static void adjust_rect(SDL_Rect *rect, int margin)
 }
 
 
-static void copy_rect(SDL_Rect *dest, const SDL_Rect *src)
+void copy_rect(SDL_Rect *dest, const SDL_Rect *src)
 {
 	memcpy(dest, src, sizeof(*dest));
 }
@@ -402,16 +415,16 @@ void pattern_view_stepcounter(const SDL_Rect *dest, const SDL_Event *event, void
 }
 
 
-static void pattern_header(const SDL_Event *event, int x, int channel, const SDL_Rect *topleft)
+static void pattern_header(const SDL_Event *event, int x, int channel, const SDL_Rect *topleft, int pattern_width)
 {
 	SDL_Rect button;
 	copy_rect(&button, topleft);
 			
-	button.x = x;
+	button.x = x + pattern_width - button.w;
 	
 	if (channel != -1)
-	button_event(event, &button, mused.slider_bevel, BEV_SLIDER_HANDLE, BEV_SLIDER_HANDLE_ACTIVE, 
-		(mused.mus.channel[channel].flags & MUS_CHN_DISABLED) ? DECAL_AUDIO_DISABLED : DECAL_AUDIO_ENABLED, enable_channel, (void*)channel, 0, 0);
+		button_event(event, &button, mused.slider_bevel, BEV_SLIDER_HANDLE, BEV_SLIDER_HANDLE_ACTIVE, 
+			(mused.mus.channel[channel].flags & MUS_CHN_DISABLED) ? DECAL_AUDIO_DISABLED : DECAL_AUDIO_ENABLED, enable_channel, (void*)channel, 0, 0);
 }
 
 
@@ -468,13 +481,12 @@ void pattern_view(const SDL_Rect *dest, const SDL_Event *event, void *param)
 	{
 		if (mused.ghost_pattern[i] != -1)
 		{
-			pattern_header(event, pos.x, i, &button_topleft);
-	
 			console_set_clip(mused.console, &pos);
 			console_clear(mused.console);
 	
 			if (mused.pattern_horiz_position <= i)
 			{
+				pattern_header(event, pos.x, i, &button_topleft, pattern_width);
 				first = my_min(first, i);
 				// Only consider fully visible pattern drawn
 				if (pos.x + pos.w < dest->x + dest->w) last = my_max(last, i);
@@ -499,7 +511,7 @@ void pattern_view(const SDL_Rect *dest, const SDL_Event *event, void *param)
 		console_set_clip(mused.console, &pos);
 		console_clear(mused.console);
 		
-		pattern_header(event, 0, -1, &button_topleft);
+		pattern_header(event, 0, -1, &button_topleft, pattern_width);
 	
 		pattern_view_inner(&pos, event, mused.current_pattern, -1);
 	}
@@ -642,7 +654,7 @@ void program_view(const SDL_Rect *dest, const SDL_Event *event, void *param)
 
 	int rows = dest->h / mused.console->font.h;
 	
-	separator("----program-----");
+	//separator("----program-----");
 	
 	int start = mused.selected_param - P_PARAMS - rows/2;
 	
@@ -682,55 +694,69 @@ void program_view(const SDL_Rect *dest, const SDL_Event *event, void *param)
 }
 
 
-static void inst_flags(const SDL_Event *e, int p, const char *label, Uint32 *flags, Uint32 mask)
+static void label(const char *_label, const SDL_Rect *area)
 {
-	console_set_color(mused.console,mused.selected_param == p?0xff0000ff:0xffffffff,CON_CHARACTER);
-	if (checkbox(e, label, flags, mask)) mused.selected_param = p;
+	SDL_Rect r;
+	
+	copy_rect(&r, area);
+	
+	r.y = r.y + area->h / 2 - mused.smallfont.h / 2;
+	
+	font_write(&mused.smallfont, mused.console->surface, &r, _label);
 }
 
 
-static void inst_text(const SDL_Event *e, int p, const char *label, const char *value, int show_spinner)
+static void inst_flags(const SDL_Event *e, const SDL_Rect *area, int p, const char *label, Uint32 *flags, Uint32 mask)
 {
-	console_set_color(mused.console,mused.selected_param == p?0xff0000ff:0xffffffff,CON_CHARACTER);
-	check_event(e, console_write_args(mused.console, label, value), select_instrument_param, (void*)p, 0, 0);
-	
-	if (show_spinner)
-	{
-		int d = spinner(e, (int)value);
-		if (d) mused.selected_param = p;
-		if (d < 0) instrument_add_param(-1);
-		else if (d >0) instrument_add_param(1);
-	}
+	if (checkbox(e, area, label, flags, mask)) mused.selected_param = p;
 }
 
 
-static void inst_hex8(const SDL_Event *e, int p, const char *label, Uint8 *value)
+static void inst_text(const SDL_Event *e, const SDL_Rect *area, int p, const char *_label, const char *format, void *value, int width)
 {
-	console_set_color(mused.console,mused.selected_param == p?0xff0000ff:0xffffffff,CON_CHARACTER);
-	check_event(e, console_write_args(mused.console, label, *value), select_instrument_param, (void*)p, 0, 0);
-	int d = spinner(e, (int)value);
+	label(_label, area);
 	
+	check_event(e, area, select_instrument_param, (void*)p, 0, 0);
+	
+	SDL_Rect field, spinner_area;
+	copy_rect(&field, area);
+	
+	field.w = width * mused.console->font.w + 2;
+	field.x = area->x + area->w - field.w - 4;
+	
+	copy_rect(&spinner_area, &field);
+	
+	spinner_area.x += field.w;
+	spinner_area.w = 16;
+	field.x -= spinner_area.w;
+	spinner_area.x -= spinner_area.w;
+	
+	bevel(&field, mused.slider_bevel, BEV_FIELD);
+	
+	adjust_rect(&field, 1);
+	
+	font_write_args(&mused.largefont, mused.console->surface, &field, format, value);
+
+	int d = spinner(e, &spinner_area, p);
 	if (d) mused.selected_param = p;
 	if (d < 0) instrument_add_param(-1);
 	else if (d >0) instrument_add_param(1);
 }
 
 
-static void inst_hex16(const SDL_Event *e, int p, const char *label, Uint16 *value)
+static void inst_field(const SDL_Event *e, const SDL_Rect *area, int p, int length, char *text)
 {
 	console_set_color(mused.console,mused.selected_param == p?0xff0000ff:0xffffffff,CON_CHARACTER);
-	check_event(e, console_write_args(mused.console, label, *value), select_instrument_param, (void*)p, 0, 0);
-	int d = spinner(e, (int)value);
+	console_set_clip(mused.console, area);
+	console_clear(mused.console);
 	
-	if (d) mused.selected_param = p;
-	if (d < 0) instrument_add_param(-1);
-	else if (d >0) instrument_add_param(1);
-}
-
-
-static void inst_field(const SDL_Event *e, int p, int length, char *text)
-{
-	console_set_color(mused.console,mused.selected_param == p?0xff0000ff:0xffffffff,CON_CHARACTER);
+	bevel(area, mused.slider_bevel, BEV_FIELD);
+	
+	SDL_Rect field;
+	copy_rect(&field, area);
+	adjust_rect(&field, 1);
+	
+	console_set_clip(mused.console, &field);
 	
 	if (mused.edit_buffer == text && mused.mode == EDITBUFFER && mused.selected_param == p)
 	{
@@ -752,89 +778,122 @@ static void inst_field(const SDL_Event *e, int p, int length, char *text)
 }
 
 
-static void cr()
+
+void instrument_name_view(const SDL_Rect *dest, const SDL_Event *event, void *param)
 {
-	// Fixes bug with text bouding rect starting from prev line
-	console_write(mused.console, "\n");
+	SDL_Rect area;
+	copy_rect(&area,dest);
+	area.w = 2 * mused.console->font.w + 2 + 16;
+	inst_text(event, &area, P_INSTRUMENT, "", "%02x", (void*)mused.current_instrument, 2);
+	area.x += area.w - 4;
+	area.w = dest->x + dest->w - area.x;
+	inst_field(event, &area, P_NAME, 16, mused.song.instrument[mused.current_instrument].name);
 }
 
 
 void instrument_view(const SDL_Rect *dest, const SDL_Event *event, void *param)
 {
-	console_set_color(mused.console,0x00000000,CON_BACKGROUND);
-	console_clear(mused.console);
-	
 	MusInstrument *inst = &mused.song.instrument[mused.current_instrument];
 	
-	separator("------name------");
-	inst_field(event, P_NAME, 16, inst->name);
-	cr();
+	SDL_Rect r, frame;
+	copy_rect(&frame, dest);
+	bevel(&frame, mused.slider_bevel, BEV_SLIDER_HANDLE);
+	adjust_rect(&frame, 2);
 	
-	separator("---attributes---");
+	{
+		copy_rect(&r, &frame);
+		SDL_Rect note;
+		copy_rect(&note, &frame);
+		
+		r.w = r.w / 2 - 1;
+		r.h = 10;
+		r.y += r.h + 1;
+		
+		note.w = frame.w / 2 + 4;
+		note.h = 10;
+		
+		inst_text(event, &note, P_BASENOTE, "BASE", "%s", notename(inst->base_note), 3);
+		note.x += note.w;
+		note.y += 1;
+		note.w = frame.w - note.x;
+		
+		inst_flags(event, &note, P_LOCKNOTE, "LOCK", &inst->flags, MUS_INST_LOCK_NOTE);
+		inst_flags(event, &r, P_DRUM, "DRUM", &inst->flags, MUS_INST_DRUM);
+		update_rect(&frame, &r);
+		inst_flags(event, &r, P_KEYSYNC, "KSYNC", &inst->cydflags, CYD_CHN_ENABLE_KEY_SYNC);
+		update_rect(&frame, &r);
+		inst_flags(event, &r, P_INVVIB, "VIB", &inst->flags, MUS_INST_INVERT_VIBRATO_BIT);
+		update_rect(&frame, &r);
+		inst_flags(event, &r, P_SETPW, "SET PW", &inst->flags, MUS_INST_SET_PW);
+		update_rect(&frame, &r);
+		inst_flags(event, &r, P_SETCUTOFF, "SET CUT", &inst->flags, MUS_INST_SET_CUTOFF);
+		update_rect(&frame, &r);
+		inst_flags(event, &r, P_REVERB, "RVB", &inst->cydflags, CYD_CHN_ENABLE_REVERB);
+		update_rect(&frame, &r);
+	}
 	
-	inst_text(event, P_BASENOTE, "Base: %s", notename(inst->base_note), 1);
-	inst_flags(event, P_LOCKNOTE, "Lock\n", &inst->flags, MUS_INST_LOCK_NOTE);
-	inst_flags(event, P_DRUM, "Drum ", &inst->flags, MUS_INST_DRUM);
-	inst_flags(event, P_METAL, "Metal\n", &inst->cydflags, CYD_CHN_ENABLE_METAL);
-	inst_flags(event, P_KEYSYNC, "KSync ", &inst->cydflags, CYD_CHN_ENABLE_KEY_SYNC);
-	inst_flags(event, P_INVVIB, "Vib\n", &inst->flags, MUS_INST_INVERT_VIBRATO_BIT);
-	inst_flags(event, P_SETPW, "Set PW\n", &inst->flags, MUS_INST_SET_PW);
-	inst_flags(event, P_SETCUTOFF, "Set cutoff\n", &inst->flags, MUS_INST_SET_CUTOFF);
-	inst_flags(event, P_REVERB, "Rvb\n", &inst->cydflags, CYD_CHN_ENABLE_REVERB);
+	separator(&frame, &r);
+	inst_flags(event, &r, P_PULSE, "PUL", &inst->cydflags, CYD_CHN_ENABLE_PULSE);
+	update_rect(&frame, &r);
+	inst_text(event, &r, P_PW, "PW", "%03X", (void*)inst->pw, 3);
+	update_rect(&frame, &r);
+	inst_flags(event, &r, P_SAW, "SAW", &inst->cydflags, CYD_CHN_ENABLE_SAW);
+	update_rect(&frame, &r);
+	inst_flags(event, &r, P_TRIANGLE, "TRI", &inst->cydflags, CYD_CHN_ENABLE_TRIANGLE);
+	update_rect(&frame, &r);
+	inst_flags(event, &r, P_NOISE, "NOI", &inst->cydflags, CYD_CHN_ENABLE_NOISE);
+	update_rect(&frame, &r);
+	inst_flags(event, &r, P_METAL, "METAL", &inst->cydflags, CYD_CHN_ENABLE_METAL);
+	update_rect(&frame, &r);
 	
-	separator("------sync------");
-	inst_flags(event, P_SYNC, "Enable", &inst->cydflags, CYD_CHN_ENABLE_SYNC);
-	cr();
-	inst_hex8(event, P_SYNCSRC, "Src: %X", &inst->sync_source);
+	separator(&frame, &r);
+	inst_text(event, &r, P_VOLUME, "VOL", "%02X", (void*)inst->volume, 2);
+	update_rect(&frame, &r);
+	inst_text(event, &r, P_ATTACK, "ATK", "%02X", (void*)inst->adsr.a, 2);
+	update_rect(&frame, &r);
+	inst_text(event, &r, P_DECAY, "DEC", "%02X", (void*)inst->adsr.d, 2);
+	update_rect(&frame, &r);
+	inst_text(event, &r, P_SUSTAIN, "SUS", "%02X", (void*)inst->adsr.s, 2);
+	update_rect(&frame, &r);
+	inst_text(event, &r, P_RELEASE, "REL", "%02X", (void*)inst->adsr.r, 2);
+	update_rect(&frame, &r);
 	
-	separator("\n----ring mod----");
-	inst_flags(event, P_RINGMOD, "Enable", &inst->cydflags, CYD_CHN_ENABLE_RING_MODULATION);
-	cr();
-	inst_hex8(event, P_RINGMODSRC, "Src: %X", &inst->ring_mod);
+	separator(&frame, &r);
+	inst_flags(event, &r, P_SYNC, "SYNC", &inst->cydflags, CYD_CHN_ENABLE_SYNC);
+	update_rect(&frame, &r);
+	inst_text(event, &r, P_SYNCSRC, "SRC", "%02X", (void*)inst->sync_source, 2);
+	update_rect(&frame, &r);
+	inst_flags(event, &r, P_RINGMOD, "RING", &inst->cydflags, CYD_CHN_ENABLE_RING_MODULATION);
+	update_rect(&frame, &r);
+	inst_text(event, &r, P_RINGMODSRC, "SRC", "%02X", (void*)inst->ring_mod, 2);
+	update_rect(&frame, &r);
 	
+	separator(&frame, &r);
+	inst_text(event, &r, P_SLIDESPEED, "SLIDE", "%02X", (void*)inst->slide_speed, 2);
+	update_rect(&frame, &r);
+	inst_text(event, &r, P_VIBSPEED,   "V SPD", "%02X", (void*)inst->vibrato_speed, 2);
+	update_rect(&frame, &r);
+	inst_text(event, &r, P_VIBDEPTH,   "V DPT", "%02X", (void*)inst->vibrato_depth, 2);
+	update_rect(&frame, &r);
+	inst_text(event, &r, P_PWMSPEED,   "PWM SPD", "%02X", (void*)inst->pwm_speed, 2);
+	update_rect(&frame, &r);
+	inst_text(event, &r, P_PWMDEPTH,   "PWM DPT", "%02X", (void*)inst->pwm_depth, 2);
+	update_rect(&frame, &r);
+	inst_text(event, &r, P_PROGPERIOD, "P PERIOD", "%02X", (void*)inst->prog_period, 2);
+	update_rect(&frame, &r);
 	
-	separator("\n----waveform----");
-	inst_flags(event, P_PULSE, "Pul ", &inst->cydflags, CYD_CHN_ENABLE_PULSE);
-	inst_flags(event, P_SAW, "Saw\n", &inst->cydflags, CYD_CHN_ENABLE_SAW);
-	inst_flags(event, P_TRIANGLE, "Tri ", &inst->cydflags, CYD_CHN_ENABLE_TRIANGLE);
-	inst_flags(event, P_NOISE, "Noi\n", &inst->cydflags, CYD_CHN_ENABLE_NOISE);
+	static const char *flttype[] = { "LP", "HP", "BP" };
 	
-	separator("----envelope----");
-	inst_hex8(event, P_ATTACK,  "Atk: %02X", &inst->adsr.a);
-	cr();
-	inst_hex8(event, P_DECAY,   "Dec: %02X", &inst->adsr.d);
-	cr();
-	inst_hex8(event, P_SUSTAIN, "Sus: %02X", &inst->adsr.s);
-	cr();
-	inst_hex8(event, P_RELEASE, "Rel: %02X", &inst->adsr.r);
+	separator(&frame, &r);
+	inst_flags(event, &r, P_FILTER, "FILTER", &inst->cydflags, CYD_CHN_ENABLE_FILTER);
+	update_rect(&frame, &r);
+	inst_text(event, &r, P_FLTTYPE, "TYPE", "%s", (char*)flttype[inst->flttype], 2);
+	update_rect(&frame, &r);
+	inst_text(event, &r, P_CUTOFF, "CUTOFF", "%03X", (void*)inst->cutoff, 3);
+	update_rect(&frame, &r);
+	inst_text(event, &r, P_RESONANCE, "RES", "%1X", (void*)inst->resonance, 1);
+	update_rect(&frame, &r);
 	
-	separator("\n------misc------");
-	inst_hex16(event, P_PW,        "PW:         %03X", &inst->pw);
-	cr();
-	inst_hex8(event, P_VOLUME,     "Volume:      %02X", &inst->volume);
-	cr();
-	inst_hex8(event, P_SLIDESPEED, "Slide speed: %02X", &inst->slide_speed);
-	cr();
-	inst_hex8(event, P_VIBSPEED,   "Vib. speed:  %02X", &inst->vibrato_speed);
-	cr();
-	inst_hex8(event, P_VIBDEPTH,   "Vib. depth:  %02X", &inst->vibrato_depth);
-	cr();
-	inst_hex8(event, P_PWMSPEED,   "PWM speed:   %02X", &inst->pwm_speed);
-	cr();
-	inst_hex8(event, P_PWMDEPTH,   "PWM depth:   %02X", &inst->pwm_depth);
-	cr();
-	inst_hex8(event, P_PROGPERIOD, "Prg. period: %02X", &inst->prog_period);
-	
-	separator("\n-----filter-----");
-	inst_flags(event, P_FILTER, "Enabled\n", &inst->cydflags, CYD_CHN_ENABLE_FILTER);
-	
-	static const char* flttype[] = {"LP", "HP", "BP"};
-	
-	inst_text(event, P_FLTTYPE, "Type: %s", flttype[inst->flttype], 1);
-	cr();
-	inst_hex16(event, P_CUTOFF, "Cutoff: %03X", &inst->cutoff);
-	cr();
-	inst_hex8(event, P_RESONANCE, "Res: %1X", &inst->resonance);
 }
 
 
@@ -843,7 +902,7 @@ void instrument_list(const SDL_Rect *dest, const SDL_Event *event, void *param)
 	console_clear(mused.console);
 	int y = mused.console->font.h;
 	
-	separator("----instruments----");
+	//separator("----instruments----");
 	
 	int start = mused.instrument_list_position;
 	
@@ -867,11 +926,11 @@ void reverb_view(const SDL_Rect *dest, const SDL_Event *event, void *param)
 	console_set_color(mused.console,0xffffffff,CON_CHARACTER);
 	console_clear(mused.console);
 	
-	separator("----reverb----");
+	//separator("----reverb----");
 	
 	console_set_color(mused.console, mused.edit_reverb_param == R_ENABLE ? 0xff0000ff:0xffffffff,CON_CHARACTER);
 	
-	if (checkbox(event, "Enabled\n", &mused.song.flags, MUS_ENABLE_REVERB)) mused.edit_reverb_param = R_ENABLE;
+	//if (checkbox(event, "Enabled\n", &mused.song.flags, MUS_ENABLE_REVERB)) mused.edit_reverb_param = R_ENABLE;
 	
 	// We need to mirror the reverb flag to the corresponding Cyd flag
 	

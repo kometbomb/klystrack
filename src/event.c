@@ -90,6 +90,12 @@ void instrument_add_param(int a)
 
 	switch (mused.selected_param)
 	{
+		case P_INSTRUMENT:
+		
+		clamp(mused.current_instrument, a, 0, NUM_INSTRUMENTS - 1);
+		
+		break;
+	
 		case P_BASENOTE:
 		
 		clamp(i->base_note, a, 0, 95);

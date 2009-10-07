@@ -47,7 +47,7 @@ void set_edit_buffer(char *buffer, size_t size)
 
 void change_mode(int newmode)
 {
-	SDL_FillRect(mused.console->surface, NULL, 0);
+	if (newmode < VIRTUAL_MODE) SDL_FillRect(mused.console->surface, NULL, 0);
 
 	mused.selection.start = 0;
 	mused.selection.end = 0;
@@ -211,6 +211,9 @@ void init(MusInstrument *instrument, MusPattern *pattern, MusSeqPattern sequence
 		{
 			mused.slider_bevel = gfx_load_surface_RW(rw, GFX_KEYED);
 		}
+	
+		font_load(&mused.smallfont, &res, "7x6.fnt");
+		font_load(&mused.largefont, &res, "8x8.fnt");
 		
 		bnd_free(&res);
 	}
@@ -228,4 +231,6 @@ void deinit()
 {
 	console_destroy(mused.console);
 	SDL_FreeSurface(mused.slider_bevel);
+	font_destroy(&mused.smallfont);
+	font_destroy(&mused.largefont);
 }
