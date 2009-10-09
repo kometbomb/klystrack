@@ -165,16 +165,24 @@ void change_pixel_scale(void *a, void*b, void*c)
 	mused.console->surface = gfx_domain_get_surface(domain);
 }
 
+
 // mingw kludge for console output
 #ifdef DEBUG
 #undef main
 #endif
 
+
 int main(int argc, char **argv)
 {
+#ifdef DEBUG
+	SDL_putenv("SDL_DEBUG=1");
+#endif
+
+	SDL_putenv("SDL_VIDEO_CENTERED=1");
+
 	SDL_Init(SDL_INIT_AUDIO|SDL_INIT_NOPARACHUTE|SDL_INIT_TIMER);
 	atexit(SDL_Quit);
-
+	
 	domain = gfx_create_domain();
 	domain->screen_w = SCREEN_WIDTH;
 	domain->screen_h = SCREEN_HEIGHT;
