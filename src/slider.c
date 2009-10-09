@@ -76,10 +76,11 @@ void slider(const SDL_Rect *_area, const SDL_Event *event, void *_param)
 	SliderParam *param = _param;
 	
 	int button_size = (param->orientation == SLIDER_HORIZONTAL) ? _area->h : _area->w;
-	int bar_top = button_size;
 	int area_size = ((param->orientation == SLIDER_HORIZONTAL) ? _area->w : _area->h) - button_size * 2;
 	int area_start = ((param->orientation == SLIDER_HORIZONTAL) ? _area->x : _area->y) + button_size;
 	int bar_size = area_size;
+	int bar_top = area_start;
+	
 	
 	if (param->visible_last > param->visible_first && param->last != param->first)
 	{
@@ -173,7 +174,7 @@ void slider(const SDL_Rect *_area, const SDL_Event *event, void *_param)
 	{
 		SDL_Rect area = { _area->x, _area->y, SCROLLBAR, SCROLLBAR };
 		
-		button_event(event, &area, mused.slider_bevel, BEV_SLIDER_HANDLE, BEV_SLIDER_HANDLE_ACTIVE, DECAL_UPARROW, modify_position, (void*)-param->granularity, param, 0);
+		button_event(event, &area, mused.slider_bevel, BEV_SLIDER_HANDLE, BEV_SLIDER_HANDLE_ACTIVE, param->orientation == SLIDER_HORIZONTAL ? DECAL_LEFTARROW : DECAL_UPARROW, modify_position, (void*)-param->granularity, param, 0);
 		
 		if (param->orientation == SLIDER_HORIZONTAL)
 		{
@@ -184,7 +185,7 @@ void slider(const SDL_Rect *_area, const SDL_Event *event, void *_param)
 			area.y += area_size + button_size;
 		}
 		
-		button_event(event, &area, mused.slider_bevel, BEV_SLIDER_HANDLE, BEV_SLIDER_HANDLE_ACTIVE, DECAL_DOWNARROW, modify_position, (void*)param->granularity, param, 0);
+		button_event(event, &area, mused.slider_bevel, BEV_SLIDER_HANDLE, BEV_SLIDER_HANDLE_ACTIVE, param->orientation == SLIDER_HORIZONTAL ? DECAL_RIGHTARROW : DECAL_DOWNARROW, modify_position, (void*)param->granularity, param, 0);
 	}
 }
 
