@@ -39,7 +39,7 @@ ifeq ($(CFG),profile)
 CXXFLAGS += -O3 -g -pg -Wall ${INCLUDEFLAGS}
 else
 ifeq ($(CFG),release)
-CXXFLAGS += -O3 -Wall ${INCLUDEFLAGS} -s
+CXXFLAGS += -O3 -Wall ${INCLUDEFLAGS} -s -mwindows
 else
 @$(ECHO) "Invalid configuration "$(CFG)" specified."
 @$(ECHO) "You must specify a configuration when "
@@ -57,6 +57,8 @@ LDFLAGS = -lmingw32 -lSDLmain -lSDL -lSDL_mixer -lcomdlg32
 
 all:	inform bin.$(CFG)/$(TARGET) res/data
 
+.PHONY: zip
+
 zip: doc/* res/data 
 	make CFG=release
 	@mkdir -p zip
@@ -65,7 +67,7 @@ zip: doc/* res/data
 	cp doc/LICENSE zip/LICENSE
 	cp doc/SDL.txt zip/SDL.txt
 	cp bin.release/$(TARGET) zip/$(TARGET)
-
+	
 inform:
 	@echo "Configuration "$(CFG)
 	@echo "------------------------"
