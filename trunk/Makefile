@@ -4,7 +4,9 @@ VPATH=src:src
 ECHO = echo
 CFG = debug
 MACHINE = -march=pentium4 -mfpmath=sse -msse3 
-ZIP = pkzipc -add
+ZIP = pkzipc -zipdate=newest -path=relative -silent -rec -dir -add
+ZIPEXT = pkzipc -ext -silent
+WGET = wget --quiet
 
 # The directories containing the source files, separated by ':'
 
@@ -61,16 +63,16 @@ all:	inform bin.$(CFG)/$(TARGET) res/data
 
 .PHONY: zip
 
-zip: doc/* res/data 
+zip: doc/* res/data temp/SDL.dll temp/SDL_mixer.dll
 	make CFG=release
 	@mkdir -p zip/data/res
 	cp res/data zip/data/res/data
 	cp doc/LICENSE zip/data/LICENSE
 	cp doc/SDL.txt zip/data/SDL.txt
+	cp temp/SDL.dll zip/data/SDL.dll
+	cp temp/SDL_mixer.dll zip/data/SDL_mixer.dll
 	cp bin.release/$(TARGET) zip/data/$(TARGET)
-	cd zip/data; \
-	$(ZIP) $(ARCHIVE) *; \
-	mv -f $(ARCHIVE) ../$(ARCHIVE)
+	cd zip/data; $(ZIP) ../$(ARCHIVE) "*"
 	
 inform:
 	@echo "Configuration "$(CFG)
@@ -99,10 +101,18 @@ res/data: data/bevel.bmp temp/8x8.fnt temp/7x6.fnt
 	../klystron/tools/bin/makebundle res/data temp
 
 temp/8x8.fnt: data/font/*
+	@mkdir -p temp
 	../klystron/tools/bin/makebundle temp/8x8.fnt data/font
 
 temp/7x6.fnt: data/font7x6/*
+	@mkdir -p temp
 	../klystron/tools/bin/makebundle temp/7x6.fnt data/font7x6
+
+temp/SDL.dll:
+	cd temp ; $(WGET) http://www.libsdl.org/release/SDL-1.2.13-win32.zip ; $(ZIPEXT) SDL-1.2.13-win32.zip SDL.dll
+	
+temp/SDL_mixer.dll:
+	cd temp ; $(WGET) http://www.libsdl.org/projects/SDL_mixer/release/SDL_mixer-1.2.8-win32.zip ; $(ZIPEXT) SDL_mixer-1.2.8-win32.zip SDL_mixer.dll
 	
 clean:
 	@rm -rf deps objs.release objs.debug objs.profile bin.release bin.debug bin.profile res temp zip
