@@ -49,9 +49,12 @@ int stat_song_position;
 int stat_pattern_position[MUS_CHANNELS];
 MusPattern *stat_pattern[MUS_CHANNELS];
 int stat_pattern_number[MUS_CHANNELS];
+GfxDomain *domain;
 
 #define INST_LIST (6*8 + 3*2)
 #define INFO 13
+
+void change_pixel_scale(void *, void*, void*);
 
 static const View instrument_view_tab[] =
 {
@@ -148,10 +151,19 @@ static const struct { int mod, key; void (*action)(void*,void*,void*); int p1, p
 	{ KMOD_SHIFT, SDLK_INSERT, generic_action, (int)paste, 0, 0 },
 	{ KMOD_CTRL, SDLK_INSERT, generic_action, (int)copy, 0, 0 },
 	{ KMOD_CTRL, SDLK_d, clear_selection, 0, 0, 0 },
+	{ KMOD_CTRL, SDLK_r, change_pixel_scale, 0, 0, 0 },
 
 	/* Null terminated */
 	{ 0, 0, NULL, 0, 0, 0 }
 };
+
+
+void change_pixel_scale(void *a, void*b, void*c)
+{
+	domain->scale = (domain->scale == 1) ? 2 : 1;
+	gfx_domain_update(domain);
+	mused.console->surface = gfx_domain_get_surface(domain);
+}
 
 // mingw kludge for console output
 #ifdef DEBUG
@@ -163,7 +175,7 @@ int main(int argc, char **argv)
 	SDL_Init(SDL_INIT_AUDIO|SDL_INIT_NOPARACHUTE|SDL_INIT_TIMER);
 	atexit(SDL_Quit);
 
-	GfxDomain *domain = gfx_create_domain();
+	domain = gfx_create_domain();
 	domain->screen_w = SCREEN_WIDTH;
 	domain->screen_h = SCREEN_HEIGHT;
 	domain->fps = 10;
