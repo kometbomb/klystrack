@@ -20,6 +20,7 @@
 || ALT+keypad plus/minus || change second song speed the two speeds mean the first speed is used for even steps and the other for odd steps. e.g. 8+4 will have a distinct shuffle in the tempo. || 
 || CTRL+F9/F10 || change song player rate (i.e. 50 Hz means every second 50 frames are processed, which would translate to 50/6 steps per second for the default speeds) || 
 || SHIFT+CTRL+F9/F10 || change time signature (only has a visual effect, the spacing of the different colored pattern steps changes) || 
+|| CTRL+R || Change screen scaling ||
 
 ==Pattern editor==
 
@@ -32,10 +33,12 @@ C-4 00 L S V 0000 <--- track command
 
 ===Keyboard commands===
 
-|| return || jump to sequence editor || 
-|| cursor keys/pg up/pg dn || move cursor || 
+|| Return || jump to sequence editor || 
+|| Cursor keys/pg up/pg dn || move cursor || 
 || CTRL+left/right || change current pattern || 
-|| insert/delete/backspace || do what you would expect || 
+|| Space || Note-off ||
+|| 0/1 || Set legato etc. bits ||
+|| Insert/delete/backspace || do what you would expect || 
 || . || no note/no instrument number etc. || 
 || most other keys || enter note || 
 
