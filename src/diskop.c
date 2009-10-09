@@ -120,13 +120,14 @@ int save_data()
 				fwrite(&mused.song.song_speed2, 1, sizeof(mused.song.song_speed2), f);
 				fwrite(&mused.song.song_rate, 1, sizeof(mused.song.song_rate), f);
 				fwrite(&mused.song.flags, 1, sizeof(mused.song.flags), f);
+				fwrite(mused.song.title, 1, MUS_TITLE_LEN + 1, f);
 				
 				if (mused.song.flags & MUS_ENABLE_REVERB)
 				{
 					for (int i = 0 ; i < CYDRVB_TAPS ; ++i)	
 					{
-						fwrite(&mused.cyd.rvb.tap[i].gain, 1, sizeof(mused.cyd.rvb.tap[i].gain), f);
-						fwrite(&mused.cyd.rvb.tap[i].delay, 1, sizeof(mused.cyd.rvb.tap[i].delay), f);
+						fwrite(&mused.song.rvbtap[i].gain, 1, sizeof(mused.song.rvbtap[i].gain), f);
+						fwrite(&mused.song.rvbtap[i].delay, 1, sizeof(mused.song.rvbtap[i].delay), f);
 					}
 				}
 				
@@ -193,7 +194,7 @@ void open_data()
 				
 				// Use kewlkool heuristics to determine sequence spacing
 				
-				mused.sequenceview_steps = 128;
+				mused.sequenceview_steps = 1000;
 				
 				for (int c = 0 ; c < MUS_CHANNELS ; ++c)
 					for (int s = 1 ; s < mused.song.num_sequences[c] ; ++s)
@@ -201,6 +202,8 @@ void open_data()
 						{
 							mused.sequenceview_steps = mused.song.sequence[c][s].position - mused.song.sequence[c][s-1].position;
 						}
+				
+				if (mused.sequenceview_steps == 1000) mused.sequenceview_steps = 16;
 				
 				mus_set_reverb(&mused.mus, &mused.song);
 				cyd_set_callback(&mused.cyd, mus_advance_tick, &mused.mus, mused.song.song_rate);
