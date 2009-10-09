@@ -63,14 +63,12 @@ all:	inform bin.$(CFG)/$(TARGET) res/data
 
 .PHONY: zip
 
-zip: doc/* res/data temp/SDL.dll temp/SDL_mixer.dll
+zip: doc/* res/data zip/data/SDL.dll zip/data/SDL_mixer.dll
 	make CFG=release
 	@mkdir -p zip/data/res
 	cp res/data zip/data/res/data
 	cp doc/LICENSE zip/data/LICENSE
 	cp doc/SDL.txt zip/data/SDL.txt
-	cp temp/SDL.dll zip/data/SDL.dll
-	cp temp/SDL_mixer.dll zip/data/SDL_mixer.dll
 	cp bin.release/$(TARGET) zip/data/$(TARGET)
 	cd zip/data; $(ZIP) ../$(ARCHIVE) "*"
 	
@@ -108,12 +106,16 @@ temp/7x6.fnt: data/font7x6/*
 	@mkdir -p temp
 	../klystron/tools/bin/makebundle temp/7x6.fnt data/font7x6
 
-temp/SDL.dll:
-	cd temp ; $(WGET) http://www.libsdl.org/release/SDL-1.2.13-win32.zip ; $(ZIPEXT) SDL-1.2.13-win32.zip SDL.dll
-	
-temp/SDL_mixer.dll:
-	cd temp ; $(WGET) http://www.libsdl.org/projects/SDL_mixer/release/SDL_mixer-1.2.8-win32.zip ; $(ZIPEXT) SDL_mixer-1.2.8-win32.zip SDL_mixer.dll
-	
+zip/data/SDL.dll:
+	cd temp ; $(WGET) http://www.libsdl.org/release/SDL-1.2.13-win32.zip ; $(ZIPEXT) SDL-1.2.13-win32.zip SDL.dll ; rm SDL-1.2.13-win32.zip
+	@mkdir -p zip/data
+	mv temp/SDL.dll zip/data/SDL.dll
+		
+zip/data/SDL_mixer.dll:
+	cd temp ; $(WGET) http://www.libsdl.org/projects/SDL_mixer/release/SDL_mixer-1.2.8-win32.zip ; $(ZIPEXT) SDL_mixer-1.2.8-win32.zip SDL_mixer.dll ; rm SDL_mixer-1.2.8-win32.zip
+	@mkdir -p zip/data
+	mv temp/SDL_mixer.dll zip/data/SDL_mixer.dll
+		
 clean:
 	@rm -rf deps objs.release objs.debug objs.profile bin.release bin.debug bin.profile res temp zip
 

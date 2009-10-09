@@ -51,7 +51,8 @@ enum
 
 enum
 {
-	COMPACT_VIEW = 1
+	COMPACT_VIEW = 1,
+	SONG_PLAYING = 2
 };
 
 typedef struct
