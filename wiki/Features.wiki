@@ -1,0 +1,12 @@
+#summary klystrack features
+#labels Featured,Phase-Design
+
+=Features=
+
+*klystrack* is a tracker for making C64/NES/Amiga style music. It uses software synthesis from the _klystron_ engine.
+
+  * Simple editor familiar to anyone who has ever used a tracker with features from more refined sequencers
+  * Chiptune synthesis, no samples used
+  * Instrument programs suitable for arpeggio or more complex patches
+  * Envelope, ring modulation, filter and more for each channel
+  * Reverb for SNES cheese
