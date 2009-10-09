@@ -1,3 +1,6 @@
+#summary How to use klystrack
+#labels Featured
+
 =Manual=
 
 ==General keyboard controls==
