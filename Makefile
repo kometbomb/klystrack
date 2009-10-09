@@ -57,6 +57,15 @@ LDFLAGS = -lmingw32 -lSDLmain -lSDL -lSDL_mixer -lcomdlg32
 
 all:	inform bin.$(CFG)/$(TARGET) res/data
 
+zip: doc/* res/data 
+	make CFG=release
+	@mkdir -p zip
+	@mkdir -p zip/res
+	cp res/data zip/res/data
+	cp doc/LICENSE zip/LICENSE
+	cp doc/SDL.txt zip/SDL.txt
+	cp bin.release/$(TARGET) zip/$(TARGET)
+
 inform:
 	@echo "Configuration "$(CFG)
 	@echo "------------------------"
@@ -90,7 +99,7 @@ temp/7x6.fnt: data/font7x6/*
 	../klystron/tools/bin/makebundle temp/7x6.fnt data/font7x6
 	
 clean:
-	@rm -rf deps objs.$(CFG) bin.$(CFG) res temp
+	@rm -rf deps objs.$(CFG) bin.$(CFG) res temp zip
 
 # Unless "make clean" is called, include the dependency files
 # which are auto-generated. Don't fail if they are missing
