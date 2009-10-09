@@ -1,8 +1,10 @@
 TARGET=klystrack.exe
+ARCHIVE = klystrack.zip
 VPATH=src:src
 ECHO = echo
 CFG = debug
 MACHINE = -march=pentium4 -mfpmath=sse -msse3 
+ZIP = pkzipc -add
 
 # The directories containing the source files, separated by ':'
 
@@ -14,7 +16,7 @@ Group0_SRC = $(notdir ${wildcard src/*.c})
 # Build a Dependency list and an Object list, by replacing 
 # the .cpp extension to .d for dependency files, and .o for 
 # object files.
-Group0_DEP = $(patsubst %.c, deps/Group0_%.d, ${Group0_SRC})
+Group0_DEP = $(patsubst %.c, deps/Group0_$(CFG)_%.d, ${Group0_SRC})
 Group0_OBJ = $(patsubst %.c, objs.$(CFG)/Group0_%.o, ${Group0_SRC}) ../klystron/objs.$(CFG)/Group0_music.o ../klystron/objs.$(CFG)/Group0_cyd.o\
 ../klystron/objs.$(CFG)/Group0_cydflt.o ../klystron/objs.$(CFG)/Group0_cydrvb.o ../klystron/objs.$(CFG)/Group2_rnd.o\
 ../klystron/objs.$(CFG)/Group2_bundle.o ../klystron/objs.$(CFG)/Group1_font.o ../klystron/objs.$(CFG)/Group1_gfx.o
@@ -61,12 +63,14 @@ all:	inform bin.$(CFG)/$(TARGET) res/data
 
 zip: doc/* res/data 
 	make CFG=release
-	@mkdir -p zip
-	@mkdir -p zip/res
-	cp res/data zip/res/data
-	cp doc/LICENSE zip/LICENSE
-	cp doc/SDL.txt zip/SDL.txt
-	cp bin.release/$(TARGET) zip/$(TARGET)
+	@mkdir -p zip/data/res
+	cp res/data zip/data/res/data
+	cp doc/LICENSE zip/data/LICENSE
+	cp doc/SDL.txt zip/data/SDL.txt
+	cp bin.release/$(TARGET) zip/data/$(TARGET)
+	cd zip/data; \
+	$(ZIP) $(ARCHIVE) *; \
+	mv -f $(ARCHIVE) ../$(ARCHIVE)
 	
 inform:
 	@echo "Configuration "$(CFG)
@@ -80,7 +84,7 @@ objs.$(CFG)/Group0_%.o: %.c
 	@mkdir -p objs.$(CFG)
 	$(CXX) $(CXXFLAGS) -c -o $@ $<
 
-deps/Group0_%.d: %.c
+deps/Group0_$(CFG)_%.d: %.c
 	@mkdir -p deps
 	@$(ECHO) "Generating dependencies for $<"
 	@set -e ; $(CXXDEP) -MM $(INCLUDEFLAGS) $< > $@.$$$$; \
@@ -101,7 +105,7 @@ temp/7x6.fnt: data/font7x6/*
 	../klystron/tools/bin/makebundle temp/7x6.fnt data/font7x6
 	
 clean:
-	@rm -rf deps objs.$(CFG) bin.$(CFG) res temp zip
+	@rm -rf deps objs.release objs.debug objs.profile bin.release bin.debug bin.profile res temp zip
 
 # Unless "make clean" is called, include the dependency files
 # which are auto-generated. Don't fail if they are missing
