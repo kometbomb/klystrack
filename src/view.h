@@ -38,6 +38,10 @@ typedef struct
 	
 	void (*handler)(const SDL_Rect *dest, const SDL_Event *event, void *param);
 	void *param;
+	/*
+	When clicked the focus set to the following or if the param equals -1 it will leave as it is
+	*/
+	int focus;
 } View;
 
 
@@ -49,6 +53,7 @@ void copy_rect(SDL_Rect *dest, const SDL_Rect *src);
 "Controls"
 */
 
+void song_name_view(const SDL_Rect *dest, const SDL_Event *event, void *param);
 void instrument_name_view(const SDL_Rect *dest, const SDL_Event *event, void *param);
 void instrument_disk_view(const SDL_Rect *dest, const SDL_Event *event, void *param);
 void program_view(const SDL_Rect *dest, const SDL_Event *event, void *param);

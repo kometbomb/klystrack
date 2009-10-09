@@ -37,7 +37,7 @@ void copy()
 {
 	cp_clear(&mused.cp);
 
-	switch (mused.mode)
+	switch (mused.focus)
 	{
 		case EDITPATTERN:
 		
@@ -116,7 +116,7 @@ void delete()
 
 void paste()
 {
-	switch (mused.mode)
+	switch (mused.focus)
 	{
 		case EDITSEQUENCE:
 		{

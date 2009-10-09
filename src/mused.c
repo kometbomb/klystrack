@@ -28,6 +28,7 @@ OTHER DEALINGS IN THE SOFTWARE.
 #include "gfx/font.h"
 #include "gfx/gfx.h"
 #include "util/bundle.h"
+#include "action.h"
 
 extern Mused mused;
 
@@ -45,12 +46,38 @@ void set_edit_buffer(char *buffer, size_t size)
 } 
 
 
+void update_ghost_patterns()
+{
+	for (int e = 0 ; e < mused.song.num_sequences[mused.current_sequencetrack] ; ++e)
+			if (mused.song.sequence[mused.current_sequencetrack][e].position == mused.current_sequencepos)
+				mused.current_sequencepos = mused.song.sequence[mused.current_sequencetrack][e].position;
+	int p = 0;				
+	for (int i = 0 ; i < MUS_CHANNELS ; ++i)
+	{
+		mused.ghost_pattern[i] = NULL;
+		
+		for (int e = 0 ; e < mused.song.num_sequences[i] ; ++e)
+			if (mused.song.sequence[i][e].position == mused.current_sequencepos)
+			{
+				mused.ghost_pattern[i] = (int*)&mused.song.sequence[i][e].pattern;
+				if (i == mused.current_sequencetrack) mused.current_pattern = mused.song.sequence[i][e].pattern; 
+				++p;
+			}
+	}
+	mused.current_patternstep = 0;
+	mused.current_patternx = 0;
+	mused.single_pattern_edit = (p <= 1);
+	
+	if (mused.mode == EDITCLASSIC)
+		move_position(&mused.current_sequencetrack, &mused.pattern_horiz_position, &mused.pattern_horiz_slider_param, 0, mused.pattern_horiz_slider_param.last - mused.pattern_horiz_slider_param.first);
+}
+
+
 void change_mode(int newmode)
 {
 	if (newmode < VIRTUAL_MODE) SDL_FillRect(mused.console->surface, NULL, 0);
 
-	mused.selection.start = 0;
-	mused.selection.end = 0;
+	clear_selection(0,0,0);
 	
 	if (mused.mode < VIRTUAL_MODE)
 		mused.prev_mode = mused.mode;
@@ -61,27 +88,11 @@ void change_mode(int newmode)
 		
 		break;
 		
+		case EDITCLASSIC:
 		case EDITPATTERN:
-		if (mused.mode == EDITSEQUENCE)
+		if (mused.mode == EDITSEQUENCE || newmode == EDITCLASSIC)
 		{
-			for (int e = 0 ; e < mused.song.num_sequences[mused.current_sequencetrack] ; ++e)
-					if (mused.song.sequence[mused.current_sequencetrack][e].position == mused.current_sequencepos)
-						mused.current_sequencepos = mused.song.sequence[mused.current_sequencetrack][e].position;
-			int p = 0;				
-			for (int i = 0 ; i < MUS_CHANNELS ; ++i)
-			{
-				mused.ghost_pattern[i] = NULL;
-				
-				for (int e = 0 ; e < mused.song.num_sequences[i] ; ++e)
-					if (mused.song.sequence[i][e].position == mused.current_sequencepos)
-					{
-						mused.ghost_pattern[i] = (int*)&mused.song.sequence[i][e].pattern;
-						++p;
-					}
-			}
-			mused.current_patternstep = 0;
-			mused.current_patternx = 0;
-			mused.single_pattern_edit = (p <= 1);
+			update_ghost_patterns();
 		}
 		else
 		{
@@ -101,6 +112,9 @@ void change_mode(int newmode)
 	}
 
 	mused.mode = newmode;
+	mused.focus = newmode;
+	if (mused.focus == EDITCLASSIC)
+		mused.focus = EDITPATTERN;
 }
 
 
@@ -128,7 +142,6 @@ void new_song()
 	{
 		MusInstrument *inst = &mused.song.instrument[i];
 		default_instrument(inst);
-		
 	}
 	
 	mused.song.num_instruments = NUM_INSTRUMENTS;
@@ -139,6 +152,7 @@ void new_song()
 	mused.song.song_length = 0;
 	mused.song.loop_point = 0;
 	mused.song.flags = 0;
+	strcpy(mused.song.title, "");
 	
 	for (int i = 0 ; i < NUM_PATTERNS ; ++i)
 	{

@@ -50,7 +50,7 @@ void editparambox(int v)
 }
 
 
-static void move_position(int *cursor, int *scroll, SliderParam *param, int d, int top)
+void move_position(int *cursor, int *scroll, SliderParam *param, int d, int top)
 {
 	if (*cursor + d < top)
 		*cursor += d;
@@ -554,7 +554,7 @@ void sequence_event(SDL_Event *e)
 					if (mused.current_sequencepos >= mused.song.sequence[mused.current_sequencetrack][i].position && 
 						mused.song.sequence[mused.current_sequencetrack][i].position + mused.song.pattern[mused.song.sequence[mused.current_sequencetrack][i].pattern].num_steps > mused.current_sequencepos)
 					{
-						change_mode(EDITPATTERN);
+						if (mused.mode != EDITCLASSIC) change_mode(EDITPATTERN);
 						mused.current_pattern = mused.song.sequence[mused.current_sequencetrack][i].pattern;
 						break;
 					}
@@ -728,6 +728,8 @@ void sequence_event(SDL_Event *e)
 		
 		break;
 	}
+	
+	if (mused.mode == EDITCLASSIC) update_ghost_patterns();
 }
 
 
@@ -742,7 +744,7 @@ void pattern_event(SDL_Event *e)
 			
 			case SDLK_RETURN:
 			{
-				change_mode(EDITSEQUENCE);
+				if (mused.mode != EDITCLASSIC) change_mode(EDITSEQUENCE);
 			}
 			break;
 			
@@ -841,6 +843,10 @@ void pattern_event(SDL_Event *e)
 				else
 				{
 					++mused.current_patternx;
+					
+					if (mused.flags & COMPACT_VIEW && mused.current_patternx >= PED_LEGATO && mused.current_patternx <= PED_VIB)
+						mused.current_patternx = PED_COMMAND1;
+						
 					if (mused.current_patternx >= PED_PARAMS)
 					{
 						if (mused.single_pattern_edit)
@@ -850,13 +856,16 @@ void pattern_event(SDL_Event *e)
 						else
 						{
 							mused.current_patternx = 0;
+							int s = mused.current_sequencetrack;
 							do
 							{
 								mused.current_sequencetrack = (mused.current_sequencetrack + 1) % MUS_CHANNELS;
 							}
-							while (mused.ghost_pattern[mused.current_sequencetrack] == NULL) ;
+							while (mused.ghost_pattern[mused.current_sequencetrack] == NULL && s != mused.current_sequencetrack) ;
 							
-							mused.current_pattern = *mused.ghost_pattern[mused.current_sequencetrack];
+							if (s != mused.current_sequencetrack) mused.current_pattern = *mused.ghost_pattern[mused.current_sequencetrack];
+							
+							move_position(&mused.current_sequencetrack, &mused.pattern_horiz_position, &mused.pattern_horiz_slider_param, 0, mused.pattern_horiz_slider_param.last - mused.pattern_horiz_slider_param.first);
 							
 							if (mused.current_patternstep >= mused.song.pattern[mused.current_pattern].num_steps)
 								mused.current_patternstep = mused.song.pattern[mused.current_pattern].num_steps - 1;
@@ -877,6 +886,10 @@ void pattern_event(SDL_Event *e)
 				else
 				{
 					--mused.current_patternx;
+					
+					if (mused.flags & COMPACT_VIEW && mused.current_patternx >= PED_LEGATO && mused.current_patternx <= PED_VIB)
+						mused.current_patternx = PED_INSTRUMENT2;
+					
 					if (mused.current_patternx < 0)
 					{
 						if (mused.single_pattern_edit)
@@ -886,13 +899,16 @@ void pattern_event(SDL_Event *e)
 						else
 						{
 							mused.current_patternx = PED_PARAMS - 1;
+							int s = mused.current_sequencetrack;
 							do
 							{
 								mused.current_sequencetrack = (mused.current_sequencetrack + MUS_CHANNELS - 1) % MUS_CHANNELS;
 							}
-							while (mused.ghost_pattern[mused.current_sequencetrack] == NULL); 
+							while (mused.ghost_pattern[mused.current_sequencetrack] == NULL && s != mused.current_sequencetrack); 
 							
-							mused.current_pattern = *mused.ghost_pattern[mused.current_sequencetrack];
+							if (s != mused.current_sequencetrack) mused.current_pattern = *mused.ghost_pattern[mused.current_sequencetrack];
+							
+							move_position(&mused.current_sequencetrack, &mused.pattern_horiz_position, &mused.pattern_horiz_slider_param, 0, mused.pattern_horiz_slider_param.last - mused.pattern_horiz_slider_param.first);
 							
 							if (mused.current_patternstep >= mused.song.pattern[mused.current_pattern].num_steps)
 								mused.current_patternstep = mused.song.pattern[mused.current_pattern].num_steps - 1;
@@ -913,7 +929,7 @@ void pattern_event(SDL_Event *e)
 							
 						move_position(&mused.current_patternstep, &mused.pattern_position, &mused.pattern_slider_param, +1, mused.song.pattern[mused.current_pattern].num_steps);
 					}
-					else if (e->key.keysym.sym == SDLK_TAB)
+					else if (e->key.keysym.sym == SDLK_SPACE)
 					{
 						mused.song.pattern[mused.current_pattern].step[mused.current_patternstep].note = MUS_NOTE_RELEASE;
 							

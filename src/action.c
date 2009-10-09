@@ -27,6 +27,7 @@ OTHER DEALINGS IN THE SOFTWARE.
 #include "mused.h"
 #include "diskop.h"
 #include "toolutil.h"
+#include "view.h"
 
 extern Mused mused;
 
@@ -37,6 +38,8 @@ void select_sequence_position(void *channel, void *position, void* unused)
 	
 	if ((int)position < mused.song.song_length)
 		mused.current_sequencepos = (int)position;
+		
+	if (mused.mode == EDITCLASSIC) update_ghost_patterns();
 }
 
 
@@ -191,4 +194,44 @@ void enable_reverb(void *unused1, void *unused2, void *unused3)
 		mused.song.flags |= MUS_ENABLE_REVERB;
 	else
 		mused.song.flags &= ~MUS_ENABLE_REVERB;
+}
+
+
+void clear_selection(void *unused1, void *unused2, void *unused3)
+{
+	mused.selection.start = 0;
+	mused.selection.end = 0;
+}
+
+
+void cycle_focus(void *_views, void *_focus, void *_mode)
+{
+	View **viewlist = _views;
+	int *focus = _focus, *mode = _mode;
+	View *views = viewlist[*mode];
+	
+	int i;
+	for (i = 0 ; views[i].handler ; ++i)
+	{
+		if (views[i].focus == *focus) break;
+	}
+	
+	if (!views[i].handler) return;
+	
+	int next;
+	
+	for (next = i + 1 ; i != next ; ++next)
+	{
+		if (views[next].handler == NULL)
+		{
+			next = -1;
+			continue;
+		}
+		
+		if (views[next].focus != -1 && views[next].focus != *focus) 
+		{
+			*focus = views[next].focus;
+			break;
+		}
+	}
 }
