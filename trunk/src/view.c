@@ -231,7 +231,7 @@ void sequence_view(const SDL_Rect *dest, const SDL_Event *event, void *param)
 		if (mused.current_sequencepos == i)
 			bevel(&pos, mused.slider_bevel, BEV_SELECTED_SEQUENCE_ROW);
 			
-		if (mused.stat_song_position >= i && mused.stat_song_position < i + mused.sequenceview_steps)
+		if ((mused.flags & SONG_PLAYING) && mused.stat_song_position >= i && mused.stat_song_position < i + mused.sequenceview_steps)
 		{
 			SDL_Rect play;
 			copy_rect(&play, &pos);
@@ -239,7 +239,7 @@ void sequence_view(const SDL_Rect *dest, const SDL_Event *event, void *param)
 			play.h = 2;
 			bevel(&play, mused.slider_bevel, BEV_SEQUENCE_PLAY_POS);
 		}
-		
+			
 		++pos.y;
 		
 		console_set_clip(mused.console, &pos);
