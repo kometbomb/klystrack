@@ -52,7 +52,8 @@ void set_repeat_timer(const SDL_Event *event)
 	if (event)
 	{
 		memcpy(&repeat_event, event, sizeof(repeat_event));
-		repeat_timer_id = SDL_AddTimer(repeat_timer_id ? 100 : 300, repeat_timer, NULL);
+		repeat_event.type = SDL_USEREVENT;
+		repeat_timer_id = SDL_AddTimer(repeat_timer_id ? SDL_DEFAULT_REPEAT_INTERVAL : SDL_DEFAULT_REPEAT_DELAY, repeat_timer, NULL);
 	}
 	else
 	{
@@ -113,8 +114,6 @@ int check_drag_event(const SDL_Event *event, const SDL_Rect *rect, void (*action
 	{
 		case SDL_MOUSEMOTION:
 		{
-			set_repeat_timer(NULL);
-			
 			if (event->motion.state & SDL_BUTTON(SDL_BUTTON_LEFT))
 			{
 				if (!motion_target)
@@ -124,12 +123,16 @@ int check_drag_event(const SDL_Event *event, const SDL_Rect *rect, void (*action
 					if ((x >= rect->x) && (y >= rect->y) 
 						&& (x < rect->x + rect->w) && (y < rect->y + rect->h))
 					{
+						if (action) set_repeat_timer(NULL);
 						set_motion_target(action, param);
 					}
 				}
 				
 				if (motion_target)
+				{
+					set_repeat_timer(NULL);
 					motion_target(event->motion.x, event->motion.y, motion_param);
+				}
 			}
 		}
 		break;
