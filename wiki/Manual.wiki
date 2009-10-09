@@ -6,6 +6,7 @@
 || TAB || change focused element (where applicable) ||
 || F2 || pattern editor || 
 || F3 || instrument editor || 
+|| Shift+F3 || reverb editor || 
 || F4 || sequence editor || 
 || Shift+F4 || classic editor || 
 || F5 || play || 
