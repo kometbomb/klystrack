@@ -29,6 +29,7 @@ OTHER DEALINGS IN THE SOFTWARE.
 #include "gfx/gfx.h"
 #include "util/bundle.h"
 #include "action.h"
+#include "event.h"
 
 extern Mused mused;
 
