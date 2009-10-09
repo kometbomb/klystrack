@@ -39,6 +39,8 @@ OTHER DEALINGS IN THE SOFTWARE.
 #define BEV_SELECTED_PATTERN_ROW 128
 #define BEV_FIELD 144
 #define BEV_SEPARATOR 160
+#define BEV_SEQUENCE_PLAY_POS 176
+#define BEV_BACKGROUND 192
 #define DECAL_UPARROW 0 
 #define DECAL_DOWNARROW 16
 #define DECAL_GRAB_VERT 32
@@ -48,6 +50,8 @@ OTHER DEALINGS IN THE SOFTWARE.
 #define DECAL_MINUS 96
 #define DECAL_AUDIO_ENABLED 112
 #define DECAL_AUDIO_DISABLED 128
+#define DECAL_RIGHTARROW 144
+#define DECAL_LEFTARROW 160
 
 void bevel(const SDL_Rect *area, SDL_Surface *gfx, int offset);
 void button(const SDL_Rect *area, SDL_Surface *gfx, int offset, int decal);

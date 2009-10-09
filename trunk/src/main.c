@@ -55,34 +55,52 @@ int stat_pattern_number[MUS_CHANNELS];
 
 static const View instrument_view_tab[] =
 {
-	{{0, 0, 162, 10}, instrument_name_view},
-	{{162, 0, SCREEN_WIDTH - 162, 10}, instrument_disk_view},
-	{{0, 10, 158, SCREEN_HEIGHT-10-INFO }, instrument_view},
-	{{158, 10, SCREEN_WIDTH - 158 - SCROLLBAR, INST_LIST }, instrument_list},
-	{{158, 10 + INST_LIST, SCREEN_WIDTH - 158 - SCROLLBAR, SCREEN_HEIGHT-(10 + INST_LIST)-INFO }, program_view},
-	{{SCREEN_WIDTH - SCROLLBAR, 10 + INST_LIST, SCROLLBAR, SCREEN_HEIGHT-(10 + INST_LIST)-INFO }, slider, &mused.program_slider_param},
-	{{SCREEN_WIDTH - SCROLLBAR, 10, SCROLLBAR, INST_LIST }, slider, &mused.instrument_list_slider_param},
-	{{0, SCREEN_HEIGHT - INFO, SCREEN_WIDTH, INFO }, info_line},
+	{{0, 0, 164, 10}, instrument_name_view, NULL, -1},
+	{{164, 0, SCREEN_WIDTH - 164, 10}, instrument_disk_view, NULL, -1},
+	{{0, 10, 154, SCREEN_HEIGHT-10-INFO }, instrument_view, NULL, -1},
+	{{154, 10, SCREEN_WIDTH - 154 - SCROLLBAR, INST_LIST }, instrument_list, NULL, -1},
+	{{154, 10 + INST_LIST, SCREEN_WIDTH - 154 - SCROLLBAR, SCREEN_HEIGHT-(10 + INST_LIST)-INFO }, program_view, NULL, -1},
+	{{SCREEN_WIDTH - SCROLLBAR, 10 + INST_LIST, SCROLLBAR, SCREEN_HEIGHT-(10 + INST_LIST)-INFO }, slider, &mused.program_slider_param, -1},
+	{{SCREEN_WIDTH - SCROLLBAR, 10, SCROLLBAR, INST_LIST }, slider, &mused.instrument_list_slider_param, -1},
+	{{0, SCREEN_HEIGHT - INFO, SCREEN_WIDTH, INFO }, info_line, NULL, -1},
 	{{0, 0, 0, 0}, NULL}
 };
 
 static const View pattern_view_tab[] =
 {
-	{{0, 0, SCREEN_WIDTH-SCROLLBAR, SCREEN_HEIGHT}, pattern_view},
-	{{SCREEN_WIDTH-SCROLLBAR, 0, SCROLLBAR, SCREEN_HEIGHT}, slider, &mused.pattern_slider_param},
+	{{0, 0, SCREEN_WIDTH-SCROLLBAR, SCREEN_HEIGHT - INFO}, pattern_view, NULL, -1},
+	{{SCREEN_WIDTH-SCROLLBAR, 0, SCROLLBAR, SCREEN_HEIGHT - INFO}, slider, &mused.pattern_slider_param, -1},
+	{{0, SCREEN_HEIGHT - INFO, SCREEN_WIDTH, INFO }, info_line, NULL, -1},
+	{{0, 0, 0, 0}, NULL}
+};
+
+#define CLASSIC_PAT (SCREEN_HEIGHT / 2 + 20)
+#define CLASSIC_SONG_INFO (94)
+
+static const View classic_view_tab[] =
+{
+	{{0,0,CLASSIC_SONG_INFO,SCREEN_HEIGHT - INFO - CLASSIC_PAT}, info_view, NULL, -1},
+	{{CLASSIC_SONG_INFO, 0, SCREEN_WIDTH-SCROLLBAR-CLASSIC_SONG_INFO, SCREEN_HEIGHT - CLASSIC_PAT - INFO - 10 - 10}, sequence_view, NULL, EDITSEQUENCE},
+	{{SCREEN_WIDTH-SCROLLBAR, 0, SCROLLBAR, SCREEN_HEIGHT - CLASSIC_PAT - INFO - 10 - 10}, slider, &mused.sequence_slider_param, EDITSEQUENCE},
+	{{CLASSIC_SONG_INFO, SCREEN_HEIGHT - CLASSIC_PAT - INFO - 10, 164, 10}, instrument_name_view, NULL, -1},
+	{{CLASSIC_SONG_INFO, SCREEN_HEIGHT - CLASSIC_PAT - INFO - 20, 164, 10}, song_name_view, NULL, -1},
+	{{0, SCREEN_HEIGHT - INFO - CLASSIC_PAT, SCREEN_WIDTH-SCROLLBAR, CLASSIC_PAT}, pattern_view, NULL, EDITPATTERN},
+	{{SCREEN_WIDTH - SCROLLBAR, SCREEN_HEIGHT - INFO - CLASSIC_PAT, SCROLLBAR, CLASSIC_PAT}, slider, &mused.pattern_slider_param, EDITPATTERN},
+	{{0, SCREEN_HEIGHT - INFO, SCREEN_WIDTH, INFO }, info_line, NULL, -1},
 	{{0, 0, 0, 0}, NULL}
 };
 
 static const View sequence_view_tab[] =
 {
-	{{0, 0, SCREEN_WIDTH-SCROLLBAR, SCREEN_HEIGHT}, sequence_view},
-	{{SCREEN_WIDTH-SCROLLBAR, 0, SCROLLBAR, SCREEN_HEIGHT}, slider, &mused.sequence_slider_param},
+	{{0,0,SCREEN_WIDTH,33+4}, info_view, NULL, -1},
+	{{0, 33+4, SCREEN_WIDTH-SCROLLBAR, SCREEN_HEIGHT-(33+4)}, sequence_view, NULL, -1},
+	{{SCREEN_WIDTH-SCROLLBAR, 33+4, SCROLLBAR, SCREEN_HEIGHT-(33+4)}, slider, &mused.sequence_slider_param, -1},
 	{{0, 0, 0, 0}, NULL}
 };
 
 static const View reverb_view_tab[] =
 {
-	{{0, 0, SCREEN_WIDTH, SCREEN_HEIGHT}, reverb_view},
+	{{0, 0, SCREEN_WIDTH, SCREEN_HEIGHT}, reverb_view, NULL, -1},
 	{{0, 0, 0, 0}, NULL}
 };
 
@@ -91,26 +109,29 @@ static const View *tab[] =
 	instrument_view_tab,
 	pattern_view_tab,
 	sequence_view_tab,
-	reverb_view_tab
+	reverb_view_tab,
+	classic_view_tab
 };
 
 static const struct { int mod, key; void (*action)(void*,void*,void*); int p1, p2, p3; } shortcuts[] =
 {
+	{ 0, SDLK_TAB, cycle_focus, (int)tab, (int)&mused.focus, (int)&mused.mode },
 	{ 0, SDLK_ESCAPE, quit_action, 0, 0, 0 },
 	{ KMOD_ALT, SDLK_F4, quit_action, 0, 0, 0 },
 	{ 0, SDLK_F2, change_mode_action, EDITPATTERN, 0, 0},
 	{ 0, SDLK_F3, change_mode_action, EDITINSTRUMENT, 0, 0},
 	{ KMOD_SHIFT, SDLK_F3, change_mode_action, EDITREVERB, 0, 0},
 	{ 0, SDLK_F4, change_mode_action, EDITSEQUENCE, 0, 0},
+	{ KMOD_SHIFT, SDLK_F4, change_mode_action, EDITCLASSIC, 0, 0},
 	{ 0, SDLK_F5, play, 0, 0, 0 },
 	{ 0, SDLK_F6, play, 1, 0, 0 },
 	{ 0, SDLK_F8, stop, 0, 0, 0 },
 	{ 0, SDLK_F9, change_octave, -1, 0, 0 },
 	{ KMOD_SHIFT, SDLK_F9, change_song_rate, -1, 0, 0 },
-	{ KMOD_SHIFT|KMOD_CTRL, SDLK_F9, change_time_signature, -1, 0, 0 },
+	{ KMOD_SHIFT|KMOD_CTRL, SDLK_F9, change_time_signature, 0, 0, 0 },
 	{ 0, SDLK_F10, change_octave, +1, 0, 0 },
 	{ KMOD_SHIFT, SDLK_F10, change_song_rate, +1, 0, 0 },
-	{ KMOD_SHIFT|KMOD_CTRL, SDLK_F10, change_time_signature, +1, 0, 0 },
+	{ KMOD_SHIFT|KMOD_CTRL, SDLK_F10, change_time_signature, 1, 0, 0 },
 	{ 0, SDLK_KP_PLUS, select_instrument, +1, 1, 0 },
 	{ KMOD_CTRL, SDLK_KP_PLUS, change_song_speed, 0, +1, 0 },
 	{ KMOD_ALT, SDLK_KP_PLUS, change_song_speed, 1, +1, 0 },
@@ -126,6 +147,7 @@ static const struct { int mod, key; void (*action)(void*,void*,void*); int p1, p
 	{ KMOD_SHIFT, SDLK_DELETE, generic_action, (int)delete, 0, 0 },
 	{ KMOD_SHIFT, SDLK_INSERT, generic_action, (int)paste, 0, 0 },
 	{ KMOD_CTRL, SDLK_INSERT, generic_action, (int)copy, 0, 0 },
+	{ KMOD_CTRL, SDLK_d, clear_selection, 0, 0, 0 },
 
 	/* Null terminated */
 	{ 0, 0, NULL, 0, 0, 0 }
@@ -144,7 +166,8 @@ int main(int argc, char **argv)
 	GfxDomain *domain = gfx_create_domain();
 	domain->screen_w = SCREEN_WIDTH;
 	domain->screen_h = SCREEN_HEIGHT;
-	domain->fps = 4;
+	domain->fps = 10;
+	domain->scale = 1;
 	gfx_domain_update(domain);
 	
 	SDL_EnableKeyRepeat(SDL_DEFAULT_REPEAT_DELAY, SDL_DEFAULT_REPEAT_INTERVAL);
@@ -175,6 +198,19 @@ int main(int argc, char **argv)
 			{
 				case SDL_QUIT:
 				quit_action(0,0,0);
+				break;
+				
+				case SDL_USEREVENT:
+					e.type = SDL_MOUSEBUTTONDOWN;
+				break;
+				
+				case SDL_MOUSEMOTION:
+					e.motion.xrel /= domain->scale;
+					e.motion.yrel /= domain->scale;
+				case SDL_MOUSEBUTTONDOWN:
+					
+					e.button.x /= domain->scale;
+					e.button.y /= domain->scale;
 				break;
 				
 				case SDL_MOUSEBUTTONUP:
@@ -210,7 +246,7 @@ int main(int argc, char **argv)
 					{
 						cyd_lock(&mused.cyd, 1);
 						
-						switch (mused.mode)
+						switch (mused.focus)
 						{
 							case EDITBUFFER:
 							edit_text(&e);
@@ -242,6 +278,8 @@ int main(int argc, char **argv)
 				}
 				break;
 			}
+			
+			if (mused.mode == EDITBUFFER) e.type = SDL_USEREVENT;
 			
 			if (e.type != SDL_MOUSEMOTION || (e.motion.state)) ++got_event;
 			

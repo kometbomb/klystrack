@@ -44,5 +44,7 @@ void quit_action(void *, void *, void *);
 void change_mode_action(void *mode, void *, void *);
 void enable_channel(void *channel, void *, void *);
 void enable_reverb(void *unused1, void *unused2, void *unused3);
+void clear_selection(void *, void *, void*);
+void cycle_focus(void *views, void *focus, void *mode);
 
 #endif

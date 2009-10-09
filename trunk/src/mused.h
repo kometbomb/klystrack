@@ -37,9 +37,11 @@ enum
 	EDITPATTERN,
 	EDITSEQUENCE,
 	EDITREVERB,
+	EDITCLASSIC,
 	/* Virtual modes, i.e. what are not modes itself but should be considered happening "inside" prev_mode */
 	EDITBUFFER,
-	EDITPROG
+	EDITPROG,
+	MENU
 };
 
 #define VIRTUAL_MODE EDITBUFFER
@@ -47,14 +49,20 @@ enum
 #include "clipboard.h"
 #include "copypaste.h"
 
+enum
+{
+	COMPACT_VIEW = 1
+};
+
 typedef struct
 {
+	Uint32 flags;
 	int done;
 	Console *console;
 	MusSong song;
 	CydEngine cyd;
 	MusEngine mus;
-	int octave, current_instrument, selected_param, editpos, mode, 
+	int octave, current_instrument, selected_param, editpos, mode, focus,
 		current_patternstep, current_pattern, current_patternx, 
 		current_sequencepos, sequenceview_steps, single_pattern_edit, 
 		prev_mode, current_sequenceparam, instrument_list_position,
@@ -92,5 +100,6 @@ void deinit();
 void new_song();
 void default_instrument(MusInstrument *instrument);
 void set_edit_buffer(char *buffer, size_t size);
+void update_ghost_patterns();
 
 #endif
