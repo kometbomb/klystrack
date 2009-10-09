@@ -3,6 +3,7 @@
 ==General keyboard controls==
 
 || cursor keys || move around/change values ||
+|| TAB || change focused element (where applicable) ||
 || F2 || pattern editor || 
 || F3 || instrument editor || 
 || F4 || sequence editor || 
