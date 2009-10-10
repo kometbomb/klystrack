@@ -64,6 +64,7 @@ all:	inform bin.$(CFG)/$(TARGET) res/data
 .PHONY: zip
 
 zip: doc/* res/data zip/data/SDL.dll zip/data/SDL_mixer.dll
+	make -C ../klystron CFG=release
 	make CFG=release
 	@mkdir -p zip/data/res
 	cp res/data zip/data/res/data
