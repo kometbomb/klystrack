@@ -46,5 +46,8 @@ void enable_channel(void *channel, void *, void *);
 void enable_reverb(void *unused1, void *unused2, void *unused3);
 void clear_selection(void *, void *, void*);
 void cycle_focus(void *views, void *focus, void *mode);
+void change_song_length(void *delta, void *, void *);
+void change_loop_point(void *delta, void *, void *);
+void change_seq_steps(void *delta, void *, void *);
 
 #endif

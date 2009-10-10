@@ -36,6 +36,7 @@ OTHER DEALINGS IN THE SOFTWARE.
 #include "slider.h"
 #include "action.h"
 #include "mouse.h"
+#include "bevel.h"
 
 #define SCREEN_WIDTH 320
 #define SCREEN_HEIGHT 240
@@ -58,13 +59,14 @@ void change_pixel_scale(void *, void*, void*);
 
 static const View instrument_view_tab[] =
 {
-	{{0, 0, 164, 10}, instrument_name_view, NULL, -1},
-	{{164, 0, SCREEN_WIDTH - 164, 10}, instrument_disk_view, NULL, -1},
-	{{0, 10, 154, SCREEN_HEIGHT-10-INFO }, instrument_view, NULL, -1},
-	{{154, 10, SCREEN_WIDTH - 154 - SCROLLBAR, INST_LIST }, instrument_list, NULL, -1},
-	{{154, 10 + INST_LIST, SCREEN_WIDTH - 154 - SCROLLBAR, SCREEN_HEIGHT-(10 + INST_LIST)-INFO }, program_view, NULL, -1},
-	{{SCREEN_WIDTH - SCROLLBAR, 10 + INST_LIST, SCROLLBAR, SCREEN_HEIGHT-(10 + INST_LIST)-INFO }, slider, &mused.program_slider_param, -1},
-	{{SCREEN_WIDTH - SCROLLBAR, 10, SCROLLBAR, INST_LIST }, slider, &mused.instrument_list_slider_param, -1},
+	{{0, 0, 164 + 32 + 4, 14}, bevel_view, (void*)BEV_BACKGROUND, -1},
+	{{2, 2, 164 + 32, 10}, instrument_name_view, (void*)1, -1},
+	{{164 + 32 + 4, 0, SCREEN_WIDTH - 164 - 32 - 2, 14}, instrument_disk_view, NULL, -1},
+	{{0, 14, 154, SCREEN_HEIGHT-14-INFO }, instrument_view, NULL, -1},
+	{{154, 14, SCREEN_WIDTH - 154 - SCROLLBAR, INST_LIST }, instrument_list, NULL, -1},
+	{{154, 14 + INST_LIST, SCREEN_WIDTH - 154 - SCROLLBAR, SCREEN_HEIGHT-(14 + INST_LIST)-INFO }, program_view, NULL, -1},
+	{{SCREEN_WIDTH - SCROLLBAR, 14 + INST_LIST, SCROLLBAR, SCREEN_HEIGHT-(14 + INST_LIST)-INFO }, slider, &mused.program_slider_param, -1},
+	{{SCREEN_WIDTH - SCROLLBAR, 14, SCROLLBAR, INST_LIST }, slider, &mused.instrument_list_slider_param, -1},
 	{{0, SCREEN_HEIGHT - INFO, SCREEN_WIDTH, INFO }, info_line, NULL, -1},
 	{{0, 0, 0, 0}, NULL}
 };
@@ -77,16 +79,17 @@ static const View pattern_view_tab[] =
 	{{0, 0, 0, 0}, NULL}
 };
 
-#define CLASSIC_PAT (SCREEN_HEIGHT / 2 + 20)
+#define CLASSIC_PAT (SCREEN_HEIGHT / 2 + 20 - 2)
 #define CLASSIC_SONG_INFO (94)
 
 static const View classic_view_tab[] =
 {
 	{{0,0,CLASSIC_SONG_INFO,SCREEN_HEIGHT - INFO - CLASSIC_PAT}, info_view, NULL, -1},
-	{{CLASSIC_SONG_INFO, 0, SCREEN_WIDTH-SCROLLBAR-CLASSIC_SONG_INFO, SCREEN_HEIGHT - CLASSIC_PAT - INFO - 10 - 10}, sequence_view, NULL, EDITSEQUENCE},
-	{{SCREEN_WIDTH-SCROLLBAR, 0, SCROLLBAR, SCREEN_HEIGHT - CLASSIC_PAT - INFO - 10 - 10}, slider, &mused.sequence_slider_param, EDITSEQUENCE},
-	{{CLASSIC_SONG_INFO, SCREEN_HEIGHT - CLASSIC_PAT - INFO - 10, 164, 10}, instrument_name_view, NULL, -1},
-	{{CLASSIC_SONG_INFO, SCREEN_HEIGHT - CLASSIC_PAT - INFO - 20, 164, 10}, song_name_view, NULL, -1},
+	{{CLASSIC_SONG_INFO, 0, SCREEN_WIDTH-SCROLLBAR-CLASSIC_SONG_INFO, SCREEN_HEIGHT - CLASSIC_PAT - INFO - 10 - 10 - 5}, sequence_view, NULL, EDITSEQUENCE},
+	{{SCREEN_WIDTH-SCROLLBAR, 0, SCROLLBAR, SCREEN_HEIGHT - CLASSIC_PAT - INFO - 10 - 10 - 5}, slider, &mused.sequence_slider_param, EDITSEQUENCE},
+	{{CLASSIC_SONG_INFO, SCREEN_HEIGHT - CLASSIC_PAT - INFO - 10 - 10 - 5, SCREEN_WIDTH - CLASSIC_SONG_INFO, 25}, bevel_view, (void*)BEV_BACKGROUND, -1},
+	{{CLASSIC_SONG_INFO + 2, SCREEN_HEIGHT - CLASSIC_PAT - INFO - 20 - 2 - 1, 164 + 32, 10}, song_name_view, NULL, -1},
+	{{CLASSIC_SONG_INFO + 2, SCREEN_HEIGHT - CLASSIC_PAT - INFO - 10 - 2, 164 + 32, 10}, instrument_name_view, (void*)1, -1},
 	{{0, SCREEN_HEIGHT - INFO - CLASSIC_PAT, SCREEN_WIDTH-SCROLLBAR, CLASSIC_PAT}, pattern_view, NULL, EDITPATTERN},
 	{{SCREEN_WIDTH - SCROLLBAR, SCREEN_HEIGHT - INFO - CLASSIC_PAT, SCROLLBAR, CLASSIC_PAT}, slider, &mused.pattern_slider_param, EDITPATTERN},
 	{{0, SCREEN_HEIGHT - INFO, SCREEN_WIDTH, INFO }, info_line, NULL, -1},

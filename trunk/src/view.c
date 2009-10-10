@@ -78,8 +78,10 @@ void draw_view(const View* views, const SDL_Event *_event)
 			}
 		}
 		while (event_hit && iter <= 1);
-		SDL_UpdateRect(mused.console->surface, view->position.x, view->position.y, view->position.w, view->position.h);
 	}
+	
+	for (int i = 0 ; views[i].handler ; ++i)
+		SDL_UpdateRect(mused.console->surface, views[i].position.x, views[i].position.y, views[i].position.w, views[i].position.h);
 }
 
 
@@ -201,7 +203,7 @@ void sequence_view(const SDL_Rect *dest, const SDL_Event *event, void *param)
 	copy_rect(&content, dest);
 	adjust_rect(&content, 1);
 	
-	SDL_Rect loop = { 0, -(mused.console->font.h + 1), 0, 0 };
+	int loop_begin = -1, loop_end = -1;
 	
 	SDL_SetClipRect(mused.console->surface, &content);
 	
@@ -211,14 +213,12 @@ void sequence_view(const SDL_Rect *dest, const SDL_Event *event, void *param)
 		
 		if (i <= mused.song.loop_point)
 		{
-			loop.x = pos.x;
-			loop.y = pos.y;
+			loop_begin = pos.y;
 		}
 		
-		if (i + mused.sequenceview_steps < mused.song.song_length)
+		if (i >= mused.song.song_length && loop_end == -1)
 		{
-			loop.w = pos.x - loop.x + pos.w;
-			loop.h = pos.y - loop.y + pos.h + mused.console->font.h + 1;
+			loop_end = pos.y;
 		}
 		
 		console_set_color(mused.console,(mused.current_sequencepos == i) ? COLOR_SELECTED_SEQUENCE_ROW : 
@@ -321,8 +321,12 @@ void sequence_view(const SDL_Rect *dest, const SDL_Event *event, void *param)
 			slider_set_params(&mused.sequence_slider_param, 0, mused.song.song_length - mused.sequenceview_steps, start, i, &mused.sequence_position, mused.sequenceview_steps, SLIDER_VERTICAL);
 	}
 	
-	if (loop.w != 0)
-		bevel(&loop, mused.slider_bevel, BEV_SEQUENCE_LOOP);
+	if (loop_begin == -1) loop_begin = content.y - (mused.console->font.h + 1);
+	if (loop_end == -1) loop_end = content.y + content.h + (mused.console->font.h + 1);
+	
+	SDL_Rect loop = { content.x, loop_begin, content.w, loop_end - loop_begin };
+	
+	bevel(&loop, mused.slider_bevel, BEV_SEQUENCE_LOOP);
 		
 	SDL_SetClipRect(mused.console->surface, NULL);
 }
@@ -684,16 +688,13 @@ void info_view(const SDL_Rect *dest, const SDL_Event *event, void *param)
 	int d;
 	
 	d = generic_field(event, &r, 0, "LEN", "%04X", MAKEPTR(mused.song.song_length), 4);
-	if (d < 0) mused.song.song_length = my_max(0, mused.song.song_length - mused.sequenceview_steps);
-	else if (d > 0) mused.song.song_length = my_min(0xffff, mused.song.song_length + mused.sequenceview_steps);
+	if (d) change_song_length((void*)(d * mused.sequenceview_steps), 0, 0);
 	update_rect(&area, &r);
 	d = generic_field(event, &r, 0, "LOOP","%04X", MAKEPTR(mused.song.loop_point), 4);
-	if (d < 0) mused.song.loop_point = my_max(0, mused.song.loop_point - mused.sequenceview_steps);
-	else if (d > 0) mused.song.loop_point = my_min(mused.song.loop_point + mused.sequenceview_steps, mused.song.song_length);
+	if (d) change_loop_point((void*)(d * mused.sequenceview_steps), 0, 0);
 	update_rect(&area, &r);
 	d = generic_field(event, &r, 0, "STEP","%02X", MAKEPTR(mused.sequenceview_steps), 2);
-	if (d < 0) mused.sequenceview_steps = my_max(1, mused.sequenceview_steps - 1);
-	else if (d > 0) mused.sequenceview_steps = my_min(mused.sequenceview_steps + 1, 128);
+	if (d) change_seq_steps((void*)d, 0, 0);
 	update_rect(&area, &r);
 	d = generic_field(event, &r, 0, "SPD1","%02X", MAKEPTR(mused.song.song_speed), 2);
 	if (d) change_song_speed((void*)0, (void*)d, 0);
@@ -999,17 +1000,34 @@ static void inst_field(const SDL_Event *e, const SDL_Rect *area, int p, int leng
 
 void instrument_name_view(const SDL_Rect *dest, const SDL_Event *event, void *param)
 {
-	SDL_Rect area;
-	copy_rect(&area,dest);
-	area.w = 2 * mused.console->font.w + 2 + 16;
-	inst_text(event, &area, P_INSTRUMENT, "", "%02X", (void*)mused.current_instrument, 2);
-	area.x += area.w;
-	area.w = dest->x + dest->w - area.x;
-	inst_field(event, &area, P_NAME, 16, mused.song.instrument[mused.current_instrument].name);
+	SDL_Rect farea, larea, tarea;
+	copy_rect(&farea,dest);
+	copy_rect(&larea,dest);
+	copy_rect(&tarea,dest);
+	
+	farea.w = 2 * mused.console->font.w + 2 + 16;
+	
+	if (!param)
+	{
+		larea.w = 0;
+	}
+	else
+	{
+		larea.w = 32;
+		label("INST", &larea);
+	}
+	
+	tarea.w = dest->w - farea.w - larea.w;
+	farea.x = larea.w + dest->x;
+	tarea.x = farea.x + farea.w;
+	
+	inst_text(event, &farea, P_INSTRUMENT, "", "%02X", (void*)mused.current_instrument, 2);
+	inst_field(event, &tarea, P_NAME, 16, mused.song.instrument[mused.current_instrument].name);
+	
 	if (mused.selected_param == P_NAME && mused.mode == EDITINSTRUMENT)
 	{
 		SDL_Rect r;
-		copy_rect(&r, &area);
+		copy_rect(&r, &farea);
 		adjust_rect(&r, -1);
 		bevel(&r, mused.slider_bevel, BEV_CURSOR);
 	}
@@ -1255,6 +1273,20 @@ void instrument_disk_view(const SDL_Rect *dest, const SDL_Event *event, void *pa
 
 void song_name_view(const SDL_Rect *dest, const SDL_Event *event, void *param)
 {
-	inst_field(event, dest, 0, MUS_TITLE_LEN, mused.song.title);
+	SDL_Rect larea, farea;
+	copy_rect(&larea, dest);
+	copy_rect(&farea, dest);
+	larea.w = 32;
+	farea.w -= larea.w;
+	farea.x += larea.w;
+	label("NAME", &larea);
+	
+	inst_field(event, &farea, 0, MUS_TITLE_LEN, mused.song.title);
+}
+
+
+void bevel_view(const SDL_Rect *dest, const SDL_Event *event, void *param)
+{
+	bevel(dest, mused.slider_bevel, (int)param);
 }
 

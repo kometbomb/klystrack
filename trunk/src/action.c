@@ -237,3 +237,60 @@ void cycle_focus(void *_views, void *_focus, void *_mode)
 		}
 	}
 }
+
+
+void change_song_length(void *delta, void *unused1, void *unused2)
+{
+	if ((int)delta < 0)
+	{
+		if (mused.song.song_length >= -(int)delta)
+			mused.song.song_length += (int)delta;
+						
+		if (mused.song.loop_point >= mused.song.song_length)
+			mused.song.loop_point = mused.song.song_length;
+	}
+	else if ((int)delta > 0)
+	{
+		if (mused.song.song_length < 0xfffe - (int)delta)
+			mused.song.song_length += (int)delta;
+	}
+}
+
+
+void change_loop_point(void *delta, void *unused1, void *unused2)
+{
+	if ((int)delta < 0)
+	{
+		if (mused.song.loop_point >= -(int)delta)
+			mused.song.loop_point += (int)delta;
+		else
+			mused.song.loop_point = 0;
+	}
+	else if ((int)delta > 0)
+	{
+		mused.song.loop_point += (int)delta;
+		if (mused.song.loop_point >= mused.song.song_length)
+			mused.song.loop_point = mused.song.song_length;
+	}
+}
+
+
+void change_seq_steps(void *delta, void *unused1, void *unused2)
+{
+	if ((int)delta < 0)
+	{
+		if (mused.sequenceview_steps > 1)
+		{
+			--mused.sequenceview_steps;
+			mused.current_sequencepos = (mused.current_sequencepos/mused.sequenceview_steps) * mused.sequenceview_steps;
+		}
+	}
+	else if ((int)delta > 0)
+	{
+		if (mused.sequenceview_steps < 128)
+		{
+			++mused.sequenceview_steps;
+			mused.current_sequencepos = (mused.current_sequencepos/mused.sequenceview_steps) * mused.sequenceview_steps;
+		}
+	}
+}
