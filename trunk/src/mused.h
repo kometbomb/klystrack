@@ -48,6 +48,7 @@ enum
 
 #include "clipboard.h"
 #include "copypaste.h"
+#include "menu.h"
 
 enum
 {
@@ -86,6 +87,7 @@ typedef struct
 	int stat_pattern_number[MUS_CHANNELS];
 	SDL_Surface *slider_bevel;
 	Font smallfont, largefont;
+	const Menu *current_menu;
 } Mused;
 
 #define NUM_STEPS 256

@@ -37,6 +37,7 @@ OTHER DEALINGS IN THE SOFTWARE.
 #include "action.h"
 #include "mouse.h"
 #include "bevel.h"
+#include "menu.h"
 
 #define SCREEN_WIDTH 320
 #define SCREEN_HEIGHT 240
@@ -231,16 +232,24 @@ int main(int argc, char **argv)
 				case SDL_MOUSEMOTION:
 					e.motion.xrel /= domain->scale;
 					e.motion.yrel /= domain->scale;
-				case SDL_MOUSEBUTTONDOWN:
-					
 					e.button.x /= domain->scale;
 					e.button.y /= domain->scale;
 				break;
 				
+				case SDL_MOUSEBUTTONDOWN:
+					e.button.x /= domain->scale;
+					e.button.y /= domain->scale;
+					if (e.button.button == SDL_BUTTON_RIGHT)
+						open_menu();
+				break;
+				
 				case SDL_MOUSEBUTTONUP:
-				
-				mouse_released(&e);
-				
+				{
+					if (e.button.button == SDL_BUTTON_LEFT)
+						mouse_released(&e);
+					else if (e.button.button == SDL_BUTTON_RIGHT)	
+						close_menu();
+				}
 				break;
 				
 				case SDL_KEYDOWN:
@@ -321,9 +330,11 @@ int main(int argc, char **argv)
 				stat_pattern_number[i] = (stat_pattern[i] - &mused.song.pattern[0])/sizeof(mused.song.pattern[0]);
 			}
 			
-			int m = (mused.mode == EDITBUFFER || mused.mode == EDITPROG) ? mused.prev_mode : mused.mode;
+			int m = mused.mode >= VIRTUAL_MODE ? mused.prev_mode : mused.mode;
 		
 			draw_view(tab[m], &e);
+			
+			if (mused.mode == MENU) draw_menu(&e);
 			
 			gfx_domain_flip(domain);
 		}
