@@ -100,6 +100,7 @@ void slider(const SDL_Rect *_area, const SDL_Event *event, void *_param)
 		bar_size = bar_bottom - bar_top;
 		
 		if (bar_size < 4) bar_size = 4;
+		if (bar_size > area_size) { bar_size = area_size; bar_top = area_start; }
 		if (bar_top + bar_size > area_size + area_start) bar_top = area_size - bar_size + area_start;
 	}
 	

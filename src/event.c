@@ -26,6 +26,7 @@ OTHER DEALINGS IN THE SOFTWARE.
 
 #include "event.h"
 #include "mused.h"
+#include "action.h"
 #include <string.h>
 
 
@@ -583,14 +584,11 @@ void sequence_event(SDL_Event *e)
 				{
 					if (e->key.keysym.mod & KMOD_SHIFT)
 					{
-						mused.song.loop_point += steps;
-						if (mused.song.loop_point >= mused.song.song_length)
-							mused.song.loop_point = mused.song.song_length;
+						change_loop_point((void*)steps, 0, 0);
 					}
 					else
 					{
-						if (mused.song.song_length < 0xfffe - steps)
-							mused.song.song_length += steps;
+						change_song_length((void*)steps, 0, 0);
 					}
 				}
 				else
@@ -622,16 +620,11 @@ void sequence_event(SDL_Event *e)
 				{
 					if (e->key.keysym.mod & KMOD_SHIFT)
 					{
-						if (mused.song.loop_point >= steps)
-							mused.song.loop_point -= steps;
+						change_loop_point((void*)-steps, 0,0);
 					}
 					else
 					{
-						if (mused.song.song_length >= steps)
-							mused.song.song_length -= steps;
-							
-						if (mused.song.loop_point >= mused.song.song_length)
-							mused.song.loop_point = mused.song.song_length;
+						change_song_length((void*)-steps, 0, 0);
 					}
 				}
 				else
@@ -679,11 +672,7 @@ void sequence_event(SDL_Event *e)
 			{
 				if (e->key.keysym.mod & KMOD_CTRL)
 				{
-					if (mused.sequenceview_steps < 64)
-					{
-						++mused.sequenceview_steps;
-						mused.current_sequencepos = (mused.current_sequencepos/mused.sequenceview_steps) * mused.sequenceview_steps;
-					}
+					change_seq_steps((void *)1, 0, 0);
 				}
 				else
 				{
@@ -698,11 +687,7 @@ void sequence_event(SDL_Event *e)
 			{
 				if (e->key.keysym.mod & KMOD_CTRL)
 				{
-					if (mused.sequenceview_steps > 1)
-					{
-						--mused.sequenceview_steps;
-						mused.current_sequencepos = (mused.current_sequencepos/mused.sequenceview_steps) * mused.sequenceview_steps;
-					}
+					change_seq_steps((void *)-1, 0, 0);
 				}
 				else
 				{
