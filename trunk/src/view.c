@@ -221,6 +221,11 @@ void sequence_view(const SDL_Rect *dest, const SDL_Event *event, void *param)
 			loop_end = pos.y;
 		}
 		
+		if (i + mused.sequenceview_steps >= mused.song.song_length && loop_end == -1)
+		{
+			loop_end = pos.y + pos.h;
+		}
+		
 		console_set_color(mused.console,(mused.current_sequencepos == i) ? COLOR_SELECTED_SEQUENCE_ROW : 
 			timesig((start/mused.sequenceview_steps+s), 
 				((i < mused.song.song_length) ? COLOR_SEQUENCE_BAR : COLOR_SEQUENCE_BAR_DISABLED),
