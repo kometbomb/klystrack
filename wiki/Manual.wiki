@@ -78,8 +78,8 @@ _{{{xx}}}, {{{yy}}} = parameter to command_
 || {{{02xx}}} || portamento down ||
 || {{{03xx}}} || slide to note with speed xx ||
 || {{{04xy}}} || vibrato with speed of x and depth of y ||
-|| {{{11xx}}} || porta up by one semitone ||
-|| {{{12xx}}} || porta down by one semitone ||
+|| {{{11xx}}} || portamento up by one semitone ||
+|| {{{12xx}}} || portamento down by one semitone ||
 || {{{21xx}}} || filter cutoff up ||
 || {{{22xx}}} || filter cutoff down ||
 || {{{07xx}}}  || pulse width down ||
@@ -89,6 +89,8 @@ _{{{xx}}}, {{{yy}}} = parameter to command_
 || {{{0axy}}} || Fade volume up by x, down by y ||
 || {{{0b0x}}} || set waveform (1 = noise, 2 = pulse, 4 = triangle, 8 = saw, 9 = 1 + 8 = noise + saw etc.) ||
 || {{{0cxx}}} || set volume ||
+|| {{{0eax}}} || fine fade volume down by x ||
+|| {{{0ebx}}} || fine fade volume up by x ||
 || {{{fd00}}} || loop begin ||
 || {{{fexx}}} || loop to previous "fd00" xx times ||
 || {{{ffxx}}} || go to step xx ||
