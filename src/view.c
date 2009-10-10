@@ -80,12 +80,12 @@ void draw_view(const View* views, const SDL_Event *_event)
 		while (event_hit && iter <= 1);
 	}
 	
-	for (int i = 0 ; views[i].handler ; ++i)
-		SDL_UpdateRect(mused.console->surface, views[i].position.x, views[i].position.y, views[i].position.w, views[i].position.h);
+	/*for (int i = 0 ; views[i].handler ; ++i)
+		SDL_UpdateRect(mused.console->surface, views[i].position.x, views[i].position.y, views[i].position.w, views[i].position.h);*/
 }
 
 
-static void update_rect(const SDL_Rect *parent, SDL_Rect *rect)
+void update_rect(const SDL_Rect *parent, SDL_Rect *rect)
 {
 	rect->x += rect->w + 4;
 	
