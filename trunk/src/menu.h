@@ -32,6 +32,7 @@ struct menu_t
 	const char * text;
 	const struct menu_t *submenu;
 	void (*action)(void*, void*, void *);
+	void *p1, *p2, *p3;
 } menu_t;
 
 typedef struct menu_t Menu;
