@@ -97,7 +97,7 @@ void update_rect(const SDL_Rect *parent, SDL_Rect *rect)
 }
 
 
-static void separator(const SDL_Rect *parent, SDL_Rect *rect)
+void separator(const SDL_Rect *parent, SDL_Rect *rect)
 {
 	while (rect->x > parent->x) update_rect(parent, rect);
 	
@@ -108,7 +108,7 @@ static void separator(const SDL_Rect *parent, SDL_Rect *rect)
 	rect->y += 6;
 	
 	r.y += 2;
-	r.h = 4;
+	r.h = SEPARATOR_HEIGHT;
 	r.w = parent->w;
 	
 	bevel(&r, mused.slider_bevel, BEV_SEPARATOR);
