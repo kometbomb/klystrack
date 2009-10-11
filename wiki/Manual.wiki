@@ -71,9 +71,9 @@ In the following example, the first three commands are executed at the same time
 
 The program can be edited by moving to the program and pressing return on the instruction you want to edit.
 
-====Commands====
+==Commands==
 
-The commands are interchangeable between the track command and the program commands (where applicable). Most of the commands try to follow the "standards" set by Obarski's Soundtracker and later Protracker.
+The commands are interchangeable between the track command and the program commands (where applicable). Most of the commands loosely follow the "standards" set by Obarski's Soundtracker and later Protracker.
 
 _{{{xx}}}, {{{yy}}} = parameter to command_
 
