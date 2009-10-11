@@ -165,6 +165,12 @@ void new_song()
 		mused.song.rvbtap[i].delay = i * 100 + 50;
 		mused.song.rvbtap[i].gain = (i + 1) * -30;
 	}
+	
+	for (int i = 0 ; i < MUS_CHANNELS ; ++i)
+	{
+		memset(mused.song.sequence[i], 0, NUM_SEQUENCES * sizeof(*mused.song.sequence));
+		mused.song.num_sequences[i] = 0;
+	}
 }
 
 
