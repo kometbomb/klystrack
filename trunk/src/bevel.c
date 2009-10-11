@@ -49,13 +49,13 @@ void bevel(const SDL_Rect *area, SDL_Surface *gfx, int offset)
 		for (int y = 4 ; y < area->h - 4 ; y += 8)
 		{	
 			{
-				SDL_Rect src = { offset, 4, 4, my_min(8, area->h - y) };
+				SDL_Rect src = { offset, 4, 4, my_min(8, area->h - 4 - y) };
 				SDL_Rect dest = { area->x, y + area->y };
 				SDL_BlitSurface(gfx, &src, mused.console->surface, &dest);
 			}
 			
 			{
-				SDL_Rect src = { 12 + offset, 4, 4, my_min(8, area->h - y) };
+				SDL_Rect src = { 12 + offset, 4, 4, my_min(8, area->h - 4 - y) };
 				SDL_Rect dest = { area->x + area->w - 4, y + area->y };
 				SDL_BlitSurface(gfx, &src, mused.console->surface, &dest);
 			}
@@ -64,13 +64,13 @@ void bevel(const SDL_Rect *area, SDL_Surface *gfx, int offset)
 		for (int x = 4 ; x < area->w - 4 ; x += 8)
 		{	
 			{
-				SDL_Rect src = { 4 + offset, 0, my_min(8, area->w - x), 4 };
+				SDL_Rect src = { 4 + offset, 0, my_min(8, area->w - 4 - x), 4 };
 				SDL_Rect dest = { area->x + x, area->y };
 				SDL_BlitSurface(gfx, &src, mused.console->surface, &dest);
 			}
 			
 			{
-				SDL_Rect src = { 4 + offset, 12, my_min(8, area->w - x), 4 };
+				SDL_Rect src = { 4 + offset, 12, my_min(8, area->w - 4 - x), 4 };
 				SDL_Rect dest = { x + area->x, area->y + area->h - 4 };
 				SDL_BlitSurface(gfx, &src, mused.console->surface, &dest);
 			}

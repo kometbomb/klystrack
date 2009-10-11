@@ -17,7 +17,7 @@ static const Menu showmenu[] =
 
 static const Menu filemenu[] =
 {
-	{ mainmenu, "Open" },
+	{ mainmenu, "Open", NULL, (void*)1 },
 	{ NULL, NULL }
 };
 
@@ -34,12 +34,19 @@ void open_menu()
 {
 	change_mode(MENU);
 	mused.current_menu = mainmenu;
+	mused.current_menu_action = NULL;
 }
 
 
 void close_menu()
 {
 	change_mode(mused.prev_mode);
+}
+
+
+static int get_menu_item_width(const Menu *item)
+{
+	return strlen(item->text);
 }
 
 
@@ -62,17 +69,23 @@ static void draw_submenu(const SDL_Event *event, const Menu *items, const Menu *
 			font = &mused.largefont;
 			
 			area.y += area.h;
+			area.w = area.h = 0;
 			
-			area.w = 128 + 8;
-			area.h = 100;
+			const Menu * item = items;
+		
+			for (; item->text ; ++item)
+			{
+				area.w = my_max(get_menu_item_width(item), area.w) * mused.largefont.w;
+				area.h += mused.largefont.h;
+			}
 			
-			bevel(&area, mused.slider_bevel, BEV_MENU);
+			area.x += 3;
+			area.y += 4;
 			
 			copy_rect(&r, &area);
-			adjust_rect(&r, 4);
-						
-			r.w = 128;
-			r.h = font->h;
+			adjust_rect(&area, -6);
+			
+			bevel(&area, mused.slider_bevel, BEV_MENU);
 		}
 		else
 		{
@@ -91,7 +104,7 @@ static void draw_submenu(const SDL_Event *event, const Menu *items, const Menu *
 		
 		for (; item->text ; ++item)
 		{
-			font_write(font, mused.console->surface, &r, item->text);
+			int bg = 0;
 			
 			if ((event->button.x >= r.x) && (event->button.y >= r.y) 
 				&& (event->button.x < r.x + r.w) && (event->button.y < r.y + r.h))
@@ -99,13 +112,31 @@ static void draw_submenu(const SDL_Event *event, const Menu *items, const Menu *
 				if (item->submenu)
 				{
 					mused.current_menu = item->submenu;
+					mused.current_menu_action = NULL;
+					bg = 1;
+				}
+				else if (item->action)
+				{
+					mused.current_menu_action = item->action;
+					bg = 1;
 				}
 			}
 			
 			if (item->submenu == child && child)
 			{
 				copy_rect(child_position, &r);
+				bg = 1;
 			}
+			
+			if (bg || (mused.current_menu_action == item->action && mused.current_menu_action))
+			{
+				SDL_Rect sel;
+				copy_rect(&sel, &r);
+				adjust_rect(&sel, -1);
+				bevel(&sel, mused.slider_bevel, BEV_MENU_SELECTED);
+			}
+			
+			font_write(font, mused.console->surface, &r, item->text);
 			
 			update_rect(&area, &r);
 		}

@@ -88,6 +88,7 @@ typedef struct
 	SDL_Surface *slider_bevel;
 	Font smallfont, largefont;
 	const Menu *current_menu;
+	void (*current_menu_action)(void*, void*, void *);
 } Mused;
 
 #define NUM_STEPS 256
