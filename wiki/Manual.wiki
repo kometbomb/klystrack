@@ -3,6 +3,10 @@
 
 =Manual=
 
+==Menu==
+
+Hold right mouse button down to bring up the menu bar. Select the menu option by hovering over it and release right button.
+
 ==General keyboard controls==
 
 || cursor keys || move around/change values ||
