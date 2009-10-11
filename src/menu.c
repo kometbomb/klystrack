@@ -15,13 +15,17 @@ static const Menu showmenu[] =
 	{ mainmenu, "Pattern editor",  NULL, change_mode_action, (void*)EDITPATTERN },
 	{ mainmenu, "Sequence editor",  NULL, change_mode_action, (void*)EDITSEQUENCE },
 	{ mainmenu, "Classic editor",  NULL, change_mode_action, (void*)EDITCLASSIC },
+	{ mainmenu, "Reverb",  NULL, change_mode_action, (void*)EDITREVERB },
 	{ NULL, NULL }
 };
 
 
 static const Menu filemenu[] =
 {
-	{ mainmenu, "Open", NULL },
+	{ mainmenu, "New", NULL, new_song_action },
+	{ mainmenu, "Open", NULL, open_song_action },
+	{ mainmenu, "Save", NULL, save_song_action },
+	{ mainmenu, "Exit", NULL, quit_action },
 	{ NULL, NULL }
 };
 
@@ -47,7 +51,12 @@ void close_menu()
 	if (mused.current_menu_action == NULL)
 		change_mode(mused.prev_mode);
 	else
+	{
+		change_mode(mused.prev_mode);
 		mused.current_menu_action->action(mused.current_menu_action->p1, mused.current_menu_action->p2, mused.current_menu_action->p3);
+		mused.current_menu = NULL;
+		mused.current_menu_action = NULL;
+	}
 }
 
 
@@ -62,6 +71,7 @@ static void draw_submenu(const SDL_Event *event, const Menu *items, const Menu *
 	SDL_Rect area = { 0, 0, mused.console->surface->w, mused.smallfont.h + 4 + 1 };
 	SDL_Rect r;
 	Font *font = NULL;
+	int horiz = 0;
 	
 	/* In short: this first iterates upwards the tree until it finds the main menu (FILE, SHOW etc.)
 	Then it goes back level by level 
@@ -103,9 +113,10 @@ static void draw_submenu(const SDL_Event *event, const Menu *items, const Menu *
 			
 			copy_rect(&r, &area);
 			adjust_rect(&r, 2);
-			r.w = 64;
 			
 			font = &mused.smallfont;
+			
+			horiz = 1;
 		}
 		
 		r.h = font->h + 1;
@@ -115,6 +126,8 @@ static void draw_submenu(const SDL_Event *event, const Menu *items, const Menu *
 		for (; item->text ; ++item)
 		{
 			int bg = 0;
+			
+			if (horiz) r.w = font->w * get_menu_item_width(item) + 16;
 			
 			if (event->type == SDL_MOUSEMOTION)
 			{
