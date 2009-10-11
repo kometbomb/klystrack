@@ -155,6 +155,8 @@ static void draw_submenu(const SDL_Event *event, const Menu *items, const Menu *
 			adjust_rect(&bev, -6);
 			
 			bevel(&bev, mused.slider_bevel, BEV_MENU);
+			
+			r.h = font->h + 1;
 		}
 		else
 		{
@@ -166,10 +168,10 @@ static void draw_submenu(const SDL_Event *event, const Menu *items, const Menu *
 			font = &mused.smallfont;
 			
 			horiz = 1;
+			
+			r.h = font->h;
 		}
 		
-		r.h = font->h + 1;
-	
 		const Menu * item = items;
 		
 		for (; item->text ; ++item)
@@ -210,7 +212,11 @@ static void draw_submenu(const SDL_Event *event, const Menu *items, const Menu *
 			
 			if (bg || (mused.current_menu_action == item && mused.current_menu_action))
 			{
-				bevel(&r, mused.slider_bevel, BEV_MENU_SELECTED);
+				SDL_Rect bar;
+				copy_rect(&bar, &r);
+				adjust_rect(&bar, -1);
+				bar.h --;
+				bevel(&bar, mused.slider_bevel, BEV_MENU_SELECTED);
 			}
 			
 			font_write(font, mused.console->surface, &r, item->text);
