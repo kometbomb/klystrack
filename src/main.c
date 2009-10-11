@@ -332,9 +332,16 @@ int main(int argc, char **argv)
 			
 			int m = mused.mode >= VIRTUAL_MODE ? mused.prev_mode : mused.mode;
 		
-			draw_view(tab[m], &e);
-			
-			if (mused.mode == MENU) draw_menu(&e);
+			if (mused.mode == MENU) 
+			{
+				SDL_Event foo = {0};
+				draw_view(tab[m], &foo);
+				draw_menu(&e);
+			}
+			else
+			{
+				draw_view(tab[m], &e);
+			}
 			
 			gfx_domain_flip(domain);
 		}

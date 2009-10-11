@@ -114,7 +114,7 @@ int check_drag_event(const SDL_Event *event, const SDL_Rect *rect, void (*action
 	{
 		case SDL_MOUSEMOTION:
 		{
-			if (event->motion.state & SDL_BUTTON(SDL_BUTTON_LEFT)|SDL_BUTTON(SDL_BUTTON_RIGHT))
+			if (event->motion.state & (SDL_BUTTON(SDL_BUTTON_LEFT)|SDL_BUTTON(SDL_BUTTON_RIGHT)))
 			{
 				if (!motion_target)
 				{
