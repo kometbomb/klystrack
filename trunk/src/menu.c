@@ -28,6 +28,7 @@ static const Menu filemenu[] =
 	{ mainmenu, "New", NULL, new_song_action },
 	{ mainmenu, "Open", NULL, open_song_action },
 	{ mainmenu, "Save", NULL, save_song_action },
+	{ mainmenu, "", NULL, NULL },
 	{ mainmenu, "Exit", NULL, quit_action },
 	{ NULL, NULL }
 };
@@ -128,7 +129,6 @@ static void draw_submenu(const SDL_Event *event, const Menu *items, const Menu *
 			
 			font = &mused.largefont;
 			
-			area.y += area.h;
 			area.w = area.h = 0;
 			
 			const Menu * item = items;
@@ -136,7 +136,10 @@ static void draw_submenu(const SDL_Event *event, const Menu *items, const Menu *
 			for (; item->text ; ++item)
 			{
 				area.w = my_max(get_menu_item_width(item), area.w);
-				area.h += font->h + 1;
+				if (item->text[0])
+					area.h += font->h + 1;
+				else
+					area.h += SEPARATOR_HEIGHT + 1;
 			}
 			
 			area.w = area.w * font->w;
@@ -176,65 +179,73 @@ static void draw_submenu(const SDL_Event *event, const Menu *items, const Menu *
 		
 		for (; item->text ; ++item)
 		{
-			const char * sc_text = get_shortcut_key(item);
-			int bg = 0;
-			
-			if (horiz) r.w = font->w * get_menu_item_width(item) + 16;
-			
-			if (event->type == SDL_MOUSEMOTION)
+			if (item->text[0])
 			{
-				if ((event->button.x >= r.x) && (event->button.y >= r.y) 
-					&& (event->button.x < r.x + r.w) && (event->button.y < r.y + r.h))
+				const char * sc_text = get_shortcut_key(item);
+				int bg = 0;
+				
+				if (horiz) r.w = font->w * get_menu_item_width(item) + 16;
+				
+				if (event->type == SDL_MOUSEMOTION)
 				{
-					if (item->submenu)
+					if ((event->button.x >= r.x) && (event->button.y >= r.y) 
+						&& (event->button.x < r.x + r.w) && (event->button.y < r.y + r.h))
 					{
-						mused.current_menu = item->submenu;
+						if (item->submenu)
+						{
+							mused.current_menu = item->submenu;
+							mused.current_menu_action = NULL;
+							bg = 1;
+						}
+						else if (item->action)
+						{
+							mused.current_menu_action = item;
+							bg = 1;
+						}
+					}
+					else if (mused.current_menu_action && item == mused.current_menu_action)
+					{
 						mused.current_menu_action = NULL;
-						bg = 1;
-					}
-					else if (item->action)
-					{
-						mused.current_menu_action = item;
-						bg = 1;
 					}
 				}
-				else if (mused.current_menu_action && item == mused.current_menu_action)
+				
+				if (item->submenu == child && child)
 				{
-					mused.current_menu_action = NULL;
+					copy_rect(child_position, &r);
+					child_position->y += r.h;
+					bg = 1;
 				}
+				
+				if (bg || (mused.current_menu_action == item && mused.current_menu_action))
+				{
+					SDL_Rect bar;
+					copy_rect(&bar, &r);
+					adjust_rect(&bar, -1);
+					bar.h --;
+					bevel(&bar, mused.slider_bevel, BEV_MENU_SELECTED);
+				}
+				
+				font_write(font, mused.console->surface, &r, item->text);
+				
+				if (!horiz && sc_text) 
+				{
+					r.x += r.w;
+					int tmpw = r.w, tmpx = r.x, tmpy = r.y;
+					r.w = SC_SIZE;
+					r.x -= strlen(sc_text) * mused.smallfont.w;
+					r.y = r.h / 2 + r.y - mused.smallfont.h / 2;
+					font_write(&mused.smallfont, mused.console->surface, &r, sc_text);
+					r.x = tmpx;
+					r.y = tmpy;
+					update_rect(&area, &r);
+					r.w = tmpw;
+				}
+				else update_rect(&area, &r);
 			}
-			
-			if (item->submenu == child && child)
+			else
 			{
-				copy_rect(child_position, &r);
-				bg = 1;
+				separator(&area, &r);
 			}
-			
-			if (bg || (mused.current_menu_action == item && mused.current_menu_action))
-			{
-				SDL_Rect bar;
-				copy_rect(&bar, &r);
-				adjust_rect(&bar, -1);
-				bar.h --;
-				bevel(&bar, mused.slider_bevel, BEV_MENU_SELECTED);
-			}
-			
-			font_write(font, mused.console->surface, &r, item->text);
-			
-			if (!horiz && sc_text) 
-			{
-				r.x += r.w;
-				int tmpw = r.w, tmpx = r.x, tmpy = r.y;
-				r.w = SC_SIZE;
-				r.x -= strlen(sc_text) * mused.smallfont.w;
-				r.y = r.h / 2 + r.y - mused.smallfont.h / 2;
-				font_write(&mused.smallfont, mused.console->surface, &r, sc_text);
-				r.x = tmpx;
-				r.y = tmpy;
-				update_rect(&area, &r);
-				r.w = tmpw;
-			}
-			else update_rect(&area, &r);
 		}
 	}
 }
