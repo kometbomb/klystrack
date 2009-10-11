@@ -3,6 +3,7 @@
 #include "mused.h"
 #include "gfx/font.h"
 #include "view.h"
+#include "action.h"
 
 extern Mused mused;
 
@@ -10,14 +11,17 @@ static const Menu mainmenu[];
 
 static const Menu showmenu[] =
 {
-	{ mainmenu, "Instrument editor" },
+	{ mainmenu, "Instrument editor",  NULL, change_mode_action, (void*)EDITINSTRUMENT },
+	{ mainmenu, "Pattern editor",  NULL, change_mode_action, (void*)EDITPATTERN },
+	{ mainmenu, "Sequence editor",  NULL, change_mode_action, (void*)EDITSEQUENCE },
+	{ mainmenu, "Classic editor",  NULL, change_mode_action, (void*)EDITCLASSIC },
 	{ NULL, NULL }
 };
 
 
 static const Menu filemenu[] =
 {
-	{ mainmenu, "Open", NULL, (void*)1 },
+	{ mainmenu, "Open", NULL },
 	{ NULL, NULL }
 };
 
@@ -40,7 +44,10 @@ void open_menu()
 
 void close_menu()
 {
-	change_mode(mused.prev_mode);
+	if (mused.current_menu_action == NULL)
+		change_mode(mused.prev_mode);
+	else
+		mused.current_menu_action->action(mused.current_menu_action->p1, mused.current_menu_action->p2, mused.current_menu_action->p3);
 }
 
 
@@ -75,17 +82,20 @@ static void draw_submenu(const SDL_Event *event, const Menu *items, const Menu *
 		
 			for (; item->text ; ++item)
 			{
-				area.w = my_max(get_menu_item_width(item), area.w) * mused.largefont.w;
-				area.h += mused.largefont.h;
+				area.w = my_max(get_menu_item_width(item), area.w);
+				area.h += font->h + 1;
 			}
 			
+			area.w *= font->w;
 			area.x += 3;
 			area.y += 4;
 			
 			copy_rect(&r, &area);
-			adjust_rect(&area, -6);
+			SDL_Rect bev;
+			copy_rect(&bev, &area);
+			adjust_rect(&bev, -6);
 			
-			bevel(&area, mused.slider_bevel, BEV_MENU);
+			bevel(&bev, mused.slider_bevel, BEV_MENU);
 		}
 		else
 		{
@@ -98,7 +108,7 @@ static void draw_submenu(const SDL_Event *event, const Menu *items, const Menu *
 			font = &mused.smallfont;
 		}
 		
-		r.h = mused.smallfont.h + 1;
+		r.h = font->h + 1;
 	
 		const Menu * item = items;
 		
@@ -106,19 +116,26 @@ static void draw_submenu(const SDL_Event *event, const Menu *items, const Menu *
 		{
 			int bg = 0;
 			
-			if ((event->button.x >= r.x) && (event->button.y >= r.y) 
-				&& (event->button.x < r.x + r.w) && (event->button.y < r.y + r.h))
+			if (event->type == SDL_MOUSEMOTION)
 			{
-				if (item->submenu)
+				if ((event->button.x >= r.x) && (event->button.y >= r.y) 
+					&& (event->button.x < r.x + r.w) && (event->button.y < r.y + r.h))
 				{
-					mused.current_menu = item->submenu;
-					mused.current_menu_action = NULL;
-					bg = 1;
+					if (item->submenu)
+					{
+						mused.current_menu = item->submenu;
+						mused.current_menu_action = NULL;
+						bg = 1;
+					}
+					else if (item->action)
+					{
+						mused.current_menu_action = item;
+						bg = 1;
+					}
 				}
-				else if (item->action)
+				else if (mused.current_menu_action && item == mused.current_menu_action)
 				{
-					mused.current_menu_action = item->action;
-					bg = 1;
+					mused.current_menu_action = NULL;
 				}
 			}
 			
@@ -128,11 +145,11 @@ static void draw_submenu(const SDL_Event *event, const Menu *items, const Menu *
 				bg = 1;
 			}
 			
-			if (bg || (mused.current_menu_action == item->action && mused.current_menu_action))
+			if (bg || (mused.current_menu_action == item && mused.current_menu_action))
 			{
 				SDL_Rect sel;
 				copy_rect(&sel, &r);
-				adjust_rect(&sel, -1);
+				adjust_rect(&sel, 0);
 				bevel(&sel, mused.slider_bevel, BEV_MENU_SELECTED);
 			}
 			
