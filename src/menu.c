@@ -4,6 +4,9 @@
 #include "gfx/font.h"
 #include "view.h"
 #include "action.h"
+#include "shortcuts.h"
+
+#define SC_SIZE 64
 
 extern Mused mused;
 
@@ -11,11 +14,11 @@ static const Menu mainmenu[];
 
 static const Menu showmenu[] =
 {
-	{ mainmenu, "Instrument editor",  NULL, change_mode_action, (void*)EDITINSTRUMENT },
-	{ mainmenu, "Pattern editor",  NULL, change_mode_action, (void*)EDITPATTERN },
-	{ mainmenu, "Sequence editor",  NULL, change_mode_action, (void*)EDITSEQUENCE },
-	{ mainmenu, "Classic editor",  NULL, change_mode_action, (void*)EDITCLASSIC },
-	{ mainmenu, "Reverb",  NULL, change_mode_action, (void*)EDITREVERB },
+	{ mainmenu, "Instrument editor",  NULL, change_mode_action, (void*)EDITINSTRUMENT, 0, 0 },
+	{ mainmenu, "Pattern editor",  NULL, change_mode_action, (void*)EDITPATTERN, 0, 0 },
+	{ mainmenu, "Sequence editor",  NULL, change_mode_action, (void*)EDITSEQUENCE, 0, 0 },
+	{ mainmenu, "Classic editor",  NULL, change_mode_action, (void*)EDITCLASSIC, 0, 0 },
+	{ mainmenu, "Reverb",  NULL, change_mode_action, (void*)EDITREVERB, 0, 0 },
 	{ NULL, NULL }
 };
 
@@ -66,6 +69,46 @@ static int get_menu_item_width(const Menu *item)
 }
 
 
+const char *upcase(char *str)
+{
+	for (char *c = str ; *c ; ++c)
+		*c = toupper(*c);
+		
+	return str;
+}
+
+
+static const char * get_shortcut_key(const Menu *item)
+{
+	static char buffer[100];
+	
+	for (int i = 0 ; shortcuts[i].action ; ++i)
+	{
+		if (shortcuts[i].action == item->action &&
+			(void*)shortcuts[i].p1 == item->p1 &&
+			(void*)shortcuts[i].p3 == item->p2 &&
+			(void*)shortcuts[i].p2 == item->p3)
+		{
+			strcpy(buffer, "");
+			
+			if (shortcuts[i].mod & KMOD_CTRL)
+				strncat(buffer, "ctrl-", sizeof(buffer));
+				
+			if (shortcuts[i].mod & KMOD_ALT)
+				strncat(buffer, "alt-", sizeof(buffer));
+				
+			if (shortcuts[i].mod & KMOD_SHIFT)
+				strncat(buffer, "shift-", sizeof(buffer));
+			
+			strncat(buffer, SDL_GetKeyName(shortcuts[i].key), sizeof(buffer));
+			return upcase(buffer);
+		}
+	}
+
+	return NULL;
+}
+
+
 static void draw_submenu(const SDL_Event *event, const Menu *items, const Menu *child, SDL_Rect *child_position)
 {
 	SDL_Rect area = { 0, 0, mused.console->surface->w, mused.smallfont.h + 4 + 1 };
@@ -96,11 +139,17 @@ static void draw_submenu(const SDL_Event *event, const Menu *items, const Menu *
 				area.h += font->h + 1;
 			}
 			
-			area.w *= font->w;
+			area.w = area.w * font->w;
 			area.x += 3;
 			area.y += 4;
 			
+			area.w += SC_SIZE;
+			
+			if (area.w + area.x > mused.console->surface->w)
+				area.x -= area.w + area.x - mused.console->surface->w;
+			
 			copy_rect(&r, &area);
+			
 			SDL_Rect bev;
 			copy_rect(&bev, &area);
 			adjust_rect(&bev, -6);
@@ -125,6 +174,7 @@ static void draw_submenu(const SDL_Event *event, const Menu *items, const Menu *
 		
 		for (; item->text ; ++item)
 		{
+			const char * sc_text = get_shortcut_key(item);
 			int bg = 0;
 			
 			if (horiz) r.w = font->w * get_menu_item_width(item) + 16;
@@ -160,15 +210,25 @@ static void draw_submenu(const SDL_Event *event, const Menu *items, const Menu *
 			
 			if (bg || (mused.current_menu_action == item && mused.current_menu_action))
 			{
-				SDL_Rect sel;
-				copy_rect(&sel, &r);
-				adjust_rect(&sel, 0);
-				bevel(&sel, mused.slider_bevel, BEV_MENU_SELECTED);
+				bevel(&r, mused.slider_bevel, BEV_MENU_SELECTED);
 			}
 			
 			font_write(font, mused.console->surface, &r, item->text);
 			
-			update_rect(&area, &r);
+			if (!horiz && sc_text) 
+			{
+				r.x += r.w;
+				int tmpw = r.w, tmpx = r.x, tmpy = r.y;
+				r.w = SC_SIZE;
+				r.x -= strlen(sc_text) * mused.smallfont.w;
+				r.y = r.h / 2 + r.y - mused.smallfont.h / 2;
+				font_write(&mused.smallfont, mused.console->surface, &r, sc_text);
+				r.x = tmpx;
+				r.y = tmpy;
+				update_rect(&area, &r);
+				r.w = tmpw;
+			}
+			else update_rect(&area, &r);
 		}
 	}
 }
