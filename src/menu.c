@@ -97,7 +97,7 @@ void close_menu()
 
 static int get_menu_item_width(const Menu *item)
 {
-	return strlen(item->text);
+	return strlen(item->text) + 1;
 }
 
 
@@ -137,7 +137,7 @@ static const char * get_shortcut_key(const Menu *item)
 		}
 		else if (item->submenu)
 		{
-			return ">";
+			return "Â½";
 		}
 	}
 
@@ -267,7 +267,26 @@ static void draw_submenu(const SDL_Event *event, const Menu *items, const Menu *
 				}
 				
 				if (pass == DRAW) 
-					font_write(font, mused.console->surface, &r, item->text);
+				{
+					SDL_Rect text;
+					copy_rect(&text, &r);
+					text.x += font->w;
+					text.w -= font->w;
+					font_write(font, mused.console->surface, &text, item->text);
+					
+					char tick_char[2] = { 0 };
+					
+					if (item->action == MENU_CHECK && (*(int*)item->p1 & (int)item->p2))
+						*tick_char = '§';
+					
+					if (tick_char[0] != 0)
+					{
+						SDL_Rect tick;
+						copy_rect(&tick, &r);
+						tick.y = r.h / 2 + r.y - mused.smallfont.h / 2;
+						font_write(&mused.smallfont, mused.console->surface, &tick, tick_char);
+					}
+				}
 				
 				if (pass == DRAW && !horiz && sc_text) 
 				{
