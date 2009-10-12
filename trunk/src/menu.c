@@ -7,18 +7,31 @@
 #include "shortcuts.h"
 
 #define SC_SIZE 64
+#define MENU_CHECK (void*)1
+
+enum { ZONE, DRAW };
 
 extern Mused mused;
 
 static const Menu mainmenu[];
+static const Menu showmenu[];
+
+static const Menu editormenu[] =
+{
+	{ showmenu, "Instrument",  NULL, change_mode_action, (void*)EDITINSTRUMENT, 0, 0 },
+	{ showmenu, "Pattern",  NULL, change_mode_action, (void*)EDITPATTERN, 0, 0 },
+	{ showmenu, "Sequence",  NULL, change_mode_action, (void*)EDITSEQUENCE, 0, 0 },
+	{ showmenu, "Classic",  NULL, change_mode_action, (void*)EDITCLASSIC, 0, 0 },
+	{ showmenu, "Reverb",  NULL, change_mode_action, (void*)EDITREVERB, 0, 0 },
+	{ NULL, NULL }
+};
+
 
 static const Menu showmenu[] =
 {
-	{ mainmenu, "Instrument editor",  NULL, change_mode_action, (void*)EDITINSTRUMENT, 0, 0 },
-	{ mainmenu, "Pattern editor",  NULL, change_mode_action, (void*)EDITPATTERN, 0, 0 },
-	{ mainmenu, "Sequence editor",  NULL, change_mode_action, (void*)EDITSEQUENCE, 0, 0 },
-	{ mainmenu, "Classic editor",  NULL, change_mode_action, (void*)EDITCLASSIC, 0, 0 },
-	{ mainmenu, "Reverb",  NULL, change_mode_action, (void*)EDITREVERB, 0, 0 },
+	{ mainmenu, "Editor", editormenu, NULL },
+	{ mainmenu, "", NULL, NULL },
+	{ mainmenu, "Compact", NULL, MENU_CHECK, &mused.flags, (void*)COMPACT_VIEW, 0 },
 	{ NULL, NULL }
 };
 
@@ -34,9 +47,19 @@ static const Menu filemenu[] =
 };
 
 
+static const Menu playmenu[] =
+{
+	{ mainmenu, "Play",  NULL, play, (void*)0, 0, 0 },
+	{ showmenu, "Stop",  NULL, stop, 0, 0, 0 },
+	{ showmenu, "Play from cursor",  NULL, play, (void*)1, 0, 0 },
+	{ NULL, NULL }
+};
+
+
 static const Menu mainmenu[] =
 {
 	{ NULL, "FILE", filemenu },
+	{ NULL, "PLAY", playmenu },
 	{ NULL, "SHOW", showmenu },
 	{ NULL, NULL }
 };
@@ -57,7 +80,15 @@ void close_menu()
 	else
 	{
 		change_mode(mused.prev_mode);
-		mused.current_menu_action->action(mused.current_menu_action->p1, mused.current_menu_action->p2, mused.current_menu_action->p3);
+		if (mused.current_menu_action->action == MENU_CHECK)
+		{
+			*(int*)(mused.current_menu_action->p1) ^= (int)(mused.current_menu_action->p2);
+		}
+		else
+		{
+			mused.current_menu_action->action(mused.current_menu_action->p1, mused.current_menu_action->p2, mused.current_menu_action->p3);
+		}
+		
 		mused.current_menu = NULL;
 		mused.current_menu_action = NULL;
 	}
@@ -104,13 +135,21 @@ static const char * get_shortcut_key(const Menu *item)
 			strncat(buffer, SDL_GetKeyName(shortcuts[i].key), sizeof(buffer));
 			return upcase(buffer);
 		}
+		else if (item->submenu)
+		{
+			return ">";
+		}
 	}
 
 	return NULL;
 }
 
 
-static void draw_submenu(const SDL_Event *event, const Menu *items, const Menu *child, SDL_Rect *child_position)
+// Below is a two-pass combined event and drawing menu routine. It is two-pass (as opposed to other combined drawing
+// handlers otherwhere in the project) so it can handle overlapping zones correctly. Otherwhere in the app there simply
+// are no overlapping zones, menus however can overlap because of the cascading submenus etc.
+
+static void draw_submenu(const SDL_Event *event, const Menu *items, const Menu *child, SDL_Rect *child_position, int pass)
 {
 	SDL_Rect area = { 0, 0, mused.console->surface->w, mused.smallfont.h + 4 + 1 };
 	SDL_Rect r;
@@ -118,14 +157,14 @@ static void draw_submenu(const SDL_Event *event, const Menu *items, const Menu *
 	int horiz = 0;
 	
 	/* In short: this first iterates upwards the tree until it finds the main menu (FILE, SHOW etc.)
-	Then it goes back level by level 
+	Then it goes back level by level updating the collision/draw zones
 	*/
 	
 	if (items)
 	{
 		if (items[0].parent != NULL)
 		{
-			draw_submenu(event, items[0].parent, items, &area);
+			draw_submenu(event, items[0].parent, items, &area, pass);
 			
 			font = &mused.largefont;
 			
@@ -149,7 +188,7 @@ static void draw_submenu(const SDL_Event *event, const Menu *items, const Menu *
 			area.w += SC_SIZE;
 			
 			if (area.w + area.x > mused.console->surface->w)
-				area.x -= area.w + area.x - mused.console->surface->w;
+				area.x -= area.w + area.x - mused.console->surface->w + 2;
 			
 			copy_rect(&r, &area);
 			
@@ -157,13 +196,13 @@ static void draw_submenu(const SDL_Event *event, const Menu *items, const Menu *
 			copy_rect(&bev, &area);
 			adjust_rect(&bev, -6);
 			
-			bevel(&bev, mused.slider_bevel, BEV_MENU);
+			if (pass == DRAW) bevel(&bev, mused.slider_bevel, BEV_MENU);
 			
 			r.h = font->h + 1;
 		}
 		else
 		{
-			bevel(&area, mused.slider_bevel, BEV_MENUBAR);
+			if (pass == DRAW) bevel(&area, mused.slider_bevel, BEV_MENUBAR);
 			
 			copy_rect(&r, &area);
 			adjust_rect(&r, 2);
@@ -186,7 +225,7 @@ static void draw_submenu(const SDL_Event *event, const Menu *items, const Menu *
 				
 				if (horiz) r.w = font->w * get_menu_item_width(item) + 16;
 				
-				if (event->type == SDL_MOUSEMOTION)
+				if (event->type == SDL_MOUSEMOTION && pass == ZONE)
 				{
 					if ((event->button.x >= r.x) && (event->button.y >= r.y) 
 						&& (event->button.x < r.x + r.w) && (event->button.y < r.y + r.h))
@@ -200,6 +239,7 @@ static void draw_submenu(const SDL_Event *event, const Menu *items, const Menu *
 						else if (item->action)
 						{
 							mused.current_menu_action = item;
+							mused.current_menu = items;
 							bg = 1;
 						}
 					}
@@ -212,11 +252,12 @@ static void draw_submenu(const SDL_Event *event, const Menu *items, const Menu *
 				if (item->submenu == child && child)
 				{
 					copy_rect(child_position, &r);
-					child_position->y += r.h;
+					if (horiz) child_position->y += r.h;
+					else { child_position->x += r.w + 4; child_position->y -= 4; } 
 					bg = 1;
 				}
 				
-				if (bg || (mused.current_menu_action == item && mused.current_menu_action))
+				if ((pass == DRAW) && (bg || (mused.current_menu_action == item && mused.current_menu_action)))
 				{
 					SDL_Rect bar;
 					copy_rect(&bar, &r);
@@ -225,9 +266,10 @@ static void draw_submenu(const SDL_Event *event, const Menu *items, const Menu *
 					bevel(&bar, mused.slider_bevel, BEV_MENU_SELECTED);
 				}
 				
-				font_write(font, mused.console->surface, &r, item->text);
+				if (pass == DRAW) 
+					font_write(font, mused.console->surface, &r, item->text);
 				
-				if (!horiz && sc_text) 
+				if (pass == DRAW && !horiz && sc_text) 
 				{
 					r.x += r.w;
 					int tmpw = r.w, tmpx = r.x, tmpy = r.y;
@@ -253,5 +295,6 @@ static void draw_submenu(const SDL_Event *event, const Menu *items, const Menu *
 
 void draw_menu(const SDL_Event *e)
 {
-	draw_submenu(e, mused.current_menu, NULL, NULL);
+	draw_submenu(e, mused.current_menu, NULL, NULL, ZONE);
+	draw_submenu(e, mused.current_menu, NULL, NULL, DRAW);
 }
