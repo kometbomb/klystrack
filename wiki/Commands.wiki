@@ -4,6 +4,8 @@
 
 The commands are interchangeable between the track command and the program commands (where applicable). Most of the commands loosely follow the "standards" set by Obarski's Soundtracker and later Protracker.
 
+The commands generally follow a pattern: the first two digits tell the action and the next two are the parameter(s) for the command. 
+
 _{{{xx}}}, {{{yy}}} = parameter to command_
 
 || *Command* || *Description* ||
