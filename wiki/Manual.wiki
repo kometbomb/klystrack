@@ -110,7 +110,7 @@ Generally, one uses the sequence editor to enter patterns of similar length side
 
 ===Keyboard commands===
 
-|| 0-9, a-z || enter pattern ||
+|| 0-9, a-z, Shift+a-z || enter pattern ||
 || Return || edit currently selected pattern in the pattern editor (actually edits all patterns on the current sequence position) ||
 || Period || Set current pattern to none ||
 || ALT+up/down || adjust note offset ||
