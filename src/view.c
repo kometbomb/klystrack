@@ -758,7 +758,7 @@ void get_command_desc(char *text, Uint16 inst)
 	Uint16 fi = 0;
 	for (int i = 0 ; instructions[i].name != NULL ; ++i)
 	{
-		if (instructions[i].opcode == inst || instructions[i].opcode == (inst & 0x7f00) || instructions[i].opcode == (inst & 0x7ff0))
+		if (instructions[i].opcode == (inst) ||instructions[i].opcode == (inst & 0xff00) || instructions[i].opcode == (inst & 0x7f00) || instructions[i].opcode == (inst & 0x7ff0))
 		{
 			name = instructions[i].name;
 			fi = instructions[i].opcode;
@@ -903,15 +903,15 @@ void program_view(const SDL_Rect *dest, const SDL_Event *event, void *param)
 		else
 			console_set_color(mused.console,0,CON_BACKGROUND);
 		
-		char box[5];
+		char box[6];
 		
 		if (inst->program[i] == MUS_FX_NOP)
 		{
-			strcpy(box, "....");
+			strcpy(box, ".... ");
 		}
 		else
 		{
-			sprintf(box, "%04X", inst->program[i]);
+			sprintf(box, "%04X ", ((inst->program[i] & 0xf000) != 0xf000) ? (inst->program[i] & 0x7fff) : inst->program[i]);
 		}
 		
 		if (mused.mode == EDITPROG && mused.selected_param == (P_PARAMS+i))
@@ -920,17 +920,17 @@ void program_view(const SDL_Rect *dest, const SDL_Event *event, void *param)
 		}
 		
 		if (pos == prev_pos)
-			check_event(event, console_write_args(mused.console, "%02X    %s\n", i, box),
+			check_event(event, console_write_args(mused.console, "%02X    %s%c\n", i, box, (!(inst->program[i] & 0x8000) || (inst->program[i] & 0xf000) == 0xf000) ? '´' : '|' ),
 				select_instrument_param, (void*)(P_PARAMS + i), 0, 0);
 		else
-			check_event(event, console_write_args(mused.console, "%02X %02X %s\n", i, pos, box),
+			check_event(event, console_write_args(mused.console, "%02X %02X %s%c\n", i, pos, box, ((inst->program[i] & 0x8000) && (inst->program[i] & 0xf000) != 0xf000) ? '`' : ' '),
 				select_instrument_param, (void*)(P_PARAMS + i), 0, 0);
 			
 		slider_set_params(&mused.program_slider_param, 0, MUS_PROG_LEN - 1, start, i, &mused.program_position, 1, SLIDER_VERTICAL);
 		
 		prev_pos = pos;
 		
-		if (!(inst->program[i] & 0x8000)) ++pos;
+		if (!(inst->program[i] & 0x8000) || (inst->program[i] & 0xf000) == 0xf000) ++pos;
 	}
 	
 	SDL_SetClipRect(mused.console->surface, NULL);
