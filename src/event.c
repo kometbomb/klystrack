@@ -35,6 +35,15 @@ extern Mused mused;
 #define clamp(val, add, _min, _max) { if ((int)val+(add) > _max) val = _max; else if ((int)val+(add) < _min) val = _min; else val+=(add); } 
 #define flipbit(val, bit) { val ^= bit; };
 
+
+static Uint16 validate_command(Uint16 command)
+{
+	if ((command & 0xff00) == MUS_FX_SET_VOLUME && (command & 0xff) > MAX_VOLUME) command = MUS_FX_SET_VOLUME | MAX_VOLUME;
+	
+	return command;
+}
+
+
 void editparambox(int v)
 {
 	MusInstrument *inst = &mused.song.instrument[mused.current_instrument];
@@ -47,7 +56,10 @@ void editparambox(int v)
 	*param = (*param & mask) | ((v&0xf) <<((3-mused.editpos)*4));
 	
 	if (++mused.editpos > 3)
+	{
+		*param = validate_command(*param);
 		change_mode(EDITINSTRUMENT);
+	}
 }
 
 
@@ -994,9 +1006,7 @@ void pattern_event(SDL_Event *e)
 							break;
 						}
 						
-						if ((inst & 0xff00) == MUS_FX_SET_VOLUME && (inst & 0xff) > MAX_VOLUME) inst = MUS_FX_SET_VOLUME | MAX_VOLUME;
-						
-						mused.song.pattern[mused.current_pattern].step[mused.current_patternstep].command = inst; 
+						mused.song.pattern[mused.current_pattern].step[mused.current_patternstep].command = validate_command(inst); 
 						
 						move_position(&mused.current_patternstep, &mused.pattern_position, &mused.pattern_slider_param, +1, mused.song.pattern[mused.current_pattern].num_steps);
 					}
@@ -1034,6 +1044,9 @@ void edit_program_event(SDL_Event *e)
 		{
 			case SDLK_RETURN:
 			{
+				MusInstrument *inst = &mused.song.instrument[mused.current_instrument];
+				Uint16 *param = &inst->program[mused.selected_param-P_PARAMS];
+				*param = validate_command(*param);
 				change_mode(EDITINSTRUMENT);
 			}
 			break;

@@ -750,6 +750,7 @@ void get_command_desc(char *text, Uint16 inst)
 		{MUS_FX_EXT_FADE_VOLUME_DN, "Fine fade volume out"},
 		{MUS_FX_EXT_PORTA_UP, "Fine portamento up"},
 		{MUS_FX_EXT_PORTA_DN, "Fine portamento down"},
+		{MUS_FX_EXT_NOTE_CUT, "Note cut"},
 		{0, NULL}
 	};
 	
