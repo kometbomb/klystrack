@@ -1268,7 +1268,7 @@ void instrument_disk_view(const SDL_Rect *dest, const SDL_Event *event, void *pa
 	console_set_clip(mused.console, &area);
 	console_clear(mused.console);
 	bevel(&area, mused.slider_bevel, BEV_BACKGROUND);
-	adjust_rect(&area, 1);
+	adjust_rect(&area, 2);
 	
 	SDL_Rect button = { area.x, area.y, 50, area.h };
 	
