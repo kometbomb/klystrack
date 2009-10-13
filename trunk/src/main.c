@@ -166,8 +166,9 @@ int main(int argc, char **argv)
 	MusInstrument instrument[NUM_INSTRUMENTS];
 	MusPattern pattern[NUM_PATTERNS];
 	MusSeqPattern sequence[MUS_CHANNELS][NUM_SEQUENCES];
+	MusChannel channel[CYD_MAX_CHANNELS];
 	
-	init(instrument, pattern, sequence, gfx_domain_get_surface(domain));
+	init(instrument, pattern, sequence, channel, gfx_domain_get_surface(domain));
 	
 	Mix_OpenAudio(44100, AUDIO_S16SYS, 1, 2048);
 	Mix_AllocateChannels(1);
@@ -281,7 +282,7 @@ int main(int argc, char **argv)
 		
 		if (got_event || gfx_domain_is_next_frame(domain))
 		{
-			mus_poll_status(&mused.mus, &mused.stat_song_position, mused.stat_pattern_position, mused.stat_pattern);
+			mus_poll_status(&mused.mus, &mused.stat_song_position, mused.stat_pattern_position, mused.stat_pattern, channel);
 		
 			for (int i = 0 ; i < MUS_CHANNELS ; ++i)
 			{

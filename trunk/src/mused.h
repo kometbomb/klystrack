@@ -84,6 +84,7 @@ typedef struct
 	Selection selection;
 	int stat_pattern_position[MUS_CHANNELS];
 	MusPattern *stat_pattern[MUS_CHANNELS];
+	MusChannel *channel;
 	int stat_pattern_number[MUS_CHANNELS];
 	SDL_Surface *slider_bevel;
 	Font smallfont, largefont;
@@ -99,7 +100,7 @@ typedef struct
 void change_mode(int newmode);
 void clear_pattern(MusPattern *pat);
 void clear_pattern_range(MusPattern *pat, int first, int last);
-void init(MusInstrument *instrument, MusPattern *pattern, MusSeqPattern sequence[MUS_CHANNELS][NUM_SEQUENCES], SDL_Surface *screen);
+void init(MusInstrument *instrument, MusPattern *pattern, MusSeqPattern sequence[MUS_CHANNELS][NUM_SEQUENCES], MusChannel *channel, SDL_Surface *screen);
 void deinit();
 void new_song();
 void default_instrument(MusInstrument *instrument);

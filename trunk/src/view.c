@@ -903,7 +903,10 @@ void program_view(const SDL_Rect *dest, const SDL_Event *event, void *param)
 		else
 			console_set_color(mused.console,0,CON_BACKGROUND);
 		
-		char box[6];
+		char box[6], cur = ' ';
+		
+		for (int c = 0 ; c < CYD_MAX_CHANNELS ; ++c)
+			if (mused.channel[c].instrument == inst && (mused.cyd.channel[c].flags & CYD_CHN_ENABLE_GATE) && (mused.channel[c].flags & MUS_CHN_PROGRAM_RUNNING) && mused.channel[c].program_tick == i) cur = '½';
 		
 		if (inst->program[i] == MUS_FX_NOP)
 		{
@@ -920,10 +923,10 @@ void program_view(const SDL_Rect *dest, const SDL_Event *event, void *param)
 		}
 		
 		if (pos == prev_pos)
-			check_event(event, console_write_args(mused.console, "%02X    %s%c\n", i, box, (!(inst->program[i] & 0x8000) || (inst->program[i] & 0xf000) == 0xf000) ? '´' : '|' ),
+			check_event(event, console_write_args(mused.console, "%c%02X    %s%c\n", cur, i, box, (!(inst->program[i] & 0x8000) || (inst->program[i] & 0xf000) == 0xf000) ? '´' : '|' ),
 				select_instrument_param, (void*)(P_PARAMS + i), 0, 0);
 		else
-			check_event(event, console_write_args(mused.console, "%02X %02X %s%c\n", i, pos, box, ((inst->program[i] & 0x8000) && (inst->program[i] & 0xf000) != 0xf000) ? '`' : ' '),
+			check_event(event, console_write_args(mused.console, "%c%02X %02X %s%c\n", cur, i, pos, box, ((inst->program[i] & 0x8000) && (inst->program[i] & 0xf000) != 0xf000) ? '`' : ' '),
 				select_instrument_param, (void*)(P_PARAMS + i), 0, 0);
 			
 		slider_set_params(&mused.program_slider_param, 0, MUS_PROG_LEN - 1, start, i, &mused.program_position, 1, SLIDER_VERTICAL);
