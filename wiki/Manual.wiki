@@ -95,6 +95,8 @@ _{{{xx}}}, {{{yy}}} = parameter to command_
 || {{{0axy}}} || Fade volume up by x, down by y ||
 || {{{0b0x}}} || set waveform (1 = noise, 2 = pulse, 4 = triangle, 8 = saw, 9 = 1 + 8 = noise + saw etc.) ||
 || {{{0cxx}}} || set volume ||
+|| {{{0e1x}}} || fine portamento up by x ||
+|| {{{0e2x}}} || fine portamento down by x ||
 || {{{0eax}}} || fine fade volume down by x ||
 || {{{0ebx}}} || fine fade volume up by x ||
 || {{{fd00}}} || loop begin ||
