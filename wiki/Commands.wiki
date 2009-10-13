@@ -1,0 +1,37 @@
+#summary Description of track and program commands
+
+= Commands =
+
+The commands are interchangeable between the track command and the program commands (where applicable). Most of the commands loosely follow the "standards" set by Obarski's Soundtracker and later Protracker.
+
+_{{{xx}}}, {{{yy}}} = parameter to command_
+
+|| *Command* || *Description* ||
+|| {{{00xx}}} || set arpeggio note (final played note = played note + arpeggio note + vibrato etc.) ||
+|| {{{10xy}}}  || set external arpeggio notes (used with 00f0 and 00f1) ||
+|| {{{01xx}}}  || portamento up ||
+|| {{{02xx}}} || portamento down ||
+|| {{{03xx}}} || slide to note with speed xx ||
+|| {{{04xy}}} || vibrato with speed of x and depth of y ||
+|| {{{11xx}}} || portamento up by one semitone ||
+|| {{{12xx}}} || portamento down by one semitone ||
+|| {{{21xx}}} || filter cutoff up ||
+|| {{{22xx}}} || filter cutoff down ||
+|| {{{07xx}}}  || pulse width down ||
+|| {{{08xx}}} || pulse width up ||
+|| {{{09xx}}} || set pulse width ||
+|| {{{29xx}}} || set cutoff ||
+|| {{{0axy}}} || Fade volume up by x, down by y ||
+|| {{{0b0x}}} || set waveform (1 = noise, 2 = pulse, 4 = triangle, 8 = saw, 9 = 1 + 8 = noise + saw etc.) ||
+|| {{{0cxx}}} || set volume ||
+|| {{{0e1x}}} || fine portamento up by x ||
+|| {{{0e2x}}} || fine portamento down by x ||
+|| {{{0eax}}} || fine fade volume down by x ||
+|| {{{0ebx}}} || fine fade volume up by x ||
+|| {{{0ecx}}} || set volume to zero on tick x ||
+|| {{{fd00}}} || loop begin ||
+|| {{{fexx}}} || loop to previous "fd00" xx times ||
+|| {{{ffxx}}} || go to step xx ||
+|| {{{fffd}}} || trigger note release ||
+|| {{{fffe}}} || nop (no operation) ||
+|| {{{ffff}}} || end program ||
