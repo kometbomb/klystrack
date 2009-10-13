@@ -180,7 +180,7 @@ void default_instrument(MusInstrument *inst)
 }
 
 
-void init(MusInstrument *instrument, MusPattern *pattern, MusSeqPattern sequence[MUS_CHANNELS][NUM_SEQUENCES], SDL_Surface *screen)
+void init(MusInstrument *instrument, MusPattern *pattern, MusSeqPattern sequence[MUS_CHANNELS][NUM_SEQUENCES], MusChannel *channel, SDL_Surface *screen)
 {
 	debug("init");
 	
@@ -209,6 +209,7 @@ void init(MusInstrument *instrument, MusPattern *pattern, MusSeqPattern sequence
 	memset(&mused.song, 0, sizeof(mused.song));
 	mused.song.instrument = instrument;
 	mused.song.pattern = pattern;
+	mused.channel = channel;
 
 	for (int i = 0 ; i < MUS_CHANNELS ; ++i)
 	{
