@@ -615,6 +615,8 @@ void pattern_view(const SDL_Rect *dest, const SDL_Event *event, void *param)
 	pos.x += pos.w - 2;
 	pos.w = pattern_width;
 	
+	slider_set_params(&mused.pattern_horiz_slider_param, 0, 0, 0, MUS_CHANNELS - 1, &mused.pattern_horiz_position, 1, SLIDER_HORIZONTAL);
+	
 	int first = MUS_CHANNELS, last = 0;
 	for (int i = 0 ; i < MUS_CHANNELS ; ++i)
 	{

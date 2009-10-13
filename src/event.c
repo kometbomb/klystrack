@@ -734,7 +734,7 @@ void sequence_event(SDL_Event *e)
 		break;
 	}
 	
-	if (mused.mode == EDITCLASSIC) update_ghost_patterns();
+	update_ghost_patterns();
 }
 
 

@@ -69,7 +69,7 @@ void update_ghost_patterns()
 	mused.current_patternx = 0;
 	mused.single_pattern_edit = (p <= 1);
 	
-	if (mused.mode == EDITCLASSIC)
+	//if (mused.mode == EDITCLASSIC)
 		move_position(&mused.current_sequencetrack, &mused.pattern_horiz_position, &mused.pattern_horiz_slider_param, 0, mused.pattern_horiz_slider_param.last - mused.pattern_horiz_slider_param.first);
 }
 
