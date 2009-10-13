@@ -1287,7 +1287,7 @@ void song_name_view(const SDL_Rect *dest, const SDL_Event *event, void *param)
 	larea.w = 32;
 	farea.w -= larea.w;
 	farea.x += larea.w;
-	label("NAME", &larea);
+	label("SONG", &larea);
 	
 	inst_field(event, &farea, 0, MUS_TITLE_LEN, mused.song.title);
 }
