@@ -69,6 +69,8 @@ The following example is a simple 0-4-7 major arpeggio:
 || {{{02 02 0007}}} || set arpeggio note to 7|| 
 || {{{03 03 ff00}}} || jump back to step 00 || 
 
+A handy way to debug instrument programs is to set the program period (execution speed) to 10 or more and then pay attention to the little marker that shows current program tick. That way you'll notice if e.g. a jump doesn't point to the correct command.
+
 ===Combining commands===
 
 In the following example, the first three commands are executed inside the same program tick. This can be achieved by entering the commands and pressing space to combine the command with the command below.
