@@ -175,6 +175,13 @@ int main(int argc, char **argv)
 	cyd_init(&mused.cyd, 44100, MUS_CHANNELS);
 	mus_init_engine(&mused.mus, &mused.cyd);
 	
+#ifdef DEBUG
+#ifdef OUTPUTAUDIO
+	/* This is because I couldn't get my soundcard to record stereo mix for demo videos */
+	cyd_enable_audio_dump(&mused.cyd);
+#endif
+#endif
+	
 	cyd_register(&mused.cyd);
 	cyd_set_callback(&mused.cyd, mus_advance_tick, &mused.mus, mused.song.song_rate);
 	
