@@ -38,7 +38,7 @@ extern Mused mused;
 
 static Uint16 validate_command(Uint16 command)
 {
-	if ((command & 0xff00) == MUS_FX_SET_VOLUME && (command & 0xff) > MAX_VOLUME) command = MUS_FX_SET_VOLUME | MAX_VOLUME;
+	if ((command & 0x7f00) == MUS_FX_SET_VOLUME && (command & 0xff) > MAX_VOLUME) command = MUS_FX_SET_VOLUME | MAX_VOLUME;
 	
 	return command;
 }
@@ -334,6 +334,14 @@ void edit_instrument_event(SDL_Event *e)
 			case SDLK_PERIOD:
 			if (mused.selected_param >= P_PARAMS) 
 				mused.song.instrument[mused.current_instrument].program[mused.selected_param-P_PARAMS] = MUS_FX_NOP;
+			break;
+			
+			case SDLK_SPACE:
+			{
+				if (mused.selected_param >= P_PARAMS && (mused.song.instrument[mused.current_instrument].program[mused.selected_param-P_PARAMS] & 0xf000) != 0xf000) 
+					mused.song.instrument[mused.current_instrument].program[mused.selected_param-P_PARAMS] ^= 0x8000;
+				
+			}
 			break;
 		
 			case SDLK_RETURN:
@@ -1006,7 +1014,7 @@ void pattern_event(SDL_Event *e)
 							break;
 						}
 						
-						mused.song.pattern[mused.current_pattern].step[mused.current_patternstep].command = validate_command(inst); 
+						mused.song.pattern[mused.current_pattern].step[mused.current_patternstep].command = validate_command(inst) & 0x7fff; 
 						
 						move_position(&mused.current_patternstep, &mused.pattern_position, &mused.pattern_slider_param, +1, mused.song.pattern[mused.current_pattern].num_steps);
 					}
