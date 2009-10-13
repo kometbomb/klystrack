@@ -37,8 +37,8 @@ Hold right mouse button down to bring up the menu bar. Select the menu option by
 {{{
      instrument
 note |  ______ legato, slide, vibrato
- |   | | | |
-C-4 00 L S V 0000 <--- track command
+ |   | |||
+C-4 00 LSV 0000 <--- track command
 }}}
 
 ===Keyboard commands===
@@ -56,24 +56,34 @@ C-4 00 L S V 0000 <--- track command
 
 ===Instrument program===
 
-When an instrument is triggered, the program starts executing from the beginning. The execution speed is independent from the song speed but relative to the routine update frequency. 
+When an instrument is triggered, the program starts executing from the beginning. The execution speed is independent from the song speed but relative to the routine update frequency. The program period instrument parameter controls how many routine updates it takes to advance the program one step.
 
-A program modifies the played waveform and can be used to create more interesting sounds. The commands are the same as the track commands. This means the program can also be thought as a macro: you do not need to enter the same track commands if the instrument executes has the same commands in the program. A practical example would be a complex arpeggio.
-
-The commands generally follow a pattern: the first two digits tell the action and the next two are the parameter(s) for the command. If the most significant bit of a command is set, the next command will be executed during the same frame. This of course does not apply to the track commands.
-
-In the following example, the first three commands are executed at the same time and the program will stay at the third step until next program step. on the next program step, the goto command will jump to the first command and execute it. in other words, the whole program will always be executed each program step.
-
-|| {{{1 800c}}} || set arpeggio note to +12 semitones (8000 + 000c) || 
-|| {{{| 9102}}} || portamento up by 2/256 semitones (8000 + 1102) || 
-|| {{{| 0710}}} || pw down by 10 steps || 
-|| {{{2 ff00}}} || go to beginning || 
+A program modifies the played waveform and can be used to create more interesting sounds. The commands are the same as the [Commands track commands]. This means the program can also be thought as a macro: you do not need to enter the same track commands if the instrument executes has the same commands in the program. 
 
 The program can be edited by moving to the program and pressing return on the instruction you want to edit.
 
-==Commands==
+The following example is a simple 0-4-7 major arpeggio:
 
-See [Commands].
+|| {{{00 00 0000}}} || set arpeggio note to 0 (the same note as played) || 
+|| {{{01 01 0004}}} || set arpeggio note to 4 (played note plus 4 semitones) || 
+|| {{{02 02 0007}}} || set arpeggio note to 7|| 
+|| {{{03 03 ff00}}} || jump back to step 00 || 
+
+===Combining commands===
+
+In the following example, the first three commands are executed inside the same program tick. This can be achieved by entering the commands and pressing space to combine the command with the command below.
+
+|| {{{00 00 000c ,}}} || set arpeggio note to +12 semitones|| 
+|| {{{01    0102 |}}} || portamento up by 2/256 semitones|| 
+|| {{{02    0710 '}}} || pw down by 10 steps || 
+|| {{{03 01 ff00}}} || go to beginning || 
+
+Note how the second column doesn't follow the leftmost column. I.e. when played, all commands are executed at step 00. When the next step (01 in the second column) is executed, it will be the jump command at 03, skipping past the two commands combined with the first command.
+
+====Keyboard commands====
+
+|| Return || Edit program command ||
+|| Space || Combine currently selected command to the command below ||
 
 ==Sequence editor==
 
@@ -84,7 +94,7 @@ pattern
 01+01
 }}}
 
-In the above example the pattern position is not a multiple of sequence pattern step, thus the offset is shown. the note offset is set to a full octave, the played pattern will be played an octave above the actual notes and so on.
+In the above example the pattern position is not a multiple of sequence pattern step, thus the offset is shown. 
 
 ===Keyboard commands===
 
