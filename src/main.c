@@ -75,8 +75,10 @@ static const View instrument_view_tab[] =
 
 static const View pattern_view_tab[] =
 {
-	{{0, 0, SCREEN_WIDTH-SCROLLBAR, SCREEN_HEIGHT - INFO}, pattern_view, NULL, -1},
-	{{SCREEN_WIDTH-SCROLLBAR, 0, SCROLLBAR, SCREEN_HEIGHT - INFO}, slider, &mused.pattern_slider_param, -1},
+	{{0, 0, SCREEN_WIDTH, 14}, bevel_view, (void*)BEV_BACKGROUND, -1},
+	{{2, 2, 164 + 32, 10}, instrument_name_view, (void*)1, -1},
+	{{0, 14, SCREEN_WIDTH-SCROLLBAR, SCREEN_HEIGHT - INFO - 14}, pattern_view, NULL, -1},
+	{{SCREEN_WIDTH-SCROLLBAR, 14, SCROLLBAR, SCREEN_HEIGHT - INFO -14}, slider, &mused.pattern_slider_param, -1},
 	{{0, SCREEN_HEIGHT - INFO, SCREEN_WIDTH, INFO }, info_line, NULL, -1},
 	{{0, 0, 0, 0}, NULL}
 };
@@ -101,8 +103,10 @@ static const View classic_view_tab[] =
 static const View sequence_view_tab[] =
 {
 	{{0,0,SCREEN_WIDTH,33+4}, info_view, NULL, -1},
-	{{0, 33+4, SCREEN_WIDTH-SCROLLBAR, SCREEN_HEIGHT-(33+4)}, sequence_view, NULL, -1},
-	{{SCREEN_WIDTH-SCROLLBAR, 33+4, SCROLLBAR, SCREEN_HEIGHT-(33+4)}, slider, &mused.sequence_slider_param, -1},
+	{{0, 33+4, SCREEN_WIDTH, 14}, bevel_view, (void*)BEV_BACKGROUND, -1},
+	{{2, 33+4+2, 164 + 32, 10}, song_name_view, NULL, -1},
+	{{0, 33+4+14, SCREEN_WIDTH-SCROLLBAR, SCREEN_HEIGHT-(33+4+14)}, sequence_view, NULL, -1},
+	{{SCREEN_WIDTH-SCROLLBAR, 33+4+14, SCROLLBAR, SCREEN_HEIGHT-(33+4+14)}, slider, &mused.sequence_slider_param, -1},
 	{{0, 0, 0, 0}, NULL}
 };
 
