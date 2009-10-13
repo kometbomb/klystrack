@@ -99,6 +99,7 @@ _{{{xx}}}, {{{yy}}} = parameter to command_
 || {{{0e2x}}} || fine portamento down by x ||
 || {{{0eax}}} || fine fade volume down by x ||
 || {{{0ebx}}} || fine fade volume up by x ||
+|| {{{0ecx}}} || set volume to zero on tick x ||
 || {{{fd00}}} || loop begin ||
 || {{{fexx}}} || loop to previous "fd00" xx times ||
 || {{{ffxx}}} || go to step xx ||
