@@ -34,12 +34,18 @@ Hold right mouse button down to bring up the menu bar. Select the menu option by
 
 ==Pattern editor==
 
+The pattern editor works like a standard tracker. Basically, each pattern is a queue of notes and parameters. 
+
 {{{
      instrument
 note |  ______ legato, slide, vibrato
  |   | |||
 C-4 00 LSV 0000 <--- track command
 }}}
+
+If a note is set for a pattern step, a new note will be played when the player position hits the row. The instrument column tells which instrument to use. The note will continue playing until the volume is set to zero, the envelope fades out or a note-off command is encountered in the note column. 
+
+The [Commands track commands] modify the sound with effects like portamento, vibrato or volume fade.
 
 ===Keyboard commands===
 
@@ -89,6 +95,8 @@ Note how the second column doesn't follow the leftmost column. I.e. when played,
 
 ==Sequence editor==
 
+The sequence is the place where all the patterns are put together to form a song structure. Each channel can use any of the patterns, the patterns are not locked to a certain channel nor do the patterns lock to other patterns. A pattern can be used as many times as needed, you do not need to duplicate the pattern data unless you want to make little changes. Only one pattern can play at the same time on the same channel, obviously.
+
 {{{
 pattern
  |  position offset
@@ -98,9 +106,13 @@ pattern
 
 In the above example the pattern position is not a multiple of sequence pattern step, thus the offset is shown. 
 
+Generally, one uses the sequence editor to enter patterns of similar length side by side and then jumps back and forth between the pattern editor and the sequence editor using the return key.
+
 ===Keyboard commands===
 
 || 0-9, a-z || enter pattern ||
+|| Return || edit currently selected pattern in the pattern editor (actually edits all patterns on the current sequence position) ||
+|| Period || Set current pattern to none ||
 || ALT+up/down || adjust note offset ||
 || CTRL+down/up || edit song length ||
 || CTRL+left/right || edit sequence editor pattern step ||
