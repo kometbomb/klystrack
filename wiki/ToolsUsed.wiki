@@ -1,0 +1,11 @@
+#summary List of tools used to create the software
+
+= Tools used to create the software =
+
+All of the below tools are open source:
+
+  * [http://mingw.org/ MinGW]
+  * GCC 4.4 from [http://www.tdragon.net/recentgcc/ TDM's MinGW GCC builds]
+  * [http://code.google.com/p/grafx2/ Grafx2] for drawing graphics
+  * Uses [http://www.libsdl.org/ SDL] as the main graphics and sound interface
+  * [http://notepad-plus.sourceforge.net/ Notepad++] to write code
