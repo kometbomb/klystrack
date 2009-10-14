@@ -914,11 +914,6 @@ void program_view(const SDL_Rect *dest, const SDL_Event *event, void *param)
 		else
 			console_set_color(mused.console,pos & 1 ? 0xffc0c0c0 : 0xffd0d0d0,CON_CHARACTER);
 		
-		if (mused.selection.start - P_PARAMS <= i && mused.selection.end - P_PARAMS > i)
-			console_set_color(mused.console,0xff0000ff,CON_BACKGROUND);
-		else
-			console_set_color(mused.console,0,CON_BACKGROUND);
-		
 		char box[6], cur = ' ';
 		
 		for (int c = 0 ; c < CYD_MAX_CHANNELS ; ++c)
