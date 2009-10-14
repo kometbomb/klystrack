@@ -36,6 +36,13 @@ static const Menu showmenu[] =
 };
 
 
+static const Menu prefsmenu[] =
+{
+	{ mainmenu, "Big pixels", NULL, MENU_CHECK, &mused.flags, (void*)BIG_PIXELS, change_pixel_scale },
+	{ NULL, NULL }
+};
+
+
 static const Menu filemenu[] =
 {
 	{ mainmenu, "New", NULL, new_song_action },
@@ -61,6 +68,7 @@ static const Menu mainmenu[] =
 	{ NULL, "FILE", filemenu },
 	{ NULL, "PLAY", playmenu },
 	{ NULL, "SHOW", showmenu },
+	{ NULL, "PREFS", prefsmenu },
 	{ NULL, NULL }
 };
 
@@ -83,6 +91,9 @@ void close_menu()
 		if (mused.current_menu_action->action == MENU_CHECK)
 		{
 			*(int*)(mused.current_menu_action->p1) ^= (int)(mused.current_menu_action->p2);
+			
+			if (mused.current_menu_action->p3)
+				((void *(*)(void*,void*,void*))(mused.current_menu_action->p3))(0,0,0);
 		}
 		else
 		{
@@ -116,10 +127,11 @@ static const char * get_shortcut_key(const Menu *item)
 	
 	for (int i = 0 ; shortcuts[i].action ; ++i)
 	{
-		if (shortcuts[i].action == item->action &&
+		if ((item->action == MENU_CHECK && (void*)shortcuts[i].action == item->p3) ||
+			(shortcuts[i].action == item->action &&
 			(void*)shortcuts[i].p1 == item->p1 &&
 			(void*)shortcuts[i].p3 == item->p2 &&
-			(void*)shortcuts[i].p2 == item->p3)
+			(void*)shortcuts[i].p2 == item->p3))
 		{
 			strcpy(buffer, "");
 			
@@ -137,7 +149,7 @@ static const char * get_shortcut_key(const Menu *item)
 		}
 		else if (item->submenu)
 		{
-			return "Â½";
+			return "½";
 		}
 	}
 

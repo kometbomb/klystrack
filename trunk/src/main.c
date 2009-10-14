@@ -129,7 +129,7 @@ const View *tab[] =
 
 void change_pixel_scale(void *a, void*b, void*c)
 {
-	domain->scale = (domain->scale == 1) ? 2 : 1;
+	domain->scale = (mused.flags & BIG_PIXELS) ? 2 : 1;
 	gfx_domain_update(domain);
 	mused.console->surface = gfx_domain_get_surface(domain);
 }

@@ -53,7 +53,8 @@ enum
 enum
 {
 	COMPACT_VIEW = 1,
-	SONG_PLAYING = 2
+	SONG_PLAYING = 2,
+	BIG_PIXELS = 4
 };
 
 typedef struct
