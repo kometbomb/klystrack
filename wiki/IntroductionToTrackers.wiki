@@ -3,9 +3,9 @@
 
 = Introduction to trackers =
 
-A tracker is a simple sequencer that originated from the Amiga computers in 1987. For someone used to modern sequencers, MIDI and all that, the concept can be somewhat strange.
+A tracker is a simple sequencer that originated from the Amiga computers in 1987 as a simple alternative to other music editors. For someone used to modern sequencers, MIDI and all that, the concept can be somewhat strange.
 
-The main difference to normal notation or a MIDI sequence is that in a tracker everything happens in discrete steps. In other words, it is similar to if you could only use sixteenth notes and rests. A tracker is also more technical and functional in that a pattern consists mostly of numerical (often hexadecimal) parameters.
+The main difference to formal notation or a MIDI sequencer is that in a tracker everything happens in discrete steps. In other words, it is similar to if you could only use sixteenth notes and rests. A tracker is also more technical and functional in that a pattern consists mostly of numerical (often hexadecimal) parameters.
 
 Wikipedia has [http://en.wikipedia.org/wiki/Tracker_%28music_software%29 a pretty good explanation of trackers in general].
 
@@ -25,18 +25,24 @@ In a tracker, a song is divided to a number of channels. A channel can only have
 
 ===Sequence===
 
-The sequence is the order in which patterns are played. Patterns can begin at any position and channel.
+The sequence is the order in which [#Pattern patterns] are played. Patterns can begin at any position and channel.
 
 ===Pattern===
 
-A pattern is a sequence of notes and commands that will play on a channel. All patterns always play at the same speed, synced by the current step.
+A pattern is a sequence of notes and [#Command commands] that will play on a [#Channel channel]. All patterns always play at the same speed, synced by the current [#Step step].
 
 ===Step===
 
-Step usually means one discrete row of pattern data. A song advances at a constant rate step by step. A step is divided into one or more ticks.
+Step usually means one discrete row of pattern data. A song advances at a constant rate step by step. A step is divided into one or more [#Tick ticks].
 
 ===Tick===
 
 A step is divided into one or more ticks. When one step is playing at a speed of 6, a tick will happen six times before the position moves to the next step. At each tick commands are updated. For example, the portamento and slide commands update the pitch at each tick.
 
 In klystrack, the instrument program is also divided into steps, also called ticks since in most cases multiple program steps are executed during one song step.
+
+===Command===
+
+A [Commands command] modifies the currently played note. This can be done on the track level or an instrument program can do it. A track command might fade the note out and a program command might repeatedly change the played note to create an arpeggio. 
+
+Program commands are also the way to create more interesting sounds that change the waveform or filter frequency when the note is played.
