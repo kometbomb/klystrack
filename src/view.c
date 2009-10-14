@@ -862,6 +862,20 @@ void info_line(const SDL_Rect *dest, const SDL_Event *event, void *param)
 }
 
 
+static void write_command(const SDL_Event *event, const char *text, int cmd_idx, int cur_idx)
+{
+	int i = 0;
+	for (const char *c = text ; *c ; ++c, ++i)
+	{
+		const SDL_Rect *r;
+		check_event(event, r = console_write_args(mused.console, "%c", *c), 
+			select_instrument_param, (void*)(P_PARAMS + cmd_idx), 0, 0);
+		if (mused.mode == EDITPROG && mused.editpos == i && cmd_idx == cur_idx)
+			bevel(r, mused.slider_bevel, BEV_CURSOR);	
+	}
+}
+
+
 void program_view(const SDL_Rect *dest, const SDL_Event *event, void *param)
 {
 	SDL_Rect area;
@@ -912,24 +926,29 @@ void program_view(const SDL_Rect *dest, const SDL_Event *event, void *param)
 		
 		if (inst->program[i] == MUS_FX_NOP)
 		{
-			strcpy(box, ".... ");
+			strcpy(box, "....");
 		}
 		else
 		{
-			sprintf(box, "%04X ", ((inst->program[i] & 0xf000) != 0xf000) ? (inst->program[i] & 0x7fff) : inst->program[i]);
-		}
-		
-		if (mused.mode == EDITPROG && mused.selected_param == (P_PARAMS+i))
-		{
-			box[mused.editpos] = '§'; // Cursor character
+			sprintf(box, "%04X", ((inst->program[i] & 0xf000) != 0xf000) ? (inst->program[i] & 0x7fff) : inst->program[i]);
 		}
 		
 		if (pos == prev_pos)
-			check_event(event, console_write_args(mused.console, "%c%02X    %s%c\n", cur, i, box, (!(inst->program[i] & 0x8000) || (inst->program[i] & 0xf000) == 0xf000) ? '´' : '|' ),
+		{
+			check_event(event, console_write_args(mused.console, "%c%02X    ", cur, i),
 				select_instrument_param, (void*)(P_PARAMS + i), 0, 0);
+			write_command(event, box, i, mused.selected_param - P_PARAMS);
+			check_event(event, console_write_args(mused.console, "%c\n", (!(inst->program[i] & 0x8000) || (inst->program[i] & 0xf000) == 0xf000) ? '´' : '|'), 
+				select_instrument_param, (void*)(P_PARAMS + i), 0, 0);
+		}
 		else
-			check_event(event, console_write_args(mused.console, "%c%02X %02X %s%c\n", cur, i, pos, box, ((inst->program[i] & 0x8000) && (inst->program[i] & 0xf000) != 0xf000) ? '`' : ' '),
+		{
+			check_event(event, console_write_args(mused.console, "%c%02X %02X ", cur, i, pos),
 				select_instrument_param, (void*)(P_PARAMS + i), 0, 0);
+			write_command(event, box, i, mused.selected_param - P_PARAMS);
+			check_event(event, console_write_args(mused.console, "%c\n", ((inst->program[i] & 0x8000) && (inst->program[i] & 0xf000) != 0xf000) ? '`' : ' '), 
+				select_instrument_param, (void*)(P_PARAMS + i), 0, 0);
+		}
 			
 		slider_set_params(&mused.program_slider_param, 0, MUS_PROG_LEN - 1, start, i, &mused.program_position, 1, SLIDER_VERTICAL);
 		
