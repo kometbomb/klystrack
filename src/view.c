@@ -954,7 +954,7 @@ void program_view(const SDL_Rect *dest, const SDL_Event *event, void *param)
 	for (int i = 0 ; i < start ; ++i)
 	{
 		prev_pos = pos;
-		if (!(inst->program[i] & 0x8000)) ++pos;
+		if (!(inst->program[i] & 0x8000) || (inst->program[i] & 0xf000) == 0xf000) ++pos;
 	}
 	
 	SDL_SetClipRect(mused.console->surface, &area);
