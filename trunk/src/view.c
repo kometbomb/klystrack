@@ -254,10 +254,10 @@ void sequence_view(const SDL_Rect *dest, const SDL_Event *event, void *param)
 			
 		++pos.y;
 		
+		check_event(event, &pos, select_sequence_position, (void*)-1, (void*)i, 0);
+		
 		console_set_clip(mused.console, &pos);
 		console_reset_cursor(mused.console);
-		
-		check_event(event, console_write_args(mused.console, "%04X", i), select_sequence_position, (void*)-1, (void*)i, 0);
 		
 		pos.x += 4;
 		pos.w -= 4;
