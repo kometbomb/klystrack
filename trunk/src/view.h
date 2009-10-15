@@ -44,7 +44,7 @@ typedef struct
 	int focus;
 } View;
 
-#define SEPARATOR_HEIGHT 4
+#define SEPARATOR_HEIGHT 6
 
 void draw_view(const View* views, const SDL_Event *event);
 void adjust_rect(SDL_Rect *rect, int margin);
