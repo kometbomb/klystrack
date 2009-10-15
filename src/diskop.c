@@ -64,6 +64,7 @@ int save_data()
 {
 	switch (mused.mode)
 	{
+		case EDITPROG:
 		case EDITINSTRUMENT:
 		{
 			FILE * f = open_dialog("wb", L"Save instrument", L"Instrument\0*.ins\0\0");

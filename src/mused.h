@@ -38,9 +38,9 @@ enum
 	EDITSEQUENCE,
 	EDITREVERB,
 	EDITCLASSIC,
+	EDITPROG,
 	/* Virtual modes, i.e. what are not modes itself but should be considered happening "inside" prev_mode */
 	EDITBUFFER,
-	EDITPROG,
 	MENU
 };
 
@@ -70,7 +70,7 @@ typedef struct
 		current_sequencepos, sequenceview_steps, single_pattern_edit, 
 		prev_mode, current_sequenceparam, instrument_list_position,
 		pattern_position, sequence_position, pattern_horiz_position,
-		program_position,
+		program_position, current_program_step,
 		edit_reverb_param;
 	int *ghost_pattern[MUS_CHANNELS];
 	int current_sequencetrack;

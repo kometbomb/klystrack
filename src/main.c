@@ -61,15 +61,15 @@ void change_pixel_scale(void *, void*, void*);
 
 static const View instrument_view_tab[] =
 {
-	{{0, 0, 164 + 32 + 4, 14}, bevel_view, (void*)BEV_BACKGROUND, -1},
-	{{2, 2, 164 + 32, 10}, instrument_name_view, (void*)1, -1},
-	{{164 + 32 + 4, 0, SCREEN_WIDTH - 164 - 32 - 2, 14}, instrument_disk_view, NULL, -1},
-	{{0, 14, 154, SCREEN_HEIGHT-14-INFO }, instrument_view, NULL, -1},
+	{{0, 0, 164 + 32 + 4, 14}, bevel_view, (void*)BEV_BACKGROUND, EDITINSTRUMENT },
+	{{2, 2, 164 + 32, 10}, instrument_name_view, (void*)1, EDITINSTRUMENT },
+	{{164 + 32 + 4, 0, SCREEN_WIDTH - 164 - 32 - 2, 14}, instrument_disk_view, NULL, -1 },
+	{{0, 14, 154, SCREEN_HEIGHT-14-INFO }, instrument_view, NULL, EDITINSTRUMENT },
 	{{154, 14, SCREEN_WIDTH - 154 - SCROLLBAR, INST_LIST }, instrument_list, NULL, -1},
-	{{154, 14 + INST_LIST, SCREEN_WIDTH - 154 - SCROLLBAR, SCREEN_HEIGHT-(14 + INST_LIST)-INFO }, program_view, NULL, -1},
-	{{SCREEN_WIDTH - SCROLLBAR, 14 + INST_LIST, SCROLLBAR, SCREEN_HEIGHT-(14 + INST_LIST)-INFO }, slider, &mused.program_slider_param, -1},
-	{{SCREEN_WIDTH - SCROLLBAR, 14, SCROLLBAR, INST_LIST }, slider, &mused.instrument_list_slider_param, -1},
-	{{0, SCREEN_HEIGHT - INFO, SCREEN_WIDTH, INFO }, info_line, NULL, -1},
+	{{154, 14 + INST_LIST, SCREEN_WIDTH - 154 - SCROLLBAR, SCREEN_HEIGHT-(14 + INST_LIST)-INFO }, program_view, NULL, EDITPROG },
+	{{SCREEN_WIDTH - SCROLLBAR, 14 + INST_LIST, SCROLLBAR, SCREEN_HEIGHT-(14 + INST_LIST)-INFO }, slider, &mused.program_slider_param, EDITPROG },
+	{{SCREEN_WIDTH - SCROLLBAR, 14, SCROLLBAR, INST_LIST }, slider, &mused.instrument_list_slider_param, EDITINSTRUMENT },
+	{{0, SCREEN_HEIGHT - INFO, SCREEN_WIDTH, INFO }, info_line, NULL, -1 },
 	{{0, 0, 0, 0}, NULL}
 };
 
@@ -155,7 +155,7 @@ int main(int argc, char **argv)
 	domain = gfx_create_domain();
 	domain->screen_w = SCREEN_WIDTH;
 	domain->screen_h = SCREEN_HEIGHT;
-	domain->fps = 10;
+	domain->fps = 20;
 	domain->scale = 1;
 	gfx_domain_update(domain);
 	
