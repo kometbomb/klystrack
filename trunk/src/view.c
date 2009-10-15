@@ -259,6 +259,8 @@ void sequence_view(const SDL_Rect *dest, const SDL_Event *event, void *param)
 		console_set_clip(mused.console, &pos);
 		console_reset_cursor(mused.console);
 		
+		console_write_args(mused.console, "%04X", i);
+		
 		pos.x += 4;
 		pos.w -= 4;
 		
@@ -591,6 +593,7 @@ static void pattern_header(const SDL_Event *event, int x, int channel, const SDL
 	}
 	
 	int d = generic_field(event, &pattern, channel, label, "%02X", (void*)*pattern_var, 2);
+	int old = *pattern_var;
 	
 	if (d < 0)
 	{
@@ -599,6 +602,12 @@ static void pattern_header(const SDL_Event *event, int x, int channel, const SDL
 	else if (d > 0)
 	{
 		*pattern_var = my_min(NUM_PATTERNS - 1, *pattern_var + 1);
+	}
+	
+	if (d)
+	{
+		if (mused.current_pattern == old)
+			mused.current_pattern = *pattern_var;
 	}
 			
 	button.x = x + pattern_width - button.w - 2;
