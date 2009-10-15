@@ -143,6 +143,7 @@ void new_song_action(void *unused1, void *unused2, void *unused3)
 {
 	if (confirm("Clear song and data?"))
 	{
+		stop(0,0,0);
 		new_song();
 	}
 }
@@ -150,7 +151,6 @@ void new_song_action(void *unused1, void *unused2, void *unused3)
 
 void save_song_action(void *unused1, void *unused2, void *unused3)
 {
-	mus_set_song(&mused.mus, NULL, 0);
 	cyd_lock(&mused.cyd, 1);
 	save_data();
 	cyd_lock(&mused.cyd, 0);
@@ -159,7 +159,7 @@ void save_song_action(void *unused1, void *unused2, void *unused3)
 
 void open_song_action(void *unused1, void *unused2, void *unused3)
 {
-	mus_set_song(&mused.mus, NULL, 0);
+	stop(0,0,0);
 	cyd_lock(&mused.cyd, 1);
 	open_data();
 	cyd_lock(&mused.cyd, 0);
