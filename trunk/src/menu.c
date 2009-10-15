@@ -190,7 +190,7 @@ static void draw_submenu(const SDL_Event *event, const Menu *items, const Menu *
 				if (item->text[0])
 					area.h += font->h + 1;
 				else
-					area.h += SEPARATOR_HEIGHT + 1;
+					area.h += SEPARATOR_HEIGHT;
 			}
 			
 			area.w = area.w * font->w;

@@ -107,10 +107,10 @@ void separator(const SDL_Rect *parent, SDL_Rect *rect)
 	copy_rect(&r, rect);
 	
 	rect->x = parent->x;
-	rect->y += 6;
+	rect->y += SEPARATOR_HEIGHT;
 	
-	r.y += 2;
-	r.h = SEPARATOR_HEIGHT;
+	r.y += SEPARATOR_HEIGHT/3;
+	r.h = SEPARATOR_HEIGHT/2;
 	r.w = parent->w;
 	
 	bevel(&r, mused.slider_bevel, BEV_SEPARATOR);
