@@ -43,6 +43,8 @@ OTHER DEALINGS IN THE SOFTWARE.
 #define COLOR_SEQUENCE_BEAT_DISABLED 0xff404080
 #define COLOR_SEQUENCE_NORMAL_DISABLED 0xff202040
 
+#define swap(a,b) { a ^= b; b ^= a; a ^= b; }
+
 #define timesig(i, bar, beat, normal) ((((i)%((mused.time_signature>>8)*(mused.time_signature&0xff))) == 0)?(bar):((((i)%(mused.time_signature&0xff))==0)?(beat):(normal)))
 
 // Makes "warning: cast to pointer from integer of different size" disappear
@@ -204,8 +206,13 @@ void sequence_view(const SDL_Rect *dest, const SDL_Event *event, void *param)
 	adjust_rect(&content, 1);
 	
 	int loop_begin = -1, loop_end = -1;
+	SDL_Rect selection_begin = {-1, -1}, selection_end = {-1, -1};
 	
-	SDL_SetClipRect(mused.console->surface, &content);
+	SDL_Rect clip;
+	SDL_GetClipRect(mused.console->surface, &clip);
+	clip.h = content.h;
+	clip.y = content.y;
+	SDL_SetClipRect(mused.console->surface, &clip);
 	
 	for (int i = start, s = 0, y = 0 ; y < content.h ; i += mused.sequenceview_steps, ++s, y += mused.console->font.h + 1)
 	{
@@ -262,12 +269,6 @@ void sequence_view(const SDL_Rect *dest, const SDL_Event *event, void *param)
 			console_set_background(mused.console, 0);
 			Uint32 bg = 0;
 			
-			if (c == mused.current_sequencetrack && i >= mused.selection.start && i < mused.selection.end && mused.focus == EDITSEQUENCE)
-			{
-				bg = BG_SELECTION;
-				console_set_background(mused.console, 1);
-			}
-		
 			sprintf(text, "--");
  			
 			if ((draw_colon[c]) > mused.sequenceview_steps)
@@ -316,6 +317,23 @@ void sequence_view(const SDL_Rect *dest, const SDL_Event *event, void *param)
 				bevel(&r, mused.slider_bevel, BEV_CURSOR);
 			}
 			
+			if (mused.focus == EDITSEQUENCE && c == mused.current_sequencetrack)
+			{
+				selection_begin.x = r.x - 2;
+				
+				if (i <= mused.selection.start)
+				{
+					selection_begin.y = pos.y - 1;
+				}
+				
+				selection_end.x = r.x + r.w + 2;
+				
+				if (i < mused.selection.end)
+				{
+					selection_end.y = pos.y + pos.h;
+				}
+			}
+			
 			console_set_color(mused.console,bg,CON_BACKGROUND);
 			console_write(mused.console," ");
 		}
@@ -328,6 +346,17 @@ void sequence_view(const SDL_Rect *dest, const SDL_Event *event, void *param)
 	
 	if (loop_begin == -1) loop_begin = content.y - (mused.console->font.h + 1);
 	if (loop_end == -1) loop_end = content.y + content.h + (mused.console->font.h + 1);
+	
+	if (mused.focus == EDITSEQUENCE && mused.selection.start != mused.selection.end
+		&& !(mused.selection.start > mused.sequence_slider_param.visible_last || mused.selection.end <= mused.sequence_slider_param.visible_first))
+	{
+		if (selection_begin.y == -1) selection_begin.y = content.y - 8;
+		if (selection_end.y == -1) selection_end.y = content.y + content.h + 8;
+		
+		SDL_Rect selection = { selection_begin.x, selection_begin.y, selection_end.x - selection_begin.x, selection_end.y - selection_begin.y };
+		adjust_rect(&selection, -4);
+		bevel(&selection, mused.slider_bevel, BEV_SELECTION);
+	}
 	
 	SDL_Rect loop = { content.x, loop_begin, content.w, loop_end - loop_begin };
 	
@@ -354,26 +383,30 @@ void pattern_view_inner(const SDL_Rect *dest, const SDL_Event *event, int curren
 	copy_rect(&content, dest);
 	adjust_rect(&content, 2);
 	
+	SDL_SetClipRect(mused.console->surface, &content);
+	
 	console_set_color(mused.console,0x00000000,CON_BACKGROUND);
 	console_set_clip(mused.console, &content);
 	console_clear(mused.console);
 	
 	adjust_rect(&content, 2);
 	console_set_clip(mused.console, &content);
-			
+	
 	int start = mused.pattern_position;
 	
 	console_set_color(mused.console,0xff808080,CON_CHARACTER);
 	
 	SDL_Rect selected_rect = { 0 };
+	int selection_begin = -1, selection_end = -1;
 	
 	for (int i = start, y = 0 ; i < mused.song.pattern[current_pattern].num_steps && y < content.h; ++i, y += mused.console->font.h)
 	{
 		console_set_clip(mused.console, &content);
+		
+		SDL_Rect row = { content.x - 2, content.y + y - 1, content.w + 4, mused.console->font.h + 1};
 	
 		if (mused.current_patternstep == i)
 		{
-			SDL_Rect row = { content.x - 2, content.y + y - 1, content.w + 4, mused.console->font.h + 1};
 			bevel(&row, mused.slider_bevel, BEV_SELECTED_PATTERN_ROW);
 			console_set_color(mused.console, 0xffffffff, CON_CHARACTER);
 		}
@@ -386,19 +419,17 @@ void pattern_view_inner(const SDL_Rect *dest, const SDL_Event *event, int curren
 		
 		Uint32 bg = 0;
 		
-		if (channel != -1)
+		if (current_pattern == mused.current_pattern && mused.focus == EDITPATTERN)
 		{
-			if (i == mused.stat_pattern_position[channel] && mused.mus.song_track[channel].pattern == &mused.song.pattern[current_pattern])
+			if (i <= mused.selection.start)
 			{
-				bg = BG_PLAYERPOS;
-				console_set_background(mused.console, 1);
+				selection_begin = row.y;
 			}
-		}
-		
-		if (current_pattern == mused.current_pattern && i >= mused.selection.start && i < mused.selection.end && mused.focus == EDITPATTERN)
-		{
-			bg = BG_SELECTION;
-			console_set_background(mused.console, 1);
+			
+			if (i < mused.selection.end)
+			{
+				selection_end = row.y + row.h + 1;
+			}
 		}
 		
 		const SDL_Rect *r;
@@ -460,11 +491,34 @@ void pattern_view_inner(const SDL_Rect *dest, const SDL_Event *event, int curren
 			update_pattern_cursor(r, &selected_rect, current_pattern, i, PED_COMMAND1 + p);
 		}
 		
+		if (channel != -1)
+		{
+			if (i == mused.stat_pattern_position[channel] && mused.mus.song_track[channel].pattern == &mused.song.pattern[current_pattern])
+			{
+				bevel(&row, mused.slider_bevel, BEV_SEQUENCE_PLAY_POS);
+			}
+		}
+		
 		console_write(mused.console,"\n");
 		
 		if (current_pattern == mused.current_pattern)
 			slider_set_params(&mused.pattern_slider_param, 0, mused.song.pattern[current_pattern].num_steps - 1, start, i, &mused.pattern_position, 1, SLIDER_VERTICAL);
 	}
+	
+	if (current_pattern == mused.current_pattern && mused.focus == EDITPATTERN && mused.selection.start != mused.selection.end 
+		&& !(mused.selection.start > mused.pattern_slider_param.visible_last || mused.selection.end <= mused.pattern_slider_param.visible_first))
+	{
+		if (selection_begin == -1) selection_begin = content.y - 8;
+		if (selection_end == -1) selection_end = content.y + content.h + 8;
+		
+		if (selection_begin > selection_end) swap(selection_begin, selection_end);
+		
+		SDL_Rect selection = { content.x, selection_begin, content.w, selection_end - selection_begin };
+		adjust_rect(&selection, -4);
+		bevel(&selection, mused.slider_bevel, BEV_SELECTION);
+	}
+	
+	SDL_SetClipRect(mused.console->surface, NULL);
 	
 	if (selected_rect.w && mused.focus == EDITPATTERN)
 	{
@@ -472,6 +526,8 @@ void pattern_view_inner(const SDL_Rect *dest, const SDL_Event *event, int curren
 	}
 	
 	bevel(dest, mused.slider_bevel, BEV_THIN_FRAME);
+	
+	
 }
 
 
@@ -793,16 +849,16 @@ void info_line(const SDL_Rect *dest, const SDL_Event *event, void *param)
 	
 	char text[200]="";
 	
-	switch (mused.mode)
+	switch (mused.focus)
 	{
-		case EDITINSTRUMENT:
-		
-		if (mused.selected_param >= P_PARAMS)
+		case EDITPROG:
 		{
-			Uint16 inst = mused.song.instrument[mused.current_instrument].program[mused.selected_param-P_PARAMS];
+			Uint16 inst = mused.song.instrument[mused.current_instrument].program[mused.current_program_step];
 			get_command_desc(text, inst);
 		}
-		else
+		break;
+		
+		case EDITINSTRUMENT:
 		{
 			static const char * param_desc[] = 
 			{
@@ -869,8 +925,8 @@ static void write_command(const SDL_Event *event, const char *text, int cmd_idx,
 	{
 		const SDL_Rect *r;
 		check_event(event, r = console_write_args(mused.console, "%c", *c), 
-			select_instrument_param, (void*)(P_PARAMS + cmd_idx), 0, 0);
-		if (mused.mode == EDITPROG && mused.editpos == i && cmd_idx == cur_idx)
+			select_program_step, (void*)cmd_idx, 0, 0);
+		if (mused.focus == EDITPROG && mused.editpos == i && cmd_idx == cur_idx)
 			bevel(r, mused.slider_bevel, BEV_CURSOR);	
 	}
 }
@@ -893,6 +949,7 @@ void program_view(const SDL_Rect *dest, const SDL_Event *event, void *param)
 	int start = mused.program_position;
 	
 	int pos = 0, prev_pos = -1;
+	int selection_begin = -1, selection_end = -1;
 	
 	for (int i = 0 ; i < start ; ++i)
 	{
@@ -904,15 +961,26 @@ void program_view(const SDL_Rect *dest, const SDL_Event *event, void *param)
 	
 	for (int i = start, s = 0, y = 0 ; i < MUS_PROG_LEN && y < area.h; ++i, ++s, y += mused.console->font.h)
 	{
-		if (mused.selected_param == (P_PARAMS+i))
+		SDL_Rect row = { area.x - 1, area.y + y - 1, area.w + 2, mused.console->font.h + 1};
+	
+		if (mused.current_program_step == i && mused.focus == EDITPROG)
 		{
 			console_set_color(mused.console,0xffffffff,CON_CHARACTER);
-			SDL_Rect row = { area.x - 1, area.y + y - 1, area.w + 2, mused.console->font.h + 1};
 			bevel(&row, mused.slider_bevel, BEV_SELECTED_PATTERN_ROW);
 			console_set_color(mused.console, 0xffffffff, CON_CHARACTER);
 		}
 		else
 			console_set_color(mused.console,pos & 1 ? 0xffc0c0c0 : 0xffd0d0d0,CON_CHARACTER);
+			
+		if (i <= mused.selection.start)
+		{
+			selection_begin = row.y;
+		}
+		
+		if (i < mused.selection.end)
+		{
+			selection_end = row.y + row.h + 1;
+		}
 		
 		char box[6], cur = ' ';
 		
@@ -930,19 +998,19 @@ void program_view(const SDL_Rect *dest, const SDL_Event *event, void *param)
 		
 		if (pos == prev_pos)
 		{
-			check_event(event, console_write_args(mused.console, "%c%02X    ", cur, i),
-				select_instrument_param, (void*)(P_PARAMS + i), 0, 0);
-			write_command(event, box, i, mused.selected_param - P_PARAMS);
+			check_event(event, console_write_args(mused.console, "%02X%c   ", i, cur),
+				select_program_step, (void*)i, 0, 0);
+			write_command(event, box, i, mused.current_program_step);
 			check_event(event, console_write_args(mused.console, "%c\n", (!(inst->program[i] & 0x8000) || (inst->program[i] & 0xf000) == 0xf000) ? '´' : '|'), 
-				select_instrument_param, (void*)(P_PARAMS + i), 0, 0);
+				select_program_step, (void*)i, 0, 0);
 		}
 		else
 		{
-			check_event(event, console_write_args(mused.console, "%c%02X %02X ", cur, i, pos),
-				select_instrument_param, (void*)(P_PARAMS + i), 0, 0);
-			write_command(event, box, i, mused.selected_param - P_PARAMS);
+			check_event(event, console_write_args(mused.console, "%02X%c%02X ", i, cur, pos),
+				select_program_step, (void*)i, 0, 0);
+			write_command(event, box, i, mused.current_program_step);
 			check_event(event, console_write_args(mused.console, "%c\n", ((inst->program[i] & 0x8000) && (inst->program[i] & 0xf000) != 0xf000) ? '`' : ' '), 
-				select_instrument_param, (void*)(P_PARAMS + i), 0, 0);
+				select_program_step, (void*)i, 0, 0);
 		}
 			
 		slider_set_params(&mused.program_slider_param, 0, MUS_PROG_LEN - 1, start, i, &mused.program_position, 1, SLIDER_VERTICAL);
@@ -952,6 +1020,19 @@ void program_view(const SDL_Rect *dest, const SDL_Event *event, void *param)
 		if (!(inst->program[i] & 0x8000) || (inst->program[i] & 0xf000) == 0xf000) ++pos;
 	}
 	
+	if (mused.focus == EDITPROG && mused.selection.start != mused.selection.end
+		&& !(mused.selection.start > mused.program_slider_param.visible_last || mused.selection.end <= mused.program_slider_param.visible_first))
+	{
+		if (selection_begin == -1) selection_begin = area.y - 8;
+		if (selection_end == -1) selection_end = area.y + area.h + 8;
+		
+		if (selection_begin > selection_end) swap(selection_begin, selection_end);
+		
+		SDL_Rect selection = { area.x, selection_begin, area.w, selection_end - selection_begin };
+		adjust_rect(&selection, -4);
+		bevel(&selection, mused.slider_bevel, BEV_SELECTION);
+	}
+	
 	SDL_SetClipRect(mused.console->surface, NULL);
 }
 
@@ -959,7 +1040,7 @@ void program_view(const SDL_Rect *dest, const SDL_Event *event, void *param)
 static void inst_flags(const SDL_Event *e, const SDL_Rect *area, int p, const char *label, Uint32 *flags, Uint32 mask)
 {
 	if (checkbox(e, area, label, flags, mask)) mused.selected_param = p;
-	if (p == mused.selected_param && mused.mode == EDITINSTRUMENT)
+	if (p == mused.selected_param && mused.focus == EDITINSTRUMENT)
 	{
 		SDL_Rect r;
 		copy_rect(&r, area);
@@ -980,7 +1061,7 @@ static void inst_text(const SDL_Event *e, const SDL_Rect *area, int p, const cha
 	if (d < 0) instrument_add_param(-1);
 	else if (d >0) instrument_add_param(1);
 	
-	if (p == mused.selected_param && mused.mode == EDITINSTRUMENT)
+	if (p == mused.selected_param && mused.focus == EDITINSTRUMENT)
 	{
 		SDL_Rect r;
 		copy_rect(&r, area);
@@ -1051,10 +1132,10 @@ void instrument_name_view(const SDL_Rect *dest, const SDL_Event *event, void *pa
 	inst_text(event, &farea, P_INSTRUMENT, "", "%02X", (void*)mused.current_instrument, 2);
 	inst_field(event, &tarea, P_NAME, 16, mused.song.instrument[mused.current_instrument].name);
 	
-	if (mused.selected_param == P_NAME && mused.mode == EDITINSTRUMENT)
+	if (mused.selected_param == P_NAME && mused.focus == EDITINSTRUMENT)
 	{
 		SDL_Rect r;
-		copy_rect(&r, &farea);
+		copy_rect(&r, &tarea);
 		adjust_rect(&r, -1);
 		bevel(&r, mused.slider_bevel, BEV_CURSOR);
 	}

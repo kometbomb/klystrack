@@ -37,7 +37,7 @@ void bevel(const SDL_Rect *area, SDL_Surface *gfx, int offset)
 		{
 			for (int x = 4 ; x < area->w - 4 ; x += 8)
 			{
-				SDL_Rect src = { 4 + offset, 4, my_min(8, area->w - x), my_min(8, area->h - y) };
+				SDL_Rect src = { 4 + offset, 4, my_min(8, area->w - x - 4), my_min(8, area->h - y - 4) };
 				SDL_Rect dest = { x + area->x, y + area->y };
 				SDL_BlitSurface(gfx, &src, mused.console->surface, &dest);
 			}

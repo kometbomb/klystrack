@@ -28,6 +28,7 @@ OTHER DEALINGS IN THE SOFTWARE.
 #include "diskop.h"
 #include "toolutil.h"
 #include "view.h"
+#include "event.h"
 
 extern Mused mused;
 
@@ -129,6 +130,12 @@ void change_song_speed(void *speed, void *delta, void *unused)
 void select_instrument_param(void *idx, void *unused1, void *unused2)
 {
 	mused.selected_param = (int)idx;
+}
+
+
+void select_program_step(void *idx, void *unused1, void *unused2)
+{
+	mused.current_program_step = (int)idx;
 }
 
 

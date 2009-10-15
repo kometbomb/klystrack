@@ -51,11 +51,14 @@ void copy()
 		
 		case EDITINSTRUMENT:
 		{
-			if (mused.selection.start < P_PARAMS)
-				cp_copy(&mused.cp, CP_INSTRUMENT, &mused.song.instrument[mused.current_instrument], sizeof(mused.song.instrument[mused.current_instrument]));
-			else 
-				cp_copy_items(&mused.cp, CP_PROGRAM, &mused.song.instrument[mused.current_instrument].program[mused.selection.start - P_PARAMS], mused.selection.end-mused.selection.start, 
-					sizeof(mused.song.instrument[mused.current_instrument].program[0]));
+			cp_copy(&mused.cp, CP_INSTRUMENT, &mused.song.instrument[mused.current_instrument], sizeof(mused.song.instrument[mused.current_instrument]));
+		}
+		break;
+		
+		case EDITPROG:
+		{
+			cp_copy_items(&mused.cp, CP_PROGRAM, &mused.song.instrument[mused.current_instrument].program[mused.selection.start], mused.selection.end-mused.selection.start, 
+				sizeof(mused.song.instrument[mused.current_instrument].program[0]));
 		}
 		break;
 		
@@ -154,11 +157,15 @@ void paste()
 			{
 				cp_paste_items(&mused.cp, CP_INSTRUMENT, &mused.song.instrument[mused.current_instrument], 1, sizeof(mused.song.instrument[mused.current_instrument]));
 			}
-			else if (mused.cp.type == CP_PROGRAM)
+		}
+		break;
+		
+		case EDITPROG:
+		{
+			if (mused.cp.type == CP_PROGRAM)
 			{
-				if (mused.selected_param >= P_PARAMS)
-					cp_paste_items(&mused.cp, CP_PROGRAM, &mused.song.instrument[mused.current_instrument].program[mused.selected_param - P_PARAMS], MUS_PROG_LEN - (mused.selected_param - P_PARAMS), 
-						sizeof(mused.song.instrument[mused.current_instrument].program[0]));
+				cp_paste_items(&mused.cp, CP_PROGRAM, &mused.song.instrument[mused.current_instrument].program[mused.current_program_step], MUS_PROG_LEN - mused.current_program_step, 
+					sizeof(mused.song.instrument[mused.current_instrument].program[0]));
 			}
 		}
 		break;

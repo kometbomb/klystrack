@@ -47,7 +47,7 @@ static Uint16 validate_command(Uint16 command)
 void editparambox(int v)
 {
 	MusInstrument *inst = &mused.song.instrument[mused.current_instrument];
-	Uint16 *param = &inst->program[mused.selected_param-P_PARAMS];
+	Uint16 *param = &inst->program[mused.current_program_step];
 	Uint32 mask = 0xffff0fff >> (mused.editpos*4);
 	
 	if (*param == MUS_FX_NOP)
@@ -58,7 +58,7 @@ void editparambox(int v)
 	if (++mused.editpos > 3)
 	{
 		*param = validate_command(*param);
-		change_mode(EDITINSTRUMENT);
+		mused.editpos = 3;
 	}
 }
 
@@ -326,28 +326,15 @@ void edit_instrument_event(SDL_Event *e)
 		
 		switch (e->key.keysym.sym)
 		{
-			case SDLK_LSHIFT:
-			case SDLK_RSHIFT:
-				begin_selection(mused.selected_param);
-			break;
-		
-			case SDLK_PERIOD:
-			if (mused.selected_param >= P_PARAMS) 
-				mused.song.instrument[mused.current_instrument].program[mused.selected_param-P_PARAMS] = MUS_FX_NOP;
-			break;
-			
 			case SDLK_SPACE:
 			{
-				if (mused.selected_param >= P_PARAMS && (mused.song.instrument[mused.current_instrument].program[mused.selected_param-P_PARAMS] & 0xf000) != 0xf000) 
-					mused.song.instrument[mused.current_instrument].program[mused.selected_param-P_PARAMS] ^= 0x8000;
-				
+				for (int i = 0 ; i < MUS_CHANNELS ; ++i)
+					cyd_enable_gate(mused.mus.cyd, &mused.mus.cyd->channel[i], 0);
 			}
 			break;
 		
 			case SDLK_RETURN:
 			{
-				if (mused.selected_param >= P_PARAMS) change_mode(EDITPROG);
-				else
 				if (mused.selected_param == P_NAME) 
 					set_edit_buffer(mused.song.instrument[mused.current_instrument].name, sizeof(mused.song.instrument[mused.current_instrument].name));
 			}
@@ -355,69 +342,21 @@ void edit_instrument_event(SDL_Event *e)
 			
 			case SDLK_DOWN:
 			{
-				if (mused.selected_param >= P_PARAMS)
-				{
-					mused.selected_param -= P_PARAMS;
-					move_position(&mused.selected_param, &mused.program_position, &mused.program_slider_param, 1, MUS_PROG_LEN);
-					mused.selected_param += P_PARAMS;
-				}
-				else
-				{
-					++mused.selected_param;
-				}
+				++mused.selected_param;
 				
-				if (mused.selected_param >= P_PARAMS + MUS_PROG_LEN) mused.selected_param = P_PARAMS + MUS_PROG_LEN - 1;
-				
-				if (e->key.keysym.mod & KMOD_SHIFT)
-				{
-					select_range(mused.selected_param);
-				}
+				if (mused.selected_param >= P_PARAMS) mused.selected_param = P_PARAMS - 1;
 			}
 			break;
 			
 			case SDLK_UP:
 			{
-				if (mused.selected_param >= P_PARAMS)
-				{
-					mused.selected_param -= P_PARAMS;
-					move_position(&mused.selected_param, &mused.program_position, &mused.program_slider_param, -1, MUS_PROG_LEN);
-					mused.selected_param += P_PARAMS;
-				}
-				else
-				{
-					--mused.selected_param;
-				}
+				--mused.selected_param;
 				
 				if (mused.selected_param < 0) mused.selected_param = 0;
-				
-				if (e->key.keysym.mod & KMOD_SHIFT)
-				{
-					select_range(mused.selected_param);
-				}
 			}
 			break;
 		
-			case SDLK_INSERT:
-			{
-				if (mused.selected_param >= P_PARAMS) 
-				{
-					for (int i = MUS_PROG_LEN-2; i >= mused.selected_param - P_PARAMS ; --i)
-						mused.song.instrument[mused.current_instrument].program[i] = mused.song.instrument[mused.current_instrument].program[i-1];
-					mused.song.instrument[mused.current_instrument].program[mused.selected_param - P_PARAMS] = MUS_FX_NOP;
-				}
-			}
-			break;
 			
-			case SDLK_DELETE:
-			{
-				if (mused.selected_param >= P_PARAMS) 
-				{
-					for (int i = mused.selected_param - P_PARAMS  ; i < MUS_PROG_LEN-1 ; ++i)
-						mused.song.instrument[mused.current_instrument].program[i] = mused.song.instrument[mused.current_instrument].program[i+1];
-					mused.song.instrument[mused.current_instrument].program[MUS_PROG_LEN-1] = MUS_FX_NOP;
-				}
-			}
-			break;
 		
 			case SDLK_RIGHT:
 			{
@@ -425,10 +364,6 @@ void edit_instrument_event(SDL_Event *e)
 			}
 			break;
 			
-			case SDLK_TAB:
-				for (int i = 0 ; i < MUS_CHANNELS ; ++i)
-					cyd_enable_gate(mused.mus.cyd, &mused.mus.cyd->channel[i], 0);
-			break;
 			
 			case SDLK_LEFT:
 			{
@@ -1050,32 +985,74 @@ void edit_program_event(SDL_Event *e)
 		
 		switch (e->key.keysym.sym)
 		{
+			case SDLK_LSHIFT:
+			case SDLK_RSHIFT:
+				begin_selection(mused.current_program_step);
+			break;
+		
+			case SDLK_PERIOD:
+				mused.song.instrument[mused.current_instrument].program[mused.current_program_step] = MUS_FX_NOP;
+			break;
+			
+			case SDLK_SPACE:
+			{
+				if ((mused.song.instrument[mused.current_instrument].program[mused.current_program_step] & 0xf000) != 0xf000) 
+					mused.song.instrument[mused.current_instrument].program[mused.current_program_step] ^= 0x8000;
+			}
+			break;
+			
 			case SDLK_RETURN:
 			{
 				MusInstrument *inst = &mused.song.instrument[mused.current_instrument];
-				Uint16 *param = &inst->program[mused.selected_param-P_PARAMS];
+				Uint16 *param = &inst->program[mused.current_program_step];
 				*param = validate_command(*param);
-				change_mode(EDITINSTRUMENT);
 			}
 			break;
 		
 			case SDLK_DOWN:
 			{
-				++mused.selected_param;
-				if (mused.selected_param >= P_PARAMS+MUS_PROG_LEN) mused.selected_param = 0;
-				if (mused.selected_param < P_PARAMS) change_mode(EDITINSTRUMENT); else change_mode(EDITPROG);
+				++mused.current_program_step;
+				if (mused.current_program_step >= MUS_PROG_LEN) mused.current_program_step = MUS_PROG_LEN - 1;
+				
+				move_position(&mused.current_program_step, &mused.program_position, &mused.program_slider_param, 0, MUS_PROG_LEN);
+				
+				if (e->key.keysym.mod & KMOD_SHIFT)
+				{
+					select_range(mused.current_program_step);
+				}
 			}
 			break;
 			
 			case SDLK_UP:
 			{
-				--mused.selected_param;
-				if (mused.selected_param < 0) mused.selected_param = P_PARAMS+MUS_PROG_LEN-1;
-				if (mused.selected_param < P_PARAMS) change_mode(EDITINSTRUMENT); else change_mode(EDITPROG);
+				--mused.current_program_step;
+				if (mused.current_program_step < 0) mused.current_program_step = 0;
+				
+				move_position(&mused.current_program_step, &mused.program_position, &mused.program_slider_param, 0, MUS_PROG_LEN);
+				
+				if (e->key.keysym.mod & KMOD_SHIFT)
+				{
+					select_range(mused.current_program_step);
+				}
 			}
 			break;
-		
-		
+			
+			case SDLK_INSERT:
+			{
+				for (int i = MUS_PROG_LEN-2; i >= mused.current_program_step ; --i)
+					mused.song.instrument[mused.current_instrument].program[i] = mused.song.instrument[mused.current_instrument].program[i-1];
+				mused.song.instrument[mused.current_instrument].program[mused.current_program_step] = MUS_FX_NOP;
+			}
+			break;
+			
+			case SDLK_DELETE:
+			{
+				for (int i = mused.current_program_step  ; i < MUS_PROG_LEN-1 ; ++i)
+					mused.song.instrument[mused.current_instrument].program[i] = mused.song.instrument[mused.current_instrument].program[i+1];
+				mused.song.instrument[mused.current_instrument].program[MUS_PROG_LEN-1] = MUS_FX_NOP;
+			}
+			break;
+						
 			case SDLK_RIGHT:
 			{
 				clamp(mused.editpos,+1,0,3);
