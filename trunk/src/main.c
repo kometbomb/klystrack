@@ -39,6 +39,7 @@ OTHER DEALINGS IN THE SOFTWARE.
 #include "bevel.h"
 #include "menu.h"
 #include "shortcuts.h"
+#include "version.h"
 
 #define SCREEN_WIDTH 320
 #define SCREEN_HEIGHT 240
@@ -161,7 +162,7 @@ int main(int argc, char **argv)
 	
 	SDL_EnableKeyRepeat(SDL_DEFAULT_REPEAT_DELAY, SDL_DEFAULT_REPEAT_INTERVAL);
 	SDL_EnableUNICODE(1);
-	SDL_WM_SetCaption("klystrack", NULL);
+	SDL_WM_SetCaption(VERSION_STRING, NULL);
 	
 	MusInstrument instrument[NUM_INSTRUMENTS];
 	MusPattern pattern[NUM_PATTERNS];

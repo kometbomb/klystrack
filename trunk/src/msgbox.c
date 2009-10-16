@@ -84,8 +84,6 @@ static int draw_box(const SDL_Event *event, const char *msg, int buttons, int *s
 		}
 	}
 	
-	//SDL_UpdateRect(mused.console->surface, area.x, area.y, area.w, area.h);
-	
 	return r;
 }
 
