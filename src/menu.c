@@ -6,7 +6,6 @@
 #include "action.h"
 #include "shortcuts.h"
 #include "msgbox.h"
-#include "version.h"
 
 #define SC_SIZE 64
 #define MENU_CHECK (void*)1
@@ -14,13 +13,6 @@
 enum { ZONE, DRAW };
 
 extern Mused mused;
-
-
-static void show_about_box(void *unused1, void *unused2, void *unused3)
-{
-	msgbox("klystrack 1.0 " REVISION, OK);
-}
-
 
 static const Menu mainmenu[];
 static const Menu showmenu[];

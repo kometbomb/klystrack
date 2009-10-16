@@ -29,6 +29,8 @@ OTHER DEALINGS IN THE SOFTWARE.
 #include "toolutil.h"
 #include "view.h"
 #include "event.h"
+#include "msgbox.h"
+#include "version.h"
 
 extern Mused mused;
 
@@ -309,4 +311,10 @@ void change_seq_steps(void *delta, void *unused1, void *unused2)
 			mused.current_sequencepos = (mused.current_sequencepos/mused.sequenceview_steps) * mused.sequenceview_steps;
 		}
 	}
+}
+
+
+void show_about_box(void *unused1, void *unused2, void *unused3)
+{
+	msgbox(VERSION_STRING, OK);
 }
