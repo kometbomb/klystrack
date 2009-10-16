@@ -49,7 +49,7 @@ int checkbox(const SDL_Event *event, const SDL_Rect *area, const char* _label, U
 	label.x += tick.w + 4;
 	label.y += 1;
 	label.h -= 1;
-	int pressed = button_event(event, &tick, mused.slider_bevel, BEV_SLIDER_HANDLE, BEV_SLIDER_HANDLE_ACTIVE, (*flags & mask) ? DECAL_TICK : -1, flip, flags, (void*)mask, 0);
+	int pressed = button_event(event, &tick, mused.slider_bevel, BEV_BUTTON, BEV_BUTTON_ACTIVE, (*flags & mask) ? DECAL_TICK : -1, flip, flags, (void*)mask, 0);
 	font_write(&mused.smallfont, mused.console->surface, &label, _label);
 	pressed |= check_event(event, &label, flip, flags, (void*)mask, 0);
 	
@@ -98,10 +98,10 @@ int spinner(const SDL_Event *event, const SDL_Rect *_area, int param)
 	SDL_Rect area;
 	copy_rect(&area, _area);
 	area.w /= 2;
-	minus = button_event(event, &area, mused.slider_bevel, BEV_SLIDER_HANDLE, BEV_SLIDER_HANDLE_ACTIVE, DECAL_MINUS, NULL, (void*)(0x80000000 | param), 0, NULL) & 1;
+	minus = button_event(event, &area, mused.slider_bevel, BEV_BUTTON, BEV_BUTTON_ACTIVE, DECAL_MINUS, NULL, (void*)(0x80000000 | param), 0, NULL) & 1;
 
 	area.x += area.w;
-	plus = button_event(event, &area, mused.slider_bevel, BEV_SLIDER_HANDLE, BEV_SLIDER_HANDLE_ACTIVE, DECAL_PLUS, NULL, (void*)(0x81000000 | param), 0, NULL) & 1;
+	plus = button_event(event, &area, mused.slider_bevel, BEV_BUTTON, BEV_BUTTON_ACTIVE, DECAL_PLUS, NULL, (void*)(0x81000000 | param), 0, NULL) & 1;
 	
 	return plus ? +1 : (minus ? -1 : 0);
 }

@@ -32,9 +32,6 @@ static SDL_TimerID repeat_timer_id = 0;
 static SDL_Event repeat_event;
 int event_hit = 0;
 
-static void set_repeat_timer(const SDL_Event *event);
-
-
 Uint32 repeat_timer(Uint32 interval, void *param)
 {
 	SDL_PushEvent(&repeat_event);

@@ -45,6 +45,7 @@ typedef struct
 } View;
 
 #define SEPARATOR_HEIGHT 6
+#define ELEMENT_MARGIN 4
 
 void draw_view(const View* views, const SDL_Event *event);
 void adjust_rect(SDL_Rect *rect, int margin);

@@ -56,7 +56,7 @@ static int draw_box(const SDL_Event *event, const char *msg, int buttons)
 	
 	pos.w = 50;
 	pos.h = 14;
-	pos.x = content.x + content.w / 2 - b * (pos.w + 4) / 2;
+	pos.x = content.x + content.w / 2 - b * (pos.w + ELEMENT_MARGIN) / 2 + ELEMENT_MARGIN / 2;
 	
 	int r = 0;
 	static const char *label[] = { "YES", "NO", "CANCEL" };
@@ -65,7 +65,7 @@ static int draw_box(const SDL_Event *event, const char *msg, int buttons)
 	{
 		if (buttons & (1 << i))
 		{
-			int p = button_text_event(event, &pos, mused.slider_bevel, BEV_SLIDER_HANDLE, BEV_SLIDER_HANDLE_ACTIVE, label[i], NULL, 0, 0, 0);
+			int p = button_text_event(event, &pos, mused.slider_bevel, BEV_BUTTON, BEV_BUTTON_ACTIVE, label[i], NULL, 0, 0, 0);
 			update_rect(&content, &pos);
 			if (p & 1) r = (1 << i);
 		}
@@ -77,6 +77,7 @@ static int draw_box(const SDL_Event *event, const char *msg, int buttons)
 
 int msgbox(const char *msg, int buttons)
 {
+	set_repeat_timer(NULL);
 	while (1)
 	{
 		SDL_Event e = { 0 };
@@ -120,7 +121,11 @@ int msgbox(const char *msg, int buttons)
 		{
 			int r = draw_box(&e, msg, buttons);
 			gfx_domain_flip(domain);
-			if (r) return r;
+			if (r) 
+			{
+				set_repeat_timer(NULL);
+				return r;
+			}
 		}
 		else
 			SDL_Delay(1);
