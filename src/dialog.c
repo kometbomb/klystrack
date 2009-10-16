@@ -86,7 +86,7 @@ int button_text_event(const SDL_Event *event, const SDL_Rect *area, SDL_Surface 
 	void *p[3] = { param1, param2, param3 };
 	int pressed = check_event(event, area, delegate, action, p, (void*)mask);
 	pressed |= check_drag_event(event, area, NULL, (void*)mask) << 1;
-	button_text(area, mused.slider_bevel, pressed ? offset_pressed : offset, label);
+	button_text(area, mused.slider_bevel, (pressed & 1) ? offset_pressed : offset, label);
 	
 	return pressed;
 }

@@ -24,6 +24,7 @@ OTHER DEALINGS IN THE SOFTWARE.
 */
 
 #include "toolutil.h"
+#include "msgbox.h"
 #include <windows.h>
 
 
@@ -80,18 +81,18 @@ FILE *open_dialog(const char *mode, wchar_t *title, wchar_t *filter)
 
 int confirm(const char *msg)
 {
-	return MessageBox(0, msg, "Confirm", MB_YESNO) == IDYES;
+	return msgbox(msg, YES|NO) == YES; // MessageBox(0, msg, "Confirm", MB_YESNO) == IDYES;
 }
 
 int confirm_ync(const char *msg)
 {
-	int r = MessageBox(0, msg, "Confirm", MB_YESNOCANCEL);
+	int r = msgbox(msg, YES|NO|CANCEL);
 	
-	if (r == IDYES)
+	if (r == YES)
 	{
 		return 1;
 	}
-	if (r == IDNO)
+	if (r == NO)
 	{
 		return -1;
 	}
