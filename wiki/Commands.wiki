@@ -31,6 +31,8 @@ _{{{xx}}}, {{{yy}}} = parameter to command_
 || {{{0eax}}} || fine fade volume down by x ||
 || {{{0ebx}}} || fine fade volume up by x ||
 || {{{0ecx}}} || set volume to zero on tick x ||
+|| {{{0fxy}}} || set play speeds to x and y. if x is 0, set both to y ||
+|| {{{1fxx}}} || set play rate to xx ||
 || {{{fd00}}} || loop begin ||
 || {{{fexx}}} || loop to previous "fd00" xx times ||
 || {{{ffxx}}} || go to step xx ||
