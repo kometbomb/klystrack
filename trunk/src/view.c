@@ -806,6 +806,8 @@ void get_command_desc(char *text, Uint16 inst)
 		{MUS_FX_PW_SET, "Set PW"},
 		{MUS_FX_SET_VOLUME, "Set volume"},
 		{MUS_FX_SET_WAVEFORM, "Set waveform"},
+		{MUS_FX_SET_SPEED, "Set speed"},
+		{MUS_FX_SET_RATE, "Set rate"},
 		{MUS_FX_END, "Program end"},
 		{MUS_FX_JUMP, "Goto"},
 		{MUS_FX_LABEL, "Loop begin"},
@@ -1318,15 +1320,15 @@ void reverb_view(const SDL_Rect *dest, const SDL_Event *event, void *param)
 	
 	r.h = 10;
 	
-	if (checkbox(event, &r, "ENABLED", &mused.song.flags, MUS_ENABLE_REVERB)) mused.edit_reverb_param = R_ENABLE;
+	if (checkbox(event, &r, "ENABLE BITCRUSH", &mused.song.flags, MUS_ENABLE_CRUSH)) mused.edit_reverb_param = R_ENABLE;
 	update_rect(&area, &r);
 	
-	// We need to mirror the reverb flag to the corresponding Cyd flag
+	separator(&area, &r);
 	
-	if (mused.song.flags & MUS_ENABLE_REVERB)
-		mused.cyd.flags |= CYD_ENABLE_REVERB;
-	else
-		mused.cyd.flags &= ~CYD_ENABLE_REVERB;
+	if (checkbox(event, &r, "ENABLE REVERB", &mused.song.flags, MUS_ENABLE_REVERB)) mused.edit_reverb_param = R_ENABLE;
+	update_rect(&area, &r);
+	
+	mirror_flags();
 	
 	int p = R_DELAY;
 	

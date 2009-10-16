@@ -108,5 +108,6 @@ void default_instrument(MusInstrument *instrument);
 void set_edit_buffer(char *buffer, size_t size);
 void update_ghost_patterns();
 void change_pixel_scale(void *a, void*b, void*c);
+void mirror_flags();
 
 #endif
