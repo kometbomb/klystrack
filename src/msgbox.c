@@ -84,6 +84,8 @@ static int draw_box(const SDL_Event *event, const char *msg, int buttons, int *s
 		}
 	}
 	
+	SDL_UpdateRect(mused.console->surface, area.x, area.y, area.w, area.h);
+	
 	return r;
 }
 
@@ -170,7 +172,7 @@ int msgbox(const char *msg, int buttons)
 		if (got_event || gfx_domain_is_next_frame(domain))
 		{
 			int r = draw_box(&e, msg, buttons, &selected);
-			gfx_domain_flip(domain);
+			//gfx_domain_flip(domain);
 			if (r) 
 			{
 				set_repeat_timer(NULL);
