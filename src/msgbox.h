@@ -26,7 +26,7 @@ FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 OTHER DEALINGS IN THE SOFTWARE.
 */
 
-enum { YES = 1, NO = 2, CANCEL = 4 };
+enum { YES = 1, NO = 2, CANCEL = 4, OK = 8 };
 
 int msgbox(const char *msg, int buttons);
 

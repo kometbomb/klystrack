@@ -35,7 +35,7 @@ extern GfxDomain *domain;
 extern Mused mused;
 
 
-static int draw_box(const SDL_Event *event, const char *msg, int buttons)
+static int draw_box(const SDL_Event *event, const char *msg, int buttons, int *selected)
 {
 	SDL_Rect area = { mused.console->surface->w / 2 - 100, mused.console->surface->h / 2 - 24, 200, 48 };
 	
@@ -53,6 +53,8 @@ static int draw_box(const SDL_Event *event, const char *msg, int buttons)
 	int b = 0;
 	for (int i = 0 ; i < 3 ; ++i)
 		if (buttons & (1 << i)) ++b;
+		
+	*selected = (*selected + b) % b;
 	
 	pos.w = 50;
 	pos.h = 14;
@@ -60,14 +62,25 @@ static int draw_box(const SDL_Event *event, const char *msg, int buttons)
 	
 	int r = 0;
 	static const char *label[] = { "YES", "NO", "CANCEL" };
+	int idx = 0;
 	
 	for (int i = 0 ; i < 3 ; ++i)
 	{
 		if (buttons & (1 << i))
 		{
 			int p = button_text_event(event, &pos, mused.slider_bevel, BEV_BUTTON, BEV_BUTTON_ACTIVE, label[i], NULL, 0, 0, 0);
+			
+			if (idx == *selected)
+			{	
+				if (event->type == SDL_KEYDOWN && (event->key.keysym.sym == SDLK_SPACE || event->key.keysym.sym == SDLK_RETURN))
+					p = 1;
+			
+				bevel(&pos, mused.slider_bevel, BEV_CURSOR);
+			}
+			
 			update_rect(&content, &pos);
 			if (p & 1) r = (1 << i);
+			++idx;
 		}
 	}
 	
@@ -78,6 +91,9 @@ static int draw_box(const SDL_Event *event, const char *msg, int buttons)
 int msgbox(const char *msg, int buttons)
 {
 	set_repeat_timer(NULL);
+	
+	int selected = 0;
+	
 	while (1)
 	{
 		SDL_Event e = { 0 };
@@ -86,6 +102,40 @@ int msgbox(const char *msg, int buttons)
 		{
 			switch (e.type)
 			{
+				case SDL_KEYDOWN:
+				{
+					switch (e.key.keysym.sym)
+					{
+						case SDLK_ESCAPE:
+						
+						if (buttons & CANCEL)
+							return CANCEL;
+						if (buttons & NO)
+							return NO;
+						return OK;
+						
+						break;
+						
+						case SDLK_SPACE:
+						case SDLK_RETURN:
+						
+							
+						
+						break;
+						
+						case SDLK_LEFT:
+						--selected;
+						break;
+						
+						case SDLK_RIGHT:
+						++selected;
+						break;
+						
+						default: break;
+					}
+				}
+				break;
+			
 				case SDL_USEREVENT:
 					e.type = SDL_MOUSEBUTTONDOWN;
 				break;
@@ -119,7 +169,7 @@ int msgbox(const char *msg, int buttons)
 		
 		if (got_event || gfx_domain_is_next_frame(domain))
 		{
-			int r = draw_box(&e, msg, buttons);
+			int r = draw_box(&e, msg, buttons, &selected);
 			gfx_domain_flip(domain);
 			if (r) 
 			{
