@@ -503,7 +503,7 @@ void pattern_view_inner(const SDL_Rect *dest, const SDL_Event *event, int curren
 		
 		console_write(mused.console,"\n");
 		
-		if (current_pattern == mused.current_pattern)
+		if (current_pattern == mused.current_pattern && row.y + row.h < content.y + content.h)
 			slider_set_params(&mused.pattern_slider_param, 0, mused.song.pattern[current_pattern].num_steps - 1, start, i, &mused.pattern_position, 1, SLIDER_VERTICAL);
 	}
 	
@@ -1024,7 +1024,8 @@ void program_view(const SDL_Rect *dest, const SDL_Event *event, void *param)
 				select_program_step, (void*)i, 0, 0);
 		}
 			
-		slider_set_params(&mused.program_slider_param, 0, MUS_PROG_LEN - 1, start, i, &mused.program_position, 1, SLIDER_VERTICAL);
+		if (row.y + row.h < area.y + area.h)
+			slider_set_params(&mused.program_slider_param, 0, MUS_PROG_LEN - 1, start, i, &mused.program_position, 1, SLIDER_VERTICAL);
 		
 		prev_pos = pos;
 		
