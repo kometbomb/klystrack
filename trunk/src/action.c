@@ -159,7 +159,16 @@ void save_song_action(void *unused1, void *unused2, void *unused3)
 
 void open_song_action(void *unused1, void *unused2, void *unused3)
 {
-	stop(0,0,0);
+	if (mused.mode == EDITSEQUENCE || mused.mode == EDITCLASSIC)
+	{
+		int r = confirm_ync("Save song?");
+				
+		if (r == 0) return;
+		if (r == 1) { change_mode(EDITSEQUENCE); if (!save_data()) return; }
+		
+		stop(0,0,0);
+	}
+	
 	cyd_lock(&mused.cyd, 1);
 	open_data();
 	cyd_lock(&mused.cyd, 0);

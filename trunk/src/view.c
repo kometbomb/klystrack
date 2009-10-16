@@ -89,9 +89,9 @@ void draw_view(const View* views, const SDL_Event *_event)
 
 void update_rect(const SDL_Rect *parent, SDL_Rect *rect)
 {
-	rect->x += rect->w + 4;
+	rect->x += rect->w + ELEMENT_MARGIN;
 	
-	if (rect->x + rect->w - 4 >= parent->x + parent->w)
+	if (rect->x + rect->w - ELEMENT_MARGIN >= parent->x + parent->w)
 	{
 		rect->x = parent->x;
 		rect->y += rect->h;
@@ -614,8 +614,8 @@ static void pattern_header(const SDL_Event *event, int x, int channel, const SDL
 	
 	if (channel != -1)
 		button_event(event, &button, mused.slider_bevel, 
-			(mused.mus.channel[channel].flags & MUS_CHN_DISABLED) ? BEV_SLIDER_HANDLE : BEV_SLIDER_HANDLE_ACTIVE, 
-			(mused.mus.channel[channel].flags & MUS_CHN_DISABLED) ? BEV_SLIDER_HANDLE : BEV_SLIDER_HANDLE_ACTIVE, 
+			(mused.mus.channel[channel].flags & MUS_CHN_DISABLED) ? BEV_BUTTON : BEV_BUTTON_ACTIVE, 
+			(mused.mus.channel[channel].flags & MUS_CHN_DISABLED) ? BEV_BUTTON : BEV_BUTTON_ACTIVE, 
 			(mused.mus.channel[channel].flags & MUS_CHN_DISABLED) ? DECAL_AUDIO_DISABLED : DECAL_AUDIO_ENABLED, enable_channel, (void*)channel, 0, 0);
 }
 
@@ -1384,9 +1384,9 @@ void instrument_disk_view(const SDL_Rect *dest, const SDL_Event *event, void *pa
 	
 	SDL_Rect button = { area.x, area.y, 50, area.h };
 	
-	button_text_event(event, &button, mused.slider_bevel, BEV_SLIDER_HANDLE, BEV_SLIDER_HANDLE_ACTIVE, "LOAD", open_song_action, NULL, NULL, NULL);
+	button_text_event(event, &button, mused.slider_bevel, BEV_BUTTON, BEV_BUTTON_ACTIVE, "LOAD", open_song_action, NULL, NULL, NULL);
 	update_rect(&area, &button);
-	button_text_event(event, &button, mused.slider_bevel, BEV_SLIDER_HANDLE, BEV_SLIDER_HANDLE_ACTIVE, "SAVE", save_song_action, NULL, NULL, NULL);
+	button_text_event(event, &button, mused.slider_bevel, BEV_BUTTON, BEV_BUTTON_ACTIVE, "SAVE", save_song_action, NULL, NULL, NULL);
 	update_rect(&area, &button);
 }
 

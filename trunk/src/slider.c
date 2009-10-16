@@ -175,7 +175,7 @@ void slider(const SDL_Rect *_area, const SDL_Event *event, void *_param)
 	{
 		SDL_Rect area = { _area->x, _area->y, SCROLLBAR, SCROLLBAR };
 		
-		button_event(event, &area, mused.slider_bevel, BEV_SLIDER_HANDLE, BEV_SLIDER_HANDLE_ACTIVE, param->orientation == SLIDER_HORIZONTAL ? DECAL_LEFTARROW : DECAL_UPARROW, modify_position, (void*)-param->granularity, param, 0);
+		button_event(event, &area, mused.slider_bevel, BEV_BUTTON, BEV_BUTTON_ACTIVE, param->orientation == SLIDER_HORIZONTAL ? DECAL_LEFTARROW : DECAL_UPARROW, modify_position, (void*)-param->granularity, param, 0);
 		
 		if (param->orientation == SLIDER_HORIZONTAL)
 		{
@@ -186,7 +186,7 @@ void slider(const SDL_Rect *_area, const SDL_Event *event, void *_param)
 			area.y += area_size + button_size;
 		}
 		
-		button_event(event, &area, mused.slider_bevel, BEV_SLIDER_HANDLE, BEV_SLIDER_HANDLE_ACTIVE, param->orientation == SLIDER_HORIZONTAL ? DECAL_RIGHTARROW : DECAL_DOWNARROW, modify_position, (void*)param->granularity, param, 0);
+		button_event(event, &area, mused.slider_bevel, BEV_BUTTON, BEV_BUTTON_ACTIVE, param->orientation == SLIDER_HORIZONTAL ? DECAL_RIGHTARROW : DECAL_DOWNARROW, modify_position, (void*)param->granularity, param, 0);
 	}
 }
 
