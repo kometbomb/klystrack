@@ -27,6 +27,7 @@ OTHER DEALINGS IN THE SOFTWARE.
 */
 
 enum { YES = 1, NO = 2, CANCEL = 4, OK = 8 };
+#define BUTTON_TYPES 4
 
 int msgbox(const char *msg, int buttons);
 
