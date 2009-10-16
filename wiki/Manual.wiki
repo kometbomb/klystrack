@@ -15,7 +15,7 @@ Hold right mouse button down to bring up the menu bar. Select the menu option by
 || TAB || change focused element (where applicable) ||
 || F2 || pattern editor || 
 || F3 || instrument editor || 
-|| Shift+F3 || reverb editor || 
+|| Shift+F3 || effect editor || 
 || F4 || sequence editor || 
 || Shift+F4 || classic editor || 
 || F5 || play || 
