@@ -1,0 +1,14 @@
+#summary Description of effects in klystrack/klystron
+= Effects =
+
+== Reverb ==
+
+The reverb effect is a 8-tap FIR. The delay and gain of each tap can be individually set. The reverb is meant to mimic the reverb effect found in SNES, it is not meant to sound as good as more sophisticated reverbs with dozens of taps and feedback.
+
+The reverb is global for all sounds but it can be enabled only for selected instruments. For example, the reverb is useful for drum sounds while a bass can sound better "dry".
+
+*Tip:* It is possible to create a flange effect by setting very short delays and relatively high gain.
+
+==Bitcrush==
+
+The bitcrush effect simply drops the bit depth of the output signal. This is done by masking out the lowest few bits. This produces ringing artifacts in the sound especially for low volumes.
