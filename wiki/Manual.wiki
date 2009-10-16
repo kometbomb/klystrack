@@ -117,3 +117,7 @@ Generally, one uses the sequence editor to enter patterns of similar length side
 || CTRL+down/up || edit song length ||
 || CTRL+left/right || edit sequence editor pattern step ||
 || insert/delete/backspace || do what you would expect ||
+
+== Effects ==
+
+See [Effects].
