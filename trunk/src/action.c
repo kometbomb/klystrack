@@ -31,6 +31,7 @@ OTHER DEALINGS IN THE SOFTWARE.
 #include "event.h"
 #include "msgbox.h"
 #include "version.h"
+#include "../../klystron/src/version.h"
 
 extern Mused mused;
 
@@ -316,5 +317,5 @@ void change_seq_steps(void *delta, void *unused1, void *unused2)
 
 void show_about_box(void *unused1, void *unused2, void *unused3)
 {
-	msgbox(VERSION_STRING, OK);
+	msgbox(VERSION_STRING "\n" KLYSTRON_VERSION_STRING, OK);
 }
