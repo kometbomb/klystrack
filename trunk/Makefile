@@ -7,6 +7,7 @@ MACHINE = -march=pentium4 -mfpmath=sse -msse3
 ZIP = pkzipc -zipdate=newest -path=relative -silent -rec -dir -add
 ZIPEXT = pkzipc -ext -silent
 WGET = wget --quiet
+REV = SubWCRev.exe
 
 # The directories containing the source files, separated by ':'
 
@@ -59,9 +60,13 @@ endif
 # A common link flag for all configurations
 LDFLAGS = -lmingw32 -lSDLmain -lSDL -lSDL_mixer -lcomdlg32
 
+build:
+	$(REV) . ./src/version.in ./src/version.h
+	make all
+
 all:	inform bin.$(CFG)/$(TARGET) res/data
 
-.PHONY: zip
+.PHONY: zip all build
 
 zip: doc/* res/data zip/data/SDL.dll zip/data/SDL_mixer.dll
 	make -C ../klystron CFG=release

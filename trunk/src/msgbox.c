@@ -51,7 +51,7 @@ static int draw_box(const SDL_Event *event, const char *msg, int buttons, int *s
 	update_rect(&content, &pos);
 	
 	int b = 0;
-	for (int i = 0 ; i < 3 ; ++i)
+	for (int i = 0 ; i < BUTTON_TYPES ; ++i)
 		if (buttons & (1 << i)) ++b;
 		
 	*selected = (*selected + b) % b;
@@ -61,10 +61,10 @@ static int draw_box(const SDL_Event *event, const char *msg, int buttons, int *s
 	pos.x = content.x + content.w / 2 - b * (pos.w + ELEMENT_MARGIN) / 2 + ELEMENT_MARGIN / 2;
 	
 	int r = 0;
-	static const char *label[] = { "YES", "NO", "CANCEL" };
+	static const char *label[] = { "YES", "NO", "CANCEL", "OK" };
 	int idx = 0;
 	
-	for (int i = 0 ; i < 3 ; ++i)
+	for (int i = 0 ; i < BUTTON_TYPES ; ++i)
 	{
 		if (buttons & (1 << i))
 		{

@@ -189,7 +189,7 @@ int main(int argc, char **argv)
 	while (1)
 	{
 		SDL_Event e = { 0 };
-		int got_event = 0;
+		int got_event = 0, menu_closed = 0;
 		while (SDL_PollEvent(&e))
 		{
 			switch (e.type)
@@ -221,7 +221,7 @@ int main(int argc, char **argv)
 					if (e.button.button == SDL_BUTTON_LEFT)
 						mouse_released(&e);
 					else if (e.button.button == SDL_BUTTON_RIGHT)	
-						close_menu();
+						menu_closed = 1;
 				}
 				break;
 				
@@ -296,6 +296,7 @@ int main(int argc, char **argv)
 				SDL_Event foo = {0};
 				draw_view(tab[m], &foo);
 				draw_menu(&e);
+				if (menu_closed) close_menu();
 			}
 			else
 			{

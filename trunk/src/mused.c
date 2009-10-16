@@ -76,7 +76,7 @@ void update_ghost_patterns()
 
 void change_mode(int newmode)
 {
-	if (newmode < VIRTUAL_MODE) SDL_FillRect(mused.console->surface, NULL, 0);
+	if (newmode < VIRTUAL_MODE && mused.mode != MENU) SDL_FillRect(mused.console->surface, NULL, 0);
 
 	clear_selection(0,0,0);
 	
