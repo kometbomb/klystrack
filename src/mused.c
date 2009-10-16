@@ -257,3 +257,19 @@ void deinit()
 	font_destroy(&mused.smallfont);
 	font_destroy(&mused.largefont);
 }
+
+
+void mirror_flags()
+{
+	// We need to mirror the flags to the corresponding Cyd flags
+	
+	if (mused.song.flags & MUS_ENABLE_REVERB)
+		mused.cyd.flags |= CYD_ENABLE_REVERB;
+	else
+		mused.cyd.flags &= ~CYD_ENABLE_REVERB;
+		
+	if (mused.song.flags & MUS_ENABLE_CRUSH)
+		mused.cyd.flags |= CYD_ENABLE_CRUSH;
+	else
+		mused.cyd.flags &= ~CYD_ENABLE_CRUSH;
+}

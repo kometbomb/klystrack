@@ -208,6 +208,7 @@ void open_data()
 				
 				mus_set_reverb(&mused.mus, &mused.song);
 				cyd_set_callback(&mused.cyd, mus_advance_tick, &mused.mus, mused.song.song_rate);
+				mirror_flags();
 			}		
 		}
 		break;

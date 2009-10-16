@@ -22,7 +22,7 @@ static const Menu editormenu[] =
 	{ showmenu, "Pattern",  NULL, change_mode_action, (void*)EDITPATTERN, 0, 0 },
 	{ showmenu, "Sequence",  NULL, change_mode_action, (void*)EDITSEQUENCE, 0, 0 },
 	{ showmenu, "Classic",  NULL, change_mode_action, (void*)EDITCLASSIC, 0, 0 },
-	{ showmenu, "Reverb",  NULL, change_mode_action, (void*)EDITREVERB, 0, 0 },
+	{ showmenu, "Effects",  NULL, change_mode_action, (void*)EDITREVERB, 0, 0 },
 	{ NULL, NULL }
 };
 
