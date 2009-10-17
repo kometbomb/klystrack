@@ -644,6 +644,8 @@ void sequence_event(SDL_Event *e)
 					++mused.current_sequencetrack;
 					if (mused.current_sequencetrack >= mused.song.num_channels)
 						mused.current_sequencetrack = mused.song.num_channels-1;
+						
+					move_position(&mused.current_sequencetrack, &mused.sequence_horiz_position, &mused.sequence_horiz_slider_param, 0, mused.song.num_channels);
 				}
 			}
 			break;
@@ -659,6 +661,8 @@ void sequence_event(SDL_Event *e)
 					--mused.current_sequencetrack;
 					if (mused.current_sequencetrack < 0)
 						mused.current_sequencetrack = 0;
+						
+					move_position(&mused.current_sequencetrack, &mused.sequence_horiz_position, &mused.sequence_horiz_slider_param, 0, mused.song.num_channels);
 				}
 			}
 			break;

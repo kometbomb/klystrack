@@ -208,12 +208,27 @@ void sequence_view(const SDL_Rect *dest, const SDL_Event *event, void *param)
 	int loop_begin = -1, loop_end = -1;
 	SDL_Rect selection_begin = {-1, -1}, selection_end = {-1, -1};
 	
+	const int POS_WIDTH = 4 * 8 + 4;
+	const int CHANNEL_WIDTH = 50; 
+	int vert_scrollbar = 0;
+	SDL_Rect scrollbar;
+	
+	if (CHANNEL_WIDTH * mused.song.num_channels + POS_WIDTH > dest->w)
+	{
+		content.h -= SCROLLBAR;
+		SDL_Rect temp = { dest->x, dest->y + dest->h - SCROLLBAR, dest->w, SCROLLBAR };
+		copy_rect(&scrollbar, &temp);
+		vert_scrollbar = 1;
+	}
+	
 	SDL_Rect clip;
 	SDL_GetClipRect(mused.console->surface, &clip);
 	clip.h = content.h;
 	clip.y = content.y;
 	SDL_SetClipRect(mused.console->surface, &clip);
 	
+	slider_set_params(&mused.sequence_horiz_slider_param, 0, 0, 0, mused.song.num_channels - 1, &mused.sequence_horiz_position, 1, SLIDER_HORIZONTAL);
+		
 	for (int i = start, s = 0, y = 0 ; y < content.h ; i += mused.sequenceview_steps, ++s, y += mused.console->font.h + 1)
 	{
 		SDL_Rect pos = { content.x, content.y + y - 1, content.w, mused.console->font.h + 2 };
@@ -261,13 +276,18 @@ void sequence_view(const SDL_Rect *dest, const SDL_Event *event, void *param)
 		
 		console_write_args(mused.console, "%04X", i);
 		
-		pos.x += 4;
-		pos.w -= 4;
+		pos.x += POS_WIDTH;
+		pos.w = POS_WIDTH;
 		
-		console_set_clip(mused.console, &pos);
+		int first = mused.sequence_horiz_position;
+		int last = 0;
 		
-		for (int c = 0 ; c < mused.song.num_channels ; ++c)
+		for (int c = mused.sequence_horiz_position ; c < mused.song.num_channels && pos.x <= dest->w + dest->x ; ++c)
 		{
+			first = my_min(first, c);
+			if (pos.x + pos.w <= dest->w + dest->x) last = c;
+			console_set_clip(mused.console, &pos);
+			console_reset_cursor(mused.console);
 			console_set_background(mused.console, 0);
 			Uint32 bg = 0;
 			
@@ -309,7 +329,7 @@ void sequence_view(const SDL_Rect *dest, const SDL_Event *event, void *param)
 			}
 			
 			SDL_Rect r;
-			copy_rect(&r, console_write_args(mused.console,"%*s", (mused.mode == EDITCLASSIC && (mused.flags & COMPACT_VIEW)) ? -2 : -5, text));
+			copy_rect(&r, console_write_args(mused.console,"%*s", (mused.flags & COMPACT_VIEW) ? -2 : -5, text));
 			
 			check_event(event, &r, select_sequence_position, (void*)c, (void*)i, 0);
 			
@@ -338,7 +358,10 @@ void sequence_view(const SDL_Rect *dest, const SDL_Event *event, void *param)
 			
 			console_set_color(mused.console,bg,CON_BACKGROUND);
 			console_write(mused.console," ");
+			pos.x += CHANNEL_WIDTH;
 		}
+		
+		if (vert_scrollbar) slider_set_params(&mused.sequence_horiz_slider_param, 0, mused.song.num_channels-1, first, last, &mused.sequence_horiz_position, 1, SLIDER_HORIZONTAL);
 		
 		console_write(mused.console,"\n");
 		
@@ -365,6 +388,11 @@ void sequence_view(const SDL_Rect *dest, const SDL_Event *event, void *param)
 	bevel(&loop, mused.slider_bevel, BEV_SEQUENCE_LOOP);
 		
 	SDL_SetClipRect(mused.console->surface, NULL);
+	
+	if (vert_scrollbar) 
+	{
+		slider(&scrollbar, event, &mused.sequence_horiz_slider_param); 
+	}
 }
 
 

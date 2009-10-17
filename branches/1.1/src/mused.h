@@ -69,7 +69,7 @@ typedef struct
 		current_patternstep, current_pattern, current_patternx, 
 		current_sequencepos, sequenceview_steps, single_pattern_edit, 
 		prev_mode, current_sequenceparam, instrument_list_position,
-		pattern_position, sequence_position, pattern_horiz_position,
+		pattern_position, sequence_position, pattern_horiz_position, sequence_horiz_position,
 		program_position, current_program_step,
 		edit_reverb_param;
 	int *ghost_pattern[MUS_MAX_CHANNELS];
@@ -78,7 +78,7 @@ typedef struct
 	Clipboard cp;
 	char * edit_buffer;
 	int edit_buffer_size;
-	SliderParam sequence_slider_param, pattern_slider_param, program_slider_param, instrument_list_slider_param, pattern_horiz_slider_param;
+	SliderParam sequence_slider_param, pattern_slider_param, program_slider_param, instrument_list_slider_param, pattern_horiz_slider_param, sequence_horiz_slider_param;
 	/*---*/
 	char * edit_backup_buffer;
 	int stat_song_position;

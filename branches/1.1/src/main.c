@@ -84,7 +84,7 @@ static const View pattern_view_tab[] =
 	{{0, 0, 0, 0}, NULL}
 };
 
-#define CLASSIC_PAT (SCREEN_HEIGHT / 2 + 20 - 2)
+#define CLASSIC_PAT (SCREEN_HEIGHT / 2 + 20 - 2 - 8)
 #define CLASSIC_SONG_INFO (94)
 
 static const View classic_view_tab[] =
