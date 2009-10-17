@@ -67,6 +67,8 @@ void move_position(int *cursor, int *scroll, SliderParam *param, int d, int top)
 {
 	if (*cursor + d < top)
 		*cursor += d;
+	else
+		*cursor = top - 1;
 	
 	if (*cursor < 0) *cursor = 0;
 	
