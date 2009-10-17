@@ -55,6 +55,7 @@ enum
 	SLIDER_VERTICAL, SLIDER_HORIZONTAL
 };
 
+int quant(int v, int g);
 void slider(const SDL_Rect *area, const SDL_Event *event, void *param);
 void slider_set_params(SliderParam *param, int first, int last, int first_visible, int last_visible, int *position, int granularity, int orientation);
 

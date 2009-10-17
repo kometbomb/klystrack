@@ -53,8 +53,15 @@ void editparambox(int v)
 	if (*param == MUS_FX_NOP)
 		*param = 0;
 	
-	// Keeps the exec next command bit intact
-	*param = (*param & 0x8000) | ((*param & mask) | ((v&0xf) <<((3-mused.editpos)*4))) & 0x7fff;
+	if (mused.editpos != 0 || v < 0xf)
+	{
+		// Keeps the exec next command bit intact
+		*param = (*param & 0x8000) | (((*param & mask) | ((v&0xf) <<((3-mused.editpos)*4))) & 0x7fff);
+	}
+	else
+	{
+		*param = ((*param & mask) | ((v&0xf) <<((3-mused.editpos)*4)));
+	}
 	
 	if (++mused.editpos > 3)
 	{
@@ -551,7 +558,7 @@ void sequence_event(SDL_Event *e)
 				}
 				else
 				{
-					move_position(&mused.current_sequencepos, &mused.sequence_position, &mused.sequence_slider_param, steps, mused.song.song_length);
+					move_position(&mused.current_sequencepos, &mused.sequence_position, &mused.sequence_slider_param, steps, my_max(0, quant((mused.song.song_length - mused.sequenceview_steps), mused.sequenceview_steps)) + 1);
 				}
 				
 				if (((e->key.keysym.mod & KMOD_SHIFT) && !(e->key.keysym.mod & KMOD_CTRL)) )
@@ -587,7 +594,7 @@ void sequence_event(SDL_Event *e)
 				}
 				else
 				{
-					move_position(&mused.current_sequencepos, &mused.sequence_position, &mused.sequence_slider_param, -steps, mused.song.song_length);
+					move_position(&mused.current_sequencepos, &mused.sequence_position, &mused.sequence_slider_param, -steps, my_max(0, quant((mused.song.song_length - mused.sequenceview_steps), mused.sequenceview_steps)) + 1);
 				}
 				
 				if (((e->key.keysym.mod & KMOD_SHIFT) && !(e->key.keysym.mod & KMOD_CTRL)) )
