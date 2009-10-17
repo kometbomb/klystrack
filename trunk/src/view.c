@@ -820,6 +820,7 @@ void get_command_desc(char *text, Uint16 inst)
 		{MUS_FX_EXT_PORTA_UP, "Fine portamento up"},
 		{MUS_FX_EXT_PORTA_DN, "Fine portamento down"},
 		{MUS_FX_EXT_NOTE_CUT, "Note cut"},
+		{MUS_FX_EXT_RETRIGGER, "Retrigger"},
 		{0, NULL}
 	};
 	

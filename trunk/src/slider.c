@@ -32,7 +32,7 @@ OTHER DEALINGS IN THE SOFTWARE.
 
 extern Mused mused;
 
-static int quant(int v, int g)
+int quant(int v, int g)
 {
 	return v - v % (g);
 }
