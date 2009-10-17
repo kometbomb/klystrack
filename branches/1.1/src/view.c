@@ -209,7 +209,7 @@ void sequence_view(const SDL_Rect *dest, const SDL_Event *event, void *param)
 	SDL_Rect selection_begin = {-1, -1}, selection_end = {-1, -1};
 	
 	const int POS_WIDTH = 4 * 8 + 4;
-	const int CHANNEL_WIDTH = 50; 
+	const int CHANNEL_WIDTH = (mused.flags & COMPACT_VIEW ? 2 * 8 : 5 * 8) + 4; 
 	int vert_scrollbar = 0;
 	SDL_Rect scrollbar;
 	
