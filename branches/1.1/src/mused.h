@@ -72,7 +72,7 @@ typedef struct
 		pattern_position, sequence_position, pattern_horiz_position,
 		program_position, current_program_step,
 		edit_reverb_param;
-	int *ghost_pattern[MUS_CHANNELS];
+	int *ghost_pattern[MUS_MAX_CHANNELS];
 	int current_sequencetrack;
 	Uint16 time_signature;
 	Clipboard cp;
@@ -83,10 +83,10 @@ typedef struct
 	char * edit_backup_buffer;
 	int stat_song_position;
 	Selection selection;
-	int stat_pattern_position[MUS_CHANNELS];
-	MusPattern *stat_pattern[MUS_CHANNELS];
+	int stat_pattern_position[MUS_MAX_CHANNELS];
+	MusPattern *stat_pattern[MUS_MAX_CHANNELS];
 	MusChannel *channel;
-	int stat_pattern_number[MUS_CHANNELS];
+	int stat_pattern_number[MUS_MAX_CHANNELS];
 	SDL_Surface *slider_bevel;
 	Font smallfont, largefont;
 	const Menu *current_menu;
@@ -101,7 +101,7 @@ typedef struct
 void change_mode(int newmode);
 void clear_pattern(MusPattern *pat);
 void clear_pattern_range(MusPattern *pat, int first, int last);
-void init(MusInstrument *instrument, MusPattern *pattern, MusSeqPattern sequence[MUS_CHANNELS][NUM_SEQUENCES], MusChannel *channel, SDL_Surface *screen);
+void init(MusInstrument *instrument, MusPattern *pattern, MusSeqPattern sequence[MUS_MAX_CHANNELS][NUM_SEQUENCES], MusChannel *channel, SDL_Surface *screen);
 void deinit();
 void new_song();
 void default_instrument(MusInstrument *instrument);

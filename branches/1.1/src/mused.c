@@ -53,7 +53,7 @@ void update_ghost_patterns()
 			if (mused.song.sequence[mused.current_sequencetrack][e].position == mused.current_sequencepos)
 				mused.current_sequencepos = mused.song.sequence[mused.current_sequencetrack][e].position;
 	int p = 0;				
-	for (int i = 0 ; i < MUS_CHANNELS ; ++i)
+	for (int i = 0 ; i < MUS_MAX_CHANNELS ; ++i)
 	{
 		mused.ghost_pattern[i] = NULL;
 		
@@ -98,7 +98,7 @@ void change_mode(int newmode)
 		else
 		{
 			mused.single_pattern_edit = 1;
-			for (int i = 0 ; i < MUS_CHANNELS ; ++i)
+			for (int i = 0 ; i < MUS_MAX_CHANNELS ; ++i)
 			{
 				mused.ghost_pattern[i] = NULL;
 			}
@@ -145,6 +145,7 @@ void new_song()
 		default_instrument(inst);
 	}
 	
+	mused.song.num_channels = 4;
 	mused.song.num_instruments = NUM_INSTRUMENTS;
 	mused.song.num_patterns = NUM_PATTERNS;
 	mused.song.song_speed = 6;
@@ -166,7 +167,7 @@ void new_song()
 		mused.song.rvbtap[i].gain = (i + 1) * -30;
 	}
 	
-	for (int i = 0 ; i < MUS_CHANNELS ; ++i)
+	for (int i = 0 ; i < MUS_MAX_CHANNELS ; ++i)
 	{
 		memset(mused.song.sequence[i], 0, NUM_SEQUENCES * sizeof(*mused.song.sequence));
 		mused.song.num_sequences[i] = 0;
@@ -180,7 +181,7 @@ void default_instrument(MusInstrument *inst)
 }
 
 
-void init(MusInstrument *instrument, MusPattern *pattern, MusSeqPattern sequence[MUS_CHANNELS][NUM_SEQUENCES], MusChannel *channel, SDL_Surface *screen)
+void init(MusInstrument *instrument, MusPattern *pattern, MusSeqPattern sequence[MUS_MAX_CHANNELS][NUM_SEQUENCES], MusChannel *channel, SDL_Surface *screen)
 {
 	debug("init");
 	
@@ -211,7 +212,7 @@ void init(MusInstrument *instrument, MusPattern *pattern, MusSeqPattern sequence
 	mused.song.pattern = pattern;
 	mused.channel = channel;
 
-	for (int i = 0 ; i < MUS_CHANNELS ; ++i)
+	for (int i = 0 ; i < MUS_MAX_CHANNELS ; ++i)
 	{
 		mused.song.sequence[i] = sequence[i];	
 	}

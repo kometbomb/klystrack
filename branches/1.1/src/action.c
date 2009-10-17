@@ -319,3 +319,16 @@ void show_about_box(void *unused1, void *unused2, void *unused3)
 {
 	msgbox(VERSION_STRING "\n" KLYSTRON_VERSION_STRING, OK);
 }
+
+
+void change_channels(void *delta, void *unused1, void *unused2)
+{
+	if ((int)delta < 0 && mused.song.num_channels > 1)
+	{
+		--mused.song.num_channels;
+	}
+	else if ((int)delta > 0 && mused.song.num_channels < MUS_MAX_CHANNELS)
+	{
+		++mused.song.num_channels;
+	}
+}

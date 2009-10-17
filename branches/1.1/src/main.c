@@ -50,9 +50,9 @@ Mused mused;
 /*---*/
 
 int stat_song_position;
-int stat_pattern_position[MUS_CHANNELS];
-MusPattern *stat_pattern[MUS_CHANNELS];
-int stat_pattern_number[MUS_CHANNELS];
+int stat_pattern_position[MUS_MAX_CHANNELS];
+MusPattern *stat_pattern[MUS_MAX_CHANNELS];
+int stat_pattern_number[MUS_MAX_CHANNELS];
 GfxDomain *domain;
 
 #define INST_LIST (6*8 + 3*2)
@@ -166,7 +166,7 @@ int main(int argc, char **argv)
 	
 	MusInstrument instrument[NUM_INSTRUMENTS];
 	MusPattern pattern[NUM_PATTERNS];
-	MusSeqPattern sequence[MUS_CHANNELS][NUM_SEQUENCES];
+	MusSeqPattern sequence[MUS_MAX_CHANNELS][NUM_SEQUENCES];
 	MusChannel channel[CYD_MAX_CHANNELS];
 	
 	init(instrument, pattern, sequence, channel, gfx_domain_get_surface(domain));
@@ -174,7 +174,7 @@ int main(int argc, char **argv)
 	Mix_OpenAudio(44100, AUDIO_S16SYS, 1, 2048);
 	Mix_AllocateChannels(1);
 	
-	cyd_init(&mused.cyd, 44100, MUS_CHANNELS);
+	cyd_init(&mused.cyd, 44100, MUS_MAX_CHANNELS);
 	mus_init_engine(&mused.mus, &mused.cyd);
 	
 #ifdef DEBUG
@@ -285,7 +285,7 @@ int main(int argc, char **argv)
 		{
 			mus_poll_status(&mused.mus, &mused.stat_song_position, mused.stat_pattern_position, mused.stat_pattern, channel);
 		
-			for (int i = 0 ; i < MUS_CHANNELS ; ++i)
+			for (int i = 0 ; i < MUS_MAX_CHANNELS ; ++i)
 			{
 				stat_pattern_number[i] = (stat_pattern[i] - &mused.song.pattern[0])/sizeof(mused.song.pattern[0]);
 			}

@@ -158,7 +158,7 @@ void instrument_add_param(int a)
 		case P_SYNCSRC:
 		
 		if (i->sync_source == 0xff && a < 0) break;
-		if ((Uint8)(i->sync_source+a) >= MUS_CHANNELS && a > 0) break;
+		if ((Uint8)(i->sync_source+a) >= MUS_MAX_CHANNELS && a > 0) break;
 		i->sync_source+=a;
 		
 		break;
@@ -298,7 +298,7 @@ void instrument_add_param(int a)
 		case P_RINGMODSRC:
 		
 		if (i->ring_mod == 0xff && a < 0) break;
-		if ((Uint8)(i->ring_mod+a) >= MUS_CHANNELS && a > 0) break;
+		if ((Uint8)(i->ring_mod+a) >= MUS_MAX_CHANNELS && a > 0) break;
 		i->ring_mod+=a;
 		
 		break;
@@ -338,7 +338,7 @@ void edit_instrument_event(SDL_Event *e)
 		{
 			case SDLK_SPACE:
 			{
-				for (int i = 0 ; i < MUS_CHANNELS ; ++i)
+				for (int i = 0 ; i < MUS_MAX_CHANNELS ; ++i)
 					cyd_enable_gate(mused.mus.cyd, &mused.mus.cyd->channel[i], 0);
 			}
 			break;
@@ -642,8 +642,8 @@ void sequence_event(SDL_Event *e)
 				else
 				{
 					++mused.current_sequencetrack;
-					if (mused.current_sequencetrack >= MUS_CHANNELS)
-						mused.current_sequencetrack = MUS_CHANNELS-1;
+					if (mused.current_sequencetrack >= mused.song.num_channels)
+						mused.current_sequencetrack = mused.song.num_channels-1;
 				}
 			}
 			break;
@@ -809,7 +809,7 @@ void pattern_event(SDL_Event *e)
 							int s = mused.current_sequencetrack;
 							do
 							{
-								mused.current_sequencetrack = (mused.current_sequencetrack + 1) % MUS_CHANNELS;
+								mused.current_sequencetrack = (mused.current_sequencetrack + 1) % mused.song.num_channels;
 							}
 							while (mused.ghost_pattern[mused.current_sequencetrack] == NULL && s != mused.current_sequencetrack) ;
 							
@@ -852,7 +852,7 @@ void pattern_event(SDL_Event *e)
 							int s = mused.current_sequencetrack;
 							do
 							{
-								mused.current_sequencetrack = (mused.current_sequencetrack + MUS_CHANNELS - 1) % MUS_CHANNELS;
+								mused.current_sequencetrack = (mused.current_sequencetrack + mused.song.num_channels - 1) % mused.song.num_channels;
 							}
 							while (mused.ghost_pattern[mused.current_sequencetrack] == NULL && s != mused.current_sequencetrack); 
 							

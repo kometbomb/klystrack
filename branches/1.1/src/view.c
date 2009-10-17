@@ -194,10 +194,10 @@ void sequence_view(const SDL_Rect *dest, const SDL_Event *event, void *param)
 	
 	int start = mused.sequence_position;
 	
-	int p[MUS_CHANNELS] ={ 0 };
+	int p[MUS_MAX_CHANNELS] ={ 0 };
 	
-	int draw_colon[MUS_CHANNELS] = {0};
-	int draw_colon_id[MUS_CHANNELS] = {0xff};
+	int draw_colon[MUS_MAX_CHANNELS] = {0};
+	int draw_colon_id[MUS_MAX_CHANNELS] = {0xff};
 	
 	bevel(dest, mused.slider_bevel, BEV_SEQUENCE_BORDER);
 	
@@ -266,7 +266,7 @@ void sequence_view(const SDL_Rect *dest, const SDL_Event *event, void *param)
 		
 		console_set_clip(mused.console, &pos);
 		
-		for (int c = 0 ; c < MUS_CHANNELS ; ++c)
+		for (int c = 0 ; c < mused.song.num_channels ; ++c)
 		{
 			console_set_background(mused.console, 0);
 			Uint32 bg = 0;
@@ -624,7 +624,7 @@ void pattern_view(const SDL_Rect *dest, const SDL_Event *event, void *param)
 {
 	int pv = 0;
 	
-	for (int i = 0 ; i < MUS_CHANNELS ; ++i)
+	for (int i = 0 ; i < mused.song.num_channels ; ++i)
 	{
 		if (mused.ghost_pattern[i] != NULL)
 		{
@@ -680,10 +680,10 @@ void pattern_view(const SDL_Rect *dest, const SDL_Event *event, void *param)
 	pos.x += pos.w - 2;
 	pos.w = pattern_width;
 	
-	slider_set_params(&mused.pattern_horiz_slider_param, 0, 0, 0, MUS_CHANNELS - 1, &mused.pattern_horiz_position, 1, SLIDER_HORIZONTAL);
+	slider_set_params(&mused.pattern_horiz_slider_param, 0, 0, 0, mused.song.num_channels - 1, &mused.pattern_horiz_position, 1, SLIDER_HORIZONTAL);
 	
-	int first = MUS_CHANNELS, last = 0;
-	for (int i = 0 ; i < MUS_CHANNELS ; ++i)
+	int first = mused.song.num_channels, last = 0;
+	for (int i = 0 ; i < mused.song.num_channels ; ++i)
 	{
 		if (mused.ghost_pattern[i] != NULL)
 		{
@@ -782,6 +782,9 @@ void info_view(const SDL_Rect *dest, const SDL_Event *event, void *param)
 	update_rect(&area, &r);
 	d = generic_field(event, &r, 0, "OCT","%02X", MAKEPTR(mused.octave), 2);
 	if (d) change_octave((void*)d, 0, 0);
+	update_rect(&area, &r);
+	d = generic_field(event, &r, 0, "CHNS","%02X", MAKEPTR(mused.song.num_channels), 2);
+	if (d) change_channels((void*)d, 0, 0);
 	update_rect(&area, &r);
 }
 
