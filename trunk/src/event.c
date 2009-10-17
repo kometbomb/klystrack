@@ -1010,13 +1010,18 @@ void edit_program_event(SDL_Event *e)
 				*param = validate_command(*param);
 			}
 			break;
-		
+			
+			case SDLK_PAGEDOWN:
 			case SDLK_DOWN:
 			{
-				++mused.current_program_step;
-				if (mused.current_program_step >= MUS_PROG_LEN) mused.current_program_step = MUS_PROG_LEN - 1;
+				MusInstrument *inst = &mused.song.instrument[mused.current_instrument];
+				Uint16 *param = &inst->program[mused.current_program_step];
+				*param = validate_command(*param);
+			
+				int steps = 1;
+				if (e->key.keysym.sym == SDLK_PAGEDOWN) steps *= 16;
 				
-				move_position(&mused.current_program_step, &mused.program_position, &mused.program_slider_param, 0, MUS_PROG_LEN);
+				move_position(&mused.current_program_step, &mused.program_position, &mused.program_slider_param, steps, MUS_PROG_LEN);
 				
 				if (e->key.keysym.mod & KMOD_SHIFT)
 				{
@@ -1025,12 +1030,17 @@ void edit_program_event(SDL_Event *e)
 			}
 			break;
 			
+			case SDLK_PAGEUP:
 			case SDLK_UP:
 			{
-				--mused.current_program_step;
-				if (mused.current_program_step < 0) mused.current_program_step = 0;
+				MusInstrument *inst = &mused.song.instrument[mused.current_instrument];
+				Uint16 *param = &inst->program[mused.current_program_step];
+				*param = validate_command(*param);
+			
+				int steps = 1;
+				if (e->key.keysym.sym == SDLK_PAGEUP) steps *= 16;
 				
-				move_position(&mused.current_program_step, &mused.program_position, &mused.program_slider_param, 0, MUS_PROG_LEN);
+				move_position(&mused.current_program_step, &mused.program_position, &mused.program_slider_param, -steps, MUS_PROG_LEN);
 				
 				if (e->key.keysym.mod & KMOD_SHIFT)
 				{
@@ -1038,7 +1048,7 @@ void edit_program_event(SDL_Event *e)
 				}
 			}
 			break;
-			
+		
 			case SDLK_INSERT:
 			{
 				for (int i = MUS_PROG_LEN-2; i >= mused.current_program_step ; --i)
