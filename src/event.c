@@ -53,7 +53,8 @@ void editparambox(int v)
 	if (*param == MUS_FX_NOP)
 		*param = 0;
 	
-	*param = (*param & mask) | ((v&0xf) <<((3-mused.editpos)*4));
+	// Keeps the exec next command bit intact
+	*param = (*param & 0x8000) | ((*param & mask) | ((v&0xf) <<((3-mused.editpos)*4))) & 0x7fff;
 	
 	if (++mused.editpos > 3)
 	{
