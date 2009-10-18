@@ -171,7 +171,7 @@ int main(int argc, char **argv)
 	
 	init(instrument, pattern, sequence, channel, gfx_domain_get_surface(domain));
 	
-	Mix_OpenAudio(44100, AUDIO_S16SYS, 1, 2048);
+	Mix_OpenAudio(44100, AUDIO_S16SYS, 2, 2048);
 	Mix_AllocateChannels(1);
 	
 	cyd_init(&mused.cyd, 44100, MUS_MAX_CHANNELS);
@@ -187,6 +187,8 @@ int main(int argc, char **argv)
 	cyd_register(&mused.cyd);
 	cyd_set_callback(&mused.cyd, mus_advance_tick, &mused.mus, mused.song.song_rate);
 	
+	int active = 1;
+	
 	while (1)
 	{
 		SDL_Event e = { 0 };
@@ -197,6 +199,14 @@ int main(int argc, char **argv)
 			{
 				case SDL_QUIT:
 				quit_action(0,0,0);
+				break;
+				
+				case SDL_ACTIVEEVENT:
+				if (e.active.state & SDL_APPACTIVE)
+				{	
+					active = e.active.gain;
+					debug("Window %s focus", active ? "gained" : "lost");
+				}
 				break;
 				
 				case SDL_USEREVENT:
@@ -281,7 +291,7 @@ int main(int argc, char **argv)
 			if (e.type == SDL_MOUSEBUTTONDOWN || (e.type == SDL_MOUSEMOTION && e.motion.state)) break; 
 		}
 		
-		if (got_event || gfx_domain_is_next_frame(domain))
+		if (active && (got_event || gfx_domain_is_next_frame(domain)))
 		{
 			mus_poll_status(&mused.mus, &mused.stat_song_position, mused.stat_pattern_position, mused.stat_pattern, channel);
 		
@@ -307,7 +317,7 @@ int main(int argc, char **argv)
 			gfx_domain_flip(domain);
 		}
 		else
-			SDL_Delay(1);
+			SDL_Delay(5);
 		
 		if (mused.done) 
 		{

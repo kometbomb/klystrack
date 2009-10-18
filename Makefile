@@ -63,6 +63,7 @@ LDFLAGS = -lmingw32 -lSDLmain -lSDL -lSDL_mixer -lcomdlg32
 
 build:
 	$(REV) . ./src/version.in ./src/version.h
+	make -C ../klystron CFG=$(CFG)
 	make all CFG=$(CFG)
 
 all:	inform bin.$(CFG)/$(TARGET) res/data
