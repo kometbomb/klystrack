@@ -9,6 +9,7 @@
     * [Commands]
     * [Effects]
     * [KeyboardShortcuts Keyboard shortcuts] 
+    * [Clipboard]
   * *Developers*
     * [Themes Customizing how klystrack looks like]
     * [HowToCompile How to compile klystrack]
