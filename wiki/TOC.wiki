@@ -1,0 +1,14 @@
+#summary Manual sidebar
+
+  * *Preface*
+    * [IntroductionToTrackers Introduction to trackers]
+    * [Features]
+  * *How to use _klystrack_*
+    * [Manual]
+    * [Commands]
+    * [Effects]
+    * [KeyboardShortcuts Keyboard shortcuts] 
+  * *Developers*
+    * [Themes Customizing how _klystrack_ looks like]
+    * [HowToCompile How to compile _klystrack_]
+    * [ToolsUsed Tools used to create _klystrack_]
