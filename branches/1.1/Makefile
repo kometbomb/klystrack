@@ -66,7 +66,7 @@ build:
 
 all:	inform bin.$(CFG)/$(TARGET) res/data
 
-.PHONY: zip all build
+.PHONY: zip all build nightly
 
 zip: doc/* res/data zip/data/SDL.dll zip/data/SDL_mixer.dll
 	make -C ../klystron CFG=release
@@ -77,6 +77,11 @@ zip: doc/* res/data zip/data/SDL.dll zip/data/SDL_mixer.dll
 	cp doc/SDL.txt zip/data/SDL.txt
 	cp bin.release/$(TARGET) zip/data/$(TARGET)
 	cd zip/data; $(ZIP) ../$(ARCHIVE) "*"
+	
+nightly: zip
+	$(REV) . ver.in ver.txt
+	cp zip/$(ARCHIVE) zip/klystrack-nightly-`cat ver.txt`.zip
+	rm -f ver.txt
 	
 inform:
 	@echo "Configuration "$(CFG)
@@ -124,7 +129,7 @@ zip/data/SDL_mixer.dll:
 	mv temp/SDL_mixer.dll zip/data/SDL_mixer.dll
 		
 clean:
-	@rm -rf deps objs.release objs.debug objs.profile bin.release bin.debug bin.profile res temp zip
+	@rm -rf deps objs.release objs.debug objs.profile bin.release bin.debug bin.profile res temp zip ver.txt
 
 # Unless "make clean" is called, include the dependency files
 # which are auto-generated. Don't fail if they are missing
