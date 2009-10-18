@@ -41,7 +41,6 @@ void load_colors(const char *cfg)
 		
 		if (sscanf(token, "%50s%*[ =]%x", name, &color) == 2)
 		{
-			debug("%s", name);
 			static const char *names[] =
 			{
 				"normal",
@@ -68,6 +67,7 @@ void load_colors(const char *cfg)
 				if (stricmp(names[i], name) == 0)
 				{
 					colors[i] = color;
+					break;
 				}
 			}
 			
