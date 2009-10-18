@@ -268,10 +268,10 @@ void sequence_view(const SDL_Rect *dest, const SDL_Event *event, void *param)
 		int first = mused.sequence_horiz_position;
 		int last = 0;
 		
-		for (int c = mused.sequence_horiz_position ; c < mused.song.num_channels && pos.x <= dest->w + dest->x ; ++c)
+		for (int c = mused.sequence_horiz_position ; c < mused.song.num_channels && pos.x <= content.w + content.x ; ++c)
 		{
 			first = my_min(first, c);
-			if (pos.x + pos.w <= dest->w + dest->x) last = c;
+			if (pos.x + pos.w <= content.w + content.x) last = c;
 			console_set_clip(mused.console, &pos);
 			console_reset_cursor(mused.console);
 			console_set_background(mused.console, 0);
@@ -315,6 +315,11 @@ void sequence_view(const SDL_Rect *dest, const SDL_Event *event, void *param)
 			
 			SDL_Rect r;
 			copy_rect(&r, console_write_args(mused.console,"%*s", (mused.flags & COMPACT_VIEW) ? -2 : -5, text));
+			
+			if (r.x + r.w > content.w + content.x)
+			{
+				r.w = content.w + content.x - r.x;
+			}
 			
 			check_event(event, &r, select_sequence_position, (void*)c, (void*)i, 0);
 			
