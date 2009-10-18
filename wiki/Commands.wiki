@@ -1,6 +1,6 @@
 #summary Description of track and program commands
 
-= Commands =
+When a note is playing, an instrument program or the track data can modify various parameters by using commands.
 
 The commands are interchangeable between the track commands and the program commands (where applicable). Most of the commands loosely follow the "standards" set by Obarski's Soundtracker and later Protracker.
 
