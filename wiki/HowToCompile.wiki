@@ -1,8 +1,6 @@
 #summary How to compile klystrack
 #labels Phase-Implementation
 
-= How to compile klystrack =
-
   # You need both the source for [http://code.google.com/p/klystron klystron] and the source for klystrack. The directory structure should be something like this:
   {{{
 /code/klystron
