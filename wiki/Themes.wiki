@@ -1,0 +1,17 @@
+#summary How to customize klystrack
+
+= Themes =
+
+{{{res/data}}} contains several data files that can be changed to make klystrack look different.
+
+==colors.txt==
+
+This file contains the text colors. 
+
+==bevel.bmp==
+
+This is the main graphics file. The first row has different bevel (patterned rectangle) styles, the bottom row has button decals. The bevels generally have a 4 pixel wide border and a 8x8 center that is repeated.
+
+==Fonts==
+
+The fonts can be changed but it is recommended that they have the same dimensions as the originals.
