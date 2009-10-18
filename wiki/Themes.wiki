@@ -2,7 +2,7 @@
 
 = Themes =
 
-{{{res/data}}} contains several data files that can be changed to make klystrack look different.
+{{{res/data}}} contains several data files that can be changed to make klystrack look different. To create new data files, you need to use makebundle from the klystron tools.
 
 ==colors.txt==
 
@@ -12,6 +12,6 @@ This file contains the text colors.
 
 This is the main graphics file. The first row has different bevel (patterned rectangle) styles, the bottom row has button decals. The bevels generally have a 4 pixel wide border and a 8x8 center that is repeated.
 
-==Fonts==
+==8x8.fnt, 7x6.fnt==
 
 The fonts can be changed but it is recommended that they have the same dimensions as the originals.
