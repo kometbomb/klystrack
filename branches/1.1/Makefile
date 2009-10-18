@@ -8,6 +8,7 @@ ZIP = pkzipc -zipdate=newest -path=relative -silent -rec -dir -add
 ZIPEXT = pkzipc -ext -silent
 WGET = wget --quiet
 REV = SubWCRev.exe
+UPLOAD = cmd.exe /c upload.bat
 
 # The directories containing the source files, separated by ':'
 
@@ -81,6 +82,9 @@ zip: doc/* res/data zip/data/SDL.dll zip/data/SDL_mixer.dll
 nightly: zip
 	$(REV) . ver.in ver.txt
 	cp zip/$(ARCHIVE) zip/klystrack-nightly-`cat ver.txt`.zip
+ifneq ($(UPLOAD),)
+	$(UPLOAD) zip/klystrack-nightly-`cat ver.txt`.zip
+endif
 	rm -f ver.txt
 	
 inform:
