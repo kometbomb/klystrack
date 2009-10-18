@@ -21,7 +21,7 @@ The patterns can also be located at any position in the sequence, making it poss
 
 ==Channel==
 
-In a tracker, a song is divided to a number of channels. A channel can only have one note playing at a time, a new note will stop the previous note playing. In klystrack, there are currently four channels.
+In a tracker, a song is divided to a number of channels. A channel can only have one note playing at a time, a new note will stop the previous note playing. In klystrack, there is a upper limit of 32 channels.
 
 ==Sequence==
 
