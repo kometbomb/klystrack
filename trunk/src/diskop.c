@@ -95,7 +95,7 @@ int save_data()
 				if (!confirm("Keep unused patterns?"))
 				{
 					int maxpat = -1;
-					for (int c = 0 ; c < MUS_CHANNELS ; ++c)
+					for (int c = 0 ; c < mused.song.num_channels ; ++c)
 					{
 						for (int i = 0 ; i < mused.song.num_sequences[c] ; ++i)
 							 if (maxpat < mused.song.sequence[c][i].pattern)
@@ -111,10 +111,11 @@ int save_data()
 				
 				fwrite(&version, 1, sizeof(version), f);
 				
+				fwrite(&mused.song.num_channels, 1, sizeof(mused.song.num_channels), f);
 				fwrite(&mused.song.time_signature, 1, sizeof(mused.song.time_signature), f);
 				fwrite(&mused.song.num_instruments, 1, sizeof(mused.song.num_instruments), f);
 				fwrite(&mused.song.num_patterns, 1, sizeof(mused.song.num_patterns), f);
-				fwrite(mused.song.num_sequences, 1, sizeof(mused.song.num_sequences), f);
+				fwrite(mused.song.num_sequences, 1, sizeof(mused.song.num_sequences[0]) * (int)mused.song.num_channels, f);
 				fwrite(&mused.song.song_length, 1, sizeof(mused.song.song_length), f);
 				fwrite(&mused.song.loop_point, 1, sizeof(mused.song.loop_point), f);
 				fwrite(&mused.song.song_speed, 1, sizeof(mused.song.song_speed), f);
@@ -137,7 +138,7 @@ int save_data()
 					save_instrument(f, &mused.song.instrument[i]);
 				}
 				
-				for (int i = 0 ; i < MUS_CHANNELS; ++i)
+				for (int i = 0 ; i < mused.song.num_channels; ++i)
 				{
 					fwrite(mused.song.sequence[i], mused.song.num_sequences[i], sizeof(mused.song.sequence[i][0]), f);
 				}
@@ -197,7 +198,7 @@ void open_data()
 				
 				mused.sequenceview_steps = 1000;
 				
-				for (int c = 0 ; c < MUS_CHANNELS ; ++c)
+				for (int c = 0 ; c < MUS_MAX_CHANNELS ; ++c)
 					for (int s = 1 ; s < mused.song.num_sequences[c] ; ++s)
 						if (mused.sequenceview_steps > mused.song.sequence[c][s].position - mused.song.sequence[c][s-1].position)
 						{

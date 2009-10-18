@@ -50,9 +50,9 @@ Mused mused;
 /*---*/
 
 int stat_song_position;
-int stat_pattern_position[MUS_CHANNELS];
-MusPattern *stat_pattern[MUS_CHANNELS];
-int stat_pattern_number[MUS_CHANNELS];
+int stat_pattern_position[MUS_MAX_CHANNELS];
+MusPattern *stat_pattern[MUS_MAX_CHANNELS];
+int stat_pattern_number[MUS_MAX_CHANNELS];
 GfxDomain *domain;
 
 #define INST_LIST (6*8 + 3*2)
@@ -62,9 +62,9 @@ void change_pixel_scale(void *, void*, void*);
 
 static const View instrument_view_tab[] =
 {
-	{{0, 0, 164 + 32 + 4, 14}, bevel_view, (void*)BEV_BACKGROUND, EDITINSTRUMENT },
-	{{2, 2, 164 + 32, 10}, instrument_name_view, (void*)1, EDITINSTRUMENT },
-	{{164 + 32 + 4, 0, SCREEN_WIDTH - 164 - 32 - 2 - 2, 14}, instrument_disk_view, NULL, -1 },
+	{{0, 0, 164 + 32 + 4 + 8, 14}, bevel_view, (void*)BEV_BACKGROUND, EDITINSTRUMENT },
+	{{2, 2, 164 + 32 + 8, 10}, instrument_name_view, (void*)1, EDITINSTRUMENT },
+	{{164 + 32 + 4 + 8, 0, SCREEN_WIDTH - 164 - 32 - 2 - 2 - 8, 14}, instrument_disk_view, NULL, -1 },
 	{{0, 14, 154, SCREEN_HEIGHT-14-INFO }, instrument_view, NULL, EDITINSTRUMENT },
 	{{154, 14, SCREEN_WIDTH - 154 - SCROLLBAR, INST_LIST }, instrument_list, NULL, -1},
 	{{154, 14 + INST_LIST, SCREEN_WIDTH - 154 - SCROLLBAR, SCREEN_HEIGHT-(14 + INST_LIST)-INFO }, program_view, NULL, EDITPROG },
@@ -84,7 +84,7 @@ static const View pattern_view_tab[] =
 	{{0, 0, 0, 0}, NULL}
 };
 
-#define CLASSIC_PAT (SCREEN_HEIGHT / 2 + 20 - 2)
+#define CLASSIC_PAT (SCREEN_HEIGHT / 2 + 20 - 2 - 7)
 #define CLASSIC_SONG_INFO (94)
 
 static const View classic_view_tab[] =
@@ -104,9 +104,9 @@ static const View classic_view_tab[] =
 static const View sequence_view_tab[] =
 {
 	{{0,0,SCREEN_WIDTH,33+4}, info_view, NULL, -1},
-	{{0, 33+4, 164 + 32 + 4, 14}, bevel_view, (void*)BEV_BACKGROUND, -1},
-	{{2, 33+4+2, 164 + 32, 10}, song_name_view, NULL, -1},
-	{{164 + 32 + 4, 33+4, SCREEN_WIDTH - 164 - 32 - 2 - 2, 14}, instrument_disk_view, NULL, -1},
+	{{0, 33+4, 164 + 32 + 4 + 8, 14}, bevel_view, (void*)BEV_BACKGROUND, -1},
+	{{2, 33+4+2, 164 + 32 + 8, 10}, song_name_view, NULL, -1},
+	{{164 + 32 + 4 + 8, 33+4, SCREEN_WIDTH - 164 - 32 - 2 - 2 - 8, 14}, instrument_disk_view, NULL, -1},
 	{{0, 33+4+14, SCREEN_WIDTH-SCROLLBAR, SCREEN_HEIGHT-(33+4+14)}, sequence_view, NULL, -1},
 	{{SCREEN_WIDTH-SCROLLBAR, 33+4+14, SCROLLBAR, SCREEN_HEIGHT-(33+4+14)}, slider, &mused.sequence_slider_param, -1},
 	{{0, 0, 0, 0}, NULL}
@@ -166,7 +166,7 @@ int main(int argc, char **argv)
 	
 	MusInstrument instrument[NUM_INSTRUMENTS];
 	MusPattern pattern[NUM_PATTERNS];
-	MusSeqPattern sequence[MUS_CHANNELS][NUM_SEQUENCES];
+	MusSeqPattern sequence[MUS_MAX_CHANNELS][NUM_SEQUENCES];
 	MusChannel channel[CYD_MAX_CHANNELS];
 	
 	init(instrument, pattern, sequence, channel, gfx_domain_get_surface(domain));
@@ -174,7 +174,7 @@ int main(int argc, char **argv)
 	Mix_OpenAudio(44100, AUDIO_S16SYS, 1, 2048);
 	Mix_AllocateChannels(1);
 	
-	cyd_init(&mused.cyd, 44100, MUS_CHANNELS);
+	cyd_init(&mused.cyd, 44100, MUS_MAX_CHANNELS);
 	mus_init_engine(&mused.mus, &mused.cyd);
 	
 #ifdef DEBUG
@@ -285,7 +285,7 @@ int main(int argc, char **argv)
 		{
 			mus_poll_status(&mused.mus, &mused.stat_song_position, mused.stat_pattern_position, mused.stat_pattern, channel);
 		
-			for (int i = 0 ; i < MUS_CHANNELS ; ++i)
+			for (int i = 0 ; i < MUS_MAX_CHANNELS ; ++i)
 			{
 				stat_pattern_number[i] = (stat_pattern[i] - &mused.song.pattern[0])/sizeof(mused.song.pattern[0]);
 			}
