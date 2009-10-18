@@ -41,7 +41,7 @@ void load_colors(const char *cfg)
 		
 		if (sscanf(token, "%50s%*[ =]%x", name, &color) == 2)
 		{
-			static const char *names[] =
+			static const char *names[NUM_COLORS] =
 			{
 				"normal",
 				"sequence_selected",
@@ -57,12 +57,11 @@ void load_colors(const char *cfg)
 				"program_even",
 				"program_odd",
 				"instrument_selected",
-				"instrument_normal",
-				NULL
+				"instrument_normal"
 			};
 			
 			int i;
-			for (i = 0 ; names[i] ; ++i)
+			for (i = 0 ; i < NUM_COLORS ; ++i)
 			{
 				if (stricmp(names[i], name) == 0)
 				{
@@ -71,7 +70,7 @@ void load_colors(const char *cfg)
 				}
 			}
 			
-			if (names[i] == NULL) warning("Unknown color name '%s'", name);
+			if (i >= NUM_COLORS) warning("Unknown color name '%s'", name);
 		}
 		
 		token = strtok(NULL, "\n");
