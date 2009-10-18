@@ -98,9 +98,10 @@ deps/Group0_$(CFG)_%.d: %.c
 		< $@.$$$$ > $@; \
 	rm -f $@.$$$$
 	
-res/data: data/bevel.bmp temp/8x8.fnt temp/7x6.fnt
+res/data: data/bevel.bmp temp/8x8.fnt temp/7x6.fnt data/colors.txt
 	@mkdir -p res
 	@mkdir -p temp
+	cp -f data/colors.txt temp
 	cp -f data/bevel.bmp temp
 	../klystron/tools/bin/makebundle res/data temp
 

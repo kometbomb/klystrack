@@ -30,6 +30,7 @@ OTHER DEALINGS IN THE SOFTWARE.
 #include "util/bundle.h"
 #include "action.h"
 #include "event.h"
+#include "theme.h"
 
 extern Mused mused;
 
@@ -237,6 +238,16 @@ void init(MusInstrument *instrument, MusPattern *pattern, MusSeqPattern sequence
 	
 		font_load(&mused.smallfont, &res, "7x6.fnt");
 		font_load(&mused.largefont, &res, "8x8.fnt");
+		
+		FILE *colors = bnd_locate(&res, "colors.txt", 0);
+		if (colors)
+		{
+			char temp[1000] = {0};
+			fread(temp, 1, sizeof(temp)-1, colors);
+			fclose(colors);
+			
+			load_colors(temp);
+		}
 		
 		bnd_free(&res);
 	}
