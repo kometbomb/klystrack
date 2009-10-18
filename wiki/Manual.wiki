@@ -1,38 +1,13 @@
 #summary How to use klystrack
 #labels Featured
 
-=Manual=
-
 <wiki:toc max_depth="3" />
 
-==Menu==
+=Menu=
 
 Hold right mouse button down to bring up the menu bar. Select the menu option by hovering over it and release right button.
 
-==General keyboard controls==
-
-|| cursor keys || move around/change values ||
-|| TAB || change focused element (where applicable) ||
-|| F2 || pattern editor || 
-|| F3 || instrument editor || 
-|| Shift+F3 || effect editor || 
-|| F4 || sequence editor || 
-|| Shift+F4 || classic editor || 
-|| F5 || play || 
-|| F8 || stop || 
-|| F9/F10 || octave down/up || 
-|| CTRL+n || new song || 
-|| CTRL+s/o || save/open relevant data (song in sequence editor, instrument in instrument editor etc.) || 
-|| CTRL+c/v / CTRL+ins/SHIFT+ins || copy/paste || 
-|| SHIFT+cursor || select || 
-|| keypad plus/minus || select instrument || 
-|| CTRL+keypad plus/minus || change song speed  || 
-|| ALT+keypad plus/minus || change second song speed the two speeds mean the first speed is used for even steps and the other for odd steps. e.g. 8+4 will have a distinct shuffle in the tempo. || 
-|| CTRL+F9/F10 || change song player rate (i.e. 50 Hz means every second 50 frames are processed, which would translate to 50/6 steps per second for the default speeds) || 
-|| SHIFT+CTRL+F9/F10 || change time signature (only has a visual effect, the spacing of the different colored pattern steps changes) || 
-|| CTRL+R || Change screen scaling ||
-
-==Pattern editor==
+=Pattern editor=
 
 The pattern editor works like a standard tracker. Basically, each pattern is a queue of notes and parameters. 
 
@@ -47,20 +22,9 @@ If a note is set for a pattern step, a new note will be played when the player p
 
 The [Commands track commands] modify the sound with effects like portamento, vibrato or volume fade.
 
-===Keyboard commands===
+=Instrument editor=
 
-|| Return || jump to sequence editor || 
-|| Cursor keys/pg up/pg dn || move cursor || 
-|| CTRL+left/right || change current pattern || 
-|| Space || Note-off ||
-|| 0/1 || Set legato etc. bits ||
-|| Insert/delete/backspace || do what you would expect || 
-|| . || no note/no instrument number etc. || 
-|| most other keys || enter note || 
-
-==Instrument editor==
-
-===Instrument program===
+==Instrument program==
 
 When an instrument is triggered, the program starts executing from the beginning. The execution speed is independent from the song speed but relative to the routine update frequency. The program period instrument parameter controls how many routine updates it takes to advance the program one step.
 
@@ -77,7 +41,7 @@ The following example is a simple 0-4-7 major arpeggio:
 
 A handy way to debug instrument programs is to set the program period (execution speed) to 10 or more and then pay attention to the little marker that shows current program tick. That way you'll notice if e.g. a jump doesn't point to the correct command.
 
-===Combining commands===
+==Combining commands==
 
 In the following example, the first three commands are executed inside the same program tick. This can be achieved by entering the commands and pressing space to combine the command with the command below.
 
@@ -86,14 +50,9 @@ In the following example, the first three commands are executed inside the same 
 || {{{02    0710 '}}} || pw down by 10 steps || 
 || {{{03 01 ff00}}} || go to beginning || 
 
-Note how the second column doesn't follow the leftmost column. I.e. when played, all commands are executed at step 00. When the next step (01 in the second column) is executed, it will be the jump command at 03, skipping past the two commands combined with the first command.
+Note how the second column doesn't follow the leftmost column. I.e. when played, all commands are executed at step 00. When the next step (01 in the second column) is executed, it will be the jump command at 03, skipping past the two commands combined with 
 
-====Keyboard commands====
-
-|| Return || Edit program command ||
-|| Space || Combine currently selected command to the command below ||
-
-==Sequence editor==
+=Sequence editor=
 
 The sequence is the place where all the patterns are put together to form a song structure. Each channel can use any of the patterns, the patterns are not locked to a certain channel nor do the patterns lock to other patterns. A pattern can be used as many times as needed, you do not need to duplicate the pattern data unless you want to make little changes. Only one pattern can play at the same time on the same channel, obviously.
 
@@ -107,16 +66,6 @@ pattern
 In the above example the pattern position is not a multiple of sequence pattern step, thus the offset is shown. 
 
 Generally, one uses the sequence editor to enter patterns of similar length side by side and then jumps back and forth between the pattern editor and the sequence editor using the return key.
-
-===Keyboard commands===
-
-|| 0-9, a-z, Shift+a-z || enter pattern ||
-|| Return || edit currently selected pattern in the pattern editor (actually edits all patterns on the current sequence position) ||
-|| Period || Set current pattern to none ||
-|| ALT+up/down || adjust note offset ||
-|| CTRL+down/up || edit song length ||
-|| CTRL+left/right || edit sequence editor pattern step ||
-|| insert/delete/backspace || do what you would expect ||
 
 == Effects ==
 
