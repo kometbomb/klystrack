@@ -1,15 +1,13 @@
 #summary Read this if you have never used a tracker-type sequencer
 #labels Featured
 
-= Introduction to trackers =
-
 A tracker is a simple sequencer that originated from the Amiga computers in 1987 as a simple alternative to other music editors. For someone used to modern sequencers, MIDI and all that, the concept can be somewhat strange.
 
 The main difference to formal notation or a MIDI sequencer is that in a tracker everything happens in discrete steps. In other words, it is similar to if you could only use sixteenth notes and rests. A tracker is also more technical and functional in that a pattern consists mostly of numerical (often hexadecimal) parameters.
 
 Wikipedia has [http://en.wikipedia.org/wiki/Tracker_%28music_software%29 a pretty good explanation of trackers in general].
 
-==How klystrack differs from traditional trackers==
+=How klystrack differs from traditional trackers=
 
 klystrack doesn't use samples (at least at the moment). It synthesizes sounds on the fly. This allows more flexible sounds since the parameters can be changed in real time. 
 
@@ -19,31 +17,31 @@ For example, even if one channel constantly played the same sequence (think a dr
 
 The patterns can also be located at any position in the sequence, making it possible for two patterns of different length syncopate. This is not possible in a traditional tracker since all patterns usually are of the same length and begin at the same location for each channel.
 
-==Concepts==
+=Concepts=
 
-===Channel===
+==Channel==
 
 In a tracker, a song is divided to a number of channels. A channel can only have one note playing at a time, a new note will stop the previous note playing. In klystrack, there are currently four channels.
 
-===Sequence===
+==Sequence==
 
 The sequence is the order in which [#Pattern patterns] are played. Patterns can begin at any position and channel.
 
-===Pattern===
+==Pattern==
 
 A pattern is a sequence of notes and [#Command commands] that will play on a [#Channel channel]. All patterns always play at the same speed, synced by the current [#Step step].
 
-===Step===
+==Step==
 
 Step usually means one discrete row of pattern data. A song advances at a constant rate step by step. A step is divided into one or more [#Tick ticks].
 
-===Tick===
+==Tick==
 
 A [#Step step] is divided into one or more ticks. When one step is playing at a speed of 6, a tick will happen six times before the position moves to the next step. At each tick [#Command commands] are updated. For example, the portamento and slide commands update the pitch at each tick.
 
 In klystrack, the instrument program is also divided into steps, also called ticks since in most cases multiple program steps are executed during one song step.
 
-===Command===
+==Command==
 
 A [Commands command] modifies the currently played note. This can be done on the track level or an instrument program can do it automatically. A track command might fade the note out and a program command might repeatedly change the played note to create an arpeggio. 
 
