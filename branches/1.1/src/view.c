@@ -1414,7 +1414,7 @@ void instrument_disk_view(const SDL_Rect *dest, const SDL_Event *event, void *pa
 	bevel(&area, mused.slider_bevel, BEV_BACKGROUND);
 	adjust_rect(&area, 2);
 	
-	SDL_Rect button = { area.x, area.y, 50, area.h };
+	SDL_Rect button = { area.x + 2, area.y, area.w / 2 - 4, area.h };
 	
 	button_text_event(event, &button, mused.slider_bevel, BEV_BUTTON, BEV_BUTTON_ACTIVE, "LOAD", open_song_action, NULL, NULL, NULL);
 	update_rect(&area, &button);
