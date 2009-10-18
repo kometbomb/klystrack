@@ -133,6 +133,15 @@ void copy_rect(SDL_Rect *dest, const SDL_Rect *src)
 }
 
 
+void clip_rect(SDL_Rect *rect, const SDL_Rect *limits)
+{
+	if (rect->x < limits->x) { rect->w -= limits->x - rect->x; rect->x = limits->x; }
+	if (rect->y < limits->y) { rect->h -= limits->y - rect->y; rect->y = limits->y; }
+	if (rect->w + rect->x > limits->w + limits->x) { rect->w = limits->w + limits->x - rect->x; }
+	if (rect->h + rect->y > limits->h + limits->y) { rect->h = limits->h + limits->y - rect->y; }
+}
+
+
 static void label(const char *_label, const SDL_Rect *area)
 {
 	SDL_Rect r;
@@ -316,10 +325,7 @@ void sequence_view(const SDL_Rect *dest, const SDL_Event *event, void *param)
 			SDL_Rect r;
 			copy_rect(&r, console_write_args(mused.console,"%*s", (mused.flags & COMPACT_VIEW) ? -2 : -5, text));
 			
-			if (r.x + r.w > content.w + content.x)
-			{
-				r.w = content.w + content.x - r.x;
-			}
+			clip_rect(&r, &content);
 			
 			check_event(event, &r, select_sequence_position, (void*)c, (void*)i, 0);
 			
@@ -346,13 +352,10 @@ void sequence_view(const SDL_Rect *dest, const SDL_Event *event, void *param)
 				}
 			}
 			
-			console_write(mused.console," ");
 			pos.x += CHANNEL_WIDTH;
 		}
 		
 		if (vert_scrollbar) slider_set_params(&mused.sequence_horiz_slider_param, 0, mused.song.num_channels-1, first, last, &mused.sequence_horiz_position, 1, SLIDER_HORIZONTAL);
-		
-		console_write(mused.console,"\n");
 		
 		if (i < mused.song.song_length)
 			slider_set_params(&mused.sequence_slider_param, 0, mused.song.song_length - mused.sequenceview_steps, start, i, &mused.sequence_position, mused.sequenceview_steps, SLIDER_VERTICAL);
@@ -396,13 +399,11 @@ static void update_pattern_cursor(const SDL_Rect *area, SDL_Rect *selected_rect,
 }
 
 
-void pattern_view_inner(const SDL_Rect *dest, const SDL_Event *event, int current_pattern, int channel)
+void pattern_view_inner(const SDL_Rect *dest, const SDL_Rect *limits, const SDL_Event *event, int current_pattern, int channel)
 {
 	SDL_Rect content;
 	copy_rect(&content, dest);
 	adjust_rect(&content, 2);
-	
-	SDL_SetClipRect(mused.console->surface, &content);
 	
 	console_set_clip(mused.console, &content);
 	console_clear(mused.console);
@@ -414,6 +415,11 @@ void pattern_view_inner(const SDL_Rect *dest, const SDL_Event *event, int curren
 	
 	SDL_Rect selected_rect = { 0 };
 	int selection_begin = -1, selection_end = -1;
+	
+	SDL_Rect clipped;
+	copy_rect(&clipped, &content);
+	clip_rect(&clipped, limits);
+	SDL_SetClipRect(mused.console->surface, &clipped);
 	
 	for (int i = start, y = 0 ; i < mused.song.pattern[current_pattern].num_steps && y < content.h; ++i, y += mused.console->font.h)
 	{
@@ -454,8 +460,10 @@ void pattern_view_inner(const SDL_Rect *dest, const SDL_Event *event, int curren
 			r = console_write(mused.console, notename(mused.song.pattern[current_pattern].step[i].note));
 			
 		update_pattern_cursor(r, &selected_rect, current_pattern, i, PED_NOTE);
-			
-		check_event(event, r, select_pattern_param, (void*)PED_NOTE, (void*)i, (void*)current_pattern);
+		copy_rect(&clipped, r);
+		clip_rect(&clipped, &content);
+		
+		check_event(event, &clipped, select_pattern_param, (void*)PED_NOTE, (void*)i, (void*)current_pattern);
 		
 		if (!(mused.flags & COMPACT_VIEW)) mused.console->clip.x += 4;
 		
@@ -464,7 +472,10 @@ void pattern_view_inner(const SDL_Rect *dest, const SDL_Event *event, int curren
 		else
 			r = console_write(mused.console, ".");
 			
-		check_event(event, r, select_pattern_param, (void*)PED_INSTRUMENT1, (void*)i, (void*)current_pattern);
+		copy_rect(&clipped, r);
+		clip_rect(&clipped, &content);
+			
+		check_event(event, &clipped, select_pattern_param, (void*)PED_INSTRUMENT1, (void*)i, (void*)current_pattern);
 		
 		update_pattern_cursor(r, &selected_rect, current_pattern, i, PED_INSTRUMENT1);
 		
@@ -473,7 +484,10 @@ void pattern_view_inner(const SDL_Rect *dest, const SDL_Event *event, int curren
 		else
 			r = console_write(mused.console, ".");
 			
-		check_event(event, r, select_pattern_param, (void*)PED_INSTRUMENT2, (void*)i, (void*)current_pattern);
+		copy_rect(&clipped, r);
+		clip_rect(&clipped, &content);
+			
+		check_event(event, &clipped, select_pattern_param, (void*)PED_INSTRUMENT2, (void*)i, (void*)current_pattern);
 		
 		update_pattern_cursor(r, &selected_rect, current_pattern, i, PED_INSTRUMENT2);
 		
@@ -484,9 +498,11 @@ void pattern_view_inner(const SDL_Rect *dest, const SDL_Event *event, int curren
 			for (int p = PED_CTRL ; p < PED_COMMAND1 ; ++p)
 			{
 				char *bitname = "LSV";
+				r = console_write_args(mused.console, "%c", mused.song.pattern[current_pattern].step[i].ctrl & (MUS_CTRL_BIT << (p - PED_CTRL)) ? bitname[p - PED_CTRL] : '.');
+				copy_rect(&clipped, r);
+				clip_rect(&clipped, &content);
 			
-				check_event(event, r = console_write_args(mused.console, "%c", mused.song.pattern[current_pattern].step[i].ctrl & (MUS_CTRL_BIT << (p - PED_CTRL)) ? bitname[p - PED_CTRL] : '.'), 
-					select_pattern_param, (void*)p, (void*)i, (void*)current_pattern);
+				check_event(event, &clipped, select_pattern_param, (void*)p, (void*)i, (void*)current_pattern);
 				update_pattern_cursor(r, &selected_rect, current_pattern, i, p);
 			}
 			
@@ -495,8 +511,11 @@ void pattern_view_inner(const SDL_Rect *dest, const SDL_Event *event, int curren
 		
 		for (int p = 0 ; p < 4 ; ++p)
 		{
-			check_event(event, r = console_write_args(mused.console, "%X", (mused.song.pattern[current_pattern].step[i].command >> ((3-p)*4)) & 0xf), 
-				select_pattern_param, (void*)(PED_COMMAND1 + p), (void*)i, (void*)current_pattern);
+			r = console_write_args(mused.console, "%X", (mused.song.pattern[current_pattern].step[i].command >> ((3-p)*4)) & 0xf);
+			copy_rect(&clipped, r);
+			clip_rect(&clipped, &content);
+			
+			check_event(event, &clipped, select_pattern_param, (void*)(PED_COMMAND1 + p), (void*)i, (void*)current_pattern);
 			update_pattern_cursor(r, &selected_rect, current_pattern, i, PED_COMMAND1 + p);
 		}
 		
@@ -690,7 +709,7 @@ void pattern_view(const SDL_Rect *dest, const SDL_Event *event, void *param)
 	slider_set_params(&mused.pattern_horiz_slider_param, 0, 0, 0, mused.song.num_channels - 1, &mused.pattern_horiz_position, 1, SLIDER_HORIZONTAL);
 	
 	int first = mused.song.num_channels, last = 0;
-	for (int i = 0 ; i < mused.song.num_channels ; ++i)
+	for (int i = 0 ; i < mused.song.num_channels && pos.x < dest->w + dest->x ; ++i)
 	{
 		if (mused.ghost_pattern[i] != NULL)
 		{
@@ -704,7 +723,7 @@ void pattern_view(const SDL_Rect *dest, const SDL_Event *event, void *param)
 				// Only consider fully visible pattern drawn
 				if (pos.x + pos.w < dest->x + dest->w) last = my_max(last, i);
 				
-				pattern_view_inner(&pos, event, *mused.ghost_pattern[i], i);
+				pattern_view_inner(&pos, dest, event, *mused.ghost_pattern[i], i);
 				pos.x += pos.w - 2;
 								
 				if (vert_scrollbar) slider_set_params(&mused.pattern_horiz_slider_param, 0, pv - 1, first, last, &mused.pattern_horiz_position, 1, SLIDER_HORIZONTAL);
@@ -726,7 +745,7 @@ void pattern_view(const SDL_Rect *dest, const SDL_Event *event, void *param)
 		
 		pattern_header(event, pos.x, -1, &button_topleft, pattern_width, &mused.current_pattern);
 	
-		pattern_view_inner(&pos, event, mused.current_pattern, -1);
+		pattern_view_inner(&pos, dest, event, mused.current_pattern, -1);
 	}
 }
 

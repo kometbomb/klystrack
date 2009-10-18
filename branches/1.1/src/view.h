@@ -51,6 +51,7 @@ void draw_view(const View* views, const SDL_Event *event);
 void adjust_rect(SDL_Rect *rect, int margin);
 void copy_rect(SDL_Rect *dest, const SDL_Rect *src);
 void update_rect(const SDL_Rect *parent, SDL_Rect *rect);
+void clip_rect(SDL_Rect *rect, const SDL_Rect *limits);
 void separator(const SDL_Rect *parent, SDL_Rect *rect);
 
 /* 
