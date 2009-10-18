@@ -4,7 +4,14 @@
 
 =colors.txt=
 
-This file contains the text colors. 
+This file contains the text color definitions. The while should contain definitions in the following format, each on its own line:
+
+{{{
+color_name = 0xffffff
+another_color_name = 0x808080
+}}}
+
+The hexadecimal number is a RGB value.
 
 =bevel.bmp=
 
