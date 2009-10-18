@@ -30,18 +30,7 @@ OTHER DEALINGS IN THE SOFTWARE.
 #include "mouse.h"
 #include "dialog.h"
 #include "bevel.h"
-
-#define BG_CURSOR 0xffff4040
-#define BG_PLAYERPOS 0xff004000
-#define BG_SELECTION 0xff80ff80
-
-#define COLOR_SELECTED_SEQUENCE_ROW 0xffffffff
-#define COLOR_SEQUENCE_BAR 0xffa0a0a0
-#define COLOR_SEQUENCE_BEAT 0xff404040
-#define COLOR_SEQUENCE_NORMAL 0xff202020
-#define COLOR_SEQUENCE_BAR_DISABLED 0xffa0a0b0
-#define COLOR_SEQUENCE_BEAT_DISABLED 0xff404080
-#define COLOR_SEQUENCE_NORMAL_DISABLED 0xff202040
+#include "theme.h"
 
 #define swap(a,b) { a ^= b; b ^= a; a ^= b; }
 
@@ -144,6 +133,15 @@ void copy_rect(SDL_Rect *dest, const SDL_Rect *src)
 }
 
 
+void clip_rect(SDL_Rect *rect, const SDL_Rect *limits)
+{
+	if (rect->x < limits->x) { rect->w -= limits->x - rect->x; rect->x = limits->x; }
+	if (rect->y < limits->y) { rect->h -= limits->y - rect->y; rect->y = limits->y; }
+	if (rect->w + rect->x > limits->w + limits->x) { rect->w = limits->w + limits->x - rect->x; }
+	if (rect->h + rect->y > limits->h + limits->y) { rect->h = limits->h + limits->y - rect->y; }
+}
+
+
 static void label(const char *_label, const SDL_Rect *area)
 {
 	SDL_Rect r;
@@ -189,15 +187,14 @@ void sequence_view(const SDL_Rect *dest, const SDL_Event *event, void *param)
 {
 	char text[200];
 	
-	console_set_color(mused.console,0,CON_BACKGROUND);
 	console_clear(mused.console);
 	
 	int start = mused.sequence_position;
 	
-	int p[MUS_CHANNELS] ={ 0 };
+	int p[MUS_MAX_CHANNELS] ={ 0 };
 	
-	int draw_colon[MUS_CHANNELS] = {0};
-	int draw_colon_id[MUS_CHANNELS] = {0xff};
+	int draw_colon[MUS_MAX_CHANNELS] = {0};
+	int draw_colon_id[MUS_MAX_CHANNELS] = {0xff};
 	
 	bevel(dest, mused.slider_bevel, BEV_SEQUENCE_BORDER);
 	
@@ -208,12 +205,27 @@ void sequence_view(const SDL_Rect *dest, const SDL_Event *event, void *param)
 	int loop_begin = -1, loop_end = -1;
 	SDL_Rect selection_begin = {-1, -1}, selection_end = {-1, -1};
 	
+	const int POS_WIDTH = 4 * 8 + 4;
+	const int CHANNEL_WIDTH = (mused.flags & COMPACT_VIEW ? 2 * 8 : 5 * 8) + 4; 
+	int vert_scrollbar = 0;
+	SDL_Rect scrollbar;
+	
+	if (CHANNEL_WIDTH * mused.song.num_channels + POS_WIDTH > dest->w)
+	{
+		content.h -= SCROLLBAR;
+		SDL_Rect temp = { dest->x, dest->y + dest->h - SCROLLBAR, dest->w, SCROLLBAR };
+		copy_rect(&scrollbar, &temp);
+		vert_scrollbar = 1;
+	}
+	
 	SDL_Rect clip;
 	SDL_GetClipRect(mused.console->surface, &clip);
 	clip.h = content.h;
 	clip.y = content.y;
 	SDL_SetClipRect(mused.console->surface, &clip);
 	
+	slider_set_params(&mused.sequence_horiz_slider_param, 0, 0, 0, mused.song.num_channels - 1, &mused.sequence_horiz_position, 1, SLIDER_HORIZONTAL);
+		
 	for (int i = start, s = 0, y = 0 ; y < content.h ; i += mused.sequenceview_steps, ++s, y += mused.console->font.h + 1)
 	{
 		SDL_Rect pos = { content.x, content.y + y - 1, content.w, mused.console->font.h + 2 };
@@ -233,11 +245,9 @@ void sequence_view(const SDL_Rect *dest, const SDL_Event *event, void *param)
 			loop_end = pos.y + pos.h;
 		}
 		
-		console_set_color(mused.console,(mused.current_sequencepos == i) ? COLOR_SELECTED_SEQUENCE_ROW : 
-			timesig((start/mused.sequenceview_steps+s), 
-				((i < mused.song.song_length) ? COLOR_SEQUENCE_BAR : COLOR_SEQUENCE_BAR_DISABLED),
-				((i < mused.song.song_length) ? COLOR_SEQUENCE_BEAT : COLOR_SEQUENCE_BEAT_DISABLED), 
-				((i < mused.song.song_length) ? COLOR_SEQUENCE_NORMAL : COLOR_SEQUENCE_NORMAL_DISABLED)), CON_CHARACTER);
+		console_set_color(mused.console,(mused.current_sequencepos == i) ? colors[COLOR_SEQUENCE_SELECTED] : 
+			(i < mused.song.song_length) ? timesig((start/mused.sequenceview_steps+s), 
+				colors[COLOR_SEQUENCE_BAR],	colors[COLOR_SEQUENCE_BEAT], colors[COLOR_SEQUENCE_NORMAL]) : colors[COLOR_SEQUENCE_DISABLED], CON_CHARACTER);
 		console_set_background(mused.console, 0);
 		
 		if (mused.current_sequencepos == i)
@@ -261,15 +271,19 @@ void sequence_view(const SDL_Rect *dest, const SDL_Event *event, void *param)
 		
 		console_write_args(mused.console, "%04X", i);
 		
-		pos.x += 4;
-		pos.w -= 4;
+		pos.x += POS_WIDTH;
+		pos.w = POS_WIDTH;
 		
-		console_set_clip(mused.console, &pos);
+		int first = mused.sequence_horiz_position;
+		int last = 0;
 		
-		for (int c = 0 ; c < MUS_CHANNELS ; ++c)
+		for (int c = mused.sequence_horiz_position ; c < mused.song.num_channels && pos.x <= content.w + content.x ; ++c)
 		{
+			first = my_min(first, c);
+			if (pos.x + pos.w <= content.w + content.x) last = c;
+			console_set_clip(mused.console, &pos);
+			console_reset_cursor(mused.console);
 			console_set_background(mused.console, 0);
-			Uint32 bg = 0;
 			
 			sprintf(text, "--");
  			
@@ -309,7 +323,9 @@ void sequence_view(const SDL_Rect *dest, const SDL_Event *event, void *param)
 			}
 			
 			SDL_Rect r;
-			copy_rect(&r, console_write_args(mused.console,"%*s", (mused.mode == EDITCLASSIC && (mused.flags & COMPACT_VIEW)) ? -2 : -5, text));
+			copy_rect(&r, console_write_args(mused.console,"%*s", (mused.flags & COMPACT_VIEW) ? -2 : -5, text));
+			
+			clip_rect(&r, &content);
 			
 			check_event(event, &r, select_sequence_position, (void*)c, (void*)i, 0);
 			
@@ -336,11 +352,10 @@ void sequence_view(const SDL_Rect *dest, const SDL_Event *event, void *param)
 				}
 			}
 			
-			console_set_color(mused.console,bg,CON_BACKGROUND);
-			console_write(mused.console," ");
+			pos.x += CHANNEL_WIDTH;
 		}
 		
-		console_write(mused.console,"\n");
+		if (vert_scrollbar) slider_set_params(&mused.sequence_horiz_slider_param, 0, mused.song.num_channels-1, first, last, &mused.sequence_horiz_position, 1, SLIDER_HORIZONTAL);
 		
 		if (i < mused.song.song_length)
 			slider_set_params(&mused.sequence_slider_param, 0, mused.song.song_length - mused.sequenceview_steps, start, i, &mused.sequence_position, mused.sequenceview_steps, SLIDER_VERTICAL);
@@ -365,6 +380,11 @@ void sequence_view(const SDL_Rect *dest, const SDL_Event *event, void *param)
 	bevel(&loop, mused.slider_bevel, BEV_SEQUENCE_LOOP);
 		
 	SDL_SetClipRect(mused.console->surface, NULL);
+	
+	if (vert_scrollbar) 
+	{
+		slider(&scrollbar, event, &mused.sequence_horiz_slider_param); 
+	}
 }
 
 
@@ -379,15 +399,12 @@ static void update_pattern_cursor(const SDL_Rect *area, SDL_Rect *selected_rect,
 }
 
 
-void pattern_view_inner(const SDL_Rect *dest, const SDL_Event *event, int current_pattern, int channel)
+void pattern_view_inner(const SDL_Rect *dest, const SDL_Rect *limits, const SDL_Event *event, int current_pattern, int channel)
 {
 	SDL_Rect content;
 	copy_rect(&content, dest);
 	adjust_rect(&content, 2);
 	
-	SDL_SetClipRect(mused.console->surface, &content);
-	
-	console_set_color(mused.console,0x00000000,CON_BACKGROUND);
 	console_set_clip(mused.console, &content);
 	console_clear(mused.console);
 	
@@ -396,10 +413,13 @@ void pattern_view_inner(const SDL_Rect *dest, const SDL_Event *event, int curren
 	
 	int start = mused.pattern_position;
 	
-	console_set_color(mused.console,0xff808080,CON_CHARACTER);
-	
 	SDL_Rect selected_rect = { 0 };
 	int selection_begin = -1, selection_end = -1;
+	
+	SDL_Rect clipped;
+	copy_rect(&clipped, &content);
+	clip_rect(&clipped, limits);
+	SDL_SetClipRect(mused.console->surface, &clipped);
 	
 	for (int i = start, y = 0 ; i < mused.song.pattern[current_pattern].num_steps && y < content.h; ++i, y += mused.console->font.h)
 	{
@@ -410,16 +430,12 @@ void pattern_view_inner(const SDL_Rect *dest, const SDL_Event *event, int curren
 		if (mused.current_patternstep == i)
 		{
 			bevel(&row, mused.slider_bevel, BEV_SELECTED_PATTERN_ROW);
-			console_set_color(mused.console, 0xffffffff, CON_CHARACTER);
+			console_set_color(mused.console, colors[COLOR_PATTERN_SELECTED], CON_CHARACTER);
 		}
 		else
 		{
-			console_set_color(mused.console, timesig(i, 0xffffffff, 0xffffffc0, 0xffc0c0c0), CON_CHARACTER);
+			console_set_color(mused.console, timesig(i, colors[COLOR_PATTERN_BAR], colors[COLOR_PATTERN_BEAT], colors[COLOR_PATTERN_NORMAL]), CON_CHARACTER);
 		}
-		
-		console_set_background(mused.console, 0);
-		
-		Uint32 bg = 0;
 		
 		if (current_pattern == mused.current_pattern && mused.focus == EDITPATTERN)
 		{
@@ -444,8 +460,10 @@ void pattern_view_inner(const SDL_Rect *dest, const SDL_Event *event, int curren
 			r = console_write(mused.console, notename(mused.song.pattern[current_pattern].step[i].note));
 			
 		update_pattern_cursor(r, &selected_rect, current_pattern, i, PED_NOTE);
-			
-		check_event(event, r, select_pattern_param, (void*)PED_NOTE, (void*)i, (void*)current_pattern);
+		copy_rect(&clipped, r);
+		clip_rect(&clipped, &content);
+		
+		check_event(event, &clipped, select_pattern_param, (void*)PED_NOTE, (void*)i, (void*)current_pattern);
 		
 		if (!(mused.flags & COMPACT_VIEW)) mused.console->clip.x += 4;
 		
@@ -454,7 +472,10 @@ void pattern_view_inner(const SDL_Rect *dest, const SDL_Event *event, int curren
 		else
 			r = console_write(mused.console, ".");
 			
-		check_event(event, r, select_pattern_param, (void*)PED_INSTRUMENT1, (void*)i, (void*)current_pattern);
+		copy_rect(&clipped, r);
+		clip_rect(&clipped, &content);
+			
+		check_event(event, &clipped, select_pattern_param, (void*)PED_INSTRUMENT1, (void*)i, (void*)current_pattern);
 		
 		update_pattern_cursor(r, &selected_rect, current_pattern, i, PED_INSTRUMENT1);
 		
@@ -463,7 +484,10 @@ void pattern_view_inner(const SDL_Rect *dest, const SDL_Event *event, int curren
 		else
 			r = console_write(mused.console, ".");
 			
-		check_event(event, r, select_pattern_param, (void*)PED_INSTRUMENT2, (void*)i, (void*)current_pattern);
+		copy_rect(&clipped, r);
+		clip_rect(&clipped, &content);
+			
+		check_event(event, &clipped, select_pattern_param, (void*)PED_INSTRUMENT2, (void*)i, (void*)current_pattern);
 		
 		update_pattern_cursor(r, &selected_rect, current_pattern, i, PED_INSTRUMENT2);
 		
@@ -474,22 +498,24 @@ void pattern_view_inner(const SDL_Rect *dest, const SDL_Event *event, int curren
 			for (int p = PED_CTRL ; p < PED_COMMAND1 ; ++p)
 			{
 				char *bitname = "LSV";
+				r = console_write_args(mused.console, "%c", mused.song.pattern[current_pattern].step[i].ctrl & (MUS_CTRL_BIT << (p - PED_CTRL)) ? bitname[p - PED_CTRL] : '.');
+				copy_rect(&clipped, r);
+				clip_rect(&clipped, &content);
 			
-				console_set_color(mused.console,(mused.current_pattern == current_pattern && mused.current_patternstep == i && mused.current_patternx == p)?BG_CURSOR:bg,CON_BACKGROUND);
-				check_event(event, r = console_write_args(mused.console, "%c", mused.song.pattern[current_pattern].step[i].ctrl & (MUS_CTRL_BIT << (p - PED_CTRL)) ? bitname[p - PED_CTRL] : '.'), 
-					select_pattern_param, (void*)p, (void*)i, (void*)current_pattern);
+				check_event(event, &clipped, select_pattern_param, (void*)p, (void*)i, (void*)current_pattern);
 				update_pattern_cursor(r, &selected_rect, current_pattern, i, p);
 			}
 			
-			console_set_color(mused.console,bg,CON_BACKGROUND);
 			mused.console->clip.x += 4;
 		}
 		
 		for (int p = 0 ; p < 4 ; ++p)
 		{
-			console_set_color(mused.console,(mused.current_pattern == current_pattern && mused.current_patternstep == i && mused.current_patternx == (PED_COMMAND1+p))?BG_CURSOR:bg,CON_BACKGROUND);
-			check_event(event, r = console_write_args(mused.console, "%X", (mused.song.pattern[current_pattern].step[i].command >> ((3-p)*4)) & 0xf), 
-				select_pattern_param, (void*)(PED_COMMAND1 + p), (void*)i, (void*)current_pattern);
+			r = console_write_args(mused.console, "%X", (mused.song.pattern[current_pattern].step[i].command >> ((3-p)*4)) & 0xf);
+			copy_rect(&clipped, r);
+			clip_rect(&clipped, &content);
+			
+			check_event(event, &clipped, select_pattern_param, (void*)(PED_COMMAND1 + p), (void*)i, (void*)current_pattern);
 			update_pattern_cursor(r, &selected_rect, current_pattern, i, PED_COMMAND1 + p);
 		}
 		
@@ -553,11 +579,11 @@ void pattern_view_stepcounter(const SDL_Rect *dest, const SDL_Event *event, void
 		{
 			SDL_Rect row = { content.x - 2, content.y + y - 1, content.w + 4, mused.console->font.h + 1};
 			bevel(&row, mused.slider_bevel, BEV_SELECTED_PATTERN_ROW);
-			console_set_color(mused.console, 0xffffffff, CON_CHARACTER);
+			console_set_color(mused.console, colors[COLOR_PATTERN_SELECTED], CON_CHARACTER);
 		}
 		else
 		{
-			console_set_color(mused.console, timesig(row, 0xffffffff, 0xffffffc0, 0xffc0c0c0), CON_CHARACTER);
+			console_set_color(mused.console, timesig(row, colors[COLOR_PATTERN_BAR], colors[COLOR_PATTERN_BEAT], colors[COLOR_PATTERN_NORMAL]), CON_CHARACTER);
 		}
 		
 		console_write_args(mused.console, "%03X\n", row);
@@ -624,7 +650,7 @@ void pattern_view(const SDL_Rect *dest, const SDL_Event *event, void *param)
 {
 	int pv = 0;
 	
-	for (int i = 0 ; i < MUS_CHANNELS ; ++i)
+	for (int i = 0 ; i < mused.song.num_channels ; ++i)
 	{
 		if (mused.ghost_pattern[i] != NULL)
 		{
@@ -680,10 +706,10 @@ void pattern_view(const SDL_Rect *dest, const SDL_Event *event, void *param)
 	pos.x += pos.w - 2;
 	pos.w = pattern_width;
 	
-	slider_set_params(&mused.pattern_horiz_slider_param, 0, 0, 0, MUS_CHANNELS - 1, &mused.pattern_horiz_position, 1, SLIDER_HORIZONTAL);
+	slider_set_params(&mused.pattern_horiz_slider_param, 0, 0, 0, mused.song.num_channels - 1, &mused.pattern_horiz_position, 1, SLIDER_HORIZONTAL);
 	
-	int first = MUS_CHANNELS, last = 0;
-	for (int i = 0 ; i < MUS_CHANNELS ; ++i)
+	int first = mused.song.num_channels, last = 0;
+	for (int i = 0 ; i < mused.song.num_channels && pos.x < dest->w + dest->x ; ++i)
 	{
 		if (mused.ghost_pattern[i] != NULL)
 		{
@@ -697,7 +723,7 @@ void pattern_view(const SDL_Rect *dest, const SDL_Event *event, void *param)
 				// Only consider fully visible pattern drawn
 				if (pos.x + pos.w < dest->x + dest->w) last = my_max(last, i);
 				
-				pattern_view_inner(&pos, event, *mused.ghost_pattern[i], i);
+				pattern_view_inner(&pos, dest, event, *mused.ghost_pattern[i], i);
 				pos.x += pos.w - 2;
 								
 				if (vert_scrollbar) slider_set_params(&mused.pattern_horiz_slider_param, 0, pv - 1, first, last, &mused.pattern_horiz_position, 1, SLIDER_HORIZONTAL);
@@ -719,7 +745,7 @@ void pattern_view(const SDL_Rect *dest, const SDL_Event *event, void *param)
 		
 		pattern_header(event, pos.x, -1, &button_topleft, pattern_width, &mused.current_pattern);
 	
-		pattern_view_inner(&pos, event, mused.current_pattern, -1);
+		pattern_view_inner(&pos, dest, event, mused.current_pattern, -1);
 	}
 }
 
@@ -782,6 +808,9 @@ void info_view(const SDL_Rect *dest, const SDL_Event *event, void *param)
 	update_rect(&area, &r);
 	d = generic_field(event, &r, 0, "OCT","%02X", MAKEPTR(mused.octave), 2);
 	if (d) change_octave((void*)d, 0, 0);
+	update_rect(&area, &r);
+	d = generic_field(event, &r, 0, "CHNS","%02X", MAKEPTR(mused.song.num_channels), 2);
+	if (d) change_channels((void*)d, 0, 0);
 	update_rect(&area, &r);
 }
 
@@ -854,8 +883,7 @@ void info_line(const SDL_Rect *dest, const SDL_Event *event, void *param)
 	bevel(&area, mused.slider_bevel, BEV_THIN_FRAME);
 	adjust_rect(&area, 3);
 	console_set_clip(mused.console, &area);
-	console_set_color(mused.console,0x00000000,CON_BACKGROUND);
-	console_set_color(mused.console,0xffffffff,CON_CHARACTER);
+	console_set_color(mused.console,colors[COLOR_NORMAL],CON_CHARACTER);
 	
 	console_clear(mused.console);
 	
@@ -977,12 +1005,11 @@ void program_view(const SDL_Rect *dest, const SDL_Event *event, void *param)
 	
 		if (mused.current_program_step == i && mused.focus == EDITPROG)
 		{
-			console_set_color(mused.console,0xffffffff,CON_CHARACTER);
 			bevel(&row, mused.slider_bevel, BEV_SELECTED_PATTERN_ROW);
-			console_set_color(mused.console, 0xffffffff, CON_CHARACTER);
+			console_set_color(mused.console, colors[COLOR_PROGRAM_SELECTED], CON_CHARACTER);
 		}
 		else
-			console_set_color(mused.console,pos & 1 ? 0xffc0c0c0 : 0xffd0d0d0,CON_CHARACTER);
+			console_set_color(mused.console,pos & 1 ? colors[COLOR_PROGRAM_ODD] : colors[COLOR_PROGRAM_EVEN],CON_CHARACTER);
 			
 		if (i <= mused.selection.start)
 		{
@@ -1086,7 +1113,7 @@ static void inst_text(const SDL_Event *e, const SDL_Rect *area, int p, const cha
 
 static void inst_field(const SDL_Event *e, const SDL_Rect *area, int p, int length, char *text)
 {
-	console_set_color(mused.console,0xffffffff,CON_CHARACTER);
+	console_set_color(mused.console,colors[COLOR_NORMAL],CON_CHARACTER);
 	console_set_clip(mused.console, area);
 	console_clear(mused.console);
 	
@@ -1294,11 +1321,11 @@ void instrument_list(const SDL_Rect *dest, const SDL_Event *event, void *param)
 		{
 			SDL_Rect row = { area.x - 1, y - 1, area.w + 2, mused.console->font.h + 1};
 			bevel(&row, mused.slider_bevel, BEV_SELECTED_PATTERN_ROW);
-			console_set_color(mused.console, 0xffffffff, CON_CHARACTER);
+			console_set_color(mused.console, colors[COLOR_INSTRUMENT_SELECTED], CON_CHARACTER);
 		}
 		else
 		{
-			console_set_color(mused.console, 0xffc0c0c0, CON_CHARACTER);
+			console_set_color(mused.console, colors[COLOR_INSTRUMENT_NORMAL], CON_CHARACTER);
 		}
 			
 		check_event(event, console_write_args(mused.console, "%02X %-16s\n", i, mused.song.instrument[i].name), select_instrument, (void*)i, 0, 0);
@@ -1383,7 +1410,7 @@ void instrument_disk_view(const SDL_Rect *dest, const SDL_Event *event, void *pa
 	bevel(&area, mused.slider_bevel, BEV_BACKGROUND);
 	adjust_rect(&area, 2);
 	
-	SDL_Rect button = { area.x, area.y, 50, area.h };
+	SDL_Rect button = { area.x + 2, area.y, area.w / 2 - 4, area.h };
 	
 	button_text_event(event, &button, mused.slider_bevel, BEV_BUTTON, BEV_BUTTON_ACTIVE, "LOAD", open_song_action, NULL, NULL, NULL);
 	update_rect(&area, &button);

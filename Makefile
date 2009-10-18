@@ -8,6 +8,7 @@ ZIP = pkzipc -zipdate=newest -path=relative -silent -rec -dir -add
 ZIPEXT = pkzipc -ext -silent
 WGET = wget --quiet
 REV = SubWCRev.exe
+UPLOAD = cmd.exe /c upload.bat
 
 # The directories containing the source files, separated by ':'
 
@@ -66,7 +67,7 @@ build:
 
 all:	inform bin.$(CFG)/$(TARGET) res/data
 
-.PHONY: zip all build
+.PHONY: zip all build nightly
 
 zip: doc/* res/data zip/data/SDL.dll zip/data/SDL_mixer.dll
 	make -C ../klystron CFG=release
@@ -77,6 +78,14 @@ zip: doc/* res/data zip/data/SDL.dll zip/data/SDL_mixer.dll
 	cp doc/SDL.txt zip/data/SDL.txt
 	cp bin.release/$(TARGET) zip/data/$(TARGET)
 	cd zip/data; $(ZIP) ../$(ARCHIVE) "*"
+	
+nightly: zip
+	$(REV) . ver.in ver.txt
+	cp zip/$(ARCHIVE) zip/klystrack-nightly-`cat ver.txt`.zip
+ifneq ($(UPLOAD),)
+	$(UPLOAD) zip/klystrack-nightly-`cat ver.txt`.zip
+endif
+	rm -f ver.txt
 	
 inform:
 	@echo "Configuration "$(CFG)
@@ -98,9 +107,10 @@ deps/Group0_$(CFG)_%.d: %.c
 		< $@.$$$$ > $@; \
 	rm -f $@.$$$$
 	
-res/data: data/bevel.bmp temp/8x8.fnt temp/7x6.fnt
+res/data: data/bevel.bmp temp/8x8.fnt temp/7x6.fnt data/colors.txt
 	@mkdir -p res
 	@mkdir -p temp
+	cp -f data/colors.txt temp
 	cp -f data/bevel.bmp temp
 	../klystron/tools/bin/makebundle res/data temp
 
@@ -123,7 +133,7 @@ zip/data/SDL_mixer.dll:
 	mv temp/SDL_mixer.dll zip/data/SDL_mixer.dll
 		
 clean:
-	@rm -rf deps objs.release objs.debug objs.profile bin.release bin.debug bin.profile res temp zip
+	@rm -rf deps objs.release objs.debug objs.profile bin.release bin.debug bin.profile res temp zip ver.txt
 
 # Unless "make clean" is called, include the dependency files
 # which are auto-generated. Don't fail if they are missing
