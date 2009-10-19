@@ -29,56 +29,17 @@ OTHER DEALINGS IN THE SOFTWARE.
 #include <windows.h>
 
 
-FILE *open_dialog(const char *mode, wchar_t *title, wchar_t *filter)
+FILE *open_dialog(const char *mode, char *title, char *filter)
 {
-	//filebox("Open", FB_OPEN);
-	
-	OPENFILENAMEW ofn;
-	memset(&ofn,0,sizeof(OPENFILENAMEW));
-	ofn.lStructSize = sizeof(OPENFILENAMEW);
-	wchar_t szFile[5000];
-	szFile[0]=L'\0';
-	ofn.lpstrFile = szFile;
-	ofn.hwndOwner=0;
-	ofn.nMaxFile = sizeof(szFile);
-	ofn.lpstrTitle = title;
-	ofn.lpstrFileTitle = NULL;
-	ofn.nMaxFileTitle = 0;
-	ofn.Flags =OFN_HIDEREADONLY | ((mode[0] == 'r')?OFN_FILEMUSTEXIST|OFN_PATHMUSTEXIST:OFN_OVERWRITEPROMPT);
-	
-	ofn.lpstrFilter = filter;
-	ofn.nFilterIndex = 2;
-	
-	wchar_t *wmode;
-	
-	if (strcmp(mode,"r") == 0)
-		wmode = L"r";
-	else if (strcmp(mode,"rb") == 0)
-		wmode = L"rb";
-	else if (strcmp(mode,"w") == 0)
-		wmode = L"w";
-	else if (strcmp(mode,"wb") == 0)
-		wmode = L"wb";
-	else return NULL;
-		
-	if (mode[0] == 'w')
+	char filename[5000];
+	if (filebox(title, mode[0] == 'w' ? FB_SAVE : FB_OPEN, filename, sizeof(filename)) == FB_OK)
 	{
-		if (GetSaveFileNameW(&ofn))
-			return _wfopen(szFile, wmode);
-		else
-			return NULL;
+		FILE * f = fopen(filename, mode);
+		if (!f) msgbox("Could not open file", MB_OK);
+		return f;
 	}
-	else	
-	{
-		if (GetOpenFileNameW(&ofn)) {
-			return _wfopen(szFile, wmode);
-		}
-		else
-			return NULL;
-
-	}
-	
-	return NULL;
+	else
+		return NULL;
 }
 
 

@@ -29,6 +29,8 @@ OTHER DEALINGS IN THE SOFTWARE.
 enum { FB_CANCEL = 1, FB_OK = 2 };
 enum { FB_SAVE, FB_OPEN };
 
-int filebox(const char *title, int mode);
+#include <stdlib.h>
+
+int filebox(const char *title, int mode, char *buffer, size_t buffer_size);
 
 #endif

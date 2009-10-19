@@ -31,6 +31,7 @@ OTHER DEALINGS IN THE SOFTWARE.
 #include "mused.h"
 #include "view.h"
 #include "mouse.h"
+#include "event.h"
 #include <dirent.h>
 #include <sys/stat.h>
 
@@ -59,7 +60,8 @@ static struct
 	File *files;
 	int n_files;
 	SliderParam scrollbar;
-	int list_position;
+	int list_position, selected_file;
+	File * picked_file;
 } data;
 
 static void file_list_view(const SDL_Rect *area, const SDL_Event *event, void *param);
@@ -73,6 +75,13 @@ static const View filebox_view[] =
 	{{ TOP_LEFT + WIDTH - MARGIN - SCROLLBAR, TOP_RIGHT + MARGIN + TITLE, SCROLLBAR, HEIGHT - MARGIN * 2 - TITLE }, slider, &data.scrollbar, -1},
 	{{0, 0, 0, 0}, NULL}
 };
+
+
+static void pick_file_action(void *file, void *unused1, void *unused2)
+{
+	if (data.selected_file == (int)file) data.picked_file = &data.files[(int)file];
+	data.selected_file = (int)file;
+}
 
 
 void title_view(const SDL_Rect *area, const SDL_Event *event, void *param)
@@ -95,12 +104,19 @@ void file_list_view(const SDL_Rect *area, const SDL_Event *event, void *param)
 	
 	for (int i = data.list_position ; i < data.n_files && pos.y < content.h + content.y ; ++i)
 	{
+		if (data.selected_file == i)
+		{
+			bevel(&pos, mused.slider_bevel, BEV_SELECTED_PATTERN_ROW);
+		}
+	
 		if (data.files[i].type == FB_FILE)
 			font_write(&mused.largefont, mused.console->surface, &pos, data.files[i].name);
 		else
 			font_write_args(&mused.largefont, mused.console->surface, &pos, "½%s", data.files[i].name);
 		
 		if (pos.y + pos.h <= content.h + content.y) slider_set_params(&data.scrollbar, 0, data.n_files - 1, data.list_position, i, &data.list_position, 1, SLIDER_VERTICAL);
+		
+		check_event(event, &pos, pick_file_action, (void*)i, 0, 0);
 		
 		update_rect(&content, &pos);
 	}
@@ -142,9 +158,19 @@ static int file_sorter(const void *_left, const void *_right)
 }
 
 
-static void populate_files(const char *dirname)
+static int populate_files(const char *dirname)
 {
-	DIR * dir = opendir(dirname);
+	debug("Opening directory %s", dirname);
+
+	chdir(dirname);
+	DIR * dir = opendir(".");
+	
+	if (!dir)
+	{
+		msgbox("Could not open directory", MB_OK);
+		return 0;
+	}
+	
 	struct dirent *de = NULL;
 	
 	free_files();
@@ -157,7 +183,7 @@ static void populate_files(const char *dirname)
 		
 		if (stat(de->d_name, &attribute) != -1)
 		{		
-			if (de->d_name[0] != '.')
+			if (de->d_name[0] != '.' || strcmp(de->d_name, "..") == 0)
 			{
 				const int block_size = 256;
 			
@@ -174,22 +200,49 @@ static void populate_files(const char *dirname)
 	
 	closedir(dir);
 	
+	debug("Got %d files", data.n_files);
+	
+	data.selected_file = 0;
+	data.list_position = 0;
+	
 	qsort(data.files, data.n_files, sizeof(*data.files), file_sorter);
+	
+	return 1;
 }
 
 
-int filebox(const char *title, int mode)
+int filebox(const char *title, int mode, char *buffer, size_t buffer_size)
 {
 	set_repeat_timer(NULL);
 	
 	memset(&data, 0, sizeof(data));
 	data.title = title;
 	data.mode = mode;
+	data.picked_file = NULL;
 	
-	populate_files(".");
+	if (!populate_files(".")) return FB_CANCEL;
 	
 	while (1)
 	{
+		if (data.picked_file)
+		{
+			if (data.picked_file->type == FB_DIRECTORY && !populate_files(data.picked_file->name)) 
+			{
+				return FB_CANCEL;
+			}
+			else if (data.picked_file->type == FB_FILE)
+			{
+				if (mode == FB_SAVE && msgbox("Overwrite?", MB_YES|MB_NO) == MB_YES)
+				{
+					strncpy(buffer, data.picked_file->name, buffer_size);
+					free_files();
+					return FB_OK;
+				}
+			}
+		}
+	
+		data.picked_file = NULL;
+		
 		SDL_Event e = { 0 };
 		int got_event = 0;
 		while (SDL_PollEvent(&e))
@@ -209,9 +262,16 @@ int filebox(const char *title, int mode)
 						
 						case SDLK_RETURN:
 						
-						free_files();
-						return FB_OK;
+						data.picked_file = &data.files[data.selected_file];
 						
+						break;
+						
+						case SDLK_DOWN:
+						move_position(&data.selected_file, &data.list_position, &data.scrollbar, 1, data.n_files);
+						break;
+						
+						case SDLK_UP:
+						move_position(&data.selected_file, &data.list_position, &data.scrollbar, -1, data.n_files);
 						break;
 						
 						default: break;
