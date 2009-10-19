@@ -32,7 +32,7 @@ OTHER DEALINGS IN THE SOFTWARE.
 
 extern Mused mused;
 
-#define clamp(val, add, _min, _max) { if ((int)val+(add) > _max) val = _max; else if ((int)val+(add) < _min) val = _min; else val+=(add); } 
+#define clamp(val, add, _min, _max) { if (((int)val)+(add) > _max) val = _max; else if (((int)val)+(add) < _min) val = _min; else val+=(add); } 
 #define flipbit(val, bit) { val ^= bit; };
 
 
@@ -1108,7 +1108,7 @@ void edit_program_event(SDL_Event *e)
 }
 
 
-void edit_text(SDL_Event *e)
+int generic_edit_text(SDL_Event *e, char *edit_buffer, size_t edit_buffer_size, int *editpos)
 {
 	switch (e->type)
 	{
@@ -1117,46 +1117,59 @@ void edit_text(SDL_Event *e)
 		switch (e->key.keysym.sym)
 		{
 			case SDLK_ESCAPE:
-			{
-				strcpy(mused.edit_buffer, mused.edit_backup_buffer);
-				change_mode(mused.prev_mode);
-			}
+				return -1;
 			break;
 			
 			case SDLK_RETURN:
-			{
-				change_mode(mused.prev_mode);
-			}
+				return 1;
 			break;
-			
+		
 			case SDLK_BACKSPACE:
-				clamp(mused.editpos, -1, 0, mused.edit_buffer_size - 1);
+				clamp(*editpos, -1, 0, edit_buffer_size - 1);
 				/* Fallthru */
 			case SDLK_DELETE:
-				memmove(&mused.edit_buffer[mused.editpos], &mused.edit_buffer[mused.editpos + 1], mused.edit_buffer_size - mused.editpos);
-				mused.edit_buffer[mused.edit_buffer_size - 1] = '\0';
+				memmove(&edit_buffer[*editpos], &edit_buffer[*editpos + 1], edit_buffer_size - *editpos);
+				edit_buffer[edit_buffer_size - 1] = '\0';
 			break;
 		
 			case SDLK_LEFT:
 			case SDLK_RIGHT:
 			{ 
-				clamp(mused.editpos, e->key.keysym.sym == SDLK_LEFT ? -1 : +1, 0, my_min(mused.edit_buffer_size-1, strlen(mused.edit_buffer)));
+				clamp(*editpos, e->key.keysym.sym == SDLK_LEFT ? -1 : +1, 0, my_min(edit_buffer_size-1, strlen(edit_buffer)));
 			}
 			break;
 		
 			default:
 			{
-				if (mused.editpos < mused.edit_buffer_size && isprint(e->key.keysym.unicode))
+				if (*editpos < edit_buffer_size && isprint(e->key.keysym.unicode))
 				{
-					memmove(&mused.edit_buffer[mused.editpos + 1], &mused.edit_buffer[mused.editpos], mused.edit_buffer_size - mused.editpos);
-					mused.edit_buffer[mused.editpos] = e->key.keysym.unicode;
-					clamp(mused.editpos, +1, 0,mused.edit_buffer_size);
+					memmove(&edit_buffer[*editpos + 1], &edit_buffer[*editpos], edit_buffer_size - *editpos);
+					edit_buffer[*editpos] = e->key.keysym.unicode;
+					clamp(*editpos, +1, 0,edit_buffer_size);
 				}
 			}
 			break;
 		}
 		
 		break;
+	}
+	
+	return 0;
+}
+
+
+void edit_text(SDL_Event *e)
+{
+	int r = generic_edit_text(e, mused.edit_buffer, mused.edit_buffer_size, &mused.editpos);
+	
+	if (r == -1)
+	{
+		strcpy(mused.edit_buffer, mused.edit_backup_buffer);
+		change_mode(mused.prev_mode);
+	}
+	else if (r == 1)
+	{
+		change_mode(mused.prev_mode);
 	}
 }
 

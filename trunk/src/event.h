@@ -34,6 +34,7 @@ void sequence_event(SDL_Event *e);
 void pattern_event(SDL_Event *e);
 void edit_program_event(SDL_Event *e);
 void edit_text(SDL_Event *e);
+int generic_edit_text(SDL_Event *e, char *edit_buffer, size_t edit_buffer_size, int *editpos);
 void reverb_event(SDL_Event *e);
 void reverb_add_param(int d);
 void instrument_add_param(int a);
