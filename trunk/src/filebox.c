@@ -44,10 +44,19 @@ extern Mused mused;
 #define MARGIN 8
 #define TITLE 14
 
+enum { FB_DIRECTORY, FB_FILE };
+
+typedef struct
+{
+	int type;
+	char *name;
+} File;
+
 static struct
 {
+	int mode;
 	const char *title;
-	char **files;
+	File *files;
 	int n_files;
 	SliderParam scrollbar;
 	int list_position;
@@ -86,7 +95,10 @@ void file_list_view(const SDL_Rect *area, const SDL_Event *event, void *param)
 	
 	for (int i = data.list_position ; i < data.n_files && pos.y < content.h + content.y ; ++i)
 	{
-		font_write(&mused.largefont, mused.console->surface,  &pos, data.files[i]);
+		if (data.files[i].type == FB_FILE)
+			font_write(&mused.largefont, mused.console->surface, &pos, data.files[i].name);
+		else
+			font_write_args(&mused.largefont, mused.console->surface, &pos, "½%s", data.files[i].name);
 		
 		if (pos.y + pos.h <= content.h + content.y) slider_set_params(&data.scrollbar, 0, data.n_files - 1, data.list_position, i, &data.list_position, 1, SLIDER_VERTICAL);
 		
@@ -101,14 +113,32 @@ static void free_files()
 {
 	if (data.files) 
 	{
-		for (int i = 0 ; data.files[i] ; ++i)
-			free(data.files[i]);
+		for (int i = 0 ; i < data.n_files ; ++i)
+			free(data.files[i].name);
 		free(data.files);
 	}
 	
 	data.files = NULL;
 	data.n_files = 0;
 	data.list_position = 0;
+}
+
+
+static int file_sorter(const void *_left, const void *_right)
+{
+	// directories come before files, otherwise case-insensitive name sorting
+
+	const File *left = _left;
+	const File *right = _right;
+	
+	if (left->type == right->type)
+	{
+		return stricmp(left->name, right->name);
+	}
+	else
+	{
+		return left->type > right->type ? 1 : -1;
+	}
 }
 
 
@@ -123,13 +153,28 @@ static void populate_files(const char *dirname)
 		
 	while ((de = readdir(dir)) != NULL)
 	{
-		if ((data.n_files & 255) == 0)
-			data.files = realloc(data.files, sizeof(char*) * (data.n_files + 256));
+		struct stat attribute;
 		
-		data.files[data.n_files++] = strdup(de->d_name);
+		if (stat(de->d_name, &attribute) != -1)
+		{		
+			if (de->d_name[0] != '.')
+			{
+				const int block_size = 256;
+			
+				if ((data.n_files & (block_size - 1)) == 0)
+					data.files = realloc(data.files, sizeof(*data.files) * (data.n_files + block_size));
+			
+				data.files[data.n_files].type = ( attribute.st_mode & S_IFDIR ) ? FB_DIRECTORY : FB_FILE;
+				data.files[data.n_files].name = strdup(de->d_name);
+			
+				++data.n_files;
+			}
+		}
 	}
 	
 	closedir(dir);
+	
+	qsort(data.files, data.n_files, sizeof(*data.files), file_sorter);
 }
 
 
@@ -139,6 +184,7 @@ int filebox(const char *title, int mode)
 	
 	memset(&data, 0, sizeof(data));
 	data.title = title;
+	data.mode = mode;
 	
 	populate_files(".");
 	
