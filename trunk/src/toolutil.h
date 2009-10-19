@@ -28,7 +28,7 @@ OTHER DEALINGS IN THE SOFTWARE.
 
 #include <stdio.h>
 
-FILE *open_dialog(const char *mode, wchar_t *title, wchar_t *filter);
+FILE *open_dialog(const char *mode, char *title, char *filter);
 int confirm(const char *msg);
 int confirm_ync(const char *msg);
 

@@ -27,6 +27,7 @@ OTHER DEALINGS IN THE SOFTWARE.
 #include "toolutil.h"
 #include "mused.h"
 #include "macros.h"
+#include "msgbox.h"
 
 extern Mused mused;
 
@@ -67,7 +68,7 @@ int save_data()
 		case EDITPROG:
 		case EDITINSTRUMENT:
 		{
-			FILE * f = open_dialog("wb", L"Save instrument", L"Instrument\0*.ins\0\0");
+			FILE * f = open_dialog("wb", "Save instrument", "Instrument\0*.ins\0\0");
 			
 			if (f)
 			{
@@ -88,7 +89,7 @@ int save_data()
 		
 		default:
 		{
-			FILE * f = open_dialog("wb", L"Save song", L"Song\0*.sng\0\0");
+			FILE * f = open_dialog("wb", "Save song", "Song\0*.sng\0\0");
 			
 			if (f)
 			{
@@ -168,11 +169,11 @@ void open_data()
 	{
 		case EDITINSTRUMENT:
 		{
-			FILE * f = open_dialog("rb", L"Load instrument", L"Instrument\0*.ins\0\0");
+			FILE * f = open_dialog("rb", "Load instrument", "Instrument\0*.ins\0\0");
 			
 			if (f)
 			{
-				mus_load_instrument_file2(f, &mused.song.instrument[mused.current_instrument]);
+				if (!mus_load_instrument_file2(f, &mused.song.instrument[mused.current_instrument])) msgbox("Could not load instrument", MB_OK);
 				
 				fclose(f);
 			}
@@ -183,11 +184,11 @@ void open_data()
 		{
 			new_song();
 		
-			FILE * f = open_dialog("rb", L"Load song", L"Song\0*.sng\0\0");
+			FILE * f = open_dialog("rb", "Load song", "Song\0*.sng\0\0");
 			
 			if (f)
 			{
-				mus_load_song_file(f, &mused.song);
+				if (!mus_load_song_file(f, &mused.song)) msgbox("Could not load song", MB_OK);
 				
 				fclose(f);
 				
