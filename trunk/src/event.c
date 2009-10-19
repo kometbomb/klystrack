@@ -39,6 +39,7 @@ extern Mused mused;
 static Uint16 validate_command(Uint16 command)
 {
 	if ((command & 0x7f00) == MUS_FX_SET_VOLUME && (command & 0xff) > MAX_VOLUME) command = MUS_FX_SET_VOLUME | MAX_VOLUME;
+	else if ((command & 0x7f00) == MUS_FX_SET_PANNING && (command & 0xff) > CYD_PAN_RIGHT) command = MUS_FX_SET_PANNING | CYD_PAN_RIGHT;
 	
 	return command;
 }
