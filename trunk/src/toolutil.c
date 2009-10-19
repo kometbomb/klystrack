@@ -84,18 +84,18 @@ FILE *open_dialog(const char *mode, wchar_t *title, wchar_t *filter)
 
 int confirm(const char *msg)
 {
-	return msgbox(msg, YES|NO) == YES; // MessageBox(0, msg, "Confirm", MB_YESNO) == IDYES;
+	return msgbox(msg, MB_YES|MB_NO) == MB_YES; // MessageBox(0, msg, "Confirm", MB_YESNO) == IDYES;
 }
 
 int confirm_ync(const char *msg)
 {
-	int r = msgbox(msg, YES|NO|CANCEL);
+	int r = msgbox(msg, MB_YES|MB_NO|MB_CANCEL);
 	
-	if (r == YES)
+	if (r == MB_YES)
 	{
 		return 1;
 	}
-	if (r == NO)
+	if (r == MB_NO)
 	{
 		return -1;
 	}

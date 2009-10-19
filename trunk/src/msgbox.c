@@ -51,7 +51,7 @@ static int draw_box(const SDL_Event *event, const char *msg, int buttons, int *s
 	update_rect(&content, &pos);
 	
 	int b = 0;
-	for (int i = 0 ; i < BUTTON_TYPES ; ++i)
+	for (int i = 0 ; i < MB_BUTTON_TYPES ; ++i)
 		if (buttons & (1 << i)) ++b;
 		
 	*selected = (*selected + b) % b;
@@ -64,7 +64,7 @@ static int draw_box(const SDL_Event *event, const char *msg, int buttons, int *s
 	static const char *label[] = { "YES", "NO", "CANCEL", "OK" };
 	int idx = 0;
 	
-	for (int i = 0 ; i < BUTTON_TYPES ; ++i)
+	for (int i = 0 ; i < MB_BUTTON_TYPES ; ++i)
 	{
 		if (buttons & (1 << i))
 		{
@@ -108,11 +108,11 @@ int msgbox(const char *msg, int buttons)
 					{
 						case SDLK_ESCAPE:
 						
-						if (buttons & CANCEL)
-							return CANCEL;
-						if (buttons & NO)
-							return NO;
-						return OK;
+						if (buttons & MB_CANCEL)
+							return MB_CANCEL;
+						if (buttons & MB_NO)
+							return MB_NO;
+						return MB_OK;
 						
 						break;
 						
