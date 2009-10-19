@@ -19,6 +19,8 @@
 || CTRL+s/o || save/open relevant data (song in sequence editor, instrument in instrument editor etc.) || 
 || CTRL+c/v / CTRL+ins/SHIFT+ins || copy/paste || 
 || CTRL+d || select nothing ||
+|| CTRL+b || begin selection at cursor ||
+|| CTRL+e || end selection at cursor ||
 || SHIFT+cursor || select || 
 || keypad plus/minus || select instrument || 
 || CTRL+keypad plus/minus || change song speed  || 
