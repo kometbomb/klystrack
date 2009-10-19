@@ -19,6 +19,9 @@ _{{{xx}}}, {{{yy}}} = parameter to command_
 || {{{12xx}}} || portamento down by one semitone ||
 || {{{21xx}}} || filter cutoff up ||
 || {{{22xx}}} || filter cutoff down ||
+|| {{{18xx}} || set stereo panning to xx, 0 = left, 64 = center, 128 = right ||
+|| {{{17xx}} || slide panning to left by xx ||
+|| {{{19xx}} || slide panning to right by xx ||
 || {{{07xx}}}  || pulse width down ||
 || {{{08xx}}} || pulse width up ||
 || {{{09xx}}} || set pulse width ||
