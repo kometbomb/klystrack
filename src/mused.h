@@ -50,6 +50,10 @@ enum
 #include "copypaste.h"
 #include "menu.h"
 
+#define SCREEN_WIDTH 320
+#define SCREEN_HEIGHT 240
+
+
 enum
 {
 	COMPACT_VIEW = 1,

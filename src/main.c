@@ -40,11 +40,8 @@ OTHER DEALINGS IN THE SOFTWARE.
 #include "menu.h"
 #include "shortcuts.h"
 #include "version.h"
-
-#define SCREEN_WIDTH 320
-#define SCREEN_HEIGHT 240
-
 #include "mused.h"
+
 Mused mused;
 
 /*---*/

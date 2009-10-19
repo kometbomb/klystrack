@@ -25,11 +25,14 @@ OTHER DEALINGS IN THE SOFTWARE.
 
 #include "toolutil.h"
 #include "msgbox.h"
+#include "filebox.h"
 #include <windows.h>
 
 
 FILE *open_dialog(const char *mode, wchar_t *title, wchar_t *filter)
 {
+	//filebox("Open", FB_OPEN);
+	
 	OPENFILENAMEW ofn;
 	memset(&ofn,0,sizeof(OPENFILENAMEW));
 	ofn.lStructSize = sizeof(OPENFILENAMEW);

@@ -178,6 +178,6 @@ int msgbox(const char *msg, int buttons)
 			}
 		}
 		else
-			SDL_Delay(1);
+			SDL_Delay(5);
 	}
 }
