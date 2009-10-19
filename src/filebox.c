@@ -44,8 +44,11 @@ extern Mused mused;
 #define TOP_RIGHT (SCREEN_HEIGHT / 2 - HEIGHT / 2)
 #define MARGIN 8
 #define TITLE 14
+#define FIELD 14
 
 enum { FB_DIRECTORY, FB_FILE };
+
+enum { FOCUS_LIST, FOCUS_FIELD };
 
 typedef struct
 {
@@ -62,17 +65,22 @@ static struct
 	SliderParam scrollbar;
 	int list_position, selected_file;
 	File * picked_file;
+	int focus;
+	char field[256];
+	int editpos;
 } data;
 
 static void file_list_view(const SDL_Rect *area, const SDL_Event *event, void *param);
 static void title_view(const SDL_Rect *area, const SDL_Event *event, void *param);
+static void field_view(const SDL_Rect *area, const SDL_Event *event, void *param);
 
 static const View filebox_view[] =
 {
 	{{ TOP_LEFT, TOP_RIGHT, WIDTH, HEIGHT }, bevel_view, (void*)BEV_MENU, -1},
-	{{ TOP_LEFT + MARGIN, TOP_RIGHT + MARGIN, WIDTH, TITLE }, title_view, &data, -1},
-	{{ TOP_LEFT + MARGIN, TOP_RIGHT + MARGIN + TITLE, WIDTH - MARGIN * 2 - SCROLLBAR, HEIGHT - MARGIN * 2 - TITLE }, file_list_view, &data, -1},
-	{{ TOP_LEFT + WIDTH - MARGIN - SCROLLBAR, TOP_RIGHT + MARGIN + TITLE, SCROLLBAR, HEIGHT - MARGIN * 2 - TITLE }, slider, &data.scrollbar, -1},
+	{{ TOP_LEFT + MARGIN, TOP_RIGHT + MARGIN, WIDTH - MARGIN * 2, TITLE - 2 }, title_view, &data, -1},
+	{{ TOP_LEFT + MARGIN, TOP_RIGHT + MARGIN + TITLE, WIDTH - MARGIN * 2, FIELD - 2 }, field_view, &data, -1},
+	{{ TOP_LEFT + MARGIN, TOP_RIGHT + MARGIN + TITLE + FIELD, WIDTH - MARGIN * 2 - SCROLLBAR, HEIGHT - MARGIN * 2 - TITLE - FIELD }, file_list_view, &data, -1},
+	{{ TOP_LEFT + WIDTH - MARGIN - SCROLLBAR, TOP_RIGHT + MARGIN + TITLE + FIELD, SCROLLBAR, HEIGHT - MARGIN * 2 - TITLE - FIELD }, slider, &data.scrollbar, -1},
 	{{0, 0, 0, 0}, NULL}
 };
 
@@ -81,6 +89,8 @@ static void pick_file_action(void *file, void *unused1, void *unused2)
 {
 	if (data.selected_file == (int)file) data.picked_file = &data.files[(int)file];
 	data.selected_file = (int)file;
+	data.focus = FOCUS_LIST;
+	strncpy(data.field, data.files[(int)file].name, sizeof(data.field));
 }
 
 
@@ -122,6 +132,18 @@ void file_list_view(const SDL_Rect *area, const SDL_Event *event, void *param)
 	}
 	
 	SDL_SetClipRect(mused.console->surface, NULL);
+}
+
+
+void field_view(const SDL_Rect *area, const SDL_Event *event, void *param)
+{
+	SDL_Rect content;
+	copy_rect(&content, area);
+	adjust_rect(&content, 1);
+	bevel(area, mused.slider_bevel, BEV_FIELD);
+	font_write(&mused.largefont, mused.console->surface, &content, data.field);
+	
+	if (check_event(event, area, NULL, 0, 0, 0)) data.focus = FOCUS_FIELD;
 }
 
 
@@ -249,32 +271,104 @@ int filebox(const char *title, int mode, char *buffer, size_t buffer_size)
 		{
 			switch (e.type)
 			{
+				case SDL_QUIT:
+				
+				SDL_PushEvent(&e);
+				free_files();
+				return FB_CANCEL;
+				
+				break;
+				
 				case SDL_KEYDOWN:
 				{
-					switch (e.key.keysym.sym)
+					if (data.focus == FOCUS_LIST)
 					{
-						case SDLK_ESCAPE:
+						switch (e.key.keysym.sym)
+						{
+							case SDLK_ESCAPE:
+							
+							free_files();
+							return FB_CANCEL;
+							
+							break;
+							
+							case SDLK_RETURN:
+							data.picked_file = &data.files[data.selected_file];
+							break;
+							
+							case SDLK_DOWN:
+							move_position(&data.selected_file, &data.list_position, &data.scrollbar, 1, data.n_files);
+							break;
+							
+							case SDLK_UP:
+							move_position(&data.selected_file, &data.list_position, &data.scrollbar, -1, data.n_files);
+							break;
+							
+							case SDLK_TAB:
+							data.focus = FOCUS_FIELD;
+							break;
+							
+							default: break;
+						}
+					}
+					else
+					{
+						switch (e.key.keysym.sym)
+						{
+							case SDLK_TAB:
+							data.focus = FOCUS_LIST;
+							break;
 						
-						free_files();
-						return FB_CANCEL;
-						
-						break;
-						
-						case SDLK_RETURN:
-						
-						data.picked_file = &data.files[data.selected_file];
-						
-						break;
-						
-						case SDLK_DOWN:
-						move_position(&data.selected_file, &data.list_position, &data.scrollbar, 1, data.n_files);
-						break;
-						
-						case SDLK_UP:
-						move_position(&data.selected_file, &data.list_position, &data.scrollbar, -1, data.n_files);
-						break;
-						
-						default: break;
+							default:
+							{
+								int r = generic_edit_text(&e, data.field, sizeof(data.field) - 1, &data.editpos);
+								if (r == 1)
+								{
+									struct stat attribute;
+				
+									int s = stat(data.field, &attribute);
+									
+									if (s != -1)
+									{
+										if (mode == FB_SAVE)
+										{
+											if (msgbox("Overwrite?", MB_YES|MB_NO) == MB_YES)
+											{
+												strncpy(buffer, data.field, buffer_size);
+												free_files();
+												return FB_OK;
+											}
+										}
+										else
+										{
+											if (attribute.st_mode & S_IFDIR)
+												populate_files(data.field);
+											else
+											{
+												strncpy(buffer, data.field, buffer_size);
+												free_files();
+												return FB_OK;
+											}
+										}
+									}
+									else 
+									{
+										if (mode == FB_SAVE)
+										{
+											strncpy(buffer, data.field, buffer_size);
+											free_files();
+											return FB_OK;
+										}
+									}
+								}
+								else if (r == -1)
+								{
+									free_files();
+									return FB_CANCEL;
+								}
+							}
+							break;
+						}
 					}
 				}
 				break;

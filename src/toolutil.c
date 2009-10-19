@@ -32,7 +32,7 @@ OTHER DEALINGS IN THE SOFTWARE.
 FILE *open_dialog(const char *mode, char *title, char *filter)
 {
 	char filename[5000];
-	if (filebox(title, mode[0] == 'w' ? FB_SAVE : FB_OPEN, filename, sizeof(filename)) == FB_OK)
+	if (filebox(title, mode[0] == 'w' ? FB_SAVE : FB_OPEN, filename, sizeof(filename) - 1) == FB_OK)
 	{
 		FILE * f = fopen(filename, mode);
 		if (!f) msgbox("Could not open file", MB_OK);
