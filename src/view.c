@@ -850,6 +850,9 @@ void get_command_desc(char *text, Uint16 inst)
 		{MUS_FX_EXT_PORTA_DN, "Fine portamento down"},
 		{MUS_FX_EXT_NOTE_CUT, "Note cut"},
 		{MUS_FX_EXT_RETRIGGER, "Retrigger"},
+		{MUS_FX_SET_PANNING, "Set panning"},
+		{MUS_FX_PAN_LEFT, "Pan left"},
+		{MUS_FX_PAN_RIGHT, "Pan right"},
 		{0, NULL}
 	};
 	
