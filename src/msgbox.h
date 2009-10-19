@@ -26,8 +26,8 @@ FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 OTHER DEALINGS IN THE SOFTWARE.
 */
 
-enum { YES = 1, NO = 2, CANCEL = 4, OK = 8 };
-#define BUTTON_TYPES 4
+enum { MB_YES = 1, MB_NO = 2, MB_CANCEL = 4, MB_OK = 8 };
+#define MB_BUTTON_TYPES 4
 
 int msgbox(const char *msg, int buttons);
 
