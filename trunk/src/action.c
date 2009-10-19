@@ -332,3 +332,41 @@ void change_channels(void *delta, void *unused1, void *unused2)
 		++mused.song.num_channels;
 	}
 }
+
+
+void begin_selection_action(void *unused1, void *unused2, void *unused3)
+{
+	switch (mused.mode)
+	{
+		case EDITPATTERN:
+		begin_selection(mused.current_patternstep);
+		break;
+		
+		case EDITSEQUENCE:
+		begin_selection(mused.current_sequencepos);
+		break;
+		
+		case EDITPROG:
+		begin_selection(mused.current_program_step);
+		break;
+	}
+}
+
+
+void end_selection_action(void *unused1, void *unused2, void *unused3)
+{
+	switch (mused.mode)
+	{
+		case EDITPATTERN:
+		select_range(mused.current_patternstep);
+		break;
+		
+		case EDITSEQUENCE:
+		select_range(mused.current_sequencepos);
+		break;
+		
+		case EDITPROG:
+		select_range(mused.current_program_step);
+		break;
+	}
+}
