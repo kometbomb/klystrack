@@ -25,7 +25,7 @@ Group0_DEP = $(patsubst %.c, deps/Group0_$(CFG)_%.d, ${Group0_SRC})
 Group0_OBJ = $(patsubst %.c, objs.$(CFG)/Group0_%.o, ${Group0_SRC}) 
 
 ifdef COMSPEC
-TARGET = $(TARGET).exe
+TARGET =klystrack.exe
 SDLFLAGS = -I /mingw/include/sdl
 SDLLIBS =  -lmingw32 -lSDLmain -lSDL -lSDL_mixer -mthreads 
 else
@@ -93,7 +93,8 @@ zip: doc/* res/data zip/data/SDL.dll zip/data/SDL_mixer.dll examples/*
 	make -C ../klystron CFG=release
 	make CFG=release
 	@mkdir -p zip/data/res
-	cp -R examples zip/data
+	@mkdir -p zip/data/examples/songs
+	cp -R examples/songs/*.sng zip/data/examples/songs
 	cp res/data zip/data/res/data
 	cp doc/LICENSE zip/data/LICENSE
 	cp doc/SDL.txt zip/data/SDL.txt
@@ -101,7 +102,7 @@ zip: doc/* res/data zip/data/SDL.dll zip/data/SDL_mixer.dll examples/*
 	cd zip/data; $(ZIP) ../$(ARCHIVE) "*"
 	
 nightly: zip
-	$(REV) . ver.in ver.txt
+	$(REV) ver.in ver.txt
 	cp zip/$(ARCHIVE) zip/klystrack-nightly-`cat ver.txt`.zip
 ifneq ($(UPLOAD),)
 	$(UPLOAD) zip/klystrack-nightly-`cat ver.txt`.zip
