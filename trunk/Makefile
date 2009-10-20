@@ -10,6 +10,7 @@ WGET = wget --quiet
 REV = SubWCRev.exe .
 UPLOAD = cmd.exe /c upload.bat
 MAKEBUNDLE = ../klystron/tools/bin/makebundle.exe
+DLLS = zip/data/SDL.dll zip/data/SDL_mixer.dll
 
 # The directories containing the source files, separated by ':'
 
@@ -29,6 +30,7 @@ TARGET =klystrack.exe
 SDLFLAGS = -I /mingw/include/sdl
 SDLLIBS =  -lmingw32 -lSDLmain -lSDL -lSDL_mixer -mthreads 
 else
+DLLS = 
 SDLFLAGS = `sdl-config --cflags` -U_FORTIFY_SOURCE
 SDLLIBS = `sdl-config --libs` -lSDL_mixer
 REV = cp -f
@@ -89,7 +91,7 @@ all:	inform bin.$(CFG)/$(TARGET) res/data
 
 .PHONY: zip all build nightly
 
-zip: doc/* res/data zip/data/SDL.dll zip/data/SDL_mixer.dll examples/*
+zip: doc/* res/data $(DLLS) examples/*
 	make -C ../klystron CFG=release
 	make CFG=release
 	@mkdir -p zip/data/res
