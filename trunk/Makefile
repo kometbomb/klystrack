@@ -124,12 +124,12 @@ temp/7x6.fnt: data/font7x6/*
 	../klystron/tools/bin/makebundle temp/7x6.fnt data/font7x6
 
 zip/data/SDL.dll:
-	cd temp ; $(WGET) http://www.libsdl.org/release/SDL-1.2.13-win32.zip ; $(ZIPEXT) SDL-1.2.13-win32.zip SDL.dll ; rm SDL-1.2.13-win32.zip
+	cd temp ; $(WGET) http://www.libsdl.org/release/SDL-1.2.14-win32.zip ; $(ZIPEXT) SDL-1.2.14-win32.zip SDL.dll ; rm SDL-1.2.14-win32.zip
 	@mkdir -p zip/data
 	mv temp/SDL.dll zip/data/SDL.dll
 		
 zip/data/SDL_mixer.dll:
-	cd temp ; $(WGET) http://www.libsdl.org/projects/SDL_mixer/release/SDL_mixer-1.2.8-win32.zip ; $(ZIPEXT) SDL_mixer-1.2.8-win32.zip SDL_mixer.dll ; rm SDL_mixer-1.2.8-win32.zip
+	cd temp ; $(WGET) http://www.libsdl.org/projects/SDL_mixer/release/SDL_mixer-1.2.9-win32.zip ; $(ZIPEXT) SDL_mixer-1.2.9-win32.zip SDL_mixer.dll ; rm SDL_mixer-1.2.9-win32.zip
 	@mkdir -p zip/data
 	mv temp/SDL_mixer.dll zip/data/SDL_mixer.dll
 		
