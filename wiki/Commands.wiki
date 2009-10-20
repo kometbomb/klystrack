@@ -10,7 +10,7 @@ _{{{xx}}}, {{{yy}}} = parameter to command_
 
 || *Command* || *Description* ||
 || {{{00xx}}} || set arpeggio note (final played note = played note + arpeggio note + vibrato etc.) ||
-|| {{{10xy}}}  || set external arpeggio notes (used with 00f0 and 00f1) ||
+|| {{{10xy}}}  || set external arpeggio notes (used with 00f0 and 00f1 in the program) ||
 || {{{01xx}}}  || portamento up ||
 || {{{02xx}}} || portamento down ||
 || {{{03xx}}} || slide to note with speed xx ||
