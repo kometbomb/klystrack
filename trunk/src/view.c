@@ -1415,10 +1415,13 @@ void instrument_disk_view(const SDL_Rect *dest, const SDL_Event *event, void *pa
 	
 	SDL_Rect button = { area.x + 2, area.y, area.w / 2 - 4, area.h };
 	
-	button_text_event(event, &button, mused.slider_bevel, BEV_BUTTON, BEV_BUTTON_ACTIVE, "LOAD", open_song_action, NULL, NULL, NULL);
+	int open = button_text_event(event, &button, mused.slider_bevel, BEV_BUTTON, BEV_BUTTON_ACTIVE, "LOAD", NULL, (void*)1, NULL, NULL);
 	update_rect(&area, &button);
-	button_text_event(event, &button, mused.slider_bevel, BEV_BUTTON, BEV_BUTTON_ACTIVE, "SAVE", save_song_action, NULL, NULL, NULL);
+	int save = button_text_event(event, &button, mused.slider_bevel, BEV_BUTTON, BEV_BUTTON_ACTIVE, "SAVE", NULL, (void*)2, NULL, NULL);
 	update_rect(&area, &button);
+	
+	if (open & 1) open_song_action(0,0,0);
+	else if (save & 1) save_song_action(0,0,0);
 }
 
 
