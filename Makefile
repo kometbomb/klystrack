@@ -101,7 +101,9 @@ zip: doc/* res/data $(DLLS) examples/*
 	cp doc/LICENSE zip/data/LICENSE
 	cp doc/SDL.txt zip/data/SDL.txt
 	cp bin.release/$(TARGET) zip/data/$(TARGET)
+ifdef COMSPEC
 	cd zip/data; $(ZIP) ../$(ARCHIVE) "*"
+endif
 	
 nightly: zip
 	$(REV) ver.in ver.txt
