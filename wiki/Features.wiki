@@ -9,4 +9,5 @@
   * Chiptune synthesis, no samples used
   * Instrument programs suitable for arpeggio or more complex patches
   * Envelope, ring modulation, filter and more for each channel
+  * Stereo output
   * Reverb for SNES cheese
