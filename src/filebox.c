@@ -46,6 +46,7 @@ extern Mused mused;
 #define TITLE 14
 #define FIELD 14
 #define LIST_WIDTH (WIDTH - MARGIN * 2 - SCROLLBAR)
+#define CLOSE_BUTTON 12
 
 enum { FB_DIRECTORY, FB_FILE };
 
@@ -70,6 +71,7 @@ static struct
 	int focus;
 	char field[256];
 	int editpos;
+	int quit;
 } data;
 
 static void file_list_view(const SDL_Rect *area, const SDL_Event *event, void *param);
@@ -100,7 +102,16 @@ static void pick_file_action(void *file, void *unused1, void *unused2)
 void title_view(const SDL_Rect *area, const SDL_Event *event, void *param)
 {
 	const char* title = data.title;
-	font_write(&mused.largefont, mused.console->surface,  area, title);
+	SDL_Rect titlearea, button;
+	copy_rect(&titlearea, area);
+	titlearea.w -= CLOSE_BUTTON - 4;
+	copy_rect(&button, area);
+	adjust_rect(&button, titlearea.h - CLOSE_BUTTON);
+	button.w = CLOSE_BUTTON;
+	button.x = area->w + area->x - CLOSE_BUTTON;
+	font_write(&mused.largefont, mused.console->surface, &titlearea, title);
+	if (button_event(event, &button, mused.slider_bevel, BEV_BUTTON, BEV_BUTTON_ACTIVE, DECAL_CLOSE, NULL, 1, 0, 0) & 1)
+		data.quit = 1;
 }
 
 
@@ -278,7 +289,7 @@ int filebox(const char *title, int mode, char *buffer, size_t buffer_size)
 	
 	if (!populate_files(".")) return FB_CANCEL;
 	
-	while (1)
+	while (!data.quit)
 	{
 		if (data.picked_file)
 		{
@@ -461,4 +472,7 @@ int filebox(const char *title, int mode, char *buffer, size_t buffer_size)
 		else
 			SDL_Delay(5);
 	}
+	
+	free_files();
+	return FB_CANCEL;
 }

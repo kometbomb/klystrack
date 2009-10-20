@@ -58,6 +58,7 @@ OTHER DEALINGS IN THE SOFTWARE.
 #define DECAL_AUDIO_DISABLED 128
 #define DECAL_RIGHTARROW 144
 #define DECAL_LEFTARROW 160
+#define DECAL_CLOSE 176
 
 void bevel(const SDL_Rect *area, SDL_Surface *gfx, int offset);
 void button(const SDL_Rect *area, SDL_Surface *gfx, int offset, int decal);
