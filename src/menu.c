@@ -153,7 +153,7 @@ static const char * get_shortcut_key(const Menu *item)
 			if (shortcuts[i].mod & KMOD_SHIFT)
 				strncat(buffer, "shift-", sizeof(buffer));
 			
-			strncat(buffer, SDL_GetKeyName(shortcuts[i].key), sizeof(buffer));
+			strncat(buffer, SDL_GetKeyName(shortcuts[i].key), sizeof(buffer) - 1);
 			return upcase(buffer);
 		}
 		else if (item->submenu)
