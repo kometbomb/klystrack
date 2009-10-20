@@ -26,7 +26,7 @@ Group0_OBJ = $(patsubst %.c, objs.$(CFG)/Group0_%.o, ${Group0_SRC}) ../klystron/
 ../klystron/objs.$(CFG)/Group0_cydflt.o ../klystron/objs.$(CFG)/Group0_cydrvb.o ../klystron/objs.$(CFG)/Group2_rnd.o\
 ../klystron/objs.$(CFG)/Group2_bundle.o ../klystron/objs.$(CFG)/Group1_font.o ../klystron/objs.$(CFG)/Group1_gfx.o
 
-ifneq ($(PLATFORM),linux)
+ifdef COMSPEC
 SDLFLAGS = -I /mingw/include/sdl
 SDLLIBS =  -lmingw32 -lSDLmain -lSDL -lSDL_mixer -mthreads 
 else
