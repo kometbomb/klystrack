@@ -26,7 +26,6 @@ OTHER DEALINGS IN THE SOFTWARE.
 #include "toolutil.h"
 #include "msgbox.h"
 #include "filebox.h"
-#include <windows.h>
 
 
 FILE *open_dialog(const char *mode, char *title, char *filter)
