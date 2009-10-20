@@ -25,12 +25,13 @@ Group0_OBJ = $(patsubst %.c, objs.$(CFG)/Group0_%.o, ${Group0_SRC}) ../klystron/
 ../klystron/objs.$(CFG)/Group0_cydflt.o ../klystron/objs.$(CFG)/Group0_cydrvb.o ../klystron/objs.$(CFG)/Group2_rnd.o\
 ../klystron/objs.$(CFG)/Group2_bundle.o ../klystron/objs.$(CFG)/Group1_font.o ../klystron/objs.$(CFG)/Group1_gfx.o
 
-ifeq ($(PLATFORM),linux)
+ifneq ($(PLATFORM),linux)
 SDLFLAGS = -I /MingGW/include/sdl
-SDLLIBS =  -lmingw32 -lSDLmain -lSDL -lSDL_mixer 
+SDLLIBS =  -lmingw32 -lSDLmain -lSDL -lSDL_mixer -mthreads 
 else
-SDLFLAGS = `sdlconfig --cflags`
-SDLLIBS = `sdlconfig --libs`
+SDLFLAGS = `sdl-config --cflags`
+SDLLIBS = `sdl-config --libs`
+REV = echo
 endif
 INCLUDEFLAGS= -I src $(SDLFLAGS) -I src/gfx -I src/snd -I src/util
 	
@@ -42,7 +43,7 @@ CXXDEP = gcc -E -std=gnu99
 # What include flags to pass to the compiler
 INCLUDEFLAGS= -I ../Common -I src $(SDLFLAGS) -I ../klystron/src 
 
-CXXFLAGS = $(MACHINE) -mthreads -ftree-vectorize
+CXXFLAGS = $(MACHINE) -ftree-vectorize
 
 # Separate compile options per configuration
 ifeq ($(CFG),debug)
