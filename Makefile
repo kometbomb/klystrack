@@ -49,7 +49,10 @@ ifeq ($(CFG),profile)
 CXXFLAGS += -O3 -g -pg -Wall ${INCLUDEFLAGS}
 else
 ifeq ($(CFG),release)
-CXXFLAGS += -O3 -Wall ${INCLUDEFLAGS} -s -mwindows
+CXXFLAGS += -O3 -Wall ${INCLUDEFLAGS} -s 
+ifdef COMSPEC
+CXXFLAGS += -mwindows
+endif
 else
 @$(ECHO) "Invalid configuration "$(CFG)" specified."
 @$(ECHO) "You must specify a configuration when "
