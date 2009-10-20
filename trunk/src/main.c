@@ -141,6 +141,8 @@ void change_pixel_scale(void *a, void*b, void*c)
 
 int main(int argc, char **argv)
 {
+	chdir(RES_PATH);
+
 #ifdef DEBUG
 	SDL_putenv("SDL_DEBUG=1");
 #endif

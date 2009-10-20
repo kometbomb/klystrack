@@ -13,6 +13,12 @@ MAKEBUNDLE = ../klystron/tools/bin/makebundle.exe
 DLLS = zip/data/SDL.dll zip/data/SDL_mixer.dll
 INSTALL_PATH?=/usr/local
 
+ifdef COMSPEC
+RES_PATH = .
+else
+RES_PATH = $(INSTALL_PATH)/lib/klystrack
+endif
+
 # The directories containing the source files, separated by ':'
 
 
@@ -37,7 +43,7 @@ SDLLIBS = `sdl-config --libs` -lSDL_mixer
 REV = cp -f
 endif
 
-INCLUDEFLAGS= -I src $(SDLFLAGS) -I ../klystron/src -L../klystron/bin.$(CFG)
+INCLUDEFLAGS= -I src $(SDLFLAGS) -I ../klystron/src -L../klystron/bin.$(CFG) -DRES_PATH = "$(RES_PATH)"
 	
 # What compiler to use for generating dependencies: 
 # it will be invoked with -MM
