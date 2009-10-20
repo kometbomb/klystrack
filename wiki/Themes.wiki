@@ -39,6 +39,9 @@ Here are the horizontal offsets for the graphics.
 #define BEV_SELECTION 256
 #define BEV_BUTTON 272
 #define BEV_BUTTON_ACTIVE 288
+}}}
+
+{{{
 #define DECAL_UPARROW 0 
 #define DECAL_DOWNARROW 16
 #define DECAL_GRAB_VERT 32
@@ -50,6 +53,7 @@ Here are the horizontal offsets for the graphics.
 #define DECAL_AUDIO_DISABLED 128
 #define DECAL_RIGHTARROW 144
 #define DECAL_LEFTARROW 160
+#define DECAL_CLOSE 176
 }}}
 
 =8x8.fnt, 7x6.fnt=
