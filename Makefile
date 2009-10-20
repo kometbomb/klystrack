@@ -25,7 +25,14 @@ Group0_OBJ = $(patsubst %.c, objs.$(CFG)/Group0_%.o, ${Group0_SRC}) ../klystron/
 ../klystron/objs.$(CFG)/Group0_cydflt.o ../klystron/objs.$(CFG)/Group0_cydrvb.o ../klystron/objs.$(CFG)/Group2_rnd.o\
 ../klystron/objs.$(CFG)/Group2_bundle.o ../klystron/objs.$(CFG)/Group1_font.o ../klystron/objs.$(CFG)/Group1_gfx.o
 
-
+ifeq ($(PLATFORM),linux)
+SDLFLAGS = -I /MingGW/include/sdl
+SDLLIBS =  -lmingw32 -lSDLmain -lSDL -lSDL_mixer 
+else
+SDLFLAGS = `sdlconfig --cflags`
+SDLLIBS = `sdlconfig --libs`
+endif
+INCLUDEFLAGS= -I src $(SDLFLAGS) -I src/gfx -I src/snd -I src/util
 	
 # What compiler to use for generating dependencies: 
 # it will be invoked with -MM
@@ -33,7 +40,7 @@ CXX = gcc -std=gnu99 --no-strict-aliasing
 CXXDEP = gcc -E -std=gnu99
 
 # What include flags to pass to the compiler
-INCLUDEFLAGS= -I ../Common -I src -I /mingw/include/sdl -I ../klystron/src 
+INCLUDEFLAGS= -I ../Common -I src $(SDLFLAGS) -I ../klystron/src 
 
 CXXFLAGS = $(MACHINE) -mthreads -ftree-vectorize
 
@@ -57,9 +64,6 @@ exit
 endif
 endif
 endif
-
-# A common link flag for all configurations
-LDFLAGS = -lmingw32 -lSDLmain -lSDL -lSDL_mixer -lcomdlg32
 
 build:
 	$(REV) . ./src/version.in ./src/version.h
@@ -95,7 +99,7 @@ inform:
 
 bin.$(CFG)/${TARGET}: $(Group0_OBJ) | inform
 	@mkdir -p bin.$(CFG)
-	$(CXX) $(CXXFLAGS) -o $@ $^ ${LDFLAGS}
+	$(CXX) $(CXXFLAGS) -o $@ $^ ${SDLLIBS}
 
 objs.$(CFG)/Group0_%.o: %.c
 	@mkdir -p objs.$(CFG)
