@@ -60,7 +60,7 @@ void change_pixel_scale(void *, void*, void*);
 static const View instrument_view_tab[] =
 {
 	{{0, 0, 164 + 32 + 4 + 8, 14}, bevel_view, (void*)BEV_BACKGROUND, EDITINSTRUMENT },
-	{{2, 2, 164 + 32 + 8, 10}, instrument_name_view, (void*)1, EDITINSTRUMENT },
+	{{2, 2, 164 + 32 + 8, 10}, instrument_name_view, (void*)1, -1 },
 	{{164 + 32 + 4 + 8, 0, SCREEN_WIDTH - 164 - 32 - 2 - 2 - 8, 14}, instrument_disk_view, NULL, -1 },
 	{{0, 14, 154, SCREEN_HEIGHT-14-INFO }, instrument_view, NULL, EDITINSTRUMENT },
 	{{154, 14, SCREEN_WIDTH - 154 - SCROLLBAR, INST_LIST }, instrument_list, NULL, -1},

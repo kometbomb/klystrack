@@ -1175,8 +1175,9 @@ void instrument_name_view(const SDL_Rect *dest, const SDL_Event *event, void *pa
 	inst_text(event, &farea, P_INSTRUMENT, "", "%02X", (void*)mused.current_instrument, 2);
 	inst_field(event, &tarea, P_NAME, 16, mused.song.instrument[mused.current_instrument].name);
 	
-	if (mused.selected_param == P_NAME && mused.focus == EDITINSTRUMENT)
+	if (mused.selected_param == P_NAME && (mused.edit_buffer == mused.song.instrument[mused.current_instrument].name && mused.mode == EDITBUFFER))
 	{
+		debug("%d\n", mused.focus);
 		SDL_Rect r;
 		copy_rect(&r, &tarea);
 		adjust_rect(&r, -1);
