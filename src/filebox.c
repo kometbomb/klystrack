@@ -33,6 +33,8 @@ OTHER DEALINGS IN THE SOFTWARE.
 #include "mouse.h"
 #include "event.h"
 #include <dirent.h>
+#include <string.h>
+#include <unistd.h>
 #include <sys/stat.h>
 
 extern GfxDomain *domain;
