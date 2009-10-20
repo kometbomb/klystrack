@@ -301,11 +301,12 @@ int filebox(const char *title, int mode, char *buffer, size_t buffer_size)
 			set_repeat_timer(NULL);
 			if (data.picked_file->type == FB_DIRECTORY && !populate_files(data.picked_file->name)) 
 			{
+				free_files();
 				return FB_CANCEL;
 			}
 			else if (data.picked_file->type == FB_FILE)
 			{
-				if (mode == FB_SAVE && msgbox("Overwrite?", MB_YES|MB_NO) == MB_YES)
+				if (mode == FB_OPEN || (mode == FB_SAVE && msgbox("Overwrite?", MB_YES|MB_NO) == MB_YES))
 				{
 					strncpy(buffer, data.picked_file->name, buffer_size);
 					free_files();
