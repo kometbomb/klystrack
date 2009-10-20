@@ -7,7 +7,7 @@ MACHINE = -march=pentium4 -mfpmath=sse -msse3
 ZIP = pkzipc -zipdate=newest -path=relative -silent -rec -dir -add
 ZIPEXT = pkzipc -ext -silent
 WGET = wget --quiet
-REV = SubWCRev.exe
+REV = SubWCRev.exe .
 UPLOAD = cmd.exe /c upload.bat
 
 # The directories containing the source files, separated by ':'
@@ -31,7 +31,7 @@ SDLLIBS =  -lmingw32 -lSDLmain -lSDL -lSDL_mixer -mthreads
 else
 SDLFLAGS = `sdl-config --cflags`
 SDLLIBS = `sdl-config --libs`
-REV = echo
+REV = cp -f
 endif
 INCLUDEFLAGS= -I src $(SDLFLAGS) -I src/gfx -I src/snd -I src/util
 	
@@ -67,7 +67,7 @@ endif
 endif
 
 build:
-	$(REV) . ./src/version.in ./src/version.h
+	$(REV) ./src/version.in ./src/version.h
 	make -C ../klystron CFG=$(CFG)
 	make all CFG=$(CFG)
 
