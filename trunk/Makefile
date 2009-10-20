@@ -74,6 +74,7 @@ ifdef COMSPEC
 else
 	@echo '#ifndef VERSION_H' > ./src/version.h
 	@echo '#define VERSION_H' >> ./src/version.h
+	@echo '#include "version_numner.h"' >> ./src/version.h
 	@echo -n '#define REVISION "' >> ./src/version.h
 	@svnversion -n . >> ./src/version.h
 	@echo '"' >> ./src/version.h
