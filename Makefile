@@ -74,8 +74,8 @@ ifdef COMSPEC
 else
 	@echo '#ifndef VERSION_H' > ./src/version.h
 	@echo '#define VERSION_H' >> ./src/version.h
-	@echo '#include "version_numner.h"' >> ./src/version.h
-	@echo -n '#define REVISION "' >> ./src/version.h
+	@echo '#include "version_number.h"' >> ./src/version.h
+	@echo -n '#define REVISION "r' >> ./src/version.h
 	@svnversion -n . >> ./src/version.h
 	@echo '"' >> ./src/version.h
 	@echo '#define VERSION_STRING "klystron " REVISION' >> ./src/version.h
