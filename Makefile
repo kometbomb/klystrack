@@ -32,26 +32,29 @@ SDLFLAGS = `sdl-config --cflags` -U_FORTIFY_SOURCE
 SDLLIBS = `sdl-config --libs` -lSDL_mixer
 REV = cp -f
 endif
+
 INCLUDEFLAGS= -I src $(SDLFLAGS) -I ../klystron/src -L../klystron/bin.$(CFG)
 	
 # What compiler to use for generating dependencies: 
 # it will be invoked with -MM
-CXX = gcc -std=gnu99 --no-strict-aliasing
-CXXDEP = gcc -E -std=gnu99
+CC = gcc -std=gnu99 --no-strict-aliasing
+CDEP = gcc -E -std=gnu99
 
-CXXFLAGS = $(MACHINE) -ftree-vectorize
+ifndef CFLAGS
+CFLAGS = $(MACHINE) -ftree-vectorize
+endif
 
 # Separate compile options per configuration
 ifeq ($(CFG),debug)
-CXXFLAGS += -O3 -g -Wall ${INCLUDEFLAGS} -DDEBUG -fno-inline $(DEBUGPARAMS)
+CFLAGS += -O3 -g -Wall ${INCLUDEFLAGS} -DDEBUG -fno-inline $(DEBUGPARAMS)
 else
 ifeq ($(CFG),profile)
-CXXFLAGS += -O3 -g -pg -Wall ${INCLUDEFLAGS}
+CFLAGS += -O3 -g -pg -Wall ${INCLUDEFLAGS}
 else
 ifeq ($(CFG),release)
-CXXFLAGS += -O3 -Wall ${INCLUDEFLAGS} -s
+CFLAGS += -O3 -Wall ${INCLUDEFLAGS} -s
 ifdef COMSPEC
-CXXFLAGS += -mwindows
+CFLAGS += -mwindows
 endif
 else
 @$(ECHO) "Invalid configuration "$(CFG)" specified."
@@ -66,7 +69,15 @@ endif
 endif
 
 build:
+ifdef COMSPEC
 	$(REV) ./src/version.in ./src/version.h
+else
+    echo -n '#ifndef KLYSTRON_VERSION_H' > ./src/version.h
+	echo -n '#define KLYSTRON_VERSION_H' >> ./src/version.h
+	echo -n '#define KLYSTRON_REVISION "`svnversion .`"' >> ./src/version.h
+	echo -n '#define KLYSTRON_VERSION_STRING "klystron " KLYSTRON_REVISION' >> ./src/version.h
+	echo -n '#endif'
+endif
 	make -C ../klystron CFG=$(CFG)
 	make all CFG=$(CFG)
 
@@ -99,16 +110,16 @@ inform:
 
 bin.$(CFG)/${TARGET}: $(Group0_OBJ) | inform
 	@mkdir -p bin.$(CFG)
-	$(CXX) $(CXXFLAGS) -o $@ $^ -lengine_gfx -lengine_snd -lengine_util ${SDLLIBS}
+	$(CC) $(CFLAGS) -o $@ $^ -lengine_gfx -lengine_snd -lengine_util ${SDLLIBS}
 
 objs.$(CFG)/Group0_%.o: %.c
 	@mkdir -p objs.$(CFG)
-	$(CXX) $(CXXFLAGS) -c -o $@ $<
+	$(CC) $(CFLAGS) -c -o $@ $<
 
 deps/Group0_$(CFG)_%.d: %.c
 	@mkdir -p deps
 	@$(ECHO) "Generating dependencies for $<"
-	@set -e ; $(CXXDEP) -MM $(INCLUDEFLAGS) $< > $@.$$$$; \
+	@set -e ; $(CDEP) -MM $(INCLUDEFLAGS) $< > $@.$$$$; \
 	sed 's,\($*\)\.o[ :]*,objs.$(CFG)\/Group0_\1.o $@ : ,g' \
 		< $@.$$$$ > $@; \
 	rm -f $@.$$$$
