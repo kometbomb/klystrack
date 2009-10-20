@@ -110,7 +110,7 @@ void title_view(const SDL_Rect *area, const SDL_Event *event, void *param)
 	button.w = CLOSE_BUTTON;
 	button.x = area->w + area->x - CLOSE_BUTTON;
 	font_write(&mused.largefont, mused.console->surface, &titlearea, title);
-	if (button_event(event, &button, mused.slider_bevel, BEV_BUTTON, BEV_BUTTON_ACTIVE, DECAL_CLOSE, NULL, 1, 0, 0) & 1)
+	if (button_event(event, &button, mused.slider_bevel, BEV_BUTTON, BEV_BUTTON_ACTIVE, DECAL_CLOSE, NULL, (void*)1, 0, 0) & 1)
 		data.quit = 1;
 }
 
