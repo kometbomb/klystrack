@@ -117,7 +117,7 @@ void file_list_view(const SDL_Rect *area, const SDL_Event *event, void *param)
 	
 	for (int i = data.list_position ; i < data.n_files && pos.y < content.h + content.y ; ++i)
 	{
-		if (data.selected_file == i)
+		if (data.selected_file == i && data.focus == FOCUS_LIST)
 		{
 			bevel(&pos, mused.slider_bevel, BEV_SELECTED_PATTERN_ROW);
 		}
@@ -135,14 +135,6 @@ void file_list_view(const SDL_Rect *area, const SDL_Event *event, void *param)
 	}
 	
 	SDL_SetClipRect(mused.console->surface, NULL);
-	
-	if (data.focus == FOCUS_LIST)
-	{
-		SDL_Rect cursor;
-		copy_rect(&cursor, area);
-		adjust_rect(&cursor, -1);
-		bevel(&cursor, mused.slider_bevel, BEV_CURSOR);
-	}
 }
 
 
@@ -175,14 +167,6 @@ void field_view(const SDL_Rect *area, const SDL_Event *event, void *param)
 		font_write(&mused.largefont, mused.console->surface, &content, data.field);
 	
 	if (check_event(event, area, NULL, 0, 0, 0)) data.focus = FOCUS_FIELD;
-	
-	if (data.focus == FOCUS_FIELD)
-	{
-		SDL_Rect cursor;
-		copy_rect(&cursor, area);
-		adjust_rect(&cursor, -1);
-		bevel(&cursor, mused.slider_bevel, BEV_CURSOR);
-	}
 }
 
 
