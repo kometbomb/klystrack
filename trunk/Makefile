@@ -28,7 +28,7 @@ ifdef COMSPEC
 SDLFLAGS = -I /mingw/include/sdl
 SDLLIBS =  -lmingw32 -lSDLmain -lSDL -lSDL_mixer -mthreads 
 else
-SDLFLAGS = `sdl-config --cflags`
+SDLFLAGS = `sdl-config --cflags` -U_FORTIFY_SOURCE
 SDLLIBS = `sdl-config --libs` -lSDL_mixer
 REV = cp -f
 endif
@@ -49,7 +49,7 @@ ifeq ($(CFG),profile)
 CXXFLAGS += -O3 -g -pg -Wall ${INCLUDEFLAGS}
 else
 ifeq ($(CFG),release)
-CXXFLAGS += -O3 -Wall ${INCLUDEFLAGS} -s 
+CXXFLAGS += -O3 -Wall ${INCLUDEFLAGS} -s
 ifdef COMSPEC
 CXXFLAGS += -mwindows
 endif
