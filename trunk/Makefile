@@ -22,9 +22,7 @@ Group0_SRC = $(notdir ${wildcard src/*.c})
 # the .cpp extension to .d for dependency files, and .o for 
 # object files.
 Group0_DEP = $(patsubst %.c, deps/Group0_$(CFG)_%.d, ${Group0_SRC})
-Group0_OBJ = $(patsubst %.c, objs.$(CFG)/Group0_%.o, ${Group0_SRC}) ../klystron/objs.$(CFG)/Group0_music.o ../klystron/objs.$(CFG)/Group0_cyd.o\
-../klystron/objs.$(CFG)/Group0_cydflt.o ../klystron/objs.$(CFG)/Group0_cydrvb.o ../klystron/objs.$(CFG)/Group2_rnd.o\
-../klystron/objs.$(CFG)/Group2_bundle.o ../klystron/objs.$(CFG)/Group1_font.o ../klystron/objs.$(CFG)/Group1_gfx.o
+Group0_OBJ = $(patsubst %.c, objs.$(CFG)/Group0_%.o, ${Group0_SRC}) 
 
 ifdef COMSPEC
 SDLFLAGS = -I /mingw/include/sdl
@@ -34,15 +32,12 @@ SDLFLAGS = `sdl-config --cflags`
 SDLLIBS = `sdl-config --libs` -lSDL_mixer
 REV = cp -f
 endif
-INCLUDEFLAGS= -I src $(SDLFLAGS) -I src/gfx -I src/snd -I src/util
+INCLUDEFLAGS= -I src $(SDLFLAGS) -I ../klystron/src -L../klystron/bin.$(CFG)
 	
 # What compiler to use for generating dependencies: 
 # it will be invoked with -MM
 CXX = gcc -std=gnu99 --no-strict-aliasing
 CXXDEP = gcc -E -std=gnu99
-
-# What include flags to pass to the compiler
-INCLUDEFLAGS= -I ../Common -I src $(SDLFLAGS) -I ../klystron/src 
 
 CXXFLAGS = $(MACHINE) -ftree-vectorize
 
@@ -101,7 +96,7 @@ inform:
 
 bin.$(CFG)/${TARGET}: $(Group0_OBJ) | inform
 	@mkdir -p bin.$(CFG)
-	$(CXX) $(CXXFLAGS) -o $@ $^ ${SDLLIBS}
+	$(CXX) $(CXXFLAGS) -o $@ $^ -lengine_gfx -lengine_snd -lengine_util ${SDLLIBS}
 
 objs.$(CFG)/Group0_%.o: %.c
 	@mkdir -p objs.$(CFG)
