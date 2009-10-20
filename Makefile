@@ -1,4 +1,4 @@
-TARGET=klystrack.exe
+TARGET=klystrack
 ARCHIVE = klystrack.zip
 VPATH=src:src
 ECHO = echo
@@ -25,6 +25,7 @@ Group0_DEP = $(patsubst %.c, deps/Group0_$(CFG)_%.d, ${Group0_SRC})
 Group0_OBJ = $(patsubst %.c, objs.$(CFG)/Group0_%.o, ${Group0_SRC}) 
 
 ifdef COMSPEC
+TARGET = $(TARGET).exe
 SDLFLAGS = -I /mingw/include/sdl
 SDLLIBS =  -lmingw32 -lSDLmain -lSDL -lSDL_mixer -mthreads 
 else
