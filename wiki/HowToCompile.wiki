@@ -10,3 +10,5 @@
   # The klystrack makefile should also compile the needed resource file in {{{res/data}}}
   # To deploy, do a {{{make zip}}} for klystrack. {{{zip/data}}} should now contain the files needed to run klystrack (including SDL libraries). 
   # To debug, go to {{{/code/klystrack}}} and do {{{gdb bin.debug/klystrack.exe}}} this is so that klystrack will find the resource file in {{{/code/klystrack/res/data}}}
+
+klystrack compiles at least on on MinGW (Win32) and Ubuntu (x86).
