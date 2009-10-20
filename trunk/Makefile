@@ -108,7 +108,9 @@ zip: doc/* res/data $(DLLS) examples/*
 	cp doc/LICENSE zip/data/LICENSE
 	cp doc/SDL.txt zip/data/SDL.txt
 	cp bin.release/$(TARGET) zip/data/$(TARGET)
+ifdef COMSPEC
 	cd zip/data; $(ZIP) ../$(ARCHIVE) "*"
+endif
 	
 nightly: zip
 	$(REV) ver.in ver.txt
@@ -118,10 +120,14 @@ ifneq ($(UPLOAD),)
 endif
 	rm -f ver.txt
 
-install: 
-	cp -f bin.release/$(TARGET) $(INSTALL_PATH)/bin/$(TARGET)
-	mkdir -p $(INSTALL_PATH)/lib/klystrack
-	cp -Rf res $(INSTALL_PATH)/lib/klystrack/res
+install: zip
+	cp -f zip/data/$(TARGET) $(INSTALL_PATH)/bin/$(TARGET)
+	mkdir -p $(RES_PATH)
+	cp -Rf zip/data/res $(RES_PATH)/res
+	cp -Rf zip/data/examples $(RES_PATH)/examples
+	mkdir -p $(INSTALL_PATH)/share/klystrack
+	cp zip/data/LICENSE $(INSTALL_PATH)/share/klystrack
+	cp zip/data/SDL.txt $(INSTALL_PATH)/share/klystrack
 	
 inform:
 	@echo "Configuration "$(CFG)
