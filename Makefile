@@ -123,8 +123,8 @@ endif
 install: zip
 	cp -f zip/data/$(TARGET) $(INSTALL_PATH)/bin/$(TARGET)
 	mkdir -p $(RES_PATH)
-	cp -Rf zip/data/res $(RES_PATH)/res
-	cp -Rf zip/data/examples $(RES_PATH)/examples
+	cp -Rf zip/data/res $(RES_PATH)
+	cp -Rf zip/data/examples $(RES_PATH)
 	mkdir -p $(INSTALL_PATH)/share/klystrack
 	cp zip/data/LICENSE $(INSTALL_PATH)/share/klystrack
 	cp zip/data/SDL.txt $(INSTALL_PATH)/share/klystrack
