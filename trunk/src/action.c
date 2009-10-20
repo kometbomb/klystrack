@@ -119,12 +119,12 @@ void change_song_speed(void *speed, void *delta, void *unused)
 {
 	if (!speed)
 	{
-		if ((int)mused.song.song_speed + (int)delta > 1 && (int)mused.song.song_speed + (int)delta < 255)
+		if ((int)mused.song.song_speed + (int)delta >= 1 && (int)mused.song.song_speed + (int)delta <= 255)
 			mused.song.song_speed += (int)delta;
 	}
 	else
 	{
-		if ((int)mused.song.song_speed2 + (int)delta > 1 && (int)mused.song.song_speed2 + (int)delta < 255)
+		if ((int)mused.song.song_speed2 + (int)delta >= 1 && (int)mused.song.song_speed2 + (int)delta <= 255)
 		mused.song.song_speed2 += (int)delta;
 	}
 }
