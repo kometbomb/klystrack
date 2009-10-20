@@ -31,6 +31,6 @@ enum { FB_SAVE, FB_OPEN };
 
 #include <stdlib.h>
 
-int filebox(const char *title, int mode, char *buffer, size_t buffer_size);
+int filebox(const char *title, int mode, char *buffer, size_t buffer_size, const char *extension);
 
 #endif

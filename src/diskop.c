@@ -68,7 +68,7 @@ int save_data()
 		case EDITPROG:
 		case EDITINSTRUMENT:
 		{
-			FILE * f = open_dialog("wb", "Save instrument", "Instrument\0*.ins\0\0");
+			FILE * f = open_dialog("wb", "Save instrument", "ins");
 			
 			if (f)
 			{
@@ -89,7 +89,7 @@ int save_data()
 		
 		default:
 		{
-			FILE * f = open_dialog("wb", "Save song", "Song\0*.sng\0\0");
+			FILE * f = open_dialog("wb", "Save song", "sng");
 			
 			if (f)
 			{
@@ -169,7 +169,7 @@ void open_data()
 	{
 		case EDITINSTRUMENT:
 		{
-			FILE * f = open_dialog("rb", "Load instrument", "Instrument\0*.ins\0\0");
+			FILE * f = open_dialog("rb", "Load instrument", "ins");
 			
 			if (f)
 			{
@@ -184,7 +184,7 @@ void open_data()
 		{
 			new_song();
 		
-			FILE * f = open_dialog("rb", "Load song", "Song\0*.sng\0\0");
+			FILE * f = open_dialog("rb", "Load song", "sng");
 			
 			if (f)
 			{
