@@ -238,7 +238,7 @@ static int populate_files(const char *dirname, const char *extension)
 {
 	debug("Opening directory %s", dirname);
 
-	if (!chdir(dirname))
+	if (chdir(dirname))
 	{
 		warning("chdir failed");
 		return 0;
