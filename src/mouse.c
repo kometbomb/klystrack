@@ -24,7 +24,7 @@ OTHER DEALINGS IN THE SOFTWARE.
 */
 
 #include "mouse.h"
-
+#include "macros.h"
 
 static void (*motion_target)(int,int,void*) = NULL;
 static void *motion_param = NULL;
@@ -84,8 +84,8 @@ int check_event(const SDL_Event *event, const SDL_Rect *rect, void (*action)(voi
 					if (action) 
 					{	
 						event_hit = 1;
-						action(param1, param2, param3);
 						set_repeat_timer(event);
+						action(param1, param2, param3);
 					}
 					return 1;
 				}
