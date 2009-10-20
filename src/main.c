@@ -140,10 +140,12 @@ void change_pixel_scale(void *a, void*b, void*c)
 #undef main
 #endif
 
+#define STRINGIFY(x) #x
+#define TOSTRING(x) STRINGIFY(x)
 
 int main(int argc, char **argv)
 {
-	chdir(#RES_PATH);
+	chdir(TOSTRING(RES_PATH));
 
 #ifdef DEBUG
 	SDL_putenv("SDL_DEBUG=1");
