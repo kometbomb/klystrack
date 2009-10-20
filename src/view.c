@@ -964,14 +964,21 @@ void info_line(const SDL_Rect *dest, const SDL_Event *event, void *param)
 static void write_command(const SDL_Event *event, const char *text, int cmd_idx, int cur_idx)
 {
 	int i = 0;
+	SDL_Rect cur = { 0 };
 	for (const char *c = text ; *c ; ++c, ++i)
 	{
 		const SDL_Rect *r;
 		check_event(event, r = console_write_args(mused.console, "%c", *c), 
 			select_program_step, (void*)cmd_idx, 0, 0);
 		if (mused.focus == EDITPROG && mused.editpos == i && cmd_idx == cur_idx)
-			bevel(r, mused.slider_bevel, BEV_CURSOR);	
+		{
+			copy_rect(&cur, r);
+			adjust_rect(&cur, -2);
+			cur.h --;
+		}
 	}
+	
+	bevel(&cur, mused.slider_bevel, BEV_CURSOR);	
 }
 
 
