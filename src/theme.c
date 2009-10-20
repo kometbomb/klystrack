@@ -25,6 +25,7 @@ OTHER DEALINGS IN THE SOFTWARE.
 
 #include "macros.h"
 #include "theme.h"
+#include <string.h>
 
 Uint32 colors[NUM_COLORS];
 
@@ -63,7 +64,7 @@ void load_colors(const char *cfg)
 			int i;
 			for (i = 0 ; i < NUM_COLORS ; ++i)
 			{
-				if (stricmp(names[i], name) == 0)
+				if (strcasecmp(names[i], name) == 0)
 				{
 					colors[i] = color;
 					break;
