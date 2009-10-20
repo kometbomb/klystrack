@@ -3,7 +3,7 @@
   * [klystrack Home]
   * *Preface*
     * [IntroductionToTrackers Introduction to trackers]
-    * [Features]
+    * [Features klystrack features]
   * *How to use klystrack*
     * [Manual]
     * [Commands]
