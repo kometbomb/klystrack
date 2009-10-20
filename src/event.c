@@ -32,7 +32,7 @@ OTHER DEALINGS IN THE SOFTWARE.
 
 extern Mused mused;
 
-#define clamp(val, add, _min, _max) { if (((int)val)+(add) > _max) val = _max; else if (((int)val)+(add) < _min) val = _min; else val+=(add); } 
+#define clamp(val, add, _min, _max) val = my_min(_max, my_max(_min, val + add))
 #define flipbit(val, bit) { val ^= bit; };
 
 

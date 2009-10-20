@@ -1137,7 +1137,7 @@ static void inst_field(const SDL_Event *e, const SDL_Rect *area, int p, int leng
 				mused.editpos = i;
 		}
 		
-		if (mused.editpos == i && i < length) 
+		if (mused.editpos == i && i <= length) 
 			console_write(mused.console, "§"); 
 	}
 	else
