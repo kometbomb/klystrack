@@ -1177,7 +1177,6 @@ void instrument_name_view(const SDL_Rect *dest, const SDL_Event *event, void *pa
 	
 	if (mused.selected_param == P_NAME && (mused.edit_buffer == mused.song.instrument[mused.current_instrument].name && mused.mode == EDITBUFFER))
 	{
-		debug("%d\n", mused.focus);
 		SDL_Rect r;
 		copy_rect(&r, &tarea);
 		adjust_rect(&r, -1);

@@ -171,9 +171,9 @@ int msgbox(const char *msg, int buttons)
 		{
 			int r = draw_box(&e, msg, buttons, &selected);
 			gfx_domain_flip(domain);
+			set_repeat_timer(NULL);
 			if (r) 
 			{
-				set_repeat_timer(NULL);
 				return r;
 			}
 		}
