@@ -68,7 +68,7 @@ endif
 endif
 endif
 
-build:
+build: Makefile
 ifdef COMSPEC
 	$(REV) ./src/version.in ./src/version.h
 else
