@@ -92,6 +92,7 @@ void change_mode(int newmode)
 		
 		case EDITCLASSIC:
 		case EDITPATTERN:
+		if (mused.mode == EDITBUFFER) break;
 		if (mused.mode == EDITSEQUENCE || newmode == EDITCLASSIC)
 		{
 			update_ghost_patterns();
