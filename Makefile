@@ -78,7 +78,7 @@ else
 	@echo -n '#define REVISION "r' >> ./src/version.h
 	@svnversion -n . >> ./src/version.h
 	@echo '"' >> ./src/version.h
-	@echo '#define VERSION_STRING "klystron " REVISION' >> ./src/version.h
+	@echo '#define VERSION_STRING "klystrack " VERSION " " REVISION' >> ./src/version.h
 	@echo '#endif' >> ./src/version.h
 endif
 	make -C ../klystron CFG=$(CFG)
