@@ -41,6 +41,8 @@ OTHER DEALINGS IN THE SOFTWARE.
 #include "shortcuts.h"
 #include "version.h"
 #include "mused.h"
+#include <unistd.h>
+
 
 Mused mused;
 
@@ -141,7 +143,7 @@ void change_pixel_scale(void *a, void*b, void*c)
 
 int main(int argc, char **argv)
 {
-	chdir(RES_PATH);
+	chdir(##RES_PATH);
 
 #ifdef DEBUG
 	SDL_putenv("SDL_DEBUG=1");
