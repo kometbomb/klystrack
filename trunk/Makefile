@@ -72,10 +72,10 @@ build:
 ifdef COMSPEC
 	$(REV) ./src/version.in ./src/version.h
 else
-    echo -n '#ifndef KLYSTRON_VERSION_H' > ./src/version.h
-	echo -n '#define KLYSTRON_VERSION_H' >> ./src/version.h
-	echo -n '#define KLYSTRON_REVISION "`svnversion .`"' >> ./src/version.h
-	echo -n '#define KLYSTRON_VERSION_STRING "klystron " KLYSTRON_REVISION' >> ./src/version.h
+	echo -n '#ifndef VERSION_H' > ./src/version.h
+	echo -n '#define VERSION_H' >> ./src/version.h
+	echo -n '#define REVISION "`svnversion .`"' >> ./src/version.h
+	echo -n '#define VERSION_STRING "klystron " REVISION' >> ./src/version.h
 	echo -n '#endif'
 endif
 	make -C ../klystron CFG=$(CFG)
