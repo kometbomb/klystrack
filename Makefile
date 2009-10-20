@@ -39,7 +39,7 @@ CXXFLAGS = $(MACHINE) -mthreads -ftree-vectorize
 
 # Separate compile options per configuration
 ifeq ($(CFG),debug)
-CXXFLAGS += -O3 -g -Wall ${INCLUDEFLAGS} -DDEBUG -fno-inline 
+CXXFLAGS += -O3 -g -Wall ${INCLUDEFLAGS} -DDEBUG -fno-inline $(DEBUGPARAMS)
 else
 ifeq ($(CFG),profile)
 CXXFLAGS += -O3 -g -pg -Wall ${INCLUDEFLAGS}
