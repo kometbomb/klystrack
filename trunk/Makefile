@@ -11,6 +11,7 @@ REV = SubWCRev.exe .
 UPLOAD = cmd.exe /c upload.bat
 MAKEBUNDLE = ../klystron/tools/bin/makebundle.exe
 DLLS = zip/data/SDL.dll zip/data/SDL_mixer.dll
+INSTALL_PATH?=/usr/local
 
 # The directories containing the source files, separated by ':'
 
@@ -101,9 +102,7 @@ zip: doc/* res/data $(DLLS) examples/*
 	cp doc/LICENSE zip/data/LICENSE
 	cp doc/SDL.txt zip/data/SDL.txt
 	cp bin.release/$(TARGET) zip/data/$(TARGET)
-ifdef COMSPEC
 	cd zip/data; $(ZIP) ../$(ARCHIVE) "*"
-endif
 	
 nightly: zip
 	$(REV) ver.in ver.txt
@@ -112,6 +111,11 @@ ifneq ($(UPLOAD),)
 	$(UPLOAD) zip/klystrack-nightly-`cat ver.txt`.zip
 endif
 	rm -f ver.txt
+
+install: 
+	cp -f bin.release/$(TARGET) $(INSTALL_PATH)/bin/$(TARGET)
+	mkdir -p $(INSTALL_PATH)/lib/klystrack
+	cp -Rf res $(INSTALL_PATH)/lib/klystrack/res
 	
 inform:
 	@echo "Configuration "$(CFG)
