@@ -43,7 +43,7 @@ SDLLIBS = `sdl-config --libs` -lSDL_mixer
 REV = cp -f
 endif
 
-INCLUDEFLAGS= -I src $(SDLFLAGS) -I ../klystron/src -L../klystron/bin.$(CFG) -DRES_PATH = "$(RES_PATH)"
+INCLUDEFLAGS= -I src $(SDLFLAGS) -I ../klystron/src -L../klystron/bin.$(CFG) -DRES_PATH="$(RES_PATH)"
 	
 # What compiler to use for generating dependencies: 
 # it will be invoked with -MM
