@@ -30,7 +30,7 @@ SDLFLAGS = -I /mingw/include/sdl
 SDLLIBS =  -lmingw32 -lSDLmain -lSDL -lSDL_mixer -mthreads 
 else
 SDLFLAGS = `sdl-config --cflags`
-SDLLIBS = `sdl-config --libs`
+SDLLIBS = `sdl-config --libs` -lSDL_mixer
 REV = cp -f
 endif
 INCLUDEFLAGS= -I src $(SDLFLAGS) -I src/gfx -I src/snd -I src/util
