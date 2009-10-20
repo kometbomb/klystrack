@@ -9,6 +9,7 @@ ZIPEXT = pkzipc -ext -silent
 WGET = wget --quiet
 REV = SubWCRev.exe .
 UPLOAD = cmd.exe /c upload.bat
+MAKEBUNDLE = ../klystron/tools/bin/makebundle.exe
 
 # The directories containing the source files, separated by ':'
 
@@ -119,15 +120,15 @@ res/data: data/bevel.bmp temp/8x8.fnt temp/7x6.fnt data/colors.txt
 	@mkdir -p temp
 	cp -f data/colors.txt temp
 	cp -f data/bevel.bmp temp
-	../klystron/tools/bin/makebundle res/data temp
+	$(MAKEBUNDLE) res/data temp
 
 temp/8x8.fnt: data/font/*
 	@mkdir -p temp
-	../klystron/tools/bin/makebundle temp/8x8.fnt data/font
+	$(MAKEBUNDLE) temp/8x8.fnt data/font
 
 temp/7x6.fnt: data/font7x6/*
 	@mkdir -p temp
-	../klystron/tools/bin/makebundle temp/7x6.fnt data/font7x6
+	$(MAKEBUNDLE) temp/7x6.fnt data/font7x6
 
 zip/data/SDL.dll:
 	cd temp ; $(WGET) http://www.libsdl.org/release/SDL-1.2.14-win32.zip ; $(ZIPEXT) SDL-1.2.14-win32.zip SDL.dll ; rm SDL-1.2.14-win32.zip
