@@ -210,7 +210,7 @@ static int file_sorter(const void *_left, const void *_right)
 	
 	if (left->type == right->type)
 	{
-		return stricmp(left->name, right->name);
+		return strcasecmp(left->name, right->name);
 	}
 	else
 	{
@@ -230,7 +230,7 @@ static int checkext(const char * filename, const char *extension)
 	
 	if (i < 0) return 0;
 	
-	return stricmp(&filename[i + 1], extension) == 0;
+	return strcasecmp(&filename[i + 1], extension) == 0;
 }
 
 
