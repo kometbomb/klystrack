@@ -45,6 +45,7 @@ extern Mused mused;
 #define MARGIN 8
 #define TITLE 14
 #define FIELD 14
+#define LIST_WIDTH (WIDTH - MARGIN * 2 - SCROLLBAR)
 
 enum { FB_DIRECTORY, FB_FILE };
 
@@ -54,6 +55,7 @@ typedef struct
 {
 	int type;
 	char *name;
+	char *display_name;
 } File;
 
 static struct
@@ -79,8 +81,8 @@ static const View filebox_view[] =
 	{{ TOP_LEFT, TOP_RIGHT, WIDTH, HEIGHT }, bevel_view, (void*)BEV_MENU, -1},
 	{{ TOP_LEFT + MARGIN, TOP_RIGHT + MARGIN, WIDTH - MARGIN * 2, TITLE - 2 }, title_view, &data, -1},
 	{{ TOP_LEFT + MARGIN, TOP_RIGHT + MARGIN + TITLE, WIDTH - MARGIN * 2, FIELD - 2 }, field_view, &data, -1},
-	{{ TOP_LEFT + MARGIN, TOP_RIGHT + MARGIN + TITLE + FIELD, WIDTH - MARGIN * 2 - SCROLLBAR, HEIGHT - MARGIN * 2 - TITLE - FIELD }, file_list_view, &data, -1},
-	{{ TOP_LEFT + WIDTH - MARGIN - SCROLLBAR, TOP_RIGHT + MARGIN + TITLE + FIELD, SCROLLBAR, HEIGHT - MARGIN * 2 - TITLE - FIELD }, slider, &data.scrollbar, -1},
+	{{ TOP_LEFT + LIST_WIDTH + SCROLLBAR, TOP_RIGHT + MARGIN + TITLE + FIELD, SCROLLBAR, HEIGHT - MARGIN * 2 - TITLE - FIELD }, slider, &data.scrollbar, -1},
+	{{ TOP_LEFT + MARGIN, TOP_RIGHT + MARGIN + TITLE + FIELD, LIST_WIDTH, HEIGHT - MARGIN * 2 - TITLE - FIELD }, file_list_view, &data, -1},
 	{{0, 0, 0, 0}, NULL}
 };
 
@@ -91,6 +93,7 @@ static void pick_file_action(void *file, void *unused1, void *unused2)
 	data.selected_file = (int)file;
 	data.focus = FOCUS_LIST;
 	strncpy(data.field, data.files[(int)file].name, sizeof(data.field));
+	data.editpos = strlen(data.field);
 }
 
 
@@ -105,7 +108,7 @@ void file_list_view(const SDL_Rect *area, const SDL_Event *event, void *param)
 {
 	SDL_Rect content, pos;
 	copy_rect(&content, area);
-	adjust_rect(&content, 2);
+	adjust_rect(&content, 1);
 	copy_rect(&pos, &content);
 	pos.h = mused.largefont.h;
 	bevel(area, mused.slider_bevel, BEV_FIELD);
@@ -120,9 +123,9 @@ void file_list_view(const SDL_Rect *area, const SDL_Event *event, void *param)
 		}
 	
 		if (data.files[i].type == FB_FILE)
-			font_write(&mused.largefont, mused.console->surface, &pos, data.files[i].name);
+			font_write(&mused.largefont, mused.console->surface, &pos, data.files[i].display_name);
 		else
-			font_write_args(&mused.largefont, mused.console->surface, &pos, "½%s", data.files[i].name);
+			font_write_args(&mused.largefont, mused.console->surface, &pos, "½%s", data.files[i].display_name);
 		
 		if (pos.y + pos.h <= content.h + content.y) slider_set_params(&data.scrollbar, 0, data.n_files - 1, data.list_position, i, &data.list_position, 1, SLIDER_VERTICAL);
 		
@@ -132,18 +135,54 @@ void file_list_view(const SDL_Rect *area, const SDL_Event *event, void *param)
 	}
 	
 	SDL_SetClipRect(mused.console->surface, NULL);
+	
+	if (data.focus == FOCUS_LIST)
+	{
+		SDL_Rect cursor;
+		copy_rect(&cursor, area);
+		adjust_rect(&cursor, -1);
+		bevel(&cursor, mused.slider_bevel, BEV_CURSOR);
+	}
 }
 
 
 void field_view(const SDL_Rect *area, const SDL_Event *event, void *param)
 {
-	SDL_Rect content;
+	SDL_Rect content, pos;
 	copy_rect(&content, area);
 	adjust_rect(&content, 1);
+	copy_rect(&pos, &content);
+	pos.w = mused.largefont.w;
+	pos.h = mused.largefont.h;
 	bevel(area, mused.slider_bevel, BEV_FIELD);
-	font_write(&mused.largefont, mused.console->surface, &content, data.field);
+	
+	if (data.focus == FOCUS_FIELD)
+	{
+		int i = 0;
+		size_t length = strlen(data.field);
+		for ( ; data.field[i] && i < length ; ++i)
+		{
+			font_write_args(&mused.largefont, mused.console->surface, &pos, "%c", data.editpos == i ? '§' : data.field[i]);
+			if (check_event(event, &pos, NULL, NULL, NULL, NULL))
+				data.editpos = i;
+			pos.x += pos.w;
+		}
+		
+		if (data.editpos == i && i < length + 1) 
+			font_write(&mused.largefont, mused.console->surface, &pos, "§");
+	}
+	else
+		font_write(&mused.largefont, mused.console->surface, &content, data.field);
 	
 	if (check_event(event, area, NULL, 0, 0, 0)) data.focus = FOCUS_FIELD;
+	
+	if (data.focus == FOCUS_FIELD)
+	{
+		SDL_Rect cursor;
+		copy_rect(&cursor, area);
+		adjust_rect(&cursor, -1);
+		bevel(&cursor, mused.slider_bevel, BEV_CURSOR);
+	}
 }
 
 
@@ -152,7 +191,10 @@ static void free_files()
 	if (data.files) 
 	{
 		for (int i = 0 ; i < data.n_files ; ++i)
+		{
 			free(data.files[i].name);
+			free(data.files[i].display_name);
+		}
 		free(data.files);
 	}
 	
@@ -210,11 +252,17 @@ static int populate_files(const char *dirname)
 				const int block_size = 256;
 			
 				if ((data.n_files & (block_size - 1)) == 0)
+				{
 					data.files = realloc(data.files, sizeof(*data.files) * (data.n_files + block_size));
-			
+				}
 				data.files[data.n_files].type = ( attribute.st_mode & S_IFDIR ) ? FB_DIRECTORY : FB_FILE;
 				data.files[data.n_files].name = strdup(de->d_name);
-			
+				data.files[data.n_files].display_name = strdup(de->d_name);
+				if (strlen(data.files[data.n_files].display_name) > LIST_WIDTH / mused.largefont.w - 4)
+				{
+					data.files[data.n_files].display_name[LIST_WIDTH / mused.largefont.w - 4] = '\0';
+				}
+				
 				++data.n_files;
 			}
 		}
@@ -226,6 +274,8 @@ static int populate_files(const char *dirname)
 	
 	data.selected_file = 0;
 	data.list_position = 0;
+	data.editpos = 0;
+	strcpy(data.field, "");
 	
 	qsort(data.files, data.n_files, sizeof(*data.files), file_sorter);
 	
@@ -248,6 +298,7 @@ int filebox(const char *title, int mode, char *buffer, size_t buffer_size)
 	{
 		if (data.picked_file)
 		{
+			set_repeat_timer(NULL);
 			if (data.picked_file->type == FB_DIRECTORY && !populate_files(data.picked_file->name)) 
 			{
 				return FB_CANCEL;
@@ -298,10 +349,14 @@ int filebox(const char *title, int mode, char *buffer, size_t buffer_size)
 							
 							case SDLK_DOWN:
 							move_position(&data.selected_file, &data.list_position, &data.scrollbar, 1, data.n_files);
+							strncpy(data.field, data.files[data.selected_file].name, sizeof(data.field));
+							data.editpos = strlen(data.field);
 							break;
 							
 							case SDLK_UP:
 							move_position(&data.selected_file, &data.list_position, &data.scrollbar, -1, data.n_files);
+							strncpy(data.field, data.files[data.selected_file].name, sizeof(data.field));
+							data.editpos = strlen(data.field);
 							break;
 							
 							case SDLK_TAB:
