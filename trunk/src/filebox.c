@@ -217,7 +217,22 @@ static int file_sorter(const void *_left, const void *_right)
 }
 
 
-static int populate_files(const char *dirname)
+static int checkext(const char * filename, const char *extension)
+{
+	int i = strlen(filename);
+	while (i > 0)
+	{
+		if (filename[i] == '.') break;
+		--i;
+	}
+	
+	if (i < 0) return 0;
+	
+	return stricmp(&filename[i + 1], extension) == 0;
+}
+
+
+static int populate_files(const char *dirname, const char *extension)
 {
 	debug("Opening directory %s", dirname);
 
@@ -244,21 +259,24 @@ static int populate_files(const char *dirname)
 		{		
 			if (de->d_name[0] != '.' || strcmp(de->d_name, "..") == 0)
 			{
-				const int block_size = 256;
-			
-				if ((data.n_files & (block_size - 1)) == 0)
+				if ((attribute.st_mode & S_IFDIR) || checkext(de->d_name, extension))
 				{
-					data.files = realloc(data.files, sizeof(*data.files) * (data.n_files + block_size));
-				}
-				data.files[data.n_files].type = ( attribute.st_mode & S_IFDIR ) ? FB_DIRECTORY : FB_FILE;
-				data.files[data.n_files].name = strdup(de->d_name);
-				data.files[data.n_files].display_name = strdup(de->d_name);
-				if (strlen(data.files[data.n_files].display_name) > LIST_WIDTH / mused.largefont.w - 4)
-				{
-					data.files[data.n_files].display_name[LIST_WIDTH / mused.largefont.w - 4] = '\0';
-				}
+					const int block_size = 256;
 				
-				++data.n_files;
+					if ((data.n_files & (block_size - 1)) == 0)
+					{
+						data.files = realloc(data.files, sizeof(*data.files) * (data.n_files + block_size));
+					}
+					data.files[data.n_files].type = ( attribute.st_mode & S_IFDIR ) ? FB_DIRECTORY : FB_FILE;
+					data.files[data.n_files].name = strdup(de->d_name);
+					data.files[data.n_files].display_name = strdup(de->d_name);
+					if (strlen(data.files[data.n_files].display_name) > LIST_WIDTH / mused.largefont.w - 4)
+					{
+						data.files[data.n_files].display_name[LIST_WIDTH / mused.largefont.w - 4] = '\0';
+					}
+					
+					++data.n_files;
+				}
 			}
 		}
 	}
@@ -278,7 +296,7 @@ static int populate_files(const char *dirname)
 }
 
 
-int filebox(const char *title, int mode, char *buffer, size_t buffer_size)
+int filebox(const char *title, int mode, char *buffer, size_t buffer_size, const char *extension)
 {
 	set_repeat_timer(NULL);
 	
@@ -287,7 +305,7 @@ int filebox(const char *title, int mode, char *buffer, size_t buffer_size)
 	data.mode = mode;
 	data.picked_file = NULL;
 	
-	if (!populate_files(".")) return FB_CANCEL;
+	if (!populate_files(".", extension)) return FB_CANCEL;
 	
 	while (!data.quit)
 	{
@@ -307,7 +325,7 @@ int filebox(const char *title, int mode, char *buffer, size_t buffer_size)
 				// note that after the populate_files() picked_file will point to some other file!
 				// thus we need to check this before the FB_DIRECTORY handling below
 			}
-			else if (data.picked_file->type == FB_DIRECTORY && !populate_files(data.picked_file->name)) 
+			else if (data.picked_file->type == FB_DIRECTORY && !populate_files(data.picked_file->name, extension)) 
 			{
 				
 			}
@@ -400,7 +418,7 @@ int filebox(const char *title, int mode, char *buffer, size_t buffer_size)
 										else
 										{
 											if (attribute.st_mode & S_IFDIR)
-												populate_files(data.field);
+												populate_files(data.field, extension);
 											else
 											{
 												set_repeat_timer(NULL);
