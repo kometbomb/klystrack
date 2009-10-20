@@ -182,12 +182,12 @@ void open_data()
 		
 		default:
 		{
-			new_song();
-		
 			FILE * f = open_dialog("rb", "Load song", "sng");
 			
 			if (f)
 			{
+				new_song();
+			
 				if (!mus_load_song_file(f, &mused.song)) msgbox("Could not load song", MB_OK);
 				
 				fclose(f);

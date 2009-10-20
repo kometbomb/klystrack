@@ -70,10 +70,11 @@ all:	inform bin.$(CFG)/$(TARGET) res/data
 
 .PHONY: zip all build nightly
 
-zip: doc/* res/data zip/data/SDL.dll zip/data/SDL_mixer.dll
+zip: doc/* res/data zip/data/SDL.dll zip/data/SDL_mixer.dll examples/*
 	make -C ../klystron CFG=release
 	make CFG=release
 	@mkdir -p zip/data/res
+	cp -R examples zip/data
 	cp res/data zip/data/res/data
 	cp doc/LICENSE zip/data/LICENSE
 	cp doc/SDL.txt zip/data/SDL.txt
@@ -129,7 +130,7 @@ zip/data/SDL.dll:
 	mv temp/SDL.dll zip/data/SDL.dll
 		
 zip/data/SDL_mixer.dll:
-	cd temp ; $(WGET) http://www.libsdl.org/projects/SDL_mixer/release/SDL_mixer-1.2.9-win32.zip ; $(ZIPEXT) SDL_mixer-1.2.9-win32.zip SDL_mixer.dll ; rm SDL_mixer-1.2.9-win32.zip
+	cd temp ; $(WGET) http://www.libsdl.org/projects/SDL_mixer/release/SDL_mixer-1.2.8-win32.zip ; $(ZIPEXT) SDL_mixer-1.2.8-win32.zip SDL_mixer.dll ; rm SDL_mixer-1.2.8-win32.zip
 	@mkdir -p zip/data
 	mv temp/SDL_mixer.dll zip/data/SDL_mixer.dll
 		
