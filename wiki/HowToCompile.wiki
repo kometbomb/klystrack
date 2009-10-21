@@ -1,7 +1,7 @@
 #summary How to compile klystrack
 #labels Phase-Implementation
 
-  # You need both the source for [http://code.google.com/p/klystron klystron] and the source for klystrack. Get [http://code.google.com/p/klystrack/source/checkout the trunk from the SVN repositories] ([http://code.google.com/p/klystron/source/checkout klystron]). 
+  # You need both the source for [http://code.google.com/p/klystron klystron] and the source for klystrack. Get either the tag for a specific version or the latest (unstable) source from [http://code.google.com/p/klystrack/source/checkout the trunk from the SVN repositories] ([http://code.google.com/p/klystron/source/checkout klystron]). 
 
   The directory structure should be something like this:
   {{{
