@@ -47,9 +47,10 @@ extern Mused mused;
 #define MARGIN 8
 #define TITLE 14
 #define FIELD 14
-#define LIST_WIDTH (WIDTH - MARGIN * 2 - SCROLLBAR)
 #define CLOSE_BUTTON 12
 #define PATH 10
+#define ELEMWIDTH (WIDTH - MARGIN * 2)
+#define LIST_WIDTH (ELEMWIDTH - SCROLLBAR)
 
 enum { FB_DIRECTORY, FB_FILE };
 
@@ -75,7 +76,7 @@ static struct
 	char field[256];
 	int editpos;
 	int quit;
-	char path[512];
+	char path[1024];
 } data;
 
 static void file_list_view(const SDL_Rect *area, const SDL_Event *event, void *param);
@@ -86,9 +87,9 @@ static void path_view(const SDL_Rect *area, const SDL_Event *event, void *param)
 static const View filebox_view[] =
 {
 	{{ TOP_LEFT, TOP_RIGHT, WIDTH, HEIGHT }, bevel_view, (void*)BEV_MENU, -1},
-	{{ TOP_LEFT + MARGIN, TOP_RIGHT + MARGIN, WIDTH - MARGIN * 2, TITLE - 2 }, title_view, &data, -1},
-	{{ TOP_LEFT + MARGIN, TOP_RIGHT + MARGIN + TITLE, WIDTH - MARGIN * 2, PATH - 2 }, path_view, &data, -1},
-	{{ TOP_LEFT + MARGIN, TOP_RIGHT + MARGIN + TITLE + PATH, WIDTH - MARGIN * 2, FIELD - 2 }, field_view, &data, -1},
+	{{ TOP_LEFT + MARGIN, TOP_RIGHT + MARGIN, ELEMWIDTH, TITLE - 2 }, title_view, &data, -1},
+	{{ TOP_LEFT + MARGIN, TOP_RIGHT + MARGIN + TITLE, ELEMWIDTH, PATH - 2 }, path_view, &data, -1},
+	{{ TOP_LEFT + MARGIN, TOP_RIGHT + MARGIN + TITLE + PATH, ELEMWIDTH, FIELD - 2 }, field_view, &data, -1},
 	{{ TOP_LEFT + LIST_WIDTH + SCROLLBAR, TOP_RIGHT + MARGIN + TITLE + FIELD + PATH, SCROLLBAR, HEIGHT - MARGIN * 2 - TITLE - FIELD - PATH }, slider, &data.scrollbar, -1},
 	{{ TOP_LEFT + MARGIN, TOP_RIGHT + MARGIN + TITLE + FIELD + PATH, LIST_WIDTH, HEIGHT - MARGIN * 2 - TITLE - FIELD - PATH }, file_list_view, &data, -1},
 	{{0, 0, 0, 0}, NULL}
@@ -255,6 +256,13 @@ static int populate_files(const char *dirname, const char *extension)
 	}
 	
 	getcwd(data.path, sizeof(data.path) - 1);
+	
+	size_t l;
+	if ((l = strlen(data.path)) > ELEMWIDTH / mused.smallfont.w)
+	{
+		memmove(&data.path[3], &data.path[l - ELEMWIDTH / mused.smallfont.w + 3], l + 1); 
+		memcpy(data.path, "...", 3);
+	}
 	
 	DIR * dir = opendir(".");
 	
