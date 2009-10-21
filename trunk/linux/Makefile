@@ -9,8 +9,8 @@ install:
 	@mkdir -p $(RES_PATH)
 	@cp -Rf res $(RES_PATH)
 	@cp -Rf examples $(RES_PATH)
-	@mkdir -p $(DESTDIR)/usr/share/klystrack
-	@cp LICENSE $(DESTDIR)/usr/share/klystrack
-	@cp SDL.txt $(DESTDIR)/usr/share/klystrack
+	@mkdir -p $(DESTDIR)/usr/share/doc/klystrack
+	@cp LICENSE $(DESTDIR)/usr/share/doc/klystrack
+	@cp SDL.txt $(DESTDIR)/usr/share/doc/klystrack
 	
 clean:
