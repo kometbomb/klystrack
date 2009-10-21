@@ -2,7 +2,7 @@
 
 TARGET=klystrack
 DESTDIR?=/usr/local
-RES_PATH = $(DESTDIR)/lib/klystrack
+RES_PATH = $(DESTDIR)/usr/lib/klystrack
 
 install: 
 	@mkdir -p $(DESTDIR)/usr/bin
