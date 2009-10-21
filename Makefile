@@ -116,15 +116,16 @@ zip: doc/* res/data $(DLLS) examples/* linux/Makefile
 	cp bin.release/$(TARGET) zip/data/$(TARGET)
 ifdef COMSPEC
 	cd zip/data; $(ZIP) ../$(ARCHIVE) "*"
+	cp -f zip/klystrack.zip zip/klystrack-`cat src/version`-win32.zip
 else
 	cp -f linux/Makefile zip/data
 endif
 	
 nightly: zip
 	$(REV) ver.in ver.txt
-	cp zip/$(ARCHIVE) zip/klystrack-nightly-`cat ver.txt`.zip
+	cp zip/$(ARCHIVE) zip/klystrack-nightly-`cat ver.txt`-win32.zip
 ifneq ($(UPLOAD),)
-	$(UPLOAD) zip/klystrack-nightly-`cat ver.txt`.zip
+	$(UPLOAD) zip/klystrack-nightly-`cat ver.txt`-win32.zip
 endif
 	rm -f ver.txt
 
