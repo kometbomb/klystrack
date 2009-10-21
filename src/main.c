@@ -41,7 +41,6 @@ OTHER DEALINGS IN THE SOFTWARE.
 #include "shortcuts.h"
 #include "version.h"
 #include "mused.h"
-#include <unistd.h>
 
 
 Mused mused;
@@ -141,13 +140,8 @@ void change_pixel_scale(void *a, void*b, void*c)
 #undef main
 #endif
 
-#define STRINGIFY(x) #x
-#define TOSTRING(x) STRINGIFY(x)
-
 int main(int argc, char **argv)
 {
-	chdir(TOSTRING(RES_PATH));
-
 #ifdef DEBUG
 	SDL_putenv("SDL_DEBUG=1");
 #endif
