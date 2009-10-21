@@ -5,6 +5,7 @@ DESTDIR?=/usr/local
 RES_PATH = $(DESTDIR)/lib/klystrack
 
 install: 
+	mkdir -p $(DESTDIR)/bin
 	cp -f $(TARGET) $(DESTDIR)/bin/$(TARGET)
 	mkdir -p $(RES_PATH)
 	cp -Rf res $(RES_PATH)
@@ -12,3 +13,5 @@ install:
 	mkdir -p $(DESTDIR)/share/klystrack
 	cp LICENSE $(DESTDIR)/share/klystrack
 	cp SDL.txt $(DESTDIR)/share/klystrack
+	
+clean:
