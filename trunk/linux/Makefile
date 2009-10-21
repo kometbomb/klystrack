@@ -1,17 +1,16 @@
 # linux installer makefile
 
 TARGET=klystrack
-DESTDIR?=/usr/local
-RES_PATH = $(DESTDIR)/usr/lib/klystrack
+RES_PATH = $(DESTDIR)/usr/local/lib/klystrack
 
 install: 
-	@mkdir -p $(DESTDIR)/usr/bin
-	@cp -f $(TARGET) $(DESTDIR)/usr/bin/$(TARGET)
+	@mkdir -p $(DESTDIR)/usr/local/bin
+	@cp -f $(TARGET) $(DESTDIR)/usr/local/bin/$(TARGET)
 	@mkdir -p $(RES_PATH)
 	@cp -Rf res $(RES_PATH)
 	@cp -Rf examples $(RES_PATH)
-	@mkdir -p $(DESTDIR)/usr/share/klystrack
-	@cp LICENSE $(DESTDIR)/usr/share/klystrack
-	@cp SDL.txt $(DESTDIR)/usr/share/klystrack
+	@mkdir -p $(DESTDIR)/usr/local/share/klystrack
+	@cp LICENSE $(DESTDIR)/usr/local/share/klystrack
+	@cp SDL.txt $(DESTDIR)/usr/local/share/klystrack
 	
 clean:
