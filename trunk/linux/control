@@ -7,7 +7,6 @@ Standards-Version: 3.8.0
 Homepage: http://code.google.com/p/klystrack/
 
 Package: klystrack
-Version: 1.1.0
 Architecture: i386
 Depends: ${shlibs:Depends}, ${misc:Depends}
 Description: klystrack chiptune tracker
