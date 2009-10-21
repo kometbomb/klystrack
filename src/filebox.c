@@ -49,6 +49,7 @@ extern Mused mused;
 #define FIELD 14
 #define LIST_WIDTH (WIDTH - MARGIN * 2 - SCROLLBAR)
 #define CLOSE_BUTTON 12
+#define PATH 10
 
 enum { FB_DIRECTORY, FB_FILE };
 
@@ -74,19 +75,22 @@ static struct
 	char field[256];
 	int editpos;
 	int quit;
+	char path[512];
 } data;
 
 static void file_list_view(const SDL_Rect *area, const SDL_Event *event, void *param);
 static void title_view(const SDL_Rect *area, const SDL_Event *event, void *param);
 static void field_view(const SDL_Rect *area, const SDL_Event *event, void *param);
+static void path_view(const SDL_Rect *area, const SDL_Event *event, void *param);
 
 static const View filebox_view[] =
 {
 	{{ TOP_LEFT, TOP_RIGHT, WIDTH, HEIGHT }, bevel_view, (void*)BEV_MENU, -1},
 	{{ TOP_LEFT + MARGIN, TOP_RIGHT + MARGIN, WIDTH - MARGIN * 2, TITLE - 2 }, title_view, &data, -1},
-	{{ TOP_LEFT + MARGIN, TOP_RIGHT + MARGIN + TITLE, WIDTH - MARGIN * 2, FIELD - 2 }, field_view, &data, -1},
-	{{ TOP_LEFT + LIST_WIDTH + SCROLLBAR, TOP_RIGHT + MARGIN + TITLE + FIELD, SCROLLBAR, HEIGHT - MARGIN * 2 - TITLE - FIELD }, slider, &data.scrollbar, -1},
-	{{ TOP_LEFT + MARGIN, TOP_RIGHT + MARGIN + TITLE + FIELD, LIST_WIDTH, HEIGHT - MARGIN * 2 - TITLE - FIELD }, file_list_view, &data, -1},
+	{{ TOP_LEFT + MARGIN, TOP_RIGHT + MARGIN + TITLE, WIDTH - MARGIN * 2, PATH - 2 }, path_view, &data, -1},
+	{{ TOP_LEFT + MARGIN, TOP_RIGHT + MARGIN + TITLE + PATH, WIDTH - MARGIN * 2, FIELD - 2 }, field_view, &data, -1},
+	{{ TOP_LEFT + LIST_WIDTH + SCROLLBAR, TOP_RIGHT + MARGIN + TITLE + FIELD + PATH, SCROLLBAR, HEIGHT - MARGIN * 2 - TITLE - FIELD - PATH }, slider, &data.scrollbar, -1},
+	{{ TOP_LEFT + MARGIN, TOP_RIGHT + MARGIN + TITLE + FIELD + PATH, LIST_WIDTH, HEIGHT - MARGIN * 2 - TITLE - FIELD - PATH }, file_list_view, &data, -1},
 	{{0, 0, 0, 0}, NULL}
 };
 
@@ -183,6 +187,12 @@ void field_view(const SDL_Rect *area, const SDL_Event *event, void *param)
 }
 
 
+static void path_view(const SDL_Rect *area, const SDL_Event *event, void *param)
+{
+	font_write(&mused.smallfont, mused.console->surface, area, data.path);
+}
+
+
 static void free_files()
 {
 	if (data.files) 
@@ -243,6 +253,8 @@ static int populate_files(const char *dirname, const char *extension)
 		warning("chdir failed");
 		return 0;
 	}
+	
+	getcwd(data.path, sizeof(data.path) - 1);
 	
 	DIR * dir = opendir(".");
 	
