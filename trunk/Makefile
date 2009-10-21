@@ -11,7 +11,7 @@ REV = SubWCRev.exe .
 UPLOAD = cmd.exe /c upload.bat
 MAKEBUNDLE = ../klystron/tools/bin/makebundle.exe
 DLLS = zip/data/SDL.dll zip/data/SDL_mixer.dll
-DESTDIR?=/usr/local
+DESTDIR?=/usr
 
 ifdef COMSPEC
 RES_PATH = .
