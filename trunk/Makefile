@@ -110,6 +110,8 @@ zip: doc/* res/data $(DLLS) examples/*
 	cp bin.release/$(TARGET) zip/data/$(TARGET)
 ifdef COMSPEC
 	cd zip/data; $(ZIP) ../$(ARCHIVE) "*"
+else
+	cp -f linux/Makefile zip/data
 endif
 	
 nightly: zip
@@ -120,15 +122,6 @@ ifneq ($(UPLOAD),)
 endif
 	rm -f ver.txt
 
-install: zip
-	cp -f zip/data/$(TARGET) $(DESTDIR)/bin/$(TARGET)
-	mkdir -p $(RES_PATH)
-	cp -Rf zip/data/res $(RES_PATH)
-	cp -Rf zip/data/examples $(RES_PATH)
-	mkdir -p $(DESTDIR)/share/klystrack
-	cp zip/data/LICENSE $(DESTDIR)/share/klystrack
-	cp zip/data/SDL.txt $(DESTDIR)/share/klystrack
-	
 inform:
 	@echo "Configuration "$(CFG)
 	@echo "------------------------"
