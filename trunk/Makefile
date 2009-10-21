@@ -56,13 +56,13 @@ endif
 
 # Separate compile options per configuration
 ifeq ($(CFG),debug)
-CFLAGS += -O3 -g -Wall ${INCLUDEFLAGS} -DDEBUG -fno-inline $(DEBUGPARAMS)
+CFLAGS += -O3 -g -Wall -DDEBUG -fno-inline $(DEBUGPARAMS)
 else
 ifeq ($(CFG),profile)
-CFLAGS += -O3 -g -pg -Wall ${INCLUDEFLAGS}
+CFLAGS += -O3 -g -pg -Wall
 else
 ifeq ($(CFG),release)
-CFLAGS += -O3 -Wall ${INCLUDEFLAGS} -s
+CFLAGS += -O3 -Wall -s
 ifdef COMSPEC
 CFLAGS += -mwindows
 endif
@@ -135,11 +135,11 @@ inform:
 
 bin.$(CFG)/${TARGET}: $(Group0_OBJ) | inform
 	@mkdir -p bin.$(CFG)
-	$(CC) $(CFLAGS) -o $@ $^ -lengine_gfx -lengine_snd -lengine_util ${SDLLIBS}
+	$(CC) $(CFLAGS) -o $@ $^ $(INCLUDEFLAGS) -lengine_gfx -lengine_snd -lengine_util ${SDLLIBS}
 
 objs.$(CFG)/Group0_%.o: %.c
 	@mkdir -p objs.$(CFG)
-	$(CC) $(CFLAGS) -c -o $@ $<
+	$(CC) $(CFLAGS) $(INCLUDEFLAGS) -c -o $@ $<
 
 deps/Group0_$(CFG)_%.d: %.c
 	@mkdir -p deps
