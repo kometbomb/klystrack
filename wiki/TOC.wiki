@@ -14,4 +14,4 @@
     * [Themes Customizing how klystrack looks like]
     * [HowToCompile How to compile klystrack]
     * [ToolsUsed Tools used to create klystrack]
-    * [HowToPlay How to use the tunes in your own projects]
+    * [HowToReplay How to use the tunes in your own projects]
