@@ -78,7 +78,13 @@ endif
 endif
 endif
 
-build: Makefile
+build: Makefile src/version
+	@echo '#ifndef VERSION_NUMBER' > src/version_number.h
+	@echo '#define VERSION_NUMBER' >> src/version_number.h
+	@echo -n '#define VERSION "' >> src/version_number.h
+	@echo -n `cat src/version` >> src/version_number.h
+	@echo '"' >> src/version_number.h
+	@echo '#endif' >> src/version_number.h
 ifdef COMSPEC
 	$(REV) ./src/version.in ./src/version.h
 else
