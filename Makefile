@@ -98,7 +98,7 @@ all:	inform bin.$(CFG)/$(TARGET) res/data
 
 .PHONY: zip all build nightly
 
-zip: doc/* res/data $(DLLS) examples/*
+zip: doc/* res/data $(DLLS) examples/* linux/Makefile
 	make -C ../klystron CFG=release
 	make CFG=release
 	@mkdir -p zip/data/res
