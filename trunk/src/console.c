@@ -26,6 +26,10 @@ OTHER DEALINGS IN THE SOFTWARE.
 #include "console.h"
 #include "util/bundle.h"
 
+#define STRINGIFY(x) #x
+#define TOSTRING(x) STRINGIFY(x)
+
+
 void console_set_background(Console * c, int enabled)
 {
 	c->background = enabled;
@@ -82,7 +86,7 @@ Console * console_create(SDL_Surface *surface)
 		
 	Bundle b;
 	
-	if (bnd_open(&b, "res/data"))
+	if (bnd_open(&b, TOSTRING(RES_PATH) "/res/data"))
 	{
 		font_load(&c->font, &b, "8x8.fnt");
 		bnd_free(&b);

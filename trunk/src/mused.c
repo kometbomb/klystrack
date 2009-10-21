@@ -34,6 +34,9 @@ OTHER DEALINGS IN THE SOFTWARE.
 
 extern Mused mused;
 
+#define STRINGIFY(x) #x
+#define TOSTRING(x) STRINGIFY(x)
+
 
 void set_edit_buffer(char *buffer, size_t size)
 { 
@@ -228,7 +231,7 @@ void init(MusInstrument *instrument, MusPattern *pattern, MusSeqPattern sequence
 	new_song();
 	
 	Bundle res;
-	if (bnd_open(&res, "res/data"))
+	if (bnd_open(&res, TOSTRING(RES_PATH) "/res/data"))
 	{
 		SDL_RWops *rw = SDL_RWFromBundle(&res, "bevel.bmp");
 		

@@ -11,12 +11,12 @@ REV = SubWCRev.exe .
 UPLOAD = cmd.exe /c upload.bat
 MAKEBUNDLE = ../klystron/tools/bin/makebundle.exe
 DLLS = zip/data/SDL.dll zip/data/SDL_mixer.dll
-INSTALL_PATH?=/usr/local
+DESTDIR?=/usr/local
 
 ifdef COMSPEC
 RES_PATH = .
 else
-RES_PATH = $(INSTALL_PATH)/lib/klystrack
+RES_PATH = $(DESTDIR)/lib/klystrack
 endif
 
 # The directories containing the source files, separated by ':'
@@ -121,13 +121,13 @@ endif
 	rm -f ver.txt
 
 install: zip
-	cp -f zip/data/$(TARGET) $(INSTALL_PATH)/bin/$(TARGET)
+	cp -f zip/data/$(TARGET) $(DESTDIR)/bin/$(TARGET)
 	mkdir -p $(RES_PATH)
 	cp -Rf zip/data/res $(RES_PATH)
 	cp -Rf zip/data/examples $(RES_PATH)
-	mkdir -p $(INSTALL_PATH)/share/klystrack
-	cp zip/data/LICENSE $(INSTALL_PATH)/share/klystrack
-	cp zip/data/SDL.txt $(INSTALL_PATH)/share/klystrack
+	mkdir -p $(DESTDIR)/share/klystrack
+	cp zip/data/LICENSE $(DESTDIR)/share/klystrack
+	cp zip/data/SDL.txt $(DESTDIR)/share/klystrack
 	
 inform:
 	@echo "Configuration "$(CFG)
