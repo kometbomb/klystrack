@@ -1,0 +1,5 @@
+#summary How to use the music and sound effects in your own projects
+
+klystrack songs and instruments can easily be used in the klystron library. The instruments can be used as sound effects in games and the use of songs is obvious. 
+
+Please consult the klystron manual how to [http://code.google.com/p/klystron/wiki/MakingNoise make noise].
