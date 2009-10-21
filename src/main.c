@@ -42,6 +42,7 @@ OTHER DEALINGS IN THE SOFTWARE.
 #include "version.h"
 #include "mused.h"
 
+//#define DUMPKEYS
 
 Mused mused;
 
@@ -236,6 +237,10 @@ int main(int argc, char **argv)
 				
 				case SDL_KEYDOWN:
 				{
+#ifdef DUMPKEYS
+					debug("SDL_KEYDOWN: time = %.1f sym = %x mod = %x unicode = %x scancode = %x", (double)SDL_GetTicks() / 1000.0, e.key.keysym.sym, e.key.keysym.mod, e.key.keysym.unicode, e.key.keysym.scancode);
+#endif
+				
 					// key events should go only to the edited text field
 									
 					if (mused.mode != EDITBUFFER) 
