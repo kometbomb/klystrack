@@ -42,9 +42,10 @@ const KeyShortcut shortcuts[] =
 	{ KMOD_SHIFT, SDLK_INSERT, generic_action, (int)paste, 0, 0 },
 	{ KMOD_CTRL, SDLK_INSERT, generic_action, (int)copy, 0, 0 },
 	{ KMOD_CTRL, SDLK_d, clear_selection, 0, 0, 0 },
-	{ KMOD_CTRL, SDLK_r, change_pixel_scale, 0, 0, 0 },
+	{ KMOD_CTRL, SDLK_r, toggle_pixel_scale, 0, 0, 0 },
 	{ KMOD_CTRL, SDLK_b, begin_selection_action, 0, 0, 0 },
 	{ KMOD_CTRL, SDLK_e, end_selection_action, 0, 0, 0 },
+	{ KMOD_ALT, SDLK_RETURN, toggle_fullscreen, 0, 0, 0 },
 
 	/* Null terminated */
 	{ 0, 0, NULL, 0, 0, 0 }
