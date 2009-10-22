@@ -32,8 +32,10 @@ OTHER DEALINGS IN THE SOFTWARE.
 #include "msgbox.h"
 #include "version.h"
 #include "../../klystron/src/version.h"
+#include "gfx/gfx.h"
 
 extern Mused mused;
+extern GfxDomain *domain;
 
 void select_sequence_position(void *channel, void *position, void* unused)
 {
@@ -370,3 +372,34 @@ void end_selection_action(void *unused1, void *unused2, void *unused3)
 		break;
 	}
 }
+
+
+void toggle_pixel_scale(void *a, void*b, void*c)
+{
+	mused.flags ^= BIG_PIXELS;
+	change_pixel_scale(0, 0, 0);
+}
+
+
+void change_pixel_scale(void *a, void*b, void*c)
+{
+	domain->scale = (mused.flags & BIG_PIXELS) ? 2 : 1;
+	gfx_domain_update(domain);
+	mused.console->surface = gfx_domain_get_surface(domain);
+}
+
+
+void toggle_fullscreen(void *a, void*b, void*c)
+{
+	mused.flags ^= FULLSCREEN;
+	change_fullscreen(0,0,0);
+}
+
+
+void change_fullscreen(void *a, void*b, void*c)
+{
+	domain->fullscreen = (mused.flags & FULLSCREEN) != 0;
+	gfx_domain_update(domain);
+	mused.console->surface = gfx_domain_get_surface(domain);
+}
+

@@ -54,5 +54,9 @@ void show_about_box(void *unused1, void *unused2, void *unused3);
 void change_channels(void *delta, void *unused1, void *unused2);
 void begin_selection_action(void *unused1, void *unused2, void *unused3);
 void end_selection_action(void *unused1, void *unused2, void *unused3);
+void toggle_pixel_scale(void *a, void*b, void*c);
+void change_pixel_scale(void *a, void*b, void*c);
+void toggle_fullscreen(void *a, void*b, void*c);
+void change_fullscreen(void *a, void*b, void*c);
 
 #endif

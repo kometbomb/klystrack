@@ -40,6 +40,7 @@ static const Menu showmenu[] =
 static const Menu prefsmenu[] =
 {
 	{ mainmenu, "Big pixels", NULL, MENU_CHECK, &mused.flags, (void*)BIG_PIXELS, change_pixel_scale },
+	{ mainmenu, "Fullscreen", NULL, MENU_CHECK, &mused.flags, (void*)FULLSCREEN, change_fullscreen },
 	{ NULL, NULL }
 };
 
