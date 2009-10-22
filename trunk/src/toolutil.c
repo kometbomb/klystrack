@@ -26,6 +26,7 @@ OTHER DEALINGS IN THE SOFTWARE.
 #include "toolutil.h"
 #include "msgbox.h"
 #include "filebox.h"
+#include <string.h>
 
 #ifndef WIN32
 #include <sys/types.h>
