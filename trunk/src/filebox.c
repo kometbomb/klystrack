@@ -498,7 +498,7 @@ int filebox(const char *title, int mode, char *buffer, size_t buffer_size, const
 										}
 										else
 										{
-											if (attribute.st_mode & S_IFDIR)
+											if (!(attribute.st_mode & S_IFFILE))
 												populate_files(data.field, extension);
 											else
 											{
