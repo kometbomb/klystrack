@@ -37,6 +37,11 @@ OTHER DEALINGS IN THE SOFTWARE.
 #include <unistd.h>
 #include <sys/stat.h>
 
+#ifndef WIN32
+#include <sys/types.h>
+#include <pwd.h>
+#endif
+
 extern GfxDomain *domain;
 extern Mused mused;
 
@@ -247,11 +252,58 @@ static int checkext(const char * filename, const char *extension)
 }
 
 
+static char * expand_tilde(const char * path)
+{
+#ifndef WIN32
+	if (path[0] != '~') return NULL;
+	
+	const char *rest = strchr('/');
+	char *name = NULL;
+	
+	if (rest != NULL)
+	{
+		size_t l = (rest - (path + 1)) / sizeof(*name);
+		if (l)
+		{
+			name = calloc(sizeof(*name), l + 1);
+			strncpy(name, path + 1, l);
+		}
+	}
+	
+	const char *homedir = NULL;
+	
+	if (name) 
+	{
+		struct passwd *pwd = getpwdnam(name);
+		homedir = pwd->pw_dir;
+		free(name);
+	}
+	else
+	{
+		homedir = getenv("HOME");
+	}
+	
+	char * final = malloc(strlen(homedir) + strlen(rest) + 2);
+	sprintf(final, "%s%s", homedir, rest);
+	
+	return final;
+#else
+	return NULL;
+#endif
+}
+
+
 static int populate_files(const char *dirname, const char *extension)
 {
 	debug("Opening directory %s", dirname);
 
-	if (chdir(dirname))
+	char * expanded = expand_tilde(dirname);
+	
+	int r = chdir(expanded == NULL ? dirname : expanded);
+	
+	if (expanded) free(expanded);
+	
+	if (r)
 	{
 		warning("chdir failed");
 		return 0;
