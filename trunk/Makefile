@@ -115,7 +115,7 @@ zip: doc/* res/data $(DLLS) examples/* linux/Makefile
 	cp doc/SDL.txt zip/data/SDL.txt
 	cp bin.release/$(TARGET) zip/data/$(TARGET)
 ifdef COMSPEC
-	cd zip/data; $(ZIP) ../$(ARCHIVE) "*"
+	cd zip/data; rm -f ../$(ARCHIVE); $(ZIP) ../$(ARCHIVE) "*"
 	cp -f zip/klystrack.zip zip/klystrack-`cat src/version`-win32.zip
 else
 	cp -f linux/Makefile zip/data
