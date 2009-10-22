@@ -153,6 +153,8 @@ void file_list_view(const SDL_Rect *area, const SDL_Event *event, void *param)
 	}
 	
 	SDL_SetClipRect(mused.console->surface, NULL);
+	
+	check_mouse_wheel_event(event, area, &data.scrollbar);
 }
 
 

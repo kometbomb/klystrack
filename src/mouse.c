@@ -137,3 +137,5 @@ int check_drag_event(const SDL_Event *event, const SDL_Rect *rect, void (*action
 	
 	return motion_param == param; // For identifying individual elements
 }
+
+

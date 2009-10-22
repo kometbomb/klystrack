@@ -204,3 +204,30 @@ void slider_set_params(SliderParam *param, int first, int last, int first_visibl
 	param->position = position;
 	param->granularity = granularity;
 }
+
+
+void check_mouse_wheel_event(const SDL_Event *event, const SDL_Rect *rect, SliderParam *slider)
+{
+	switch (event->type) 
+	{
+		case SDL_MOUSEBUTTONDOWN:
+		{
+			if ((event->button.x >= rect->x) && (event->button.y >= rect->y) 
+					&& (event->button.x < rect->x + rect->w) && (event->button.y < rect->y + rect->h))
+			{
+				int p = (slider->visible_last - slider->visible_first) / 2;
+				switch (event->button.button)
+				{
+					case 4: 
+						*slider->position -= p;
+					break;
+					case 5: 
+						*slider->position += p;
+					break;
+				}
+				*slider->position = my_max(my_min(*slider->position, slider->last - (slider->visible_last - slider->visible_first)), slider->first);
+			}
+		}
+		break;
+	}
+}

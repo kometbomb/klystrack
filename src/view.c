@@ -385,6 +385,8 @@ void sequence_view(const SDL_Rect *dest, const SDL_Event *event, void *param)
 	{
 		slider(&scrollbar, event, &mused.sequence_horiz_slider_param); 
 	}
+	
+	check_mouse_wheel_event(event, dest, &mused.sequence_slider_param);
 }
 
 
@@ -747,6 +749,8 @@ void pattern_view(const SDL_Rect *dest, const SDL_Event *event, void *param)
 	
 		pattern_view_inner(&pos, dest, event, mused.current_pattern, -1);
 	}
+	
+	check_mouse_wheel_event(event, dest, &mused.pattern_slider_param);
 }
 
 
@@ -1084,6 +1088,8 @@ void program_view(const SDL_Rect *dest, const SDL_Event *event, void *param)
 	}
 	
 	SDL_SetClipRect(mused.console->surface, NULL);
+	
+	check_mouse_wheel_event(event, dest, &mused.program_slider_param);
 }
 
 
@@ -1342,6 +1348,8 @@ void instrument_list(const SDL_Rect *dest, const SDL_Event *event, void *param)
 		
 		slider_set_params(&mused.instrument_list_slider_param, 0, NUM_INSTRUMENTS - 1, start, i, &mused.instrument_list_position, 1, SLIDER_VERTICAL);
 	}
+	
+	check_mouse_wheel_event(event, dest, &mused.instrument_list_slider_param);
 }
 
 
