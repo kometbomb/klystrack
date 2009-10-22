@@ -274,7 +274,7 @@ static char * expand_tilde(const char * path)
 	
 	if (name) 
 	{
-		struct passwd *pwd = getpwdnam(name);
+		struct passwd *pwd = getpwnam(name);
 		homedir = pwd->pw_dir;
 		free(name);
 	}
