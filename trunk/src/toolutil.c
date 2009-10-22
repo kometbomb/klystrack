@@ -63,3 +63,54 @@ int confirm_ync(const char *msg)
 	return 0;
 	
 }
+
+
+char * expand_tilde(const char * path)
+{
+#ifndef WIN32
+	if (path[0] != '~') return NULL;
+	
+	const char *rest = strchr(path, '/');
+	char *name = NULL;
+	size_t rest_len = 0;
+	
+	if (rest != NULL)
+	{
+		size_t l = (rest - (path + 1)) / sizeof(*name);
+		if (l)
+		{
+			name = calloc(sizeof(*name), l + 1);
+			strncpy(name, path + 1, l);
+		}
+		rest_len = strlen(rest);
+	}
+	
+	const char *homedir = NULL;
+	
+	if (name) 
+	{
+		struct passwd *pwd = getpwnam(name);
+		
+		if (!pwd)
+		{
+			warning("User %s not found", name);
+			return NULL;
+		}
+		
+		homedir = pwd->pw_dir;
+		free(name);
+	}
+	else
+	{
+		homedir = getenv("HOME");
+	}
+	
+	char * final = malloc(strlen(homedir) + rest_len + 2);
+	strcpy(final, homedir);
+	if (rest) strcat(final, rest);
+	
+	return final;
+#else
+	return NULL;
+#endif
+}

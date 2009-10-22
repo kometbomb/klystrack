@@ -31,5 +31,6 @@ OTHER DEALINGS IN THE SOFTWARE.
 FILE *open_dialog(const char *mode, char *title, char *filter);
 int confirm(const char *msg);
 int confirm_ync(const char *msg);
+char * expand_tilde(const char * path);
 
 #endif
