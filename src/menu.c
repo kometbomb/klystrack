@@ -9,6 +9,7 @@
 
 #define SC_SIZE 64
 #define MENU_CHECK (void*)1
+#define MENU_CHECK_NOSET (void*)2
 
 enum { ZONE, DRAW };
 
@@ -39,8 +40,8 @@ static const Menu showmenu[] =
 
 static const Menu prefsmenu[] =
 {
-	{ mainmenu, "Big pixels", NULL, MENU_CHECK, &mused.flags, (void*)BIG_PIXELS, change_pixel_scale },
-	{ mainmenu, "Fullscreen", NULL, MENU_CHECK, &mused.flags, (void*)FULLSCREEN, change_fullscreen },
+	{ mainmenu, "Big pixels", NULL, MENU_CHECK_NOSET, &mused.flags, (void*)BIG_PIXELS, toggle_pixel_scale },
+	{ mainmenu, "Fullscreen", NULL, MENU_CHECK_NOSET, &mused.flags, (void*)FULLSCREEN, toggle_fullscreen },
 	{ NULL, NULL }
 };
 
@@ -98,9 +99,9 @@ void close_menu()
 	else
 	{
 		change_mode(mused.prev_mode);
-		if (mused.current_menu_action->action == MENU_CHECK)
+		if (mused.current_menu_action->action == MENU_CHECK || mused.current_menu_action->action == MENU_CHECK_NOSET)
 		{
-			*(int*)(mused.current_menu_action->p1) ^= (int)(mused.current_menu_action->p2);
+			if (mused.current_menu_action->action == MENU_CHECK) *(int*)(mused.current_menu_action->p1) ^= (int)(mused.current_menu_action->p2);
 			
 			if (mused.current_menu_action->p3)
 				((void *(*)(void*,void*,void*))(mused.current_menu_action->p3))(0,0,0);
@@ -137,7 +138,7 @@ static const char * get_shortcut_key(const Menu *item)
 	
 	for (int i = 0 ; shortcuts[i].action ; ++i)
 	{
-		if ((item->action == MENU_CHECK && (void*)shortcuts[i].action == item->p3) ||
+		if (((item->action == MENU_CHECK || item->action == MENU_CHECK_NOSET) && (void*)shortcuts[i].action == item->p3) ||
 			(shortcuts[i].action == item->action &&
 			(void*)shortcuts[i].p1 == item->p1 &&
 			(void*)shortcuts[i].p3 == item->p2 &&
@@ -298,7 +299,7 @@ static void draw_submenu(const SDL_Event *event, const Menu *items, const Menu *
 					
 					char tick_char[2] = { 0 };
 					
-					if (item->action == MENU_CHECK && (*(int*)item->p1 & (int)item->p2))
+					if ((item->action == MENU_CHECK || item->action == MENU_CHECK_NOSET) && (*(int*)item->p1 & (int)item->p2))
 						*tick_char = '§';
 					
 					if (tick_char[0] != 0)
