@@ -231,7 +231,12 @@ int main(int argc, char **argv)
 #ifdef DUMPKEYS
 					debug("SDL_KEYDOWN: time = %.1f sym = %x mod = %x unicode = %x scancode = %x", (double)SDL_GetTicks() / 1000.0, e.key.keysym.sym, e.key.keysym.mod, e.key.keysym.unicode, e.key.keysym.scancode);
 #endif
-				
+
+					// Special multimedia keys look like a-z keypresses but the unicode value is zero
+					// We don't care about the special keys and don't want fake keypresses either
+					if (e.key.keysym.unicode == 0 && e.key.keysym.sym >= SDLK_a && e.key.keysym.sym <= SDLK_z)
+						break;
+						
 					// key events should go only to the edited text field
 									
 					if (mused.mode != EDITBUFFER) 
