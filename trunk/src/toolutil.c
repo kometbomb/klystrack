@@ -27,6 +27,7 @@ OTHER DEALINGS IN THE SOFTWARE.
 #include "msgbox.h"
 #include "filebox.h"
 #include <string.h>
+#include "macros.h"
 
 #ifndef WIN32
 #include <sys/types.h>
