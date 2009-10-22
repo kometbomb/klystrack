@@ -257,7 +257,7 @@ static char * expand_tilde(const char * path)
 #ifndef WIN32
 	if (path[0] != '~') return NULL;
 	
-	const char *rest = strchr('/');
+	const char *rest = strchr(path, '/');
 	char *name = NULL;
 	
 	if (rest != NULL)
