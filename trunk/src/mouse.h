@@ -27,6 +27,7 @@ OTHER DEALINGS IN THE SOFTWARE.
 */
 
 #include "SDL.h"
+#include "slider.h"
 
 void mouse_released(const SDL_Event *event);
 void set_motion_target(void (*action)(int,int,void*), void *param);
