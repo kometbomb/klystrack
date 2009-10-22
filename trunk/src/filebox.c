@@ -259,6 +259,7 @@ static char * expand_tilde(const char * path)
 	
 	const char *rest = strchr(path, '/');
 	char *name = NULL;
+	size_t rest_len = 0;
 	
 	if (rest != NULL)
 	{
@@ -268,6 +269,7 @@ static char * expand_tilde(const char * path)
 			name = calloc(sizeof(*name), l + 1);
 			strncpy(name, path + 1, l);
 		}
+		rest_len = strlen(rest);
 	}
 	
 	const char *homedir = NULL;
@@ -275,6 +277,13 @@ static char * expand_tilde(const char * path)
 	if (name) 
 	{
 		struct passwd *pwd = getpwnam(name);
+		
+		if (!pwd)
+		{
+			warning("User %s not found", name);
+			return NULL;
+		}
+		
 		homedir = pwd->pw_dir;
 		free(name);
 	}
@@ -283,8 +292,9 @@ static char * expand_tilde(const char * path)
 		homedir = getenv("HOME");
 	}
 	
-	char * final = malloc(strlen(homedir) + strlen(rest) + 2);
-	sprintf(final, "%s%s", homedir, rest);
+	char * final = malloc(strlen(homedir) + rest_len + 2);
+	strcpy(final, homedir);
+	if (rest) strcat(final, rest);
 	
 	return final;
 #else
