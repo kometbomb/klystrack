@@ -27,6 +27,11 @@ OTHER DEALINGS IN THE SOFTWARE.
 #include "msgbox.h"
 #include "filebox.h"
 
+#ifndef WIN32
+#include <sys/types.h>
+#include <pwd.h>
+#endif
+
 
 FILE *open_dialog(const char *mode, char *title, char *filter)
 {

@@ -38,11 +38,6 @@ OTHER DEALINGS IN THE SOFTWARE.
 #include <unistd.h>
 #include <sys/stat.h>
 
-#ifndef WIN32
-#include <sys/types.h>
-#include <pwd.h>
-#endif
-
 extern GfxDomain *domain;
 extern Mused mused;
 
