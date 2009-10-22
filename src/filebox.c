@@ -482,7 +482,11 @@ int filebox(const char *title, int mode, char *buffer, size_t buffer_size, const
 								{
 									struct stat attribute;
 				
-									int s = stat(data.field, &attribute);
+									char * exp = expand_tilde(data.field);
+				
+									int s = stat(exp ? exp : data.field, &attribute);
+									
+									free(exp);
 									
 									if (s != -1)
 									{
@@ -498,7 +502,7 @@ int filebox(const char *title, int mode, char *buffer, size_t buffer_size, const
 										}
 										else
 										{
-											if (!(attribute.st_mode & S_IFFILE))
+											if (attribute.st_mode & S_IFDIR)
 												populate_files(data.field, extension);
 											else
 											{
