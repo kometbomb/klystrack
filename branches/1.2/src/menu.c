@@ -182,7 +182,7 @@ static const char * get_shortcut_key(const Menu *item)
 
 static void draw_submenu(const SDL_Event *event, const Menu *items, const Menu *child, SDL_Rect *child_position, int pass)
 {
-	SDL_Rect area = { 0, 0, mused.console->surface->w, mused.smallfont.h + 4 + 1 };
+	SDL_Rect area = { 0, 0, mused.screen->w, mused.smallfont.h + 4 + 1 };
 	SDL_Rect r;
 	Font *font = NULL;
 	int horiz = 0;
@@ -218,8 +218,8 @@ static void draw_submenu(const SDL_Event *event, const Menu *items, const Menu *
 			
 			area.w += SC_SIZE;
 			
-			if (area.w + area.x > mused.console->surface->w)
-				area.x -= area.w + area.x - mused.console->surface->w + 2;
+			if (area.w + area.x > mused.screen->w)
+				area.x -= area.w + area.x - mused.screen->w + 2;
 			
 			copy_rect(&r, &area);
 			
@@ -303,7 +303,7 @@ static void draw_submenu(const SDL_Event *event, const Menu *items, const Menu *
 					copy_rect(&text, &r);
 					text.x += font->w;
 					text.w -= font->w;
-					font_write(font, mused.console->surface, &text, item->text);
+					font_write(font, mused.screen, &text, item->text);
 					
 					char tick_char[2] = { 0 };
 					
@@ -315,7 +315,7 @@ static void draw_submenu(const SDL_Event *event, const Menu *items, const Menu *
 						SDL_Rect tick;
 						copy_rect(&tick, &r);
 						tick.y = r.h / 2 + r.y - mused.smallfont.h / 2;
-						font_write(&mused.smallfont, mused.console->surface, &tick, tick_char);
+						font_write(&mused.smallfont, mused.screen, &tick, tick_char);
 					}
 				}
 				
@@ -326,7 +326,7 @@ static void draw_submenu(const SDL_Event *event, const Menu *items, const Menu *
 					r.w = SC_SIZE;
 					r.x -= strlen(sc_text) * mused.smallfont.w;
 					r.y = r.h / 2 + r.y - mused.smallfont.h / 2;
-					font_write(&mused.smallfont, mused.console->surface, &r, sc_text);
+					font_write(&mused.smallfont, mused.screen, &r, sc_text);
 					r.x = tmpx;
 					r.y = tmpy;
 					update_rect(&area, &r);

@@ -35,6 +35,7 @@ OTHER DEALINGS IN THE SOFTWARE.
 #include <sys/stat.h>
 #include <strings.h>
 #include "action.h"
+#include "console.h"
 
 extern Mused mused;
 
@@ -114,6 +115,8 @@ void load_theme(const char *name)
 			mused.slider_bevel = gfx_load_surface_RW(rw, GFX_KEYED);
 		}
 	
+		if (mused.console) console_destroy(mused.console); 
+		mused.console = console_create(fullpath);
 		font_destroy(&mused.smallfont);
 		font_load(&mused.smallfont, &res, "7x6.fnt");
 		font_destroy(&mused.largefont);

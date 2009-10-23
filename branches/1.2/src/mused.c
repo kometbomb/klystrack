@@ -76,7 +76,7 @@ void update_ghost_patterns()
 
 void change_mode(int newmode)
 {
-	if (newmode < VIRTUAL_MODE && mused.mode != MENU) SDL_FillRect(mused.console->surface, NULL, 0);
+	if (newmode < VIRTUAL_MODE && mused.mode != MENU) SDL_FillRect(mused.screen, NULL, 0);
 
 	clear_selection(0,0,0);
 	
@@ -188,7 +188,7 @@ void init(MusInstrument *instrument, MusPattern *pattern, MusSeqPattern sequence
 	
 	memset(&mused, 0, sizeof(mused));
 	
-	mused.console = console_create(screen);
+	mused.screen = screen;
 	mused.done = 0;
 	mused.octave = 4;
 	mused.current_instrument = 0;
@@ -204,8 +204,6 @@ void init(MusInstrument *instrument, MusPattern *pattern, MusSeqPattern sequence
 	mused.time_signature = 0x0404;
 	mused.prev_mode = 0;
 	mused.edit_backup_buffer = NULL;
-	
-	change_mode(EDITSEQUENCE);
 	
 	memset(&mused.cp, 0, sizeof(mused.cp));
 	memset(&mused.song, 0, sizeof(mused.song));
@@ -228,7 +226,9 @@ void init(MusInstrument *instrument, MusPattern *pattern, MusSeqPattern sequence
 	
 	enum_themes();
 	
-	load_theme("data");
+	load_theme("Default");
+	
+	change_mode(EDITSEQUENCE);
 	
 	slider_set_params(&mused.sequence_slider_param, 0, 0, 0, 0, &mused.sequence_position, 1, SLIDER_VERTICAL);
 	slider_set_params(&mused.pattern_slider_param, 0, 0, 0, 0, &mused.sequence_position, 1, SLIDER_VERTICAL);

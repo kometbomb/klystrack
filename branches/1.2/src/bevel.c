@@ -39,7 +39,7 @@ void bevel(const SDL_Rect *area, SDL_Surface *gfx, int offset)
 			{
 				SDL_Rect src = { 4 + offset, 4, my_min(8, area->w - x - 4), my_min(8, area->h - y - 4) };
 				SDL_Rect dest = { x + area->x, y + area->y };
-				SDL_BlitSurface(gfx, &src, mused.console->surface, &dest);
+				SDL_BlitSurface(gfx, &src, mused.screen, &dest);
 			}
 		}
 	}
@@ -51,13 +51,13 @@ void bevel(const SDL_Rect *area, SDL_Surface *gfx, int offset)
 			{
 				SDL_Rect src = { offset, 4, 4, my_min(8, area->h - 4 - y) };
 				SDL_Rect dest = { area->x, y + area->y };
-				SDL_BlitSurface(gfx, &src, mused.console->surface, &dest);
+				SDL_BlitSurface(gfx, &src, mused.screen, &dest);
 			}
 			
 			{
 				SDL_Rect src = { 12 + offset, 4, 4, my_min(8, area->h - 4 - y) };
 				SDL_Rect dest = { area->x + area->w - 4, y + area->y };
-				SDL_BlitSurface(gfx, &src, mused.console->surface, &dest);
+				SDL_BlitSurface(gfx, &src, mused.screen, &dest);
 			}
 		}
 		
@@ -66,13 +66,13 @@ void bevel(const SDL_Rect *area, SDL_Surface *gfx, int offset)
 			{
 				SDL_Rect src = { 4 + offset, 0, my_min(8, area->w - 4 - x), 4 };
 				SDL_Rect dest = { area->x + x, area->y };
-				SDL_BlitSurface(gfx, &src, mused.console->surface, &dest);
+				SDL_BlitSurface(gfx, &src, mused.screen, &dest);
 			}
 			
 			{
 				SDL_Rect src = { 4 + offset, 12, my_min(8, area->w - 4 - x), 4 };
 				SDL_Rect dest = { x + area->x, area->y + area->h - 4 };
-				SDL_BlitSurface(gfx, &src, mused.console->surface, &dest);
+				SDL_BlitSurface(gfx, &src, mused.screen, &dest);
 			}
 		}
 	}
@@ -81,25 +81,25 @@ void bevel(const SDL_Rect *area, SDL_Surface *gfx, int offset)
 	{
 		SDL_Rect src = { offset, 0, 4, 4 };
 		SDL_Rect dest = { area->x, area->y };
-		SDL_BlitSurface(gfx, &src, mused.console->surface, &dest);
+		SDL_BlitSurface(gfx, &src, mused.screen, &dest);
 	}
 	
 	{
 		SDL_Rect src = { 12 + offset, 0, 4, 4 };
 		SDL_Rect dest = { area->x + area->w - 4, area->y};
-		SDL_BlitSurface(gfx, &src, mused.console->surface, &dest);
+		SDL_BlitSurface(gfx, &src, mused.screen, &dest);
 	}
 	
 	{
 		SDL_Rect src = { 12 + offset, 12, 4, 4 };
 		SDL_Rect dest = { area->x + area->w - 4, area->y + area->h - 4};
-		SDL_BlitSurface(gfx, &src, mused.console->surface, &dest);
+		SDL_BlitSurface(gfx, &src, mused.screen, &dest);
 	}
 	
 	{
 		SDL_Rect src = { offset, 12, 4, 4 };
 		SDL_Rect dest = { area->x, area->y + area->h - 4};
-		SDL_BlitSurface(gfx, &src, mused.console->surface, &dest);
+		SDL_BlitSurface(gfx, &src, mused.screen, &dest);
 	}
 }
 
@@ -112,7 +112,7 @@ void button(const SDL_Rect *area, SDL_Surface *gfx, int offset, int decal)
 	{
 		SDL_Rect src = { decal, 16, 16, 16 };
 		SDL_Rect dest = { area->x + area->w / 2 - 16 / 2, area->y + area->h / 2 - 16 / 2};
-		SDL_BlitSurface(gfx, &src, mused.console->surface, &dest);
+		SDL_BlitSurface(gfx, &src, mused.screen, &dest);
 	}
 }
 
@@ -122,5 +122,5 @@ void button_text(const SDL_Rect *area, SDL_Surface *gfx, int offset, const char 
 	bevel(area, gfx, offset);
 	
 	SDL_Rect dest = { area->x + area->w / 2 - (mused.smallfont.w*strlen(label)) / 2, area->y + area->h / 2 - mused.smallfont.h / 2, 1000, 1000 };
-	font_write(&mused.smallfont, mused.console->surface, &dest, label);
+	font_write(&mused.smallfont, mused.screen, &dest, label);
 }

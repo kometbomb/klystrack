@@ -117,7 +117,7 @@ void title_view(const SDL_Rect *area, const SDL_Event *event, void *param)
 	adjust_rect(&button, titlearea.h - CLOSE_BUTTON);
 	button.w = CLOSE_BUTTON;
 	button.x = area->w + area->x - CLOSE_BUTTON;
-	font_write(&mused.largefont, mused.console->surface, &titlearea, title);
+	font_write(&mused.largefont, mused.screen, &titlearea, title);
 	if (button_event(event, &button, mused.slider_bevel, BEV_BUTTON, BEV_BUTTON_ACTIVE, DECAL_CLOSE, NULL, (void*)1, 0, 0) & 1)
 		data.quit = 1;
 }
@@ -132,7 +132,7 @@ void file_list_view(const SDL_Rect *area, const SDL_Event *event, void *param)
 	pos.h = mused.largefont.h;
 	bevel(area, mused.slider_bevel, BEV_FIELD);
 	
-	SDL_SetClipRect(mused.console->surface, &content);
+	SDL_SetClipRect(mused.screen, &content);
 	
 	for (int i = data.list_position ; i < data.n_files && pos.y < content.h + content.y ; ++i)
 	{
@@ -142,9 +142,9 @@ void file_list_view(const SDL_Rect *area, const SDL_Event *event, void *param)
 		}
 	
 		if (data.files[i].type == FB_FILE)
-			font_write(&mused.largefont, mused.console->surface, &pos, data.files[i].display_name);
+			font_write(&mused.largefont, mused.screen, &pos, data.files[i].display_name);
 		else
-			font_write_args(&mused.largefont, mused.console->surface, &pos, "½%s", data.files[i].display_name);
+			font_write_args(&mused.largefont, mused.screen, &pos, "½%s", data.files[i].display_name);
 		
 		if (pos.y + pos.h <= content.h + content.y) slider_set_params(&data.scrollbar, 0, data.n_files - 1, data.list_position, i, &data.list_position, 1, SLIDER_VERTICAL);
 		
@@ -153,7 +153,7 @@ void file_list_view(const SDL_Rect *area, const SDL_Event *event, void *param)
 		update_rect(&content, &pos);
 	}
 	
-	SDL_SetClipRect(mused.console->surface, NULL);
+	SDL_SetClipRect(mused.screen, NULL);
 	
 	check_mouse_wheel_event(event, area, &data.scrollbar);
 }
@@ -175,17 +175,17 @@ void field_view(const SDL_Rect *area, const SDL_Event *event, void *param)
 		size_t length = strlen(data.field);
 		for ( ; data.field[i] && i < length ; ++i)
 		{
-			font_write_args(&mused.largefont, mused.console->surface, &pos, "%c", data.editpos == i ? '§' : data.field[i]);
+			font_write_args(&mused.largefont, mused.screen, &pos, "%c", data.editpos == i ? '§' : data.field[i]);
 			if (check_event(event, &pos, NULL, NULL, NULL, NULL))
 				data.editpos = i;
 			pos.x += pos.w;
 		}
 		
 		if (data.editpos == i && i < length + 1) 
-			font_write(&mused.largefont, mused.console->surface, &pos, "§");
+			font_write(&mused.largefont, mused.screen, &pos, "§");
 	}
 	else
-		font_write(&mused.largefont, mused.console->surface, &content, data.field);
+		font_write(&mused.largefont, mused.screen, &content, data.field);
 	
 	if (check_event(event, area, NULL, 0, 0, 0)) data.focus = FOCUS_FIELD;
 }
@@ -193,7 +193,7 @@ void field_view(const SDL_Rect *area, const SDL_Event *event, void *param)
 
 static void path_view(const SDL_Rect *area, const SDL_Event *event, void *param)
 {
-	font_write(&mused.smallfont, mused.console->surface, area, data.path);
+	font_write(&mused.smallfont, mused.screen, area, data.path);
 }
 
 

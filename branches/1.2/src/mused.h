@@ -99,6 +99,7 @@ typedef struct
 	Font smallfont, largefont;
 	const Menu *current_menu;
 	const Menu *current_menu_action;
+	SDL_Surface *screen;
 } Mused;
 
 #define NUM_STEPS 256
