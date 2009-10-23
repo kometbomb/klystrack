@@ -315,6 +315,10 @@ static int populate_files(const char *dirname, const char *extension)
 				}
 			}
 		}
+		else
+		{
+			warning("stat failed for '%s'", de->d_name);
+		}
 	}
 	
 	closedir(dir);
