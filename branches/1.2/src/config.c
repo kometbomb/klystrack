@@ -26,6 +26,7 @@ OTHER DEALINGS IN THE SOFTWARE.
 #include "config.h"
 #include "mused.h"
 #include "toolutil.h"
+#include "action.h"
 
 extern Mused mused;
 
@@ -42,6 +43,8 @@ static const struct { int type; const char *name; void *param; int mask; } confi
 
 static void apply_config()
 {
+	change_fullscreen(0, 0, 0);
+	change_pixel_scale(0, 0, 0);
 }
 
 
@@ -52,20 +55,46 @@ void load_config(const char *path)
 	if (e) free(e);
 	if (f)
 	{
-		/*for (int i = 0; confitem[i].type != C_END ; ++i)
+		while (!feof(f))
 		{
-			switch (confitem[i].type)
+			char line[500], name[500];
+			if (!fgets(line, sizeof(line), f)) break;
+			
+			if (sscanf(line, "%[^ =]", name) == 1)
 			{
-				case C_BOOL:
-					fprintf(f, "%s = %s\n", confitem[i].name, *confitem[i].param & confitem[i].mask ? "yes" : "no");
-				break;
-				
-				default: 
-					debug("Unhandled configtype %d", confitem[i].type);
-					exit(2);
-				break;
+				int i;
+				for (i = 0; confitem[i].type != C_END ; ++i)
+				{
+					if (strcmp(confitem[i].name, name) == 0)
+					{
+						switch (confitem[i].type)
+						{
+							case C_BOOL:
+							{
+								char value[10];
+								if (sscanf(line, "%[^ =]%*[= ]%9[^\n\r]", name, value) == 2)
+								{
+									if (strcmp(value, "yes") == 0)
+									{
+										*(int*)confitem[i].param |= confitem[i].mask;
+									}
+									else
+									{
+										*(int*)confitem[i].param &= ~confitem[i].mask;
+									}
+								}
+							}
+							break;
+							
+							default: 
+								debug("Unhandled configtype %d", confitem[i].type);
+								exit(2);
+							break;
+						}
+					}
+				}
 			}
-		}*/
+		}
 	
 		fclose(f);
 		
