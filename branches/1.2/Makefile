@@ -101,17 +101,17 @@ endif
 	make -C ../klystron CFG=$(CFG)
 	make all CFG=$(CFG)
 
-all:	inform bin.$(CFG)/$(TARGET) res/data
+all:	inform bin.$(CFG)/$(TARGET) res/Default
 
 .PHONY: zip all build nightly
 
-zip: doc/* res/data $(DLLS) examples/* linux/Makefile
+zip: doc/* res/Defaul $(DLLS) examples/* linux/Makefile
 	make -C ../klystron CFG=release
 	make CFG=release
 	@mkdir -p zip/data/res
 	@mkdir -p zip/data/examples/songs
 	cp -R examples/songs/*.sng zip/data/examples/songs
-	cp res/data zip/data/res/data
+	cp res/Default zip/data/res/Default
 	cp doc/LICENSE zip/data/LICENSE
 	cp doc/SDL.txt zip/data/SDL.txt
 	cp bin.release/$(TARGET) zip/data/$(TARGET)
@@ -150,20 +150,20 @@ deps/Group0_$(CFG)_%.d: %.c
 		< $@.$$$$ > $@; \
 	rm -f $@.$$$$
 	
-res/data: data/bevel.bmp temp/8x8.fnt temp/7x6.fnt data/colors.txt
+res/Default: data/bevel.bmp temp/8x8.fnt temp/7x6.fnt data/colors.txt
 	@mkdir -p res
 	@mkdir -p temp
 	cp -f data/colors.txt temp
 	cp -f data/bevel.bmp temp
-	$(MAKEBUNDLE) res/data temp
+	$(MAKEBUNDLE) $@ temp
 
 temp/8x8.fnt: data/font/*
 	@mkdir -p temp
-	$(MAKEBUNDLE) temp/8x8.fnt data/font
+	$(MAKEBUNDLE) $@ data/font
 
 temp/7x6.fnt: data/font7x6/*
 	@mkdir -p temp
-	$(MAKEBUNDLE) temp/7x6.fnt data/font7x6
+	$(MAKEBUNDLE) $@ data/font7x6
 
 zip/data/SDL.dll:
 	cd temp ; $(WGET) http://www.libsdl.org/release/SDL-1.2.14-win32.zip ; $(ZIPEXT) SDL-1.2.14-win32.zip SDL.dll ; rm SDL-1.2.14-win32.zip
