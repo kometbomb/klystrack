@@ -30,13 +30,14 @@ OTHER DEALINGS IN THE SOFTWARE.
 
 extern Mused mused;
 
-enum { C_END, C_BOOL };
+enum { C_END, C_BOOL, C_STR };
 
 static const struct { int type; const char *name; void *param; int mask; } confitem[] =
 {
 	{ C_BOOL, "fullscreen", &mused.flags, FULLSCREEN },
 	{ C_BOOL, "big_pixels", &mused.flags, BIG_PIXELS },
 	{ C_BOOL, "compact", &mused.flags, COMPACT_VIEW },
+	{ C_STR, "theme", mused.themename, sizeof(mused.themename) - 1 },
 	{ C_END }
 };
 
@@ -45,6 +46,7 @@ static void apply_config()
 {
 	change_fullscreen(0, 0, 0);
 	change_pixel_scale(0, 0, 0);
+	load_theme_action(mused.themename, 0, 0);
 }
 
 
@@ -86,6 +88,16 @@ void load_config(const char *path)
 							}
 							break;
 							
+							case C_STR:
+							{
+								char value[100];
+								if (sscanf(line, "%[^ =]%*[= ]%99[^\n\r]", name, value) == 2)
+								{
+									strncpy((char*)confitem[i].param, value, confitem[i].mask);
+								}
+							}
+							break;
+							
 							default: 
 								debug("Unhandled configtype %d", confitem[i].type);
 								exit(2);
@@ -116,6 +128,10 @@ void save_config(const char *path)
 			{
 				case C_BOOL:
 					fprintf(f, "%s = %s\n", confitem[i].name, *(int*)confitem[i].param & confitem[i].mask ? "yes" : "no");
+				break;
+				
+				case C_STR:
+					fprintf(f, "%s = %s\n", confitem[i].name, (char*)confitem[i].param);
 				break;
 				
 				default: 

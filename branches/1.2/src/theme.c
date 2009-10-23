@@ -134,6 +134,11 @@ void load_theme(const char *name)
 		
 		bnd_free(&res);
 	}
+	else
+	{
+		if (strcmp(name, "Default") != 0)
+			load_theme("Default");
+	}
 }
 
 

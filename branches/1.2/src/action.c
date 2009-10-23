@@ -407,5 +407,6 @@ void change_fullscreen(void *a, void*b, void*c)
 
 void load_theme_action(void *name, void*b, void*c)
 {
+	strcpy(mused.themename, name);
 	load_theme((char*)name);
 }

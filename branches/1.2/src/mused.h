@@ -100,6 +100,7 @@ typedef struct
 	const Menu *current_menu;
 	const Menu *current_menu_action;
 	SDL_Surface *screen;
+	char themename[100];
 } Mused;
 
 #define NUM_STEPS 256

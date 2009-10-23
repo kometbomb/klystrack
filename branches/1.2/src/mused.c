@@ -204,6 +204,7 @@ void init(MusInstrument *instrument, MusPattern *pattern, MusSeqPattern sequence
 	mused.time_signature = 0x0404;
 	mused.prev_mode = 0;
 	mused.edit_backup_buffer = NULL;
+	strcpy(mused.themename, "Default");
 	
 	memset(&mused.cp, 0, sizeof(mused.cp));
 	memset(&mused.song, 0, sizeof(mused.song));
@@ -225,8 +226,6 @@ void init(MusInstrument *instrument, MusPattern *pattern, MusSeqPattern sequence
 	new_song();
 	
 	enum_themes();
-	
-	load_theme("Default");
 	
 	change_mode(EDITSEQUENCE);
 	
