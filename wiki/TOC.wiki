@@ -4,6 +4,7 @@
   * *Preface*
     * [IntroductionToTrackers Introduction to trackers]
     * [Features klystrack features]
+    * [Changelog klystrack changelog]
   * *How to use klystrack*
     * [Manual]
     * [Commands]
