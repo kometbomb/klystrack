@@ -4,7 +4,7 @@ VPATH=src:src
 ECHO = echo
 CFG = debug
 MACHINE = -march=pentium4 -mfpmath=sse -msse3 
-ZIP = pkzipc -zipdate=newest -path=relative -silent -rec -dir -add
+ZIP = pkzipc -exclude=.* -zipdate=newest -path=relative -silent -rec -dir -add
 ZIPEXT = pkzipc -ext -silent
 WGET = wget --quiet
 REV = SubWCRev.exe .
