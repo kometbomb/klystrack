@@ -15,8 +15,10 @@ DESTDIR?=/usr
 
 ifdef COMSPEC
 	RES_PATH = .
+	CONFIG_PATH = ~/.klystrack
 else
 	RES_PATH = $(DESTDIR)/lib/klystrack
+	CONFIG_PATH = ~/.klystrack
 endif
 
 # The directories containing the source files, separated by ':'
@@ -43,7 +45,7 @@ else
 	REV = cp -f
 endif
 
-INCLUDEFLAGS= -I src $(SDLFLAGS) -I ../klystron/src -L../klystron/bin.$(CFG) -DRES_PATH="$(RES_PATH)"
+INCLUDEFLAGS= -I src $(SDLFLAGS) -I ../klystron/src -L../klystron/bin.$(CFG) -DRES_PATH="$(RES_PATH)" -DCONFIG_PATH="$(CONFIG_PATH)"
 	
 # What compiler to use for generating dependencies: 
 # it will be invoked with -MM
