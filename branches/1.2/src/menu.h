@@ -28,12 +28,15 @@ OTHER DEALINGS IN THE SOFTWARE.
 
 struct menu_t
 {
+	int flags;
 	const struct menu_t *parent;
 	const char * text;
 	const struct menu_t *submenu;
 	void (*action)(void*, void*, void *);
 	void *p1, *p2, *p3;
 } menu_t;
+
+enum { MENU_BULLET = 1 };
 
 typedef struct menu_t Menu;
 

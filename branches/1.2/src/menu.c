@@ -22,69 +22,69 @@ extern Menu thememenu[];
 
 static const Menu editormenu[] =
 {
-	{ showmenu, "Instrument",  NULL, change_mode_action, (void*)EDITINSTRUMENT, 0, 0 },
-	{ showmenu, "Pattern",  NULL, change_mode_action, (void*)EDITPATTERN, 0, 0 },
-	{ showmenu, "Sequence",  NULL, change_mode_action, (void*)EDITSEQUENCE, 0, 0 },
-	{ showmenu, "Classic",  NULL, change_mode_action, (void*)EDITCLASSIC, 0, 0 },
-	{ showmenu, "Effects",  NULL, change_mode_action, (void*)EDITREVERB, 0, 0 },
-	{ NULL, NULL }
+	{ 0, showmenu, "Instrument",  NULL, change_mode_action, (void*)EDITINSTRUMENT, 0, 0 },
+	{ 0, showmenu, "Pattern",  NULL, change_mode_action, (void*)EDITPATTERN, 0, 0 },
+	{ 0, showmenu, "Sequence",  NULL, change_mode_action, (void*)EDITSEQUENCE, 0, 0 },
+	{ 0, showmenu, "Classic",  NULL, change_mode_action, (void*)EDITCLASSIC, 0, 0 },
+	{ 0, showmenu, "Effects",  NULL, change_mode_action, (void*)EDITREVERB, 0, 0 },
+	{ 0, NULL, NULL }
 };
 
 
 static const Menu showmenu[] =
 {
-	{ mainmenu, "Editor", editormenu, NULL },
-	{ mainmenu, "", NULL, NULL },
-	{ mainmenu, "Compact", NULL, MENU_CHECK, &mused.flags, (void*)COMPACT_VIEW, 0 },
-	{ NULL, NULL }
+	{ 0, mainmenu, "Editor", editormenu, NULL },
+	{ 0, mainmenu, "", NULL, NULL },
+	{ 0, mainmenu, "Compact", NULL, MENU_CHECK, &mused.flags, (void*)COMPACT_VIEW, 0 },
+	{ 0, NULL, NULL }
 };
 
 
 const Menu prefsmenu[] =
 {
-	{ mainmenu, "Theme", thememenu, NULL },
-	{ mainmenu, "", NULL, NULL },
-	{ mainmenu, "Big pixels", NULL, MENU_CHECK_NOSET, &mused.flags, (void*)BIG_PIXELS, toggle_pixel_scale },
-	{ mainmenu, "Fullscreen", NULL, MENU_CHECK_NOSET, &mused.flags, (void*)FULLSCREEN, toggle_fullscreen },
-	{ NULL, NULL }
+	{ 0, mainmenu, "Theme", thememenu, NULL },
+	{ 0, mainmenu, "", NULL, NULL },
+	{ 0, mainmenu, "Big pixels", NULL, MENU_CHECK_NOSET, &mused.flags, (void*)BIG_PIXELS, toggle_pixel_scale },
+	{ 0, mainmenu, "Fullscreen", NULL, MENU_CHECK_NOSET, &mused.flags, (void*)FULLSCREEN, toggle_fullscreen },
+	{ 0, NULL, NULL }
 };
 
 
 static const Menu filemenu[] =
 {
-	{ mainmenu, "New", NULL, new_song_action },
-	{ mainmenu, "Open", NULL, open_song_action },
-	{ mainmenu, "Save", NULL, save_song_action },
-	{ mainmenu, "", NULL, NULL },
-	{ mainmenu, "Exit", NULL, quit_action },
-	{ NULL, NULL }
+	{ 0, mainmenu, "New", NULL, new_song_action },
+	{ 0, mainmenu, "Open", NULL, open_song_action },
+	{ 0, mainmenu, "Save", NULL, save_song_action },
+	{ 0, mainmenu, "", NULL, NULL },
+	{ 0, mainmenu, "Exit", NULL, quit_action },
+	{ 0, NULL, NULL }
 };
 
 
 static const Menu playmenu[] =
 {
-	{ mainmenu, "Play",  NULL, play, (void*)0, 0, 0 },
-	{ showmenu, "Stop",  NULL, stop, 0, 0, 0 },
-	{ showmenu, "Play from cursor",  NULL, play, (void*)1, 0, 0 },
-	{ NULL, NULL }
+	{ 0, mainmenu, "Play",  NULL, play, (void*)0, 0, 0 },
+	{ 0, mainmenu, "Stop",  NULL, stop, 0, 0, 0 },
+	{ 0, mainmenu, "Play from cursor",  NULL, play, (void*)1, 0, 0 },
+	{ 0, NULL, NULL }
 };
 
 
 static const Menu infomenu[] =
 {
-	{ mainmenu, "About",  NULL, show_about_box, (void*)0, 0, 0 },
-	{ NULL, NULL }
+	{ 0, mainmenu, "About",  NULL, show_about_box, (void*)0, 0, 0 },
+	{ 0, NULL, NULL }
 };
 
 
 static const Menu mainmenu[] =
 {
-	{ NULL, "FILE", filemenu },
-	{ NULL, "PLAY", playmenu },
-	{ NULL, "SHOW", showmenu },
-	{ NULL, "PREFS", prefsmenu },
-	{ NULL, "INFO", infomenu },
-	{ NULL, NULL }
+	{ 0, NULL, "FILE", filemenu },
+	{ 0, NULL, "PLAY", playmenu },
+	{ 0, NULL, "SHOW", showmenu },
+	{ 0, NULL, "PREFS", prefsmenu },
+	{ 0, NULL, "INFO", infomenu },
+	{ 0, NULL, NULL }
 };
 
 
@@ -309,6 +309,8 @@ static void draw_submenu(const SDL_Event *event, const Menu *items, const Menu *
 					
 					if ((item->action == MENU_CHECK || item->action == MENU_CHECK_NOSET) && (*(int*)item->p1 & (int)item->p2))
 						*tick_char = '§';
+					else if (item->flags & MENU_BULLET)
+						*tick_char = '^';
 					
 					if (tick_char[0] != 0)
 					{

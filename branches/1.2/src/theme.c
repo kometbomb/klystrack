@@ -133,6 +133,8 @@ void load_theme(const char *name)
 		}
 		
 		bnd_free(&res);
+		strcpy(mused.themename, name);
+		update_theme_menu();
 	}
 	else
 	{
@@ -181,6 +183,20 @@ void enum_themes()
 	}
 	
 	closedir(dir);
+}
+
+
+void update_theme_menu()
+{
+	for (int i = 0 ; thememenu[i].text ; ++i)
+	{
+		if (strcmp(mused.themename, (char*)thememenu[i].p1) == 0)
+		{
+			thememenu[i].flags |= MENU_BULLET;
+		}
+		else
+			thememenu[i].flags &= ~MENU_BULLET;
+	}
 }
 
 
