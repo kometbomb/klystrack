@@ -40,7 +40,7 @@ void load_colors(const char *cfg)
 		char name[51];
 		Uint32 color;
 		
-		if (sscanf(token, "%50s%*[ =]%x", name, &color) == 2)
+		if (sscanf(token, "%50[^ =]%*[ =]%x", name, &color) == 2)
 		{
 			static const char *names[NUM_COLORS] =
 			{
