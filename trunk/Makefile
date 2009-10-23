@@ -14,9 +14,9 @@ DLLS = zip/data/SDL.dll zip/data/SDL_mixer.dll
 DESTDIR?=/usr
 
 ifdef COMSPEC
-RES_PATH = .
+	RES_PATH = .
 else
-RES_PATH = $(DESTDIR)/lib/klystrack
+	RES_PATH = $(DESTDIR)/lib/klystrack
 endif
 
 # The directories containing the source files, separated by ':'
@@ -33,14 +33,14 @@ Group0_DEP = $(patsubst %.c, deps/Group0_$(CFG)_%.d, ${Group0_SRC})
 Group0_OBJ = $(patsubst %.c, objs.$(CFG)/Group0_%.o, ${Group0_SRC}) 
 
 ifdef COMSPEC
-TARGET =klystrack.exe
-SDLFLAGS = -I /mingw/include/sdl
-SDLLIBS =  -lmingw32 -lSDLmain -lSDL -lSDL_mixer -mthreads 
+	TARGET =klystrack.exe
+	SDLFLAGS = -I /mingw/include/sdl
+	SDLLIBS =  -lmingw32 -lSDLmain -lSDL -lSDL_mixer -mthreads 
 else
-DLLS = 
-SDLFLAGS = `sdl-config --cflags` -U_FORTIFY_SOURCE
-SDLLIBS = `sdl-config --libs` -lSDL_mixer
-REV = cp -f
+	DLLS = 
+	SDLFLAGS = `sdl-config --cflags` -U_FORTIFY_SOURCE
+	SDLLIBS = `sdl-config --libs` -lSDL_mixer
+	REV = cp -f
 endif
 
 INCLUDEFLAGS= -I src $(SDLFLAGS) -I ../klystron/src -L../klystron/bin.$(CFG) -DRES_PATH="$(RES_PATH)"
@@ -51,31 +51,30 @@ CC = gcc -std=gnu99 --no-strict-aliasing
 CDEP = gcc -E -std=gnu99
 
 ifndef CFLAGS
-CFLAGS = $(MACHINE) -ftree-vectorize
+	CFLAGS = $(MACHINE) -ftree-vectorize
 endif
 
 # Separate compile options per configuration
 ifeq ($(CFG),debug)
-CFLAGS += -O3 -g -Wall -DDEBUG -fno-inline $(DEBUGPARAMS)
+	CFLAGS += -O3 -g -Wall -DDEBUG -fno-inline $(DEBUGPARAMS)
 else
-ifeq ($(CFG),profile)
-CFLAGS += -O3 -g -pg -Wall
-else
-ifeq ($(CFG),release)
-CFLAGS += -O3 -Wall -s
-ifdef COMSPEC
-CFLAGS += -mwindows
-endif
-else
-@$(ECHO) "Invalid configuration "$(CFG)" specified."
-@$(ECHO) "You must specify a configuration when "
-@$(ECHO) "running make, e.g. make CFG=debug"
-@$(ECHO) "Possible choices for configuration are "
-@$(ECHO) "'release', 'profile' and 'debug'"
-@exit 1
-exit
-endif
-endif
+	ifeq ($(CFG),profile)
+		CFLAGS += -O3 -g -pg -Wall
+	else
+		ifeq ($(CFG),release)
+			CFLAGS += -O3 -Wall -s
+			ifdef COMSPEC
+				CFLAGS += -mwindows
+			endif
+		else
+			@$(ECHO) "Invalid configuration "$(CFG)" specified."
+			@$(ECHO) "You must specify a configuration when "
+			@$(ECHO) "running make, e.g. make CFG=debug"
+			@$(ECHO) "Possible choices for configuration are "
+			@$(ECHO) "'release', 'profile' and 'debug'"
+			@exit 1
+		endif
+	endif
 endif
 
 build: Makefile src/version
