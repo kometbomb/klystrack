@@ -1,0 +1,9 @@
+#summary Changelog
+
+=1.1.1=
+
+  * Mouse wheel scrolls lists
+  * Fullscreen mode
+  * Should discard non-standard multimedia key keypresses
+  * File selector shows current path
+  * [Linux] Tilde is expanded to home directory
