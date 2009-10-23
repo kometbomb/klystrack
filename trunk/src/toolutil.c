@@ -97,6 +97,7 @@ char * expand_tilde(const char * path)
 	if (name) 
 	{
 		struct passwd *pwd = getpwnam(name);
+		free(name);
 		
 		if (!pwd)
 		{
@@ -105,7 +106,6 @@ char * expand_tilde(const char * path)
 		}
 		
 		homedir = pwd->pw_dir;
-		free(name);
 	}
 	else
 	{
