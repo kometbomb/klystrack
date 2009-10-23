@@ -45,7 +45,7 @@ else
 	REV = cp -f
 endif
 
-INCLUDEFLAGS= -I src $(SDLFLAGS) -I ../klystron/src -L../klystron/bin.$(CFG) -DRES_PATH="$(RES_PATH)" -DCONFIG_PATH="$(CONFIG_PATH)"
+INCLUDEFLAGS= -I src $(SDLFLAGS) -I ../klystron/src -L../klystron/bin.$(CFG) -DRES_PATH="$(RES_PATH)" -DCONFIG_PATH="$(CONFIG_PATH)" $(EXTFLAGS)
 	
 # What compiler to use for generating dependencies: 
 # it will be invoked with -MM
@@ -110,7 +110,7 @@ zip: doc/* res/Default $(DLLS) examples/* linux/Makefile
 	make CFG=release
 	@mkdir -p zip/data/res
 	@mkdir -p zip/data/examples/songs
-	cp -R examples/songs/*.sng zip/data/examples/songs
+	cp examples/songs/*.sng zip/data/examples/songs
 	cp res/Default zip/data/res/Default
 	cp doc/LICENSE zip/data/LICENSE
 	cp doc/SDL.txt zip/data/SDL.txt
