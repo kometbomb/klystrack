@@ -18,6 +18,8 @@ extern Mused mused;
 static const Menu mainmenu[];
 static const Menu showmenu[];
 
+extern Menu thememenu[];
+
 static const Menu editormenu[] =
 {
 	{ showmenu, "Instrument",  NULL, change_mode_action, (void*)EDITINSTRUMENT, 0, 0 },
@@ -38,8 +40,10 @@ static const Menu showmenu[] =
 };
 
 
-static const Menu prefsmenu[] =
+const Menu prefsmenu[] =
 {
+	{ mainmenu, "Theme", thememenu, NULL },
+	{ mainmenu, "", NULL, NULL },
 	{ mainmenu, "Big pixels", NULL, MENU_CHECK_NOSET, &mused.flags, (void*)BIG_PIXELS, toggle_pixel_scale },
 	{ mainmenu, "Fullscreen", NULL, MENU_CHECK_NOSET, &mused.flags, (void*)FULLSCREEN, toggle_fullscreen },
 	{ NULL, NULL }

@@ -226,6 +226,8 @@ void init(MusInstrument *instrument, MusPattern *pattern, MusSeqPattern sequence
 	
 	new_song();
 	
+	enum_themes();
+	
 	load_theme("data");
 	
 	slider_set_params(&mused.sequence_slider_param, 0, 0, 0, 0, &mused.sequence_position, 1, SLIDER_VERTICAL);
@@ -245,6 +247,7 @@ void deinit()
 	SDL_FreeSurface(mused.slider_bevel);
 	font_destroy(&mused.smallfont);
 	font_destroy(&mused.largefont);
+	free_themes();
 }
 
 

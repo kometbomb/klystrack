@@ -51,5 +51,7 @@ enum
 extern Uint32 colors[NUM_COLORS];
 
 void load_theme(const char *name);
+void enum_themes();
+void free_themes();
 
 #endif

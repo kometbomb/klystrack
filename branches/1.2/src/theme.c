@@ -29,9 +29,19 @@ OTHER DEALINGS IN THE SOFTWARE.
 #include "util/bundle.h"
 #include "gfx/gfx.h"
 #include "mused.h"
+#include "menu.h"
+#include <unistd.h>
+#include <dirent.h>
+#include <sys/stat.h>
+#include <strings.h>
+#include "action.h"
 
 extern Mused mused;
 
+#define MAX_THEMES 10
+
+Menu thememenu[MAX_THEMES + 1];
+extern const Menu prefsmenu[];
 
 Uint32 colors[NUM_COLORS];
 
@@ -121,4 +131,56 @@ void load_theme(const char *name)
 		
 		bnd_free(&res);
 	}
+}
+
+
+void enum_themes()
+{
+	memset(thememenu, 0, sizeof(thememenu));
+	
+	DIR *dir = opendir(TOSTRING(RES_PATH) "/res");
+	
+	if (!dir)
+	{
+		warning("Could not enumerate themes at " TOSTRING(RES_PATH) "/res");
+		return;
+	}
+	
+	struct dirent *de = NULL;
+	int themes = 0;
+	
+	while ((de = readdir(dir)) != NULL)
+	{
+		char fullpath[1000];
+	
+		snprintf(fullpath, sizeof(fullpath) - 1, TOSTRING(RES_PATH) "/res/%s", de->d_name);
+		struct stat attribute;
+		
+		if (stat(fullpath, &attribute) != -1 && !(attribute.st_mode & S_IFDIR))
+		{
+			if (themes >= MAX_THEMES)
+			{
+				warning("Maximum themes exceeded");
+				break;
+			}
+			
+			thememenu[themes].parent = prefsmenu;
+			thememenu[themes].text = strdup(de->d_name);
+			thememenu[themes].action = load_theme_action;
+			thememenu[themes].p1 = (void*)thememenu[themes].text;
+			++themes;
+		}
+	}
+	
+	closedir(dir);
+}
+
+
+void free_themes()
+{
+	for (int i = 0 ; i < MAX_THEMES ; ++i)
+	{
+		if (thememenu[i].text != NULL) free((void*)thememenu[i].text);
+	}
+	memset(thememenu, 0, sizeof(thememenu));
 }
