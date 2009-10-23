@@ -34,9 +34,6 @@ OTHER DEALINGS IN THE SOFTWARE.
 
 extern Mused mused;
 
-#define STRINGIFY(x) #x
-#define TOSTRING(x) STRINGIFY(x)
-
 
 void set_edit_buffer(char *buffer, size_t size)
 { 

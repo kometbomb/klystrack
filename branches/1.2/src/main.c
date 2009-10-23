@@ -41,6 +41,7 @@ OTHER DEALINGS IN THE SOFTWARE.
 #include "shortcuts.h"
 #include "version.h"
 #include "mused.h"
+#include "config.h"
 
 //#define DUMPKEYS
 
@@ -160,6 +161,8 @@ int main(int argc, char **argv)
 	MusChannel channel[CYD_MAX_CHANNELS];
 	
 	init(instrument, pattern, sequence, channel, gfx_domain_get_surface(domain));
+	
+	load_config(TOSTRING(CONFIG_PATH));
 	
 	if (Mix_OpenAudio(44100, AUDIO_S16SYS, 2, 2048)) warning("Mix_OpenAudio failed: %s", Mix_GetError());
 	Mix_AllocateChannels(1);
@@ -334,6 +337,8 @@ int main(int argc, char **argv)
 	cyd_deinit(&mused.cyd);
 	
 	gfx_domain_free(domain);
+	
+	save_config(TOSTRING(CONFIG_PATH));
 	
 	deinit();
 	

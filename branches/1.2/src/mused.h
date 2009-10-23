@@ -31,6 +31,9 @@ OTHER DEALINGS IN THE SOFTWARE.
 #include "console.h"
 #include "slider.h"
 
+#define STRINGIFY(x) #x
+#define TOSTRING(x) STRINGIFY(x)
+
 enum
 {
 	EDITINSTRUMENT,
