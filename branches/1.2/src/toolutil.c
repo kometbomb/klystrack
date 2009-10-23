@@ -74,26 +74,34 @@ int confirm_ync(const char *msg)
 
 char * expand_tilde(const char * path)
 {
-#ifndef WIN32
 	if (path[0] != '~') return NULL;
 	
+#ifndef WIN32	
 	const char *rest = strchr(path, '/');
 	char *name = NULL;
+#else
+	const char *rest = strchr(path, '/');
+	if (!rest) rest = strchr(path, '\\');
+#endif	
+	
 	size_t rest_len = 0;
 	
 	if (rest != NULL)
 	{
+#ifndef WIN32	
 		size_t l = (rest - (path + 1)) / sizeof(*name);
 		if (l)
 		{
 			name = calloc(sizeof(*name), l + 1);
 			strncpy(name, path + 1, l);
 		}
+#endif
 		rest_len = strlen(rest);
 	}
 	
 	const char *homedir = NULL;
 	
+#ifndef WIN32		
 	if (name) 
 	{
 		struct passwd *pwd = getpwnam(name);
@@ -111,13 +119,13 @@ char * expand_tilde(const char * path)
 	{
 		homedir = getenv("HOME");
 	}
+#else
+	homedir = getenv("USERPROFILE");
+#endif
 	
 	char * final = malloc(strlen(homedir) + rest_len + 2);
 	strcpy(final, homedir);
 	if (rest) strcat(final, rest);
 	
 	return final;
-#else
-	return NULL;
-#endif
 }

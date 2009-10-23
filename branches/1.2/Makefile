@@ -15,7 +15,7 @@ DESTDIR?=/usr
 
 ifdef COMSPEC
 	RES_PATH = .
-	CONFIG_PATH = .klystrack
+	CONFIG_PATH = ~/.klystrack
 else
 	RES_PATH = $(DESTDIR)/lib/klystrack
 	CONFIG_PATH = ~/.klystrack
