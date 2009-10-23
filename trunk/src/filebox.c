@@ -321,7 +321,7 @@ static int populate_files(const char *dirname, const char *extension)
 	
 	debug("Got %d files", data.n_files);
 	
-	data.selected_file = 0;
+	data.selected_file = -1;
 	data.list_position = 0;
 	data.editpos = 0;
 	strcpy(data.field, "");
@@ -441,7 +441,7 @@ int filebox(const char *title, int mode, char *buffer, size_t buffer_size, const
 				
 									int s = stat(exp ? exp : data.field, &attribute);
 									
-									free(exp);
+									if (exp) free(exp);
 									
 									if (s != -1)
 									{
