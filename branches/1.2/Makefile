@@ -98,15 +98,15 @@ else
 	@echo '#define VERSION_STRING "klystrack " VERSION " " REVISION' >> ./src/version.h
 	@echo '#endif' >> ./src/version.h
 endif
-	make -C ../klystron CFG=$(CFG)
-	make all CFG=$(CFG)
+	make -C ../klystron CFG=$(CFG) EXTFLAGS="$(EXTFLAGS)"
+	make all CFG=$(CFG) EXTFLAGS="$(EXTFLAGS)"
 
 all:	inform bin.$(CFG)/$(TARGET) res/Default
 
 .PHONY: zip all build nightly
 
 zip: doc/* res/Default $(DLLS) examples/* linux/Makefile
-	make -C ../klystron CFG=release
+	make -C ../klystron CFG=release EXTFLAGS="$(EXTFLAGS)"
 	make CFG=release
 	@mkdir -p zip/data/res
 	@mkdir -p zip/data/examples/songs
@@ -140,7 +140,8 @@ bin.$(CFG)/${TARGET}: $(Group0_OBJ) | inform
 
 objs.$(CFG)/Group0_%.o: %.c
 	@mkdir -p objs.$(CFG)
-	$(CC) $(CFLAGS) $(INCLUDEFLAGS) -c -o $@ $<
+	@$(ECHO) "Compiling "$(notdir $<)"..."
+	@$(CC) $(CFLAGS) $(INCLUDEFLAGS) -c -o $@ $<
 
 deps/Group0_$(CFG)_%.d: %.c
 	@mkdir -p deps
