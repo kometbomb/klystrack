@@ -27,15 +27,11 @@ OTHER DEALINGS IN THE SOFTWARE.
 #include "util/bundle.h"
 #include "gfx/font.h"
 #include "gfx/gfx.h"
-#include "util/bundle.h"
 #include "action.h"
 #include "event.h"
 #include "theme.h"
 
 extern Mused mused;
-
-#define STRINGIFY(x) #x
-#define TOSTRING(x) STRINGIFY(x)
 
 
 void set_edit_buffer(char *buffer, size_t size)
@@ -80,7 +76,7 @@ void update_ghost_patterns()
 
 void change_mode(int newmode)
 {
-	if (newmode < VIRTUAL_MODE && mused.mode != MENU) SDL_FillRect(mused.console->surface, NULL, 0);
+	if (newmode < VIRTUAL_MODE && mused.mode != MENU) SDL_FillRect(mused.screen, NULL, 0);
 
 	clear_selection(0,0,0);
 	
@@ -192,7 +188,7 @@ void init(MusInstrument *instrument, MusPattern *pattern, MusSeqPattern sequence
 	
 	memset(&mused, 0, sizeof(mused));
 	
-	mused.console = console_create(screen);
+	mused.screen = screen;
 	mused.done = 0;
 	mused.octave = 4;
 	mused.current_instrument = 0;
@@ -208,8 +204,7 @@ void init(MusInstrument *instrument, MusPattern *pattern, MusSeqPattern sequence
 	mused.time_signature = 0x0404;
 	mused.prev_mode = 0;
 	mused.edit_backup_buffer = NULL;
-	
-	change_mode(EDITSEQUENCE);
+	strcpy(mused.themename, "Default");
 	
 	memset(&mused.cp, 0, sizeof(mused.cp));
 	memset(&mused.song, 0, sizeof(mused.song));
@@ -230,31 +225,9 @@ void init(MusInstrument *instrument, MusPattern *pattern, MusSeqPattern sequence
 	
 	new_song();
 	
-	Bundle res;
-	if (bnd_open(&res, TOSTRING(RES_PATH) "/res/data"))
-	{
-		SDL_RWops *rw = SDL_RWFromBundle(&res, "bevel.bmp");
-		
-		if (rw)
-		{
-			mused.slider_bevel = gfx_load_surface_RW(rw, GFX_KEYED);
-		}
+	enum_themes();
 	
-		font_load(&mused.smallfont, &res, "7x6.fnt");
-		font_load(&mused.largefont, &res, "8x8.fnt");
-		
-		FILE *colors = bnd_locate(&res, "colors.txt", 0);
-		if (colors)
-		{
-			char temp[1000] = {0};
-			fread(temp, 1, sizeof(temp)-1, colors);
-			fclose(colors);
-			
-			load_colors(temp);
-		}
-		
-		bnd_free(&res);
-	}
+	change_mode(EDITSEQUENCE);
 	
 	slider_set_params(&mused.sequence_slider_param, 0, 0, 0, 0, &mused.sequence_position, 1, SLIDER_VERTICAL);
 	slider_set_params(&mused.pattern_slider_param, 0, 0, 0, 0, &mused.sequence_position, 1, SLIDER_VERTICAL);
@@ -273,6 +246,7 @@ void deinit()
 	SDL_FreeSurface(mused.slider_bevel);
 	font_destroy(&mused.smallfont);
 	font_destroy(&mused.largefont);
+	free_themes();
 }
 
 

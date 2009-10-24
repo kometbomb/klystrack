@@ -37,7 +37,7 @@ extern Mused mused;
 
 static int draw_box(const SDL_Event *event, const char *msg, int buttons, int *selected)
 {
-	SDL_Rect area = { mused.console->surface->w / 2 - 100, mused.console->surface->h / 2 - 24, 200, 48 };
+	SDL_Rect area = { mused.screen->w / 2 - 100, mused.screen->h / 2 - 24, 200, 48 };
 	
 	bevel(&area, mused.slider_bevel, BEV_MENU);
 	SDL_Rect content, pos;
@@ -47,7 +47,7 @@ static int draw_box(const SDL_Event *event, const char *msg, int buttons, int *s
 	
 	pos.h = 18;
 	
-	font_write(&mused.largefont, mused.console->surface, &pos, msg);
+	font_write(&mused.largefont, mused.screen, &pos, msg);
 	update_rect(&content, &pos);
 	
 	int b = 0;
