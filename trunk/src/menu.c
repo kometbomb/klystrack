@@ -254,7 +254,7 @@ static void draw_submenu(const SDL_Event *event, const Menu *items, const Menu *
 				const char * sc_text = get_shortcut_key(item);
 				int bg = 0;
 				
-				if (horiz) r.w = font->w * get_menu_item_width(item) + 16;
+				if (horiz) r.w = font->w * get_menu_item_width(item) + 8;
 				
 				if (event->type == SDL_MOUSEMOTION && pass == ZONE)
 				{
