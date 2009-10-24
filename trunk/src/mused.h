@@ -31,6 +31,9 @@ OTHER DEALINGS IN THE SOFTWARE.
 #include "console.h"
 #include "slider.h"
 
+#define STRINGIFY(x) #x
+#define TOSTRING(x) STRINGIFY(x)
+
 enum
 {
 	EDITINSTRUMENT,
@@ -96,6 +99,8 @@ typedef struct
 	Font smallfont, largefont;
 	const Menu *current_menu;
 	const Menu *current_menu_action;
+	SDL_Surface *screen;
+	char themename[100];
 } Mused;
 
 #define NUM_STEPS 256

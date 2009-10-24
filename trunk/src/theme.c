@@ -26,10 +26,27 @@ OTHER DEALINGS IN THE SOFTWARE.
 #include "macros.h"
 #include "theme.h"
 #include <string.h>
+#include "util/bundle.h"
+#include "gfx/gfx.h"
+#include "mused.h"
+#include "menu.h"
+#include <unistd.h>
+#include <dirent.h>
+#include <sys/stat.h>
+#include <strings.h>
+#include "action.h"
+#include "console.h"
+
+extern Mused mused;
+
+#define MAX_THEMES 10
+
+Menu thememenu[MAX_THEMES + 1];
+extern const Menu prefsmenu[];
 
 Uint32 colors[NUM_COLORS];
 
-void load_colors(const char *cfg)
+static void load_colors(const char *cfg)
 {
 	char *temp = strdup(cfg);
 	
@@ -78,4 +95,116 @@ void load_colors(const char *cfg)
 	}
 	
 	free(temp);
+}
+
+
+void load_theme(const char *name)
+{
+	Bundle res;
+	char fullpath[1000];
+	
+	snprintf(fullpath, sizeof(fullpath) - 1, TOSTRING(RES_PATH) "/res/%s", name);
+	
+	if (bnd_open(&res, fullpath))
+	{
+		SDL_RWops *rw = SDL_RWFromBundle(&res, "bevel.bmp");
+		
+		if (rw)
+		{
+			if (mused.slider_bevel) SDL_FreeSurface(mused.slider_bevel);
+			mused.slider_bevel = gfx_load_surface_RW(rw, GFX_KEYED);
+		}
+	
+		if (mused.console) console_destroy(mused.console); 
+		mused.console = console_create(fullpath);
+		font_destroy(&mused.smallfont);
+		font_load(&mused.smallfont, &res, "7x6.fnt");
+		font_destroy(&mused.largefont);
+		font_load(&mused.largefont, &res, "8x8.fnt");
+		
+		FILE *colors = bnd_locate(&res, "colors.txt", 0);
+		if (colors)
+		{
+			char temp[1000] = {0};
+			fread(temp, 1, sizeof(temp)-1, colors);
+			fclose(colors);
+			
+			load_colors(temp);
+		}
+		
+		bnd_free(&res);
+		strcpy(mused.themename, name);
+		update_theme_menu();
+	}
+	else
+	{
+		if (strcmp(name, "Default") != 0)
+			load_theme("Default");
+	}
+}
+
+
+void enum_themes()
+{
+	memset(thememenu, 0, sizeof(thememenu));
+	
+	DIR *dir = opendir(TOSTRING(RES_PATH) "/res");
+	
+	if (!dir)
+	{
+		warning("Could not enumerate themes at " TOSTRING(RES_PATH) "/res");
+		return;
+	}
+	
+	struct dirent *de = NULL;
+	int themes = 0;
+	
+	while ((de = readdir(dir)) != NULL)
+	{
+		char fullpath[1000];
+	
+		snprintf(fullpath, sizeof(fullpath) - 1, TOSTRING(RES_PATH) "/res/%s", de->d_name);
+		struct stat attribute;
+		
+		if (stat(fullpath, &attribute) != -1 && !(attribute.st_mode & S_IFDIR))
+		{
+			if (themes >= MAX_THEMES)
+			{
+				warning("Maximum themes exceeded");
+				break;
+			}
+			
+			thememenu[themes].parent = prefsmenu;
+			thememenu[themes].text = strdup(de->d_name);
+			thememenu[themes].action = load_theme_action;
+			thememenu[themes].p1 = (void*)thememenu[themes].text;
+			++themes;
+		}
+	}
+	
+	closedir(dir);
+}
+
+
+void update_theme_menu()
+{
+	for (int i = 0 ; thememenu[i].text ; ++i)
+	{
+		if (strcmp(mused.themename, (char*)thememenu[i].p1) == 0)
+		{
+			thememenu[i].flags |= MENU_BULLET;
+		}
+		else
+			thememenu[i].flags &= ~MENU_BULLET;
+	}
+}
+
+
+void free_themes()
+{
+	for (int i = 0 ; i < MAX_THEMES ; ++i)
+	{
+		if (thememenu[i].text != NULL) free((void*)thememenu[i].text);
+	}
+	memset(thememenu, 0, sizeof(thememenu));
 }

@@ -50,7 +50,7 @@ int checkbox(const SDL_Event *event, const SDL_Rect *area, const char* _label, U
 	label.y += 1;
 	label.h -= 1;
 	int pressed = button_event(event, &tick, mused.slider_bevel, BEV_BUTTON, BEV_BUTTON_ACTIVE, (*flags & mask) ? DECAL_TICK : -1, flip, flags, (void*)mask, 0);
-	font_write(&mused.smallfont, mused.console->surface, &label, _label);
+	font_write(&mused.smallfont, mused.screen, &label, _label);
 	pressed |= check_event(event, &label, flip, flags, (void*)mask, 0);
 	
 	return pressed;

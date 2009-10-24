@@ -31,7 +31,7 @@ OTHER DEALINGS IN THE SOFTWARE.
 
 typedef struct
 {
-	SDL_Surface *surface, *fontsurface[2];
+	SDL_Surface *fontsurface[2];
 	Uint16 cursor;
 	Font font;
 	SDL_Rect clip;
@@ -48,7 +48,7 @@ void console_set_background(Console * c, int enabled);
 void console_reset_cursor(Console * c);
 void console_set_clip(Console * c, const SDL_Rect *rect);
 void console_clear(Console *console);
-Console * console_create(SDL_Surface *surface);
+Console * console_create(const char * theme);
 void console_set_color(Console* console, Uint32 color, int flags);
 const SDL_Rect * console_write(Console* console, const char *string);
 const SDL_Rect * console_write_args(Console* console, const char *string, ...)  __attribute__ ((format (printf, 2, 3)));

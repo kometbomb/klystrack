@@ -25,9 +25,9 @@ OTHER DEALINGS IN THE SOFTWARE.
 
 #include "console.h"
 #include "util/bundle.h"
+#include "mused.h"
 
-#define STRINGIFY(x) #x
-#define TOSTRING(x) STRINGIFY(x)
+extern Mused mused;
 
 
 void console_set_background(Console * c, int enabled)
@@ -54,7 +54,7 @@ const SDL_Rect * console_write(Console* console, const char *string)
 {
 	static SDL_Rect bounds;
 	bounds.w = bounds.h = 0;
-	font_write_cursor(&console->font, console->surface, &console->clip, &console->cursor, &bounds, string);
+	font_write_cursor(&console->font, mused.screen, &console->clip, &console->cursor, &bounds, string);
 	return &bounds;
 }
 
@@ -65,7 +65,7 @@ const SDL_Rect * console_write_args(Console* console, const char *string, ...)
 	bounds.w = bounds.h = 0;
 	va_list va;
 	va_start(va, string);
-	font_write_va(&console->font, console->surface, &console->clip, &console->cursor, &bounds, string, va);
+	font_write_va(&console->font, mused.screen, &console->clip, &console->cursor, &bounds, string, va);
 	va_end(va);
 	return &bounds;
 }
@@ -73,12 +73,12 @@ const SDL_Rect * console_write_args(Console* console, const char *string, ...)
 
 void console_clear(Console *console)
 {
-	SDL_FillRect(console->surface, &console->clip, 0);
+	SDL_FillRect(mused.screen, &console->clip, 0);
 	console->cursor = 0;
 }
 
 
-Console * console_create(SDL_Surface *surface)
+Console * console_create(const char * theme)
 {
 	Console * c = malloc(sizeof(*c));
 	
@@ -86,7 +86,7 @@ Console * console_create(SDL_Surface *surface)
 		
 	Bundle b;
 	
-	if (bnd_open(&b, TOSTRING(RES_PATH) "/res/data"))
+	if (bnd_open(&b, theme))
 	{
 		font_load(&c->font, &b, "8x8.fnt");
 		bnd_free(&b);
@@ -121,12 +121,10 @@ Console * console_create(SDL_Surface *surface)
 	
 	console_set_background(c, 0);
 	
-	c->surface = surface;
-	
 	c->clip.x = 0;
 	c->clip.y = 0;
-	c->clip.w = surface->w;
-	c->clip.h = surface->h;
+	c->clip.w = mused.screen->w;
+	c->clip.h = mused.screen->h;
 	
 	return c;
 }

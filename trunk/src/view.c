@@ -72,7 +72,7 @@ void draw_view(const View* views, const SDL_Event *_event)
 	}
 	
 	/*for (int i = 0 ; views[i].handler ; ++i)
-		SDL_UpdateRect(mused.console->surface, views[i].position.x, views[i].position.y, views[i].position.w, views[i].position.h);*/
+		SDL_UpdateRect(mused.screen, views[i].position.x, views[i].position.y, views[i].position.w, views[i].position.h);*/
 }
 
 
@@ -150,7 +150,7 @@ static void label(const char *_label, const SDL_Rect *area)
 	
 	r.y = r.y + area->h / 2 - mused.smallfont.h / 2;
 	
-	font_write(&mused.smallfont, mused.console->surface, &r, _label);
+	font_write(&mused.smallfont, mused.screen, &r, _label);
 }
 
 
@@ -176,7 +176,7 @@ static int generic_field(const SDL_Event *e, const SDL_Rect *area, int param, co
 	
 	adjust_rect(&field, 1);
 	
-	font_write_args(&mused.largefont, mused.console->surface, &field, format, value);
+	font_write_args(&mused.largefont, mused.screen, &field, format, value);
 
 	return spinner(e, &spinner_area, area->x << 16 | area->y);
 }
@@ -219,10 +219,10 @@ void sequence_view(const SDL_Rect *dest, const SDL_Event *event, void *param)
 	}
 	
 	SDL_Rect clip;
-	SDL_GetClipRect(mused.console->surface, &clip);
+	SDL_GetClipRect(mused.screen, &clip);
 	clip.h = content.h;
 	clip.y = content.y;
-	SDL_SetClipRect(mused.console->surface, &clip);
+	SDL_SetClipRect(mused.screen, &clip);
 	
 	slider_set_params(&mused.sequence_horiz_slider_param, 0, 0, 0, mused.song.num_channels - 1, &mused.sequence_horiz_position, 1, SLIDER_HORIZONTAL);
 		
@@ -379,7 +379,7 @@ void sequence_view(const SDL_Rect *dest, const SDL_Event *event, void *param)
 	
 	bevel(&loop, mused.slider_bevel, BEV_SEQUENCE_LOOP);
 		
-	SDL_SetClipRect(mused.console->surface, NULL);
+	SDL_SetClipRect(mused.screen, NULL);
 	
 	if (vert_scrollbar) 
 	{
@@ -421,7 +421,7 @@ void pattern_view_inner(const SDL_Rect *dest, const SDL_Rect *limits, const SDL_
 	SDL_Rect clipped;
 	copy_rect(&clipped, &content);
 	clip_rect(&clipped, limits);
-	SDL_SetClipRect(mused.console->surface, &clipped);
+	SDL_SetClipRect(mused.screen, &clipped);
 	
 	for (int i = start, y = 0 ; i < mused.song.pattern[current_pattern].num_steps && y < content.h; ++i, y += mused.console->font.h)
 	{
@@ -548,7 +548,7 @@ void pattern_view_inner(const SDL_Rect *dest, const SDL_Rect *limits, const SDL_
 		bevel(&selection, mused.slider_bevel, BEV_SELECTION);
 	}
 	
-	SDL_SetClipRect(mused.console->surface, NULL);
+	SDL_SetClipRect(mused.screen, NULL);
 	
 	if (selected_rect.w && mused.focus == EDITPATTERN)
 	{
@@ -699,11 +699,11 @@ void pattern_view(const SDL_Rect *dest, const SDL_Event *event, void *param)
 		vert_scrollbar = 1;
 	}
 	
-	SDL_SetClipRect(mused.console->surface, &pos);
+	SDL_SetClipRect(mused.screen, &pos);
 	
 	pattern_view_stepcounter(&pos, event, param);
 	
-	SDL_SetClipRect(mused.console->surface, dest);
+	SDL_SetClipRect(mused.screen, dest);
 	
 	pos.x += pos.w - 2;
 	pos.w = pattern_width;
@@ -733,7 +733,7 @@ void pattern_view(const SDL_Rect *dest, const SDL_Event *event, void *param)
 		}
 	}
 	
-	SDL_SetClipRect(mused.console->surface, NULL);
+	SDL_SetClipRect(mused.screen, NULL);
 	
 	if (vert_scrollbar) 
 	{
@@ -1011,7 +1011,7 @@ void program_view(const SDL_Rect *dest, const SDL_Event *event, void *param)
 		if (!(inst->program[i] & 0x8000) || (inst->program[i] & 0xf000) == 0xf000) ++pos;
 	}
 	
-	SDL_SetClipRect(mused.console->surface, &area);
+	SDL_SetClipRect(mused.screen, &area);
 	
 	for (int i = start, s = 0, y = 0 ; i < MUS_PROG_LEN && y < area.h; ++i, ++s, y += mused.console->font.h)
 	{
@@ -1087,7 +1087,7 @@ void program_view(const SDL_Rect *dest, const SDL_Event *event, void *param)
 		bevel(&selection, mused.slider_bevel, BEV_SELECTION);
 	}
 	
-	SDL_SetClipRect(mused.console->surface, NULL);
+	SDL_SetClipRect(mused.screen, NULL);
 	
 	check_mouse_wheel_event(event, dest, &mused.program_slider_param);
 }

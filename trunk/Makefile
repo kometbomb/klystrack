@@ -45,7 +45,7 @@ else
 	REV = cp -f
 endif
 
-INCLUDEFLAGS= -I src $(SDLFLAGS) -I ../klystron/src -L../klystron/bin.$(CFG) -DRES_PATH="$(RES_PATH)" -DCONFIG_PATH="$(CONFIG_PATH)"
+INCLUDEFLAGS= -I src $(SDLFLAGS) -I ../klystron/src -L../klystron/bin.$(CFG) -DRES_PATH="$(RES_PATH)" -DCONFIG_PATH="$(CONFIG_PATH)" $(EXTFLAGS)
 	
 # What compiler to use for generating dependencies: 
 # it will be invoked with -MM
@@ -98,20 +98,20 @@ else
 	@echo '#define VERSION_STRING "klystrack " VERSION " " REVISION' >> ./src/version.h
 	@echo '#endif' >> ./src/version.h
 endif
-	make -C ../klystron CFG=$(CFG)
-	make all CFG=$(CFG)
+	make -C ../klystron CFG=$(CFG) EXTFLAGS="$(EXTFLAGS)"
+	make all CFG=$(CFG) EXTFLAGS="$(EXTFLAGS)"
 
-all:	inform bin.$(CFG)/$(TARGET) res/data
+all:	inform bin.$(CFG)/$(TARGET) res/Default
 
 .PHONY: zip all build nightly
 
-zip: doc/* res/data $(DLLS) examples/* linux/Makefile
-	make -C ../klystron CFG=release
+zip: doc/* res/Default $(DLLS) examples/* linux/Makefile
+	make -C ../klystron CFG=release EXTFLAGS="$(EXTFLAGS)"
 	make CFG=release
 	@mkdir -p zip/data/res
 	@mkdir -p zip/data/examples/songs
-	cp -R examples/songs/*.sng zip/data/examples/songs
-	cp res/data zip/data/res/data
+	cp examples/songs/*.sng zip/data/examples/songs
+	cp res/Default zip/data/res/Default
 	cp doc/LICENSE zip/data/LICENSE
 	cp doc/SDL.txt zip/data/SDL.txt
 	cp bin.release/$(TARGET) zip/data/$(TARGET)
@@ -140,7 +140,8 @@ bin.$(CFG)/${TARGET}: $(Group0_OBJ) | inform
 
 objs.$(CFG)/Group0_%.o: %.c
 	@mkdir -p objs.$(CFG)
-	$(CC) $(CFLAGS) $(INCLUDEFLAGS) -c -o $@ $<
+	@$(ECHO) "Compiling "$(notdir $<)"..."
+	@$(CC) $(CFLAGS) $(INCLUDEFLAGS) -c -o $@ $<
 
 deps/Group0_$(CFG)_%.d: %.c
 	@mkdir -p deps
@@ -150,20 +151,20 @@ deps/Group0_$(CFG)_%.d: %.c
 		< $@.$$$$ > $@; \
 	rm -f $@.$$$$
 	
-res/data: data/bevel.bmp temp/8x8.fnt temp/7x6.fnt data/colors.txt
+res/Default: data/bevel.bmp temp/8x8.fnt temp/7x6.fnt data/colors.txt
 	@mkdir -p res
 	@mkdir -p temp
 	cp -f data/colors.txt temp
 	cp -f data/bevel.bmp temp
-	$(MAKEBUNDLE) res/data temp
+	$(MAKEBUNDLE) $@ temp
 
 temp/8x8.fnt: data/font/*
 	@mkdir -p temp
-	$(MAKEBUNDLE) temp/8x8.fnt data/font
+	$(MAKEBUNDLE) $@ data/font
 
 temp/7x6.fnt: data/font7x6/*
 	@mkdir -p temp
-	$(MAKEBUNDLE) temp/7x6.fnt data/font7x6
+	$(MAKEBUNDLE) $@ data/font7x6
 
 zip/data/SDL.dll:
 	cd temp ; $(WGET) http://www.libsdl.org/release/SDL-1.2.14-win32.zip ; $(ZIPEXT) SDL-1.2.14-win32.zip SDL.dll ; rm SDL-1.2.14-win32.zip
