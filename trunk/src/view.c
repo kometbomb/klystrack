@@ -370,7 +370,7 @@ void sequence_view(const SDL_Rect *dest, const SDL_Event *event, void *param)
 		if (selection_begin.y == -1) selection_begin.y = content.y - 8;
 		if (selection_end.y == -1) selection_end.y = content.y + content.h + 8;
 		
-		SDL_Rect selection = { selection_begin.x, selection_begin.y, selection_end.x - selection_begin.x, selection_end.y - selection_begin.y };
+		SDL_Rect selection = { selection_begin.x, selection_begin.y, selection_end.x - selection_begin.x, selection_end.y - selection_begin.y - 1 };
 		adjust_rect(&selection, -4);
 		bevel(&selection, mused.slider_bevel, BEV_SELECTION);
 	}
@@ -420,6 +420,7 @@ void pattern_view_inner(const SDL_Rect *dest, const SDL_Rect *limits, const SDL_
 	
 	SDL_Rect clipped;
 	copy_rect(&clipped, &content);
+	adjust_rect(&clipped, -2);
 	clip_rect(&clipped, limits);
 	SDL_SetClipRect(mused.screen, &clipped);
 	
@@ -443,16 +444,17 @@ void pattern_view_inner(const SDL_Rect *dest, const SDL_Rect *limits, const SDL_
 		{
 			if (i <= mused.selection.start)
 			{
-				selection_begin = row.y;
+				selection_begin = row.y + 1;
 			}
 			
 			if (i < mused.selection.end)
 			{
-				selection_end = row.y + row.h + 1;
+				selection_end = row.y + row.h - 1;
 			}
 		}
 		
 		const SDL_Rect *r;
+		SDL_Rect clipped;
 		
 		if (mused.song.pattern[current_pattern].step[i].note == MUS_NOTE_RELEASE)
 			r = console_write(mused.console, "---");
@@ -543,7 +545,7 @@ void pattern_view_inner(const SDL_Rect *dest, const SDL_Rect *limits, const SDL_
 		
 		if (selection_begin > selection_end) swap(selection_begin, selection_end);
 		
-		SDL_Rect selection = { content.x, selection_begin, content.w, selection_end - selection_begin };
+		SDL_Rect selection = { clipped.x+2, selection_begin, clipped.w-4, selection_end - selection_begin };
 		adjust_rect(&selection, -4);
 		bevel(&selection, mused.slider_bevel, BEV_SELECTION);
 	}
