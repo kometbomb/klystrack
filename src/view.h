@@ -67,6 +67,7 @@ void sequence_view(const SDL_Rect *dest, const SDL_Event *event, void *param);
 void pattern_view(const SDL_Rect *dest, const SDL_Event *event, void *param);
 void info_view(const SDL_Rect *dest, const SDL_Event *event, void *param);
 void instrument_view(const SDL_Rect *dest, const SDL_Event *event, void *param);
+void instrument_view2(const SDL_Rect *dest, const SDL_Event *event, void *param);
 void instrument_list(const SDL_Rect *dest, const SDL_Event *event, void *param);
 void reverb_view(const SDL_Rect *dest, const SDL_Event *event, void *param);
 void bevel_view(const SDL_Rect *dest, const SDL_Event *event, void *param);

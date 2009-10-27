@@ -57,6 +57,7 @@ GfxDomain *domain;
 
 #define INST_LIST (6*8 + 3*2)
 #define INFO 13
+#define INST_VIEW2 38
 
 void change_pixel_scale(void *, void*, void*);
 
@@ -66,9 +67,10 @@ static const View instrument_view_tab[] =
 	{{2, 2, 164 + 32 + 8, 10}, instrument_name_view, (void*)1, -1 },
 	{{164 + 32 + 4 + 8, 0, SCREEN_WIDTH - 164 - 32 - 2 - 2 - 8, 14}, instrument_disk_view, NULL, -1 },
 	{{0, 14, 154, SCREEN_HEIGHT-14-INFO }, instrument_view, NULL, EDITINSTRUMENT },
+	{{154, 14 + INST_LIST, SCREEN_WIDTH - 154, INST_VIEW2 }, instrument_view2, NULL, EDITINSTRUMENT },
 	{{154, 14, SCREEN_WIDTH - 154 - SCROLLBAR, INST_LIST }, instrument_list, NULL, -1},
-	{{154, 14 + INST_LIST, SCREEN_WIDTH - 154 - SCROLLBAR, SCREEN_HEIGHT-(14 + INST_LIST)-INFO }, program_view, NULL, EDITPROG },
-	{{SCREEN_WIDTH - SCROLLBAR, 14 + INST_LIST, SCROLLBAR, SCREEN_HEIGHT-(14 + INST_LIST)-INFO }, slider, &mused.program_slider_param, EDITPROG },
+	{{154, 14 + INST_LIST + INST_VIEW2, SCREEN_WIDTH - 154 - SCROLLBAR, SCREEN_HEIGHT-(14 + INST_LIST)-INFO-INST_VIEW2 }, program_view, NULL, EDITPROG },
+	{{SCREEN_WIDTH - SCROLLBAR, 14 + INST_LIST + INST_VIEW2, SCROLLBAR, SCREEN_HEIGHT-(14 + INST_LIST)-INFO-INST_VIEW2 }, slider, &mused.program_slider_param, EDITPROG },
 	{{SCREEN_WIDTH - SCROLLBAR, 14, SCROLLBAR, INST_LIST }, slider, &mused.instrument_list_slider_param, EDITINSTRUMENT },
 	{{0, SCREEN_HEIGHT - INFO, SCREEN_WIDTH, INFO }, info_line, NULL, -1 },
 	{{0, 0, 0, 0}, NULL}

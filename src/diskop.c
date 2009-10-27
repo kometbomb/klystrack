@@ -58,7 +58,8 @@ void save_instrument(FILE *f, MusInstrument *inst)
 	_VER_WRITE(&inst->cutoff, 0);
 	_VER_WRITE(&inst->resonance, 0);
 	_VER_WRITE(&inst->flttype, 0);
-	
+	_VER_WRITE(&inst->ym_env_shape, 0);
+	_VER_WRITE(&inst->buzz_offset, 0);
 }
 
 int save_data()
