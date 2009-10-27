@@ -1104,13 +1104,16 @@ void program_view(const SDL_Rect *dest, const SDL_Event *event, void *param)
 }
 
 
-static void inst_flags(const SDL_Event *e, const SDL_Rect *area, int p, const char *label, Uint32 *flags, Uint32 mask)
+static void inst_flags(const SDL_Event *e, const SDL_Rect *_area, int p, const char *label, Uint32 *flags, Uint32 mask)
 {
-	if (checkbox(e, area, label, flags, mask)) mused.selected_param = p;
+	SDL_Rect area;
+	copy_rect(&area, _area);
+	area.y += 1;
+	if (checkbox(e, &area, label, flags, mask)) mused.selected_param = p;
 	if (p == mused.selected_param && mused.focus == EDITINSTRUMENT)
 	{
 		SDL_Rect r;
-		copy_rect(&r, area);
+		copy_rect(&r, &area);
 		adjust_rect(&r, -2);
 		r.h -= 2;
 		r.w -= 2;
@@ -1285,15 +1288,21 @@ void instrument_view(const SDL_Rect *dest, const SDL_Event *event, void *param)
 	inst_text(event, &r, P_RELEASE, "REL", "%02X", MAKEPTR(inst->adsr.r), 2);
 	update_rect(&frame, &r);
 	
-	separator(&frame, &r);
-	inst_flags(event, &r, P_BUZZ, "BUZZ", &inst->flags, MUS_INST_YM_BUZZ);
-	update_rect(&frame, &r);
-	inst_text(event, &r, P_BUZZ_SEMI, "DETUNE", "%-03d", MAKEPTR(inst->buzz_offset >> 8), 3);
-	update_rect(&frame, &r);
-	inst_text(event, &r, P_BUZZ_FINE, "FINE", "%02X", MAKEPTR(inst->buzz_offset & 0xff), 2);
-	update_rect(&frame, &r);
-	inst_text(event, &r, P_BUZZ_SHAPE, "SHAPE", "%02X", MAKEPTR(inst->ym_env_shape), 2);
-	update_rect(&frame, &r);
+	{
+		separator(&frame, &r);
+		int tmp = r.w;
+		r.w = frame.w / 3 - 2;
+		inst_flags(event, &r, P_BUZZ, "BUZZ", &inst->flags, MUS_INST_YM_BUZZ);
+		update_rect(&frame, &r);
+		r.w = frame.w * 2 / 3 - 2;
+		inst_text(event, &r, P_BUZZ_SEMI, "DETUNE", "%-03d", MAKEPTR(inst->buzz_offset >> 8), 3);
+		update_rect(&frame, &r);
+		r.w = tmp;
+		inst_text(event, &r, P_BUZZ_FINE, "FINE", "%02X", MAKEPTR(inst->buzz_offset & 0xff), 2);
+		update_rect(&frame, &r);
+		inst_text(event, &r, P_BUZZ_SHAPE, "SHAPE", "%02X", MAKEPTR(inst->ym_env_shape), 2);
+		update_rect(&frame, &r);
+	}
 	
 	separator(&frame, &r);
 	inst_flags(event, &r, P_SYNC, "SYNC", &inst->cydflags, CYD_CHN_ENABLE_SYNC);
