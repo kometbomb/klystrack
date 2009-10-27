@@ -1,10 +1,11 @@
 #summary Changelog
+#labels Featured
 
 =1.2.0=
 
   * New YM2149 (Atari ST, CPC, +2 Speccy etc.) style envelope that allows recreating the common buzzer effect
   * Settings are saved to {{{~/.klystrack}}}
-  * Multiple [themes] supported
+  * Multiple [Themes themes] supported
   * Fullscreen mode
   * *Windows* Tilde is expanded to user directory
 
