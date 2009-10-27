@@ -173,10 +173,8 @@ int main(int argc, char **argv)
 	mus_init_engine(&mused.mus, &mused.cyd);
 	
 #ifdef DEBUG
-#ifdef OUTPUTAUDIO
 	/* This is because I couldn't get my soundcard to record stereo mix for demo videos */
-	cyd_enable_audio_dump(&mused.cyd);
-#endif
+	if (argc > 1 && strcmp(argv[1], "-dump") == 0) cyd_enable_audio_dump(&mused.cyd);
 #endif
 	
 	cyd_register(&mused.cyd);
