@@ -1236,7 +1236,6 @@ void instrument_view(const SDL_Rect *dest, const SDL_Event *event, void *param)
 		
 		inst_text(event, &note, P_BASENOTE, "BASE", "%s", notename(inst->base_note), 3);
 		note.x += note.w + 2;
-		note.y += 1;
 		note.w = frame.w - note.x;
 		
 		inst_flags(event, &note, P_LOCKNOTE, "LOCK", &inst->flags, MUS_INST_LOCK_NOTE);
@@ -1291,11 +1290,11 @@ void instrument_view(const SDL_Rect *dest, const SDL_Event *event, void *param)
 	{
 		separator(&frame, &r);
 		int tmp = r.w;
-		r.w = frame.w / 3 - 2;
+		r.w = frame.w / 3 + 8;
 		inst_flags(event, &r, P_BUZZ, "BUZZ", &inst->flags, MUS_INST_YM_BUZZ);
-		update_rect(&frame, &r);
-		r.w = frame.w * 2 / 3 - 2;
-		inst_text(event, &r, P_BUZZ_SEMI, "DETUNE", "%-03d", MAKEPTR(inst->buzz_offset >> 8), 3);
+		r.x += r.w + 2;
+		r.w = frame.w - r.x + 4;
+		inst_text(event, &r, P_BUZZ_SEMI, "DETUNE", "%+3d", MAKEPTR(inst->buzz_offset >> 8), 3);
 		update_rect(&frame, &r);
 		r.w = tmp;
 		inst_text(event, &r, P_BUZZ_FINE, "FINE", "%02X", MAKEPTR(inst->buzz_offset & 0xff), 2);
