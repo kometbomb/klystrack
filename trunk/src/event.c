@@ -218,6 +218,34 @@ void instrument_add_param(int a)
 			
 		break;
 		
+		case P_BUZZ:
+		
+		flipbit(i->flags, MUS_INST_YM_BUZZ);
+			
+		break;
+		
+		case P_BUZZ_SHAPE:
+		
+		clamp(i->ym_env_shape, a, 0, 3);
+			
+		break;
+		
+		case P_BUZZ_FINE:
+		{
+			int f = i->buzz_offset & 0xff;
+			clamp(f, a, 0, 255);
+			i->buzz_offset = (i->buzz_offset & 0xff00) | f;
+		}	
+		break;
+		
+		case P_BUZZ_SEMI:
+		{
+			int f = i->buzz_offset >> 8;
+			clamp(f, a, -99, 99);
+			i->buzz_offset = (i->buzz_offset & 0xff) | f << 8;
+		}	
+		break;
+		
 		case P_PW:
 		
 		clamp(i->pw, a*16, 0, 0x7ff);

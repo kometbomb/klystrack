@@ -859,6 +859,11 @@ void get_command_desc(char *text, Uint16 inst)
 		{MUS_FX_SET_PANNING, "Set panning"},
 		{MUS_FX_PAN_LEFT, "Pan left"},
 		{MUS_FX_PAN_RIGHT, "Pan right"},
+		{MUS_FX_BUZZ_UP, "Tune buzz up"},
+		{MUS_FX_BUZZ_DN, "Tune buzz down" },
+		{MUS_FX_BUZZ_SHAPE, "Set buzz shape" },
+		{MUS_FX_BUZZ_SET, "Set buzz finetune" },
+		{MUS_FX_BUZZ_SET_SEMI, "Set buzz semitone" },
 		{0, NULL}
 	};
 	
@@ -932,20 +937,24 @@ void info_line(const SDL_Rect *dest, const SDL_Event *event, void *param)
 				"Envelope decay",
 				"Envelope sustain",
 				"Envelope release",
+				"Buzz",
+				"Buzz semi",
+				"Buzz fine",
+				"Buzz shape",
 				"Sync channel",
 				"Sync master channel",
 				"Ring modulation",
 				"Ring modulation source",
+				"Enable filter",
+				"Filter type",
+				"Filter cutoff frequency",
+				"Filter resonance",
 				"Slide speed",
 				"Program period",
 				"Vibrato speed",
 				"Vibrato depth",
 				"Pulse width modulation speed",
-				"Pulse width modulation depth",
-				"Enable filter",
-				"Filter type",
-				"Filter cutoff frequency",
-				"Filter resonance",
+				"Pulse width modulation depth"
 			};
 			strcpy(text, param_desc[mused.selected_param]);
 		}
@@ -1208,15 +1217,16 @@ void instrument_view(const SDL_Rect *dest, const SDL_Event *event, void *param)
 	copy_rect(&frame, dest);
 	bevel(&frame, mused.slider_bevel, BEV_BACKGROUND);
 	adjust_rect(&frame, 4);
-	
+	copy_rect(&r, &frame);
+	r.w = r.w / 2 - 2;
+	r.h = 10;
+	r.y += r.h + 1;
+		
 	{
-		copy_rect(&r, &frame);
 		SDL_Rect note;
 		copy_rect(&note, &frame);
 		
-		r.w = r.w / 2 - 2;
-		r.h = 10;
-		r.y += r.h + 1;
+		
 		
 		note.w = frame.w / 2 + 2;
 		note.h = 10;
@@ -1276,6 +1286,16 @@ void instrument_view(const SDL_Rect *dest, const SDL_Event *event, void *param)
 	update_rect(&frame, &r);
 	
 	separator(&frame, &r);
+	inst_flags(event, &r, P_BUZZ, "BUZZ", &inst->flags, MUS_INST_YM_BUZZ);
+	update_rect(&frame, &r);
+	inst_text(event, &r, P_BUZZ_SEMI, "DETUNE", "%-03d", MAKEPTR(inst->buzz_offset >> 8), 3);
+	update_rect(&frame, &r);
+	inst_text(event, &r, P_BUZZ_FINE, "FINE", "%02X", MAKEPTR(inst->buzz_offset & 0xff), 2);
+	update_rect(&frame, &r);
+	inst_text(event, &r, P_BUZZ_SHAPE, "SHAPE", "%02X", MAKEPTR(inst->ym_env_shape), 2);
+	update_rect(&frame, &r);
+	
+	separator(&frame, &r);
 	inst_flags(event, &r, P_SYNC, "SYNC", &inst->cydflags, CYD_CHN_ENABLE_SYNC);
 	update_rect(&frame, &r);
 	inst_text(event, &r, P_SYNCSRC, "SRC", "%02X", MAKEPTR(inst->sync_source), 2);
@@ -1283,20 +1303,6 @@ void instrument_view(const SDL_Rect *dest, const SDL_Event *event, void *param)
 	inst_flags(event, &r, P_RINGMOD, "RING MOD", &inst->cydflags, CYD_CHN_ENABLE_RING_MODULATION);
 	update_rect(&frame, &r);
 	inst_text(event, &r, P_RINGMODSRC, "SRC", "%02X", MAKEPTR(inst->ring_mod), 2);
-	update_rect(&frame, &r);
-	
-	separator(&frame, &r);
-	inst_text(event, &r, P_SLIDESPEED, "SLIDE", "%02X", MAKEPTR(inst->slide_speed), 2);
-	update_rect(&frame, &r);
-	inst_text(event, &r, P_PROGPERIOD, "P.PRD", "%02X", MAKEPTR(inst->prog_period), 2);
-	update_rect(&frame, &r);
-	inst_text(event, &r, P_VIBSPEED,   "VIB.S", "%02X", MAKEPTR(inst->vibrato_speed), 2);
-	update_rect(&frame, &r);
-	inst_text(event, &r, P_VIBDEPTH,   "VIB.D", "%02X", MAKEPTR(inst->vibrato_depth), 2);
-	update_rect(&frame, &r);
-	inst_text(event, &r, P_PWMSPEED,   "PWM.S", "%02X", MAKEPTR(inst->pwm_speed), 2);
-	update_rect(&frame, &r);
-	inst_text(event, &r, P_PWMDEPTH,   "PWM.D", "%02X", MAKEPTR(inst->pwm_depth), 2);
 	update_rect(&frame, &r);
 	
 	static const char *flttype[] = { "LP", "HP", "BP" };
@@ -1312,6 +1318,34 @@ void instrument_view(const SDL_Rect *dest, const SDL_Event *event, void *param)
 	update_rect(&frame, &r);
 	
 }
+
+
+void instrument_view2(const SDL_Rect *dest, const SDL_Event *event, void *param)
+{
+	MusInstrument *inst = &mused.song.instrument[mused.current_instrument];
+	
+	SDL_Rect r, frame;
+	copy_rect(&frame, dest);
+	bevel(&frame, mused.slider_bevel, BEV_BACKGROUND);
+	adjust_rect(&frame, 4);
+	copy_rect(&r, &frame);
+	r.w = r.w / 2 - 2;
+	r.h = 10;
+	
+	inst_text(event, &r, P_SLIDESPEED, "SLIDE", "%02X", MAKEPTR(inst->slide_speed), 2);
+	update_rect(&frame, &r);
+	inst_text(event, &r, P_PROGPERIOD, "P.PRD", "%02X", MAKEPTR(inst->prog_period), 2);
+	update_rect(&frame, &r);
+	inst_text(event, &r, P_VIBSPEED,   "VIB.S", "%02X", MAKEPTR(inst->vibrato_speed), 2);
+	update_rect(&frame, &r);
+	inst_text(event, &r, P_VIBDEPTH,   "VIB.D", "%02X", MAKEPTR(inst->vibrato_depth), 2);
+	update_rect(&frame, &r);
+	inst_text(event, &r, P_PWMSPEED,   "PWM.S", "%02X", MAKEPTR(inst->pwm_speed), 2);
+	update_rect(&frame, &r);
+	inst_text(event, &r, P_PWMDEPTH,   "PWM.D", "%02X", MAKEPTR(inst->pwm_depth), 2);
+	update_rect(&frame, &r);
+}
+
 
 
 void instrument_list(const SDL_Rect *dest, const SDL_Event *event, void *param)
