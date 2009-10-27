@@ -999,12 +999,14 @@ static void write_command(const SDL_Event *event, const char *text, int cmd_idx,
 
 void program_view(const SDL_Rect *dest, const SDL_Event *event, void *param)
 {
-	SDL_Rect area;
+	SDL_Rect area, clip;
 	copy_rect(&area, dest);
 	console_set_clip(mused.console, &area);
 	console_clear(mused.console);
 	bevel(&area, mused.slider_bevel, BEV_THIN_FRAME);
 	adjust_rect(&area, 2);
+	copy_rect(&clip, &area);
+	adjust_rect(&area, 1);
 	console_set_clip(mused.console, &area);
 	
 	MusInstrument *inst = &mused.song.instrument[mused.current_instrument];
@@ -1022,7 +1024,7 @@ void program_view(const SDL_Rect *dest, const SDL_Event *event, void *param)
 		if (!(inst->program[i] & 0x8000) || (inst->program[i] & 0xf000) == 0xf000) ++pos;
 	}
 	
-	SDL_SetClipRect(mused.screen, &area);
+	SDL_SetClipRect(mused.screen, &clip);
 	
 	for (int i = start, s = 0, y = 0 ; i < MUS_PROG_LEN && y < area.h; ++i, ++s, y += mused.console->font.h)
 	{
@@ -1299,6 +1301,7 @@ void instrument_view(const SDL_Rect *dest, const SDL_Event *event, void *param)
 		r.w = tmp;
 		inst_text(event, &r, P_BUZZ_FINE, "FINE", "%02X", MAKEPTR(inst->buzz_offset & 0xff), 2);
 		update_rect(&frame, &r);
+		
 		inst_text(event, &r, P_BUZZ_SHAPE, "SHAPE", "%02X", MAKEPTR(inst->ym_env_shape), 2);
 		update_rect(&frame, &r);
 	}
