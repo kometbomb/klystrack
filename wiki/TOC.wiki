@@ -3,8 +3,8 @@
   * [klystrack Home]
   * *Preface*
     * [IntroductionToTrackers Introduction to trackers]
-    * [Features klystrack features]
-    * [Changelog klystrack changelog]
+    * [Features Features]
+    * [Changelog Changelog]
   * *How to use klystrack*
     * [Manual]
     * [Commands]
