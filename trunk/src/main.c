@@ -306,17 +306,27 @@ int main(int argc, char **argv)
 			
 			int m = mused.mode >= VIRTUAL_MODE ? mused.prev_mode : mused.mode;
 		
-			if (mused.mode == MENU) 
+			int prev_mode;
+		
+			do
 			{
-				SDL_Event foo = {0};
-				draw_view(tab[m], &foo);
-				draw_menu(&e);
-				if (menu_closed) close_menu();
+				prev_mode = mused.mode;
+				
+				if (mused.mode == MENU) 
+				{
+					SDL_Event foo = {0};
+					draw_view(tab[m], &foo);
+					draw_menu(&e);
+					if (menu_closed) close_menu();
+				}
+				else
+				{
+					draw_view(tab[m], &e);
+				}
+				
+				e.type = 0;
 			}
-			else
-			{
-				draw_view(tab[m], &e);
-			}
+			while (mused.mode != prev_mode); // Eliminates the one-frame long black screen
 			
 			gfx_domain_flip(domain);
 		}
