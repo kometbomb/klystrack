@@ -204,6 +204,7 @@ void init(MusInstrument *instrument, MusPattern *pattern, MusSeqPattern sequence
 	mused.time_signature = 0x0404;
 	mused.prev_mode = 0;
 	mused.edit_backup_buffer = NULL;
+	mused.pixel_scale = 1;
 	strcpy(mused.themename, "Default");
 	
 	memset(&mused.cp, 0, sizeof(mused.cp));

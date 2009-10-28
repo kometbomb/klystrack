@@ -61,8 +61,7 @@ enum
 {
 	COMPACT_VIEW = 1,
 	SONG_PLAYING = 2,
-	BIG_PIXELS = 4,
-	FULLSCREEN = 8
+	FULLSCREEN = 4
 };
 
 typedef struct
@@ -101,6 +100,7 @@ typedef struct
 	const Menu *current_menu_action;
 	SDL_Surface *screen;
 	char themename[100];
+	int pixel_scale;
 } Mused;
 
 #define NUM_STEPS 256
