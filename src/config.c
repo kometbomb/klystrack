@@ -27,15 +27,17 @@ OTHER DEALINGS IN THE SOFTWARE.
 #include "mused.h"
 #include "toolutil.h"
 #include "action.h"
+#include "gfx/gfx.h"
 
 extern Mused mused;
+extern GfxDomain *domain;
 
-enum { C_END, C_BOOL, C_STR };
+enum { C_END, C_BOOL, C_STR, C_INT };
 
 static const struct { int type; const char *name; void *param; int mask; } confitem[] =
 {
 	{ C_BOOL, "fullscreen", &mused.flags, FULLSCREEN },
-	{ C_BOOL, "big_pixels", &mused.flags, BIG_PIXELS },
+	{ C_INT, "pixel_size", &mused.pixel_scale },
 	{ C_BOOL, "compact", &mused.flags, COMPACT_VIEW },
 	{ C_STR, "theme", mused.themename, sizeof(mused.themename) - 1 },
 	{ C_END }
@@ -45,7 +47,7 @@ static const struct { int type; const char *name; void *param; int mask; } confi
 static void apply_config()
 {
 	change_fullscreen(0, 0, 0);
-	change_pixel_scale(0, 0, 0);
+	change_pixel_scale(mused.pixel_scale, 0, 0);
 	load_theme_action(mused.themename, 0, 0);
 }
 
@@ -84,6 +86,16 @@ void load_config(const char *path)
 									{
 										*(int*)confitem[i].param &= ~confitem[i].mask;
 									}
+								}
+							}
+							break;
+							
+							case C_INT:
+							{
+								int value;
+								if (sscanf(line, "%[^ =]%*[= ]%d", name, &value) == 2)
+								{
+									*(int*)confitem[i].param = value;
 								}
 							}
 							break;
@@ -132,6 +144,10 @@ void save_config(const char *path)
 				
 				case C_STR:
 					fprintf(f, "%s = %s\n", confitem[i].name, (char*)confitem[i].param);
+				break;
+				
+				case C_INT:
+					fprintf(f, "%s = %d\n", confitem[i].name, *(int*)confitem[i].param);
 				break;
 				
 				default: 

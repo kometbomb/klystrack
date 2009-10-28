@@ -40,11 +40,23 @@ static const Menu showmenu[] =
 };
 
 
+const Menu prefsmenu[];
+
+Menu pixelmenu[] =
+{
+	{ 0, prefsmenu, "1x1", NULL, change_pixel_scale, (void*)1, 0, 0 },
+	{ 0, prefsmenu, "2x2", NULL, change_pixel_scale, (void*)2, 0, 0 },
+	{ 0, prefsmenu, "3x3", NULL, change_pixel_scale, (void*)3, 0, 0 },
+	{ 0, prefsmenu, "4x4", NULL, change_pixel_scale, (void*)4, 0, 0 },
+	{ 0, NULL,NULL },
+};
+
+
 const Menu prefsmenu[] =
 {
 	{ 0, mainmenu, "Theme", thememenu, NULL },
 	{ 0, mainmenu, "", NULL, NULL },
-	{ 0, mainmenu, "Big pixels", NULL, MENU_CHECK_NOSET, &mused.flags, (void*)BIG_PIXELS, toggle_pixel_scale },
+	{ 0, mainmenu, "Pixel size", pixelmenu },
 	{ 0, mainmenu, "Fullscreen", NULL, MENU_CHECK_NOSET, &mused.flags, (void*)FULLSCREEN, toggle_fullscreen },
 	{ 0, NULL, NULL }
 };

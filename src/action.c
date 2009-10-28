@@ -34,9 +34,11 @@ OTHER DEALINGS IN THE SOFTWARE.
 #include "../../klystron/src/version.h"
 #include "gfx/gfx.h"
 #include "theme.h"
+#include "menu.h"
 
 extern Mused mused;
 extern GfxDomain *domain;
+extern Menu pixelmenu[];
 
 void select_sequence_position(void *channel, void *position, void* unused)
 {
@@ -377,16 +379,24 @@ void end_selection_action(void *unused1, void *unused2, void *unused3)
 
 void toggle_pixel_scale(void *a, void*b, void*c)
 {
-	mused.flags ^= BIG_PIXELS;
-	change_pixel_scale(0, 0, 0);
+	change_pixel_scale((void*)(((domain->scale) & 3) + 1), 0, 0);
 }
 
 
-void change_pixel_scale(void *a, void*b, void*c)
-{
-	domain->scale = (mused.flags & BIG_PIXELS) ? 2 : 1;
+void change_pixel_scale(void *scale, void*b, void*c)
+{	
+	mused.pixel_scale = (int)scale;
+	domain->scale = mused.pixel_scale;
 	gfx_domain_update(domain);
 	mused.screen = gfx_domain_get_surface(domain);
+	
+	for (int i = 0 ; i < 4; ++i)
+	{
+		if (pixelmenu[i].p1 == scale)
+			pixelmenu[i].flags |= MENU_BULLET;
+		else
+			pixelmenu[i].flags &= ~MENU_BULLET;
+	}
 }
 
 
