@@ -137,6 +137,8 @@ const View *tab[] =
 
 int main(int argc, char **argv)
 {
+	debug("Starting %s", VERSION_STRING);
+
 #ifdef DEBUG
 	SDL_putenv("SDL_DEBUG=1");
 #endif
