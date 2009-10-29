@@ -105,8 +105,11 @@ void load_theme(const char *name)
 	
 	snprintf(fullpath, sizeof(fullpath) - 1, TOSTRING(RES_PATH) "/res/%s", name);
 	
+	debug("Opening theme %s", fullpath);
+	
 	if (bnd_open(&res, fullpath))
 	{
+		debug("Theme opened ok");
 		SDL_RWops *rw = SDL_RWFromBundle(&res, "bevel.bmp");
 		
 		if (rw)
@@ -138,6 +141,7 @@ void load_theme(const char *name)
 	}
 	else
 	{
+		debug("Theme loading failed");
 		if (strcmp(name, "Default") != 0)
 			load_theme("Default");
 	}
