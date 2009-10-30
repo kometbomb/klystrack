@@ -40,8 +40,8 @@ _{{{xx}}}, {{{yy}}} = parameter to command_
 || {{{31xx}}} || slide buzz tuning up ||
 || {{{32xx}}} || slide buzz tuning down ||
 || {{{3f0x}}} || set buzz shape (0-3) ||
-|| {{{39xx}} || set buzz finetune ||
-|| {{{3axx}} || set buzz semitune ||
+|| {{{39xx}}} || set buzz finetune ||
+|| {{{3axx}}} || set buzz semitune ||
 || {{{fd00}}} || loop begin ||
 || {{{fexx}}} || loop to previous "fd00" xx times ||
 || {{{ffxx}}} || go to step xx ||
