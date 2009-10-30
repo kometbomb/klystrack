@@ -37,7 +37,11 @@ OTHER DEALINGS IN THE SOFTWARE.
 #define timesig(i, bar, beat, normal) ((((i)%((mused.time_signature>>8)*(mused.time_signature&0xff))) == 0)?(bar):((((i)%(mused.time_signature&0xff))==0)?(beat):(normal)))
 
 // Makes "warning: cast to pointer from integer of different size" disappear
+#if __i386__
 #define MAKEPTR(x) ((void*)(Uint32)(x))
+#else
+#define MAKEPTR(x) ((void*)(Uint64)(x))
+#endif
 
 extern Mused mused;
 
