@@ -10,22 +10,13 @@ _{{{xx}}}, {{{yy}}} = parameter to command_
 
 || *Command* || *Description* ||
 || {{{00xx}}} || set arpeggio note (final played note = played note + arpeggio note + vibrato etc.) ||
-|| {{{10xy}}}  || set external arpeggio notes (used with 00f0 and 00f1 in the program) ||
 || {{{01xx}}}  || portamento up ||
 || {{{02xx}}} || portamento down ||
 || {{{03xx}}} || slide to note with speed xx ||
 || {{{04xy}}} || vibrato with speed of x and depth of y ||
-|| {{{11xx}}} || portamento up by one semitone ||
-|| {{{12xx}}} || portamento down by one semitone ||
-|| {{{21xx}}} || filter cutoff up ||
-|| {{{22xx}}} || filter cutoff down ||
-|| {{{18xx}}} || set stereo panning to xx, 0 = left, 64 = center, 128 = right ||
-|| {{{17xx}}} || slide panning to left by xx ||
-|| {{{19xx}}} || slide panning to right by xx ||
 || {{{07xx}}}  || pulse width down ||
 || {{{08xx}}} || pulse width up ||
 || {{{09xx}}} || set pulse width ||
-|| {{{29xx}}} || set cutoff ||
 || {{{0axy}}} || Fade volume up by x, down by y ||
 || {{{0b0x}}} || set waveform (1 = noise, 2 = pulse, 4 = triangle, 8 = saw, 9 = 1 + 8 = noise + saw etc.) ||
 || {{{0cxx}}} || set volume ||
@@ -36,7 +27,21 @@ _{{{xx}}}, {{{yy}}} = parameter to command_
 || {{{0ebx}}} || fine fade volume up by x ||
 || {{{0ecx}}} || set volume to zero on tick x (note cut) ||
 || {{{0fxy}}} || set play speeds to x and y. if x is 0, set both to y ||
+|| {{{10xy}}}  || set external arpeggio notes (used with 00f0 and 00f1 in the program) ||
+|| {{{11xx}}} || portamento up by one semitone ||
+|| {{{12xx}}} || portamento down by one semitone ||
+|| {{{17xx}}} || slide panning to left by xx ||
+|| {{{18xx}}} || set stereo panning to xx, 0 = left, 64 = center, 128 = right ||
+|| {{{19xx}}} || slide panning to right by xx ||
 || {{{1fxx}}} || set play rate to xx ||
+|| {{{21xx}}} || filter cutoff up ||
+|| {{{22xx}}} || filter cutoff down ||
+|| {{{29xx}}} || set cutoff ||
+|| {{{31xx}}} || slide buzz tuning up ||
+|| {{{32xx}}} || slide buzz tuning down ||
+|| {{{3f0x}}} || set buzz shape (0-3) ||
+|| {{{39xx}} || set buzz finetune ||
+|| {{{3axx}} || set buzz semitune ||
 || {{{fd00}}} || loop begin ||
 || {{{fexx}}} || loop to previous "fd00" xx times ||
 || {{{ffxx}}} || go to step xx ||
