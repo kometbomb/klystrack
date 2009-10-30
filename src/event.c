@@ -232,9 +232,7 @@ void instrument_add_param(int a)
 		
 		case P_BUZZ_FINE:
 		{
-			int f = i->buzz_offset & 0xff;
-			clamp(f, a, 0, 255);
-			i->buzz_offset = (i->buzz_offset & 0xff00) | f;
+			clamp(i->buzz_offset, a, -32768, 32767);
 		}	
 		break;
 		
