@@ -1300,14 +1300,15 @@ void instrument_view(const SDL_Rect *dest, const SDL_Event *event, void *param)
 		inst_flags(event, &r, P_BUZZ, "BUZZ", &inst->flags, MUS_INST_YM_BUZZ);
 		r.x += r.w + 2;
 		r.w = frame.w - r.x + 4;
-		inst_text(event, &r, P_BUZZ_SEMI, "DETUNE", "%+3d", MAKEPTR(inst->buzz_offset >> 8), 3);
+		inst_text(event, &r, P_BUZZ_SEMI, "DETUNE", "%+3d", MAKEPTR((inst->buzz_offset + 0x80) >> 8), 3);
+		update_rect(&frame, &r);
+		r.w = frame.w / 2 - 8;
+		inst_text(event, &r, P_BUZZ_SHAPE, "SHAPE", "%01X", MAKEPTR(inst->ym_env_shape), 1);
+		r.x += r.w + 2;
+		r.w = frame.w - r.x + 4;
+		inst_text(event, &r, P_BUZZ_FINE, "FINE", "%+4d", MAKEPTR((Sint8)(inst->buzz_offset & 0xff)), 4);
 		update_rect(&frame, &r);
 		r.w = tmp;
-		inst_text(event, &r, P_BUZZ_FINE, "FINE", "%02X", MAKEPTR(inst->buzz_offset & 0xff), 2);
-		update_rect(&frame, &r);
-		
-		inst_text(event, &r, P_BUZZ_SHAPE, "SHAPE", "%02X", MAKEPTR(inst->ym_env_shape), 2);
-		update_rect(&frame, &r);
 	}
 	
 	separator(&frame, &r);
