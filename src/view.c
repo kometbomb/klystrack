@@ -1332,7 +1332,6 @@ void instrument_view(const SDL_Rect *dest, const SDL_Event *event, void *param)
 	update_rect(&frame, &r);
 	inst_text(event, &r, P_RESONANCE, "RES", "%1X", MAKEPTR(inst->resonance), 1);
 	update_rect(&frame, &r);
-	
 }
 
 
