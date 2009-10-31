@@ -41,7 +41,7 @@ int quant(int v, int g)
 static void modify_position(void *delta, void *_param, void *unused)
 {
 	SliderParam *param = _param;
-	*param->position = quant(*param->position + (int)delta, param->granularity);
+	*param->position = quant(*param->position + CASTPTR(int,delta), param->granularity);
 	if (*param->position < param->first) *param->position = param->first;
 	if (*param->position > param->last - param->margin) *param->position = param->last - param->margin;
 }

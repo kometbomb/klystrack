@@ -1500,6 +1500,6 @@ void song_name_view(const SDL_Rect *dest, const SDL_Event *event, void *param)
 
 void bevel_view(const SDL_Rect *dest, const SDL_Event *event, void *param)
 {
-	bevel(dest, mused.slider_bevel, (int)param);
+	bevel(dest, mused.slider_bevel, CASTPTR(int,param));
 }
 
