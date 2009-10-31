@@ -576,11 +576,11 @@ void sequence_event(SDL_Event *e)
 				{
 					if (e->key.keysym.mod & KMOD_SHIFT)
 					{
-						change_loop_point((void*)steps, 0, 0);
+						change_loop_point(MAKEPTR(steps), 0, 0);
 					}
 					else
 					{
-						change_song_length((void*)steps, 0, 0);
+						change_song_length(MAKEPTR(steps), 0, 0);
 					}
 				}
 				else
@@ -612,11 +612,11 @@ void sequence_event(SDL_Event *e)
 				{
 					if (e->key.keysym.mod & KMOD_SHIFT)
 					{
-						change_loop_point((void*)-steps, 0,0);
+						change_loop_point(MAKEPTR(-steps), 0,0);
 					}
 					else
 					{
-						change_song_length((void*)-steps, 0, 0);
+						change_song_length(MAKEPTR(-steps), 0, 0);
 					}
 				}
 				else

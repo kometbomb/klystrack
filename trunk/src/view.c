@@ -36,13 +36,6 @@ OTHER DEALINGS IN THE SOFTWARE.
 
 #define timesig(i, bar, beat, normal) ((((i)%((mused.time_signature>>8)*(mused.time_signature&0xff))) == 0)?(bar):((((i)%(mused.time_signature&0xff))==0)?(beat):(normal)))
 
-// Makes "warning: cast to pointer from integer of different size" disappear
-#if __i386__
-#define MAKEPTR(x) ((void*)(Uint32)(x))
-#else
-#define MAKEPTR(x) ((void*)(Uint64)(x))
-#endif
-
 extern Mused mused;
 
 extern int event_hit;
@@ -268,7 +261,7 @@ void sequence_view(const SDL_Rect *dest, const SDL_Event *event, void *param)
 			
 		++pos.y;
 		
-		check_event(event, &pos, select_sequence_position, (void*)-1, (void*)i, 0);
+		check_event(event, &pos, select_sequence_position, MAKEPTR(-1), MAKEPTR(i), 0);
 		
 		console_set_clip(mused.console, &pos);
 		console_reset_cursor(mused.console);
@@ -331,7 +324,7 @@ void sequence_view(const SDL_Rect *dest, const SDL_Event *event, void *param)
 			
 			clip_rect(&r, &content);
 			
-			check_event(event, &r, select_sequence_position, (void*)c, (void*)i, 0);
+			check_event(event, &r, select_sequence_position, MAKEPTR(c), MAKEPTR(i), 0);
 			
 			if (mused.current_sequencepos == i && mused.current_sequencetrack == c && mused.focus == EDITSEQUENCE)
 			{
@@ -471,7 +464,7 @@ void pattern_view_inner(const SDL_Rect *dest, const SDL_Rect *limits, const SDL_
 		copy_rect(&clipped, r);
 		clip_rect(&clipped, &content);
 		
-		check_event(event, &clipped, select_pattern_param, (void*)PED_NOTE, (void*)i, (void*)current_pattern);
+		check_event(event, &clipped, select_pattern_param, MAKEPTR(PED_NOTE), MAKEPTR(i), MAKEPTR(current_pattern));
 		
 		if (!(mused.flags & COMPACT_VIEW)) mused.console->clip.x += 4;
 		
@@ -483,7 +476,7 @@ void pattern_view_inner(const SDL_Rect *dest, const SDL_Rect *limits, const SDL_
 		copy_rect(&clipped, r);
 		clip_rect(&clipped, &content);
 			
-		check_event(event, &clipped, select_pattern_param, (void*)PED_INSTRUMENT1, (void*)i, (void*)current_pattern);
+		check_event(event, &clipped, select_pattern_param, MAKEPTR(PED_INSTRUMENT1), MAKEPTR(i), MAKEPTR(current_pattern));
 		
 		update_pattern_cursor(r, &selected_rect, current_pattern, i, PED_INSTRUMENT1);
 		
@@ -495,7 +488,7 @@ void pattern_view_inner(const SDL_Rect *dest, const SDL_Rect *limits, const SDL_
 		copy_rect(&clipped, r);
 		clip_rect(&clipped, &content);
 			
-		check_event(event, &clipped, select_pattern_param, (void*)PED_INSTRUMENT2, (void*)i, (void*)current_pattern);
+		check_event(event, &clipped, select_pattern_param, MAKEPTR(PED_INSTRUMENT2), MAKEPTR(i), MAKEPTR(current_pattern));
 		
 		update_pattern_cursor(r, &selected_rect, current_pattern, i, PED_INSTRUMENT2);
 		
@@ -510,7 +503,7 @@ void pattern_view_inner(const SDL_Rect *dest, const SDL_Rect *limits, const SDL_
 				copy_rect(&clipped, r);
 				clip_rect(&clipped, &content);
 			
-				check_event(event, &clipped, select_pattern_param, (void*)p, (void*)i, (void*)current_pattern);
+				check_event(event, &clipped, select_pattern_param, MAKEPTR(p), MAKEPTR(i), MAKEPTR(current_pattern));
 				update_pattern_cursor(r, &selected_rect, current_pattern, i, p);
 			}
 			
@@ -523,7 +516,7 @@ void pattern_view_inner(const SDL_Rect *dest, const SDL_Rect *limits, const SDL_
 			copy_rect(&clipped, r);
 			clip_rect(&clipped, &content);
 			
-			check_event(event, &clipped, select_pattern_param, (void*)(PED_COMMAND1 + p), (void*)i, (void*)current_pattern);
+			check_event(event, &clipped, select_pattern_param, MAKEPTR(PED_COMMAND1 + p), MAKEPTR(i), MAKEPTR(current_pattern));
 			update_pattern_cursor(r, &selected_rect, current_pattern, i, PED_COMMAND1 + p);
 		}
 		
@@ -626,7 +619,7 @@ static void pattern_header(const SDL_Event *event, int x, int channel, const SDL
 			sprintf(label, "CHN %X", channel);
 	}
 	
-	int d = generic_field(event, &pattern, channel, label, "%02X", (void*)*pattern_var, 2);
+	int d = generic_field(event, &pattern, channel, label, "%02X", MAKEPTR(*pattern_var), 2);
 	int old = *pattern_var;
 	
 	if (d < 0)
@@ -650,7 +643,7 @@ static void pattern_header(const SDL_Event *event, int x, int channel, const SDL
 		button_event(event, &button, mused.slider_bevel, 
 			(mused.mus.channel[channel].flags & MUS_CHN_DISABLED) ? BEV_BUTTON : BEV_BUTTON_ACTIVE, 
 			(mused.mus.channel[channel].flags & MUS_CHN_DISABLED) ? BEV_BUTTON : BEV_BUTTON_ACTIVE, 
-			(mused.mus.channel[channel].flags & MUS_CHN_DISABLED) ? DECAL_AUDIO_DISABLED : DECAL_AUDIO_ENABLED, enable_channel, (void*)channel, 0, 0);
+			(mused.mus.channel[channel].flags & MUS_CHN_DISABLED) ? DECAL_AUDIO_DISABLED : DECAL_AUDIO_ENABLED, enable_channel, MAKEPTR(channel), 0, 0);
 }
 
 
@@ -796,31 +789,31 @@ void info_view(const SDL_Rect *dest, const SDL_Event *event, void *param)
 	int d;
 	
 	d = generic_field(event, &r, 0, "LEN", "%04X", MAKEPTR(mused.song.song_length), 4);
-	if (d) change_song_length((void*)(d * mused.sequenceview_steps), 0, 0);
+	if (d) change_song_length(MAKEPTR(d * mused.sequenceview_steps), 0, 0);
 	update_rect(&area, &r);
 	d = generic_field(event, &r, 0, "LOOP","%04X", MAKEPTR(mused.song.loop_point), 4);
-	if (d) change_loop_point((void*)(d * mused.sequenceview_steps), 0, 0);
+	if (d) change_loop_point(MAKEPTR(d * mused.sequenceview_steps), 0, 0);
 	update_rect(&area, &r);
 	d = generic_field(event, &r, 0, "STEP","%02X", MAKEPTR(mused.sequenceview_steps), 2);
-	if (d) change_seq_steps((void*)d, 0, 0);
+	if (d) change_seq_steps(MAKEPTR(d), 0, 0);
 	update_rect(&area, &r);
 	d = generic_field(event, &r, 0, "SPD1","%02X", MAKEPTR(mused.song.song_speed), 2);
-	if (d) change_song_speed((void*)0, (void*)d, 0);
+	if (d) change_song_speed(MAKEPTR(0), MAKEPTR(d), 0);
 	update_rect(&area, &r);
 	d = generic_field(event, &r, 0, "SPD2","%02X", MAKEPTR(mused.song.song_speed2), 2);
-	if (d) change_song_speed((void*)1, (void*)d, 0);
+	if (d) change_song_speed(MAKEPTR(1), MAKEPTR(d), 0);
 	update_rect(&area, &r);
 	d = generic_field(event, &r, 0, "RATE","%3d", MAKEPTR(mused.song.song_rate), 3);
-	if (d) change_song_rate((void*)d, 0, 0);
+	if (d) change_song_rate(MAKEPTR(d), 0, 0);
 	update_rect(&area, &r);
 	sprintf(speedtext, "%d/%d", mused.time_signature >> 8, mused.time_signature & 0xf);
 	d = generic_field(event, &r, 0, "TIME","%5s", speedtext, 5);
 	update_rect(&area, &r);
 	d = generic_field(event, &r, 0, "OCT","%02X", MAKEPTR(mused.octave), 2);
-	if (d) change_octave((void*)d, 0, 0);
+	if (d) change_octave(MAKEPTR(d), 0, 0);
 	update_rect(&area, &r);
 	d = generic_field(event, &r, 0, "CHNS","%02X", MAKEPTR(mused.song.num_channels), 2);
-	if (d) change_channels((void*)d, 0, 0);
+	if (d) change_channels(MAKEPTR(d), 0, 0);
 	update_rect(&area, &r);
 }
 
@@ -988,7 +981,7 @@ static void write_command(const SDL_Event *event, const char *text, int cmd_idx,
 	{
 		const SDL_Rect *r;
 		check_event(event, r = console_write_args(mused.console, "%c", *c), 
-			select_program_step, (void*)cmd_idx, 0, 0);
+			select_program_step, MAKEPTR(cmd_idx), 0, 0);
 		if (mused.focus == EDITPROG && mused.editpos == i && cmd_idx == cur_idx)
 		{
 			copy_rect(&cur, r);
@@ -1069,18 +1062,18 @@ void program_view(const SDL_Rect *dest, const SDL_Event *event, void *param)
 		if (pos == prev_pos)
 		{
 			check_event(event, console_write_args(mused.console, "%02X%c   ", i, cur),
-				select_program_step, (void*)i, 0, 0);
+				select_program_step, MAKEPTR(i), 0, 0);
 			write_command(event, box, i, mused.current_program_step);
 			check_event(event, console_write_args(mused.console, "%c\n", (!(inst->program[i] & 0x8000) || (inst->program[i] & 0xf000) == 0xf000) ? '´' : '|'), 
-				select_program_step, (void*)i, 0, 0);
+				select_program_step, MAKEPTR(i), 0, 0);
 		}
 		else
 		{
 			check_event(event, console_write_args(mused.console, "%02X%c%02X ", i, cur, pos),
-				select_program_step, (void*)i, 0, 0);
+				select_program_step, MAKEPTR(i), 0, 0);
 			write_command(event, box, i, mused.current_program_step);
 			check_event(event, console_write_args(mused.console, "%c\n", ((inst->program[i] & 0x8000) && (inst->program[i] & 0xf000) != 0xf000) ? '`' : ' '), 
-				select_program_step, (void*)i, 0, 0);
+				select_program_step, MAKEPTR(i), 0, 0);
 		}
 			
 		if (row.y + row.h < area.y + area.h)
@@ -1175,7 +1168,7 @@ static void inst_field(const SDL_Event *e, const SDL_Rect *area, int p, int leng
 	}
 	else
 	{
-		if (check_event(e, console_write_args(mused.console, "%*s", -length, text), select_instrument_param, (void*)p, 0, 0))
+		if (check_event(e, console_write_args(mused.console, "%*s", -length, text), select_instrument_param, MAKEPTR(p), 0, 0))
 			set_edit_buffer(text, length);
 	}
 }
@@ -1205,7 +1198,7 @@ void instrument_name_view(const SDL_Rect *dest, const SDL_Event *event, void *pa
 	farea.x = larea.w + dest->x;
 	tarea.x = farea.x + farea.w;
 	
-	inst_text(event, &farea, P_INSTRUMENT, "", "%02X", (void*)mused.current_instrument, 2);
+	inst_text(event, &farea, P_INSTRUMENT, "", "%02X", MAKEPTR(mused.current_instrument), 2);
 	inst_field(event, &tarea, P_NAME, 16, mused.song.instrument[mused.current_instrument].name);
 	
 	if (mused.selected_param == P_NAME && (mused.edit_buffer == mused.song.instrument[mused.current_instrument].name && mused.mode == EDITBUFFER))
@@ -1395,7 +1388,7 @@ void instrument_list(const SDL_Rect *dest, const SDL_Event *event, void *param)
 			console_set_color(mused.console, colors[COLOR_INSTRUMENT_NORMAL], CON_CHARACTER);
 		}
 			
-		check_event(event, console_write_args(mused.console, "%02X %-16s\n", i, mused.song.instrument[i].name), select_instrument, (void*)i, 0, 0);
+		check_event(event, console_write_args(mused.console, "%02X %-16s\n", i, mused.song.instrument[i].name), select_instrument, MAKEPTR(i), 0, 0);
 		
 		slider_set_params(&mused.instrument_list_slider_param, 0, NUM_INSTRUMENTS - 1, start, i, &mused.instrument_list_position, 1, SLIDER_VERTICAL);
 	}
@@ -1481,9 +1474,9 @@ void instrument_disk_view(const SDL_Rect *dest, const SDL_Event *event, void *pa
 	
 	SDL_Rect button = { area.x + 2, area.y, area.w / 2 - 4, area.h };
 	
-	int open = button_text_event(event, &button, mused.slider_bevel, BEV_BUTTON, BEV_BUTTON_ACTIVE, "LOAD", NULL, (void*)1, NULL, NULL);
+	int open = button_text_event(event, &button, mused.slider_bevel, BEV_BUTTON, BEV_BUTTON_ACTIVE, "LOAD", NULL, MAKEPTR(1), NULL, NULL);
 	update_rect(&area, &button);
-	int save = button_text_event(event, &button, mused.slider_bevel, BEV_BUTTON, BEV_BUTTON_ACTIVE, "SAVE", NULL, (void*)2, NULL, NULL);
+	int save = button_text_event(event, &button, mused.slider_bevel, BEV_BUTTON, BEV_BUTTON_ACTIVE, "SAVE", NULL, MAKEPTR(2), NULL, NULL);
 	update_rect(&area, &button);
 	
 	if (open & 1) open_song_action(0,0,0);

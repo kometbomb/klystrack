@@ -87,7 +87,7 @@ static void path_view(const SDL_Rect *area, const SDL_Event *event, void *param)
 
 static const View filebox_view[] =
 {
-	{{ TOP_LEFT, TOP_RIGHT, WIDTH, HEIGHT }, bevel_view, (void*)BEV_MENU, -1},
+	{{ TOP_LEFT, TOP_RIGHT, WIDTH, HEIGHT }, bevel_view, MAKEPTR(BEV_MENU), -1},
 	{{ TOP_LEFT + MARGIN, TOP_RIGHT + MARGIN, ELEMWIDTH, TITLE - 2 }, title_view, &data, -1},
 	{{ TOP_LEFT + MARGIN, TOP_RIGHT + MARGIN + TITLE, ELEMWIDTH, PATH - 2 }, path_view, &data, -1},
 	{{ TOP_LEFT + MARGIN, TOP_RIGHT + MARGIN + TITLE + PATH, ELEMWIDTH, FIELD - 2 }, field_view, &data, -1},
@@ -118,7 +118,7 @@ void title_view(const SDL_Rect *area, const SDL_Event *event, void *param)
 	button.w = CLOSE_BUTTON;
 	button.x = area->w + area->x - CLOSE_BUTTON;
 	font_write(&mused.largefont, mused.screen, &titlearea, title);
-	if (button_event(event, &button, mused.slider_bevel, BEV_BUTTON, BEV_BUTTON_ACTIVE, DECAL_CLOSE, NULL, (void*)1, 0, 0) & 1)
+	if (button_event(event, &button, mused.slider_bevel, BEV_BUTTON, BEV_BUTTON_ACTIVE, DECAL_CLOSE, NULL, MAKEPTR(1), 0, 0) & 1)
 		data.quit = 1;
 }
 
@@ -148,7 +148,7 @@ void file_list_view(const SDL_Rect *area, const SDL_Event *event, void *param)
 		
 		if (pos.y + pos.h <= content.h + content.y) slider_set_params(&data.scrollbar, 0, data.n_files - 1, data.list_position, i, &data.list_position, 1, SLIDER_VERTICAL);
 		
-		check_event(event, &pos, pick_file_action, (void*)i, 0, 0);
+		check_event(event, &pos, pick_file_action, MAKEPTR(i), 0, 0);
 		
 		update_rect(&content, &pos);
 	}

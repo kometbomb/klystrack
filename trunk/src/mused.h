@@ -31,6 +31,21 @@ OTHER DEALINGS IN THE SOFTWARE.
 #include "console.h"
 #include "slider.h"
 
+// Makes "warning: cast to pointer from integer of different size" disappear
+
+#define CASTPTR(t,x) (*(t*)&x)
+#ifdef __i386__
+#  define CASTTOPTR(t,x) (t*)x
+#else
+#  define CASTTOPTR(t,x) (t*)(Uint64)x
+#endif
+
+#if __i386__
+#define MAKEPTR(x) ((void*)(Uint32)(x))
+#else
+#define MAKEPTR(x) ((void*)(Uint64)(x))
+#endif
+
 #define STRINGIFY(x) #x
 #define TOSTRING(x) STRINGIFY(x)
 

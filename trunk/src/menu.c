@@ -117,7 +117,7 @@ void close_menu()
 		change_mode(mused.prev_mode);
 		if (mused.current_menu_action->action == MENU_CHECK || mused.current_menu_action->action == MENU_CHECK_NOSET)
 		{
-			if (mused.current_menu_action->action == MENU_CHECK) *(int*)(mused.current_menu_action->p1) ^= (int)(mused.current_menu_action->p2);
+			if (mused.current_menu_action->action == MENU_CHECK) *(int*)(mused.current_menu_action->p1) ^= CASTPTR(int,mused.current_menu_action->p2);
 			
 			if (mused.current_menu_action->p3)
 				((void *(*)(void*,void*,void*))(mused.current_menu_action->p3))(0,0,0);
@@ -319,7 +319,7 @@ static void draw_submenu(const SDL_Event *event, const Menu *items, const Menu *
 					
 					char tick_char[2] = { 0 };
 					
-					if ((item->action == MENU_CHECK || item->action == MENU_CHECK_NOSET) && (*(int*)item->p1 & (int)item->p2))
+					if ((item->action == MENU_CHECK || item->action == MENU_CHECK_NOSET) && (*(int*)item->p1 & CASTPTR(int,item->p2)))
 						*tick_char = '§';
 					else if (item->flags & MENU_BULLET)
 						*tick_char = '^';

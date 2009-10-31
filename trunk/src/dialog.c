@@ -35,7 +35,7 @@ extern Mused mused;
 
 static void flip(void *bits, void *mask, void *unused)
 {
-	*(Uint32*)bits ^= (Uint32)mask;
+	CASTPTR(Uint32,bits) ^= (Uint32)mask;
 }
 
 
@@ -49,7 +49,7 @@ int checkbox(const SDL_Event *event, const SDL_Rect *area, const char* _label, U
 	label.x += tick.w + 4;
 	label.y += 1;
 	label.h -= 1;
-	int pressed = button_event(event, &tick, mused.slider_bevel, BEV_BUTTON, BEV_BUTTON_ACTIVE, (*flags & mask) ? DECAL_TICK : -1, flip, flags, (void*)mask, 0);
+	int pressed = button_event(event, &tick, mused.slider_bevel, BEV_BUTTON, BEV_BUTTON_ACTIVE, (*flags & mask) ? DECAL_TICK : -1, flip, flags, MAKEPTR(mask), 0);
 	font_write(&mused.smallfont, mused.screen, &label, _label);
 	pressed |= check_event(event, &label, flip, flags, (void*)mask, 0);
 	
@@ -72,8 +72,8 @@ int button_event(const SDL_Event *event, const SDL_Rect *area, SDL_Surface *gfx,
 {
 	Uint32 mask = (Uint32)param1 ^ (Uint32)param2 ^ (Uint32)action;
 	void *p[3] = { param1, param2, param3 };
-	int pressed = check_event(event, area, delegate, action, p, (void*)mask);
-	pressed |= check_drag_event(event, area, NULL, (void*)mask) << 1;
+	int pressed = check_event(event, area, delegate, action, p, MAKEPTR(mask));
+	pressed |= check_drag_event(event, area, NULL, MAKEPTR(mask)) << 1;
 	button(area, mused.slider_bevel, pressed ? offset_pressed : offset, decal);
 	
 	return pressed;
@@ -84,8 +84,8 @@ int button_text_event(const SDL_Event *event, const SDL_Rect *area, SDL_Surface 
 {
 	Uint32 mask = (Uint32)param1 ^ (Uint32)param2 ^ (Uint32)action;
 	void *p[3] = { param1, param2, param3 };
-	int pressed = check_event(event, area, delegate, action, p, (void*)mask);
-	pressed |= check_drag_event(event, area, NULL, (void*)mask) << 1;
+	int pressed = check_event(event, area, delegate, action, p, MAKEPTR(mask));
+	pressed |= check_drag_event(event, area, NULL, MAKEPTR(mask)) << 1;
 	button_text(area, mused.slider_bevel, (pressed & 1) ? offset_pressed : offset, label);
 	
 	return pressed;
@@ -98,10 +98,10 @@ int spinner(const SDL_Event *event, const SDL_Rect *_area, int param)
 	SDL_Rect area;
 	copy_rect(&area, _area);
 	area.w /= 2;
-	minus = button_event(event, &area, mused.slider_bevel, BEV_BUTTON, BEV_BUTTON_ACTIVE, DECAL_MINUS, NULL, (void*)(0x80000000 | param), 0, NULL) & 1;
+	minus = button_event(event, &area, mused.slider_bevel, BEV_BUTTON, BEV_BUTTON_ACTIVE, DECAL_MINUS, NULL, MAKEPTR(0x80000000 | param), 0, NULL) & 1;
 
 	area.x += area.w;
-	plus = button_event(event, &area, mused.slider_bevel, BEV_BUTTON, BEV_BUTTON_ACTIVE, DECAL_PLUS, NULL, (void*)(0x81000000 | param), 0, NULL) & 1;
+	plus = button_event(event, &area, mused.slider_bevel, BEV_BUTTON, BEV_BUTTON_ACTIVE, DECAL_PLUS, NULL, MAKEPTR(0x81000000 | param), 0, NULL) & 1;
 	
 	return plus ? +1 : (minus ? -1 : 0);
 }

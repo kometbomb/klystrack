@@ -42,10 +42,10 @@ extern Menu pixelmenu[];
 
 void select_sequence_position(void *channel, void *position, void* unused)
 {
-	if ((int)channel != -1)
+	if (CASTPTR(int,channel) != -1)
 		mused.current_sequencetrack = (int)channel;
 	
-	if ((int)position < mused.song.song_length)
+	if (CASTPTR(int,position) < mused.song.song_length)
 		mused.current_sequencepos = (int)position;
 		
 	if (mused.mode == EDITCLASSIC) update_ghost_patterns();
@@ -82,9 +82,9 @@ void change_octave(void *delta, void *unused1, void *unused2)
 
 void change_song_rate(void *delta, void *unused1, void *unused2)
 {
-	if ((int)delta > 0 && (int)mused.song.song_rate + (int)delta <= 0xff)
+	if (CASTPTR(int,delta) > 0 && (int)mused.song.song_rate + CASTPTR(int,delta) <= 0xff)
 		mused.song.song_rate += (int)delta;
-	else if ((int)delta < 0 && (int)mused.song.song_rate + (int)delta >= 0x1)
+	else if (CASTPTR(int,delta) < 0 && (int)mused.song.song_rate + CASTPTR(int,delta) >= 0x1)
 		mused.song.song_rate += (int)delta;
 	cyd_set_callback(&mused.cyd, mus_advance_tick, &mused.mus, mused.song.song_rate);
 }
@@ -124,12 +124,12 @@ void change_song_speed(void *speed, void *delta, void *unused)
 {
 	if (!speed)
 	{
-		if ((int)mused.song.song_speed + (int)delta >= 1 && (int)mused.song.song_speed + (int)delta <= 255)
+		if ((int)mused.song.song_speed + CASTPTR(int,delta) >= 1 && (int)mused.song.song_speed + CASTPTR(int,delta) <= 255)
 			mused.song.song_speed += (int)delta;
 	}
 	else
 	{
-		if ((int)mused.song.song_speed2 + (int)delta >= 1 && (int)mused.song.song_speed2 + (int)delta <= 255)
+		if ((int)mused.song.song_speed2 + CASTPTR(int,delta) >= 1 && (int)mused.song.song_speed2 + CASTPTR(int,delta) <= 255)
 		mused.song.song_speed2 += (int)delta;
 	}
 }
@@ -265,7 +265,7 @@ void cycle_focus(void *_views, void *_focus, void *_mode)
 
 void change_song_length(void *delta, void *unused1, void *unused2)
 {
-	if ((int)delta < 0)
+	if (CASTPTR(int,delta) < 0)
 	{
 		if (mused.song.song_length >= -(int)delta)
 			mused.song.song_length += (int)delta;
@@ -273,7 +273,7 @@ void change_song_length(void *delta, void *unused1, void *unused2)
 		if (mused.song.loop_point >= mused.song.song_length)
 			mused.song.loop_point = mused.song.song_length;
 	}
-	else if ((int)delta > 0)
+	else if (CASTPTR(int,delta) > 0)
 	{
 		if (mused.song.song_length < 0xfffe - (int)delta)
 			mused.song.song_length += (int)delta;
@@ -283,14 +283,14 @@ void change_song_length(void *delta, void *unused1, void *unused2)
 
 void change_loop_point(void *delta, void *unused1, void *unused2)
 {
-	if ((int)delta < 0)
+	if (CASTPTR(int,delta) < 0)
 	{
 		if (mused.song.loop_point >= -(int)delta)
 			mused.song.loop_point += (int)delta;
 		else
 			mused.song.loop_point = 0;
 	}
-	else if ((int)delta > 0)
+	else if (CASTPTR(int,delta) > 0)
 	{
 		mused.song.loop_point += (int)delta;
 		if (mused.song.loop_point >= mused.song.song_length)
@@ -301,7 +301,7 @@ void change_loop_point(void *delta, void *unused1, void *unused2)
 
 void change_seq_steps(void *delta, void *unused1, void *unused2)
 {
-	if ((int)delta < 0)
+	if (CASTPTR(int,delta) < 0)
 	{
 		if (mused.sequenceview_steps > 1)
 		{
@@ -309,7 +309,7 @@ void change_seq_steps(void *delta, void *unused1, void *unused2)
 			mused.current_sequencepos = (mused.current_sequencepos/mused.sequenceview_steps) * mused.sequenceview_steps;
 		}
 	}
-	else if ((int)delta > 0)
+	else if (CASTPTR(int,delta) > 0)
 	{
 		if (mused.sequenceview_steps < 128)
 		{
@@ -328,11 +328,11 @@ void show_about_box(void *unused1, void *unused2, void *unused3)
 
 void change_channels(void *delta, void *unused1, void *unused2)
 {
-	if ((int)delta < 0 && mused.song.num_channels > 1)
+	if (CASTPTR(int,delta) < 0 && mused.song.num_channels > 1)
 	{
 		--mused.song.num_channels;
 	}
-	else if ((int)delta > 0 && mused.song.num_channels < MUS_MAX_CHANNELS)
+	else if (CASTPTR(int,delta) > 0 && mused.song.num_channels < MUS_MAX_CHANNELS)
 	{
 		++mused.song.num_channels;
 	}
