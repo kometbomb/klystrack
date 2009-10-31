@@ -208,7 +208,7 @@ void change_mode_action(void *mode, void *unused1, void *unused2)
 
 void enable_channel(void *channel, void *unused1, void *unused2)
 {
-	mused.mus.channel[(int)channel].flags ^= MUS_CHN_DISABLED;
+	mused.mus.channel[CASTPTR(int,channel)].flags ^= MUS_CHN_DISABLED;
 }
 
 
@@ -379,7 +379,7 @@ void end_selection_action(void *unused1, void *unused2, void *unused3)
 
 void toggle_pixel_scale(void *a, void*b, void*c)
 {
-	change_pixel_scale((void*)(((domain->scale) & 3) + 1), 0, 0);
+	change_pixel_scale(MAKEPTR(((domain->scale) & 3) + 1), 0, 0);
 }
 
 
