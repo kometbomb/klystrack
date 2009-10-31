@@ -47,7 +47,7 @@ static const struct { int type; const char *name; void *param; int mask; } confi
 static void apply_config()
 {
 	change_fullscreen(0, 0, 0);
-	change_pixel_scale((void*)mused.pixel_scale, 0, 0);
+	change_pixel_scale(CASTTOPTR(void,mused.pixel_scale), 0, 0);
 	load_theme_action(mused.themename, 0, 0);
 }
 
