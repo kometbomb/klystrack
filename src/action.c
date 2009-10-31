@@ -43,10 +43,10 @@ extern Menu pixelmenu[];
 void select_sequence_position(void *channel, void *position, void* unused)
 {
 	if (CASTPTR(int,channel) != -1)
-		mused.current_sequencetrack = (int)channel;
+		mused.current_sequencetrack = CASTPTR(int,channel);
 	
 	if (CASTPTR(int,position) < mused.song.song_length)
-		mused.current_sequencepos = (int)position;
+		mused.current_sequencepos = CASTPTR(int,position);
 		
 	if (mused.mode == EDITCLASSIC) update_ghost_patterns();
 }
@@ -54,18 +54,18 @@ void select_sequence_position(void *channel, void *position, void* unused)
 
 void select_pattern_param(void *id, void *position, void *pattern)
 {
-	mused.current_pattern = (int)pattern;
-	mused.current_patternstep = (int)position;
-	mused.current_patternx = (int)id;
+	mused.current_pattern = CASTPTR(int,pattern);
+	mused.current_patternstep = CASTPTR(int,position);
+	mused.current_patternx = CASTPTR(int,id);
 }
 
 
 void select_instrument(void *idx, void *relative, void *unused2)
 {
 	if (relative)
-		mused.current_instrument += (int)idx;
+		mused.current_instrument += CASTPTR(int,idx);
 	else
-		mused.current_instrument = (int)idx;
+		mused.current_instrument = CASTPTR(int,idx);
 		
 	if (mused.current_instrument >= NUM_INSTRUMENTS) mused.current_instrument = NUM_INSTRUMENTS-1;
 	else if (mused.current_instrument < 0) mused.current_instrument = 0;
@@ -74,7 +74,7 @@ void select_instrument(void *idx, void *relative, void *unused2)
 
 void change_octave(void *delta, void *unused1, void *unused2)
 {
-	mused.octave += (int)delta;
+	mused.octave += CASTPTR(int,delta);
 	if (mused.octave > 7) mused.octave = 7;
 	else if (mused.octave < 0) mused.octave = 0;
 }
@@ -83,9 +83,9 @@ void change_octave(void *delta, void *unused1, void *unused2)
 void change_song_rate(void *delta, void *unused1, void *unused2)
 {
 	if (CASTPTR(int,delta) > 0 && (int)mused.song.song_rate + CASTPTR(int,delta) <= 0xff)
-		mused.song.song_rate += (int)delta;
+		mused.song.song_rate += CASTPTR(int,delta);
 	else if (CASTPTR(int,delta) < 0 && (int)mused.song.song_rate + CASTPTR(int,delta) >= 0x1)
-		mused.song.song_rate += (int)delta;
+		mused.song.song_rate += CASTPTR(int,delta);
 	cyd_set_callback(&mused.cyd, mus_advance_tick, &mused.mus, mused.song.song_rate);
 }
 
@@ -125,25 +125,25 @@ void change_song_speed(void *speed, void *delta, void *unused)
 	if (!speed)
 	{
 		if ((int)mused.song.song_speed + CASTPTR(int,delta) >= 1 && (int)mused.song.song_speed + CASTPTR(int,delta) <= 255)
-			mused.song.song_speed += (int)delta;
+			mused.song.song_speed += CASTPTR(int,delta);
 	}
 	else
 	{
 		if ((int)mused.song.song_speed2 + CASTPTR(int,delta) >= 1 && (int)mused.song.song_speed2 + CASTPTR(int,delta) <= 255)
-		mused.song.song_speed2 += (int)delta;
+		mused.song.song_speed2 += CASTPTR(int,delta);
 	}
 }
 
 
 void select_instrument_param(void *idx, void *unused1, void *unused2)
 {
-	mused.selected_param = (int)idx;
+	mused.selected_param = CASTPTR(int,idx);
 }
 
 
 void select_program_step(void *idx, void *unused1, void *unused2)
 {
-	mused.current_program_step = (int)idx;
+	mused.current_program_step = CASTPTR(int,idx);
 }
 
 
@@ -202,7 +202,7 @@ void quit_action(void *unused1, void *unused2, void *unused3)
 
 void change_mode_action(void *mode, void *unused1, void *unused2)
 {
-	change_mode((int)mode);
+	change_mode(CASTPTR(int,mode));
 }
 
 
@@ -267,16 +267,16 @@ void change_song_length(void *delta, void *unused1, void *unused2)
 {
 	if (CASTPTR(int,delta) < 0)
 	{
-		if (mused.song.song_length >= -(int)delta)
-			mused.song.song_length += (int)delta;
+		if (mused.song.song_length >= -CASTPTR(int,delta))
+			mused.song.song_length += CASTPTR(int,delta);
 						
 		if (mused.song.loop_point >= mused.song.song_length)
 			mused.song.loop_point = mused.song.song_length;
 	}
 	else if (CASTPTR(int,delta) > 0)
 	{
-		if (mused.song.song_length < 0xfffe - (int)delta)
-			mused.song.song_length += (int)delta;
+		if (mused.song.song_length < 0xfffe - CASTPTR(int,delta))
+			mused.song.song_length += CASTPTR(int,delta);
 	}
 }
 
@@ -285,14 +285,14 @@ void change_loop_point(void *delta, void *unused1, void *unused2)
 {
 	if (CASTPTR(int,delta) < 0)
 	{
-		if (mused.song.loop_point >= -(int)delta)
-			mused.song.loop_point += (int)delta;
+		if (mused.song.loop_point >= -CASTPTR(int,delta))
+			mused.song.loop_point += CASTPTR(int,delta);
 		else
 			mused.song.loop_point = 0;
 	}
 	else if (CASTPTR(int,delta) > 0)
 	{
-		mused.song.loop_point += (int)delta;
+		mused.song.loop_point += CASTPTR(int,delta);
 		if (mused.song.loop_point >= mused.song.song_length)
 			mused.song.loop_point = mused.song.song_length;
 	}
@@ -385,7 +385,7 @@ void toggle_pixel_scale(void *a, void*b, void*c)
 
 void change_pixel_scale(void *scale, void*b, void*c)
 {	
-	mused.pixel_scale = (int)scale;
+	mused.pixel_scale = CASTPTR(int,scale);
 	domain->scale = mused.pixel_scale;
 	gfx_domain_update(domain);
 	mused.screen = gfx_domain_get_surface(domain);
