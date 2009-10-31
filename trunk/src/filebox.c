@@ -99,10 +99,10 @@ static const View filebox_view[] =
 
 static void pick_file_action(void *file, void *unused1, void *unused2)
 {
-	if (data.focus == FOCUS_LIST && data.selected_file == (int)file) data.picked_file = &data.files[(int)file];
-	data.selected_file = (int)file;
+	if (data.focus == FOCUS_LIST && data.selected_file == CASTPTR(int,file)) data.picked_file = &data.files[CASTPTR(int,file)];
+	data.selected_file = CASTPTR(int,file);
 	data.focus = FOCUS_LIST;
-	strncpy(data.field, data.files[(int)file].name, sizeof(data.field));
+	strncpy(data.field, data.files[CASTPTR(int,file)].name, sizeof(data.field));
 	data.editpos = strlen(data.field);
 }
 
