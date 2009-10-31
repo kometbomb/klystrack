@@ -35,7 +35,7 @@ extern Mused mused;
 
 static void flip(void *bits, void *mask, void *unused)
 {
-	CASTPTR(Uint32,bits) ^= (Uint32)mask;
+	CASTPTR(Uint32,bits) ^= CASTPTR(Uint32,mask);
 }
 
 
@@ -51,7 +51,7 @@ int checkbox(const SDL_Event *event, const SDL_Rect *area, const char* _label, U
 	label.h -= 1;
 	int pressed = button_event(event, &tick, mused.slider_bevel, BEV_BUTTON, BEV_BUTTON_ACTIVE, (*flags & mask) ? DECAL_TICK : -1, flip, flags, MAKEPTR(mask), 0);
 	font_write(&mused.smallfont, mused.screen, &label, _label);
-	pressed |= check_event(event, &label, flip, flags, (void*)mask, 0);
+	pressed |= check_event(event, &label, flip, flags, MAKEPTR(mask), 0);
 	
 	return pressed;
 }
@@ -70,7 +70,7 @@ static void delegate(void *p1, void *p2, void *p3)
 
 int button_event(const SDL_Event *event, const SDL_Rect *area, SDL_Surface *gfx, int offset, int offset_pressed, int decal, void (*action)(void*,void*,void*), void *param1, void *param2, void *param3)
 {
-	Uint32 mask = (Uint32)param1 ^ (Uint32)param2 ^ (Uint32)action;
+	Uint32 mask = CASTPTR(Uint32,param1) ^ CASTPTR(Uint32,param2) ^ CASTPTR(Uint32,action);
 	void *p[3] = { param1, param2, param3 };
 	int pressed = check_event(event, area, delegate, action, p, MAKEPTR(mask));
 	pressed |= check_drag_event(event, area, NULL, MAKEPTR(mask)) << 1;
@@ -82,7 +82,7 @@ int button_event(const SDL_Event *event, const SDL_Rect *area, SDL_Surface *gfx,
 
 int button_text_event(const SDL_Event *event, const SDL_Rect *area, SDL_Surface *gfx, int offset, int offset_pressed, const char * label, void (*action)(void*,void*,void*), void *param1, void *param2, void *param3)
 {
-	Uint32 mask = (Uint32)param1 ^ (Uint32)param2 ^ (Uint32)action;
+	Uint32 mask = CASTPTR(Uint32,param1) ^ CASTPTR(Uint32,param2) ^ CASTPTR(Uint32,action);
 	void *p[3] = { param1, param2, param3 };
 	int pressed = check_event(event, area, delegate, action, p, MAKEPTR(mask));
 	pressed |= check_drag_event(event, area, NULL, MAKEPTR(mask)) << 1;
