@@ -419,3 +419,21 @@ void load_theme_action(void *name, void*b, void*c)
 {
 	load_theme((char*)name);
 }
+
+
+void change_timesig(void *delta, void *b, void *c)
+{
+	static const Uint16 sigs[] = { 0x0404, 0x0304, 0x0303, 0x0504, 0x0306 };
+	int i;
+	for (i = 0 ; i < sizeof(sigs) / sizeof(sigs[0]) ; ++i)
+	{
+		if (sigs[i] == mused.time_signature)
+			break;
+	}
+	
+	i += CASTPTR(int,delta);
+	
+	if (i >= (int)(sizeof(sigs) / sizeof(sigs[0]) - 1)) i = 0;
+	if (i < 0) i = sizeof(sigs) / sizeof(sigs[0]) - 1;
+	mused.time_signature = sigs[i];
+}
