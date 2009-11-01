@@ -35,7 +35,7 @@ extern Mused mused;
 
 static void flip(void *bits, void *mask, void *unused)
 {
-	CASTPTR(Uint32,bits) ^= CASTPTR(Uint32,mask);
+	*CASTTOPTR(Uint32,bits) ^= CASTPTR(Uint32,mask);
 }
 
 
