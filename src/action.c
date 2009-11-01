@@ -423,7 +423,10 @@ void load_theme_action(void *name, void*b, void*c)
 
 void change_timesig(void *delta, void *b, void *c)
 {
-	static const Uint16 sigs[] = { 0x0404, 0x0304, 0x0303, 0x0504, 0x0306 };
+	// http://en.wikipedia.org/wiki/Time_signature says the following signatures are common. 
+	// I'm a 4/4 or 3/4 man myself so I'll trust the article :)
+	
+	static const Uint16 sigs[] = { 0x0404, 0x0202, 0x0402, 0x0204, 0x0304, 0x0308, 0x0608, 0x0908, 0x0c08 };
 	int i;
 	for (i = 0 ; i < sizeof(sigs) / sizeof(sigs[0]) ; ++i)
 	{
