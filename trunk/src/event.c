@@ -838,7 +838,6 @@ void pattern_event(SDL_Event *e)
 						{
 							mused.current_patternx = 0;
 							int s = mused.current_sequencetrack;
-							debug("before: %d", mused.current_sequencetrack);
 							do
 							{
 								
@@ -851,8 +850,6 @@ void pattern_event(SDL_Event *e)
 							if (s != mused.current_sequencetrack) mused.current_pattern = *mused.ghost_pattern[mused.current_sequencetrack];
 							
 							move_position(&mused.current_sequencetrack, &mused.pattern_horiz_position, &mused.pattern_horiz_slider_param, 0, mused.pattern_horiz_slider_param.last - mused.pattern_horiz_slider_param.first + 1);
-							
-							debug("after: %d", mused.current_sequencetrack);
 							
 							if (mused.current_patternstep >= mused.song.pattern[mused.current_pattern].num_steps)
 								mused.current_patternstep = mused.song.pattern[mused.current_pattern].num_steps - 1;
