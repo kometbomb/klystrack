@@ -111,6 +111,8 @@ int save_data()
 				
 				const Uint8 version = MUS_VERSION;
 				
+				mused.song.time_signature = mused.time_signature;
+				
 				fwrite(&version, 1, sizeof(version), f);
 				
 				fwrite(&mused.song.num_channels, 1, sizeof(mused.song.num_channels), f);
@@ -212,6 +214,8 @@ void open_data()
 				mus_set_reverb(&mused.mus, &mused.song);
 				cyd_set_callback(&mused.cyd, mus_advance_tick, &mused.mus, mused.song.song_rate);
 				mirror_flags();
+				
+				mused.time_signature = mused.song.time_signature;
 			}		
 		}
 		break;

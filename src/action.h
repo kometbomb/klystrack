@@ -50,6 +50,7 @@ void cycle_focus(void *views, void *focus, void *mode);
 void change_song_length(void *delta, void *, void *);
 void change_loop_point(void *delta, void *, void *);
 void change_seq_steps(void *delta, void *, void *);
+void change_timesig(void *delta, void *, void *);
 void show_about_box(void *unused1, void *unused2, void *unused3);
 void change_channels(void *delta, void *unused1, void *unused2);
 void begin_selection_action(void *unused1, void *unused2, void *unused3);

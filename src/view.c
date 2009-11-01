@@ -806,8 +806,9 @@ void info_view(const SDL_Rect *dest, const SDL_Event *event, void *param)
 	d = generic_field(event, &r, 0, "RATE","%3d", MAKEPTR(mused.song.song_rate), 3);
 	if (d) change_song_rate(MAKEPTR(d), 0, 0);
 	update_rect(&area, &r);
-	sprintf(speedtext, "%d/%d", mused.time_signature >> 8, mused.time_signature & 0xf);
+	sprintf(speedtext, "%d/%d", mused.time_signature >> 8, mused.time_signature & 0xff);
 	d = generic_field(event, &r, 0, "TIME","%5s", speedtext, 5);
+	if (d) change_timesig(MAKEPTR(d), 0, 0);
 	update_rect(&area, &r);
 	d = generic_field(event, &r, 0, "OCT","%02X", MAKEPTR(mused.octave), 2);
 	if (d) change_octave(MAKEPTR(d), 0, 0);
