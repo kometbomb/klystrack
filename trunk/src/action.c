@@ -167,7 +167,7 @@ void save_song_action(void *unused1, void *unused2, void *unused3)
 
 void open_song_action(void *unused1, void *unused2, void *unused3)
 {
-	if (mused.mode == EDITSEQUENCE || mused.mode == EDITCLASSIC)
+	if (mused.mode != EDITINSTRUMENT && mused.mode != EDITPROG)
 	{
 		int r = confirm_ync("Save song?");
 				
