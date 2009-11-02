@@ -6,6 +6,7 @@
 #include "action.h"
 #include "shortcuts.h"
 #include "msgbox.h"
+#include "import.h"
 
 #define SC_SIZE 64
 #define MENU_CHECK (void*)1
@@ -67,6 +68,8 @@ static const Menu filemenu[] =
 	{ 0, mainmenu, "New", NULL, new_song_action },
 	{ 0, mainmenu, "Open", NULL, open_song_action },
 	{ 0, mainmenu, "Save", NULL, save_song_action },
+	{ 0, mainmenu, "", NULL, NULL },
+	{ 0, mainmenu, "Import", NULL, import_module },
 	{ 0, mainmenu, "", NULL, NULL },
 	{ 0, mainmenu, "Exit", NULL, quit_action },
 	{ 0, NULL, NULL }

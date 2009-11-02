@@ -152,7 +152,7 @@ void new_song()
 	mused.song.song_length = 0;
 	mused.song.loop_point = 0;
 	mused.song.flags = 0;
-	strcpy(mused.song.title, "");
+	memset(mused.song.title, 0, sizeof(mused.song.title));
 	
 	for (int i = 0 ; i < NUM_PATTERNS ; ++i)
 	{
