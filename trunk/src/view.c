@@ -1075,8 +1075,18 @@ void program_view(const SDL_Rect *dest, const SDL_Event *event, void *param)
 			check_event(event, console_write_args(mused.console, "%02X%c%02X ", i, cur, pos),
 				select_program_step, MAKEPTR(i), 0, 0);
 			write_command(event, box, i, mused.current_program_step);
-			check_event(event, console_write_args(mused.console, "%c\n", ((inst->program[i] & 0x8000) && (inst->program[i] & 0xf000) != 0xf000) ? '`' : ' '), 
+			check_event(event, console_write_args(mused.console, "%c ", ((inst->program[i] & 0x8000) && (inst->program[i] & 0xf000) != 0xf000) ? '`' : ' '), 
 				select_program_step, MAKEPTR(i), 0, 0);
+				
+			if ((inst->program[i] & 0x7f00) == MUS_FX_ARPEGGIO)
+			{
+				if ((inst->program[i] & 0xff) != 0xf0 && (inst->program[i] & 0xff) != 0xf1)
+					console_write_args(mused.console, "%s\n", notename(inst->base_note + (inst->program[i] & 0xff)));
+				else
+					console_write_args(mused.console, "EXT%x\n", inst->program[i] & 0x0f);
+			}
+			else
+				console_write_args(mused.console, "\n");
 		}
 			
 		if (row.y + row.h < area.y + area.h)
