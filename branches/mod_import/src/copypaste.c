@@ -136,7 +136,7 @@ void paste()
 			
 			for (int i = 0 ; i < items ; ++i)
 			{
-				add_sequence(((MusSeqPattern*)mused.cp.data)[i].position-first+mused.current_sequencepos, ((MusSeqPattern*)mused.cp.data)[i].pattern, ((MusSeqPattern*)mused.cp.data)[i].note_offset);
+				add_sequence(mused.current_sequencetrack, ((MusSeqPattern*)mused.cp.data)[i].position-first+mused.current_sequencepos, ((MusSeqPattern*)mused.cp.data)[i].pattern, ((MusSeqPattern*)mused.cp.data)[i].note_offset);
 			}
 		}
 		break;

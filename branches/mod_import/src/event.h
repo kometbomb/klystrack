@@ -39,7 +39,7 @@ void reverb_event(SDL_Event *e);
 void reverb_add_param(int d);
 void instrument_add_param(int a);
 void del_sequence(int first,int last,int track);
-void add_sequence(int position, int pattern, int offset);
+void add_sequence(int channel, int position, int pattern, int offset);
 void move_position(int *cursor, int *scroll, SliderParam *param, int d, int top);
 
 enum

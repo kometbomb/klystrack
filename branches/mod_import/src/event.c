@@ -478,26 +478,26 @@ static int seqsort(const void *_a, const void *_b)
 }
 
 
-void add_sequence(int position, int pattern, int offset)
+void add_sequence(int channel, int position, int pattern, int offset)
 {
-	for (int i = 0 ; i < mused.song.num_sequences[mused.current_sequencetrack] ; ++i)
-		if (mused.song.sequence[mused.current_sequencetrack][i].position == position)
+	for (int i = 0 ; i < mused.song.num_sequences[channel] ; ++i)
+		if (mused.song.sequence[channel][i].position == position)
 		{
-			mused.song.sequence[mused.current_sequencetrack][i].pattern = pattern;
-			mused.song.sequence[mused.current_sequencetrack][i].note_offset = offset;
+			mused.song.sequence[channel][i].pattern = pattern;
+			mused.song.sequence[channel][i].note_offset = offset;
 			return;
 		}
 			
-	if (mused.song.num_sequences[mused.current_sequencetrack] >= NUM_SEQUENCES)
+	if (mused.song.num_sequences[channel] >= NUM_SEQUENCES)
 		return;
 			
-	mused.song.sequence[mused.current_sequencetrack][mused.song.num_sequences[mused.current_sequencetrack]].position = position;
-	mused.song.sequence[mused.current_sequencetrack][mused.song.num_sequences[mused.current_sequencetrack]].pattern = pattern;
-	mused.song.sequence[mused.current_sequencetrack][mused.song.num_sequences[mused.current_sequencetrack]].note_offset = offset;
+	mused.song.sequence[channel][mused.song.num_sequences[channel]].position = position;
+	mused.song.sequence[channel][mused.song.num_sequences[channel]].pattern = pattern;
+	mused.song.sequence[channel][mused.song.num_sequences[channel]].note_offset = offset;
 	
-	++mused.song.num_sequences[mused.current_sequencetrack];
+	++mused.song.num_sequences[channel];
 	
-	qsort(mused.song.sequence[mused.current_sequencetrack], mused.song.num_sequences[mused.current_sequencetrack], sizeof(mused.song.sequence[mused.current_sequencetrack][0]), seqsort);
+	qsort(mused.song.sequence[channel], mused.song.num_sequences[channel], sizeof(mused.song.sequence[channel][0]), seqsort);
 }
 
 
@@ -700,7 +700,7 @@ void sequence_event(SDL_Event *e)
 				int p = getalphanum(&e->key.keysym);
 				if (p != -1 && p < NUM_PATTERNS)
 				{
-					add_sequence(mused.current_sequencepos, p, 0);
+					add_sequence(mused.current_sequencetrack, mused.current_sequencepos, p, 0);
 					if (mused.song.song_length > mused.current_sequencepos + mused.sequenceview_steps)
 						mused.current_sequencepos += mused.sequenceview_steps;
 				}
