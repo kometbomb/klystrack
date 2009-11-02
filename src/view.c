@@ -707,7 +707,7 @@ void pattern_view(const SDL_Rect *dest, const SDL_Event *event, void *param)
 	pos.x += pos.w - 2;
 	pos.w = pattern_width;
 	
-	slider_set_params(&mused.pattern_horiz_slider_param, 0, 0, 0, mused.song.num_channels - 1, &mused.pattern_horiz_position, 1, SLIDER_HORIZONTAL);
+	slider_set_params(&mused.pattern_horiz_slider_param, 0, pv - 1, 0, pv - 1, &mused.pattern_horiz_position, 1, SLIDER_HORIZONTAL);
 	
 	int first = mused.song.num_channels, last = 0;
 	for (int i = 0 ; i < mused.song.num_channels && pos.x < dest->w + dest->x ; ++i)
@@ -861,6 +861,7 @@ void get_command_desc(char *text, Uint16 inst)
 		{MUS_FX_BUZZ_DN, "Tune buzz down" },
 		{MUS_FX_BUZZ_SHAPE, "Set buzz shape" },
 		{MUS_FX_BUZZ_SET, "Set buzz finetune" },
+		{MUS_FX_CUTOFF_FINE_SET, "Set filter cutoff (fine)"},
 		{MUS_FX_BUZZ_SET_SEMI, "Set buzz semitone" },
 		{0, NULL}
 	};
@@ -869,7 +870,8 @@ void get_command_desc(char *text, Uint16 inst)
 	Uint16 fi = 0;
 	for (int i = 0 ; instructions[i].name != NULL ; ++i)
 	{
-		if (instructions[i].opcode == (inst) ||instructions[i].opcode == (inst & 0xff00) || instructions[i].opcode == (inst & 0x7f00) || instructions[i].opcode == (inst & 0x7ff0))
+		if (instructions[i].opcode == (inst) ||instructions[i].opcode == (inst & 0xff00) || instructions[i].opcode == (inst & 0x7f00) || instructions[i].opcode == (inst & 0x7ff0) 
+			|| ((instructions[i].opcode == MUS_FX_CUTOFF_FINE_SET) && instructions[i].opcode == (inst & 0x7000)))
 		{
 			name = instructions[i].name;
 			fi = instructions[i].opcode;

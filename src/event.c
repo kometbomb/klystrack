@@ -40,6 +40,7 @@ static Uint16 validate_command(Uint16 command)
 {
 	if ((command & 0x7f00) == MUS_FX_SET_VOLUME && (command & 0xff) > MAX_VOLUME) command = MUS_FX_SET_VOLUME | MAX_VOLUME;
 	else if ((command & 0x7f00) == MUS_FX_SET_PANNING && (command & 0xff) > CYD_PAN_RIGHT) command = MUS_FX_SET_PANNING | CYD_PAN_RIGHT;
+	else if ((command & 0x7000) == MUS_FX_CUTOFF_FINE_SET && (command & 0xfff) > 0x7ff) command = MUS_FX_CUTOFF_FINE_SET  | 0x7ff;
 	
 	return command;
 }
@@ -840,12 +841,9 @@ void pattern_event(SDL_Event *e)
 							int s = mused.current_sequencetrack;
 							do
 							{
-								
 								mused.current_sequencetrack = (mused.current_sequencetrack + 1) % mused.song.num_channels;
 							}
 							while (mused.ghost_pattern[mused.current_sequencetrack] == NULL && s != mused.current_sequencetrack) ;
-							
-							
 							
 							if (s != mused.current_sequencetrack) mused.current_pattern = *mused.ghost_pattern[mused.current_sequencetrack];
 							
@@ -886,7 +884,7 @@ void pattern_event(SDL_Event *e)
 							int s = mused.current_sequencetrack;
 							do
 							{
-								mused.current_sequencetrack = (mused.current_sequencetrack + mused.song.num_channels - 1) % mused.song.num_channels;
+								mused.current_sequencetrack = (mused.current_sequencetrack + (int)mused.song.num_channels - 1) % mused.song.num_channels;
 							}
 							while (mused.ghost_pattern[mused.current_sequencetrack] == NULL && s != mused.current_sequencetrack); 
 							
