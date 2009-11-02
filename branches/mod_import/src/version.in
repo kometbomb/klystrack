@@ -1,0 +1,8 @@
+#ifndef VERSION_H
+#define VERSION_H
+
+#include "version_number.h"
+#define REVISION "r$WCREV$"
+#define VERSION_STRING "klystrack " VERSION " " REVISION
+
+#endif
