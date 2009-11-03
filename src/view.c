@@ -604,7 +604,7 @@ static void pattern_header(const SDL_Event *event, int x, int channel, const SDL
 	copy_rect(&button, topleft);
 	copy_rect(&pattern, topleft);
 			
-	pattern.w = 8 * 2 + 2 + 16 + ((mused.flags & COMPACT_VIEW) ? 12 : 40); 
+	pattern.w = 8 * 2 + 2 + 16 + ((mused.flags & COMPACT_VIEW) ? 12 : 40) + 6; 
 	pattern.x = x + 4;
 	pattern.y += 1;
 	pattern.h = 10;
@@ -649,13 +649,14 @@ static void pattern_header(const SDL_Event *event, int x, int channel, const SDL
 
 void pattern_view(const SDL_Rect *dest, const SDL_Event *event, void *param)
 {
-	int pv = 0;
+	int pv = 0, top_i = 0;
 	
 	for (int i = 0 ; i < mused.song.num_channels ; ++i)
 	{
 		if (mused.ghost_pattern[i] != NULL)
 		{
 			++pv;
+			top_i = i;
 		}
 	}
 	
@@ -707,8 +708,6 @@ void pattern_view(const SDL_Rect *dest, const SDL_Event *event, void *param)
 	pos.x += pos.w - 2;
 	pos.w = pattern_width;
 	
-	slider_set_params(&mused.pattern_horiz_slider_param, 0, pv - 1, 0, pv - 1, &mused.pattern_horiz_position, 1, SLIDER_HORIZONTAL);
-	
 	int first = mused.song.num_channels, last = 0;
 	for (int i = 0 ; i < mused.song.num_channels && pos.x < dest->w + dest->x ; ++i)
 	{
@@ -726,11 +725,14 @@ void pattern_view(const SDL_Rect *dest, const SDL_Event *event, void *param)
 				
 				pattern_view_inner(&pos, dest, event, *mused.ghost_pattern[i], i);
 				pos.x += pos.w - 2;
-								
-				if (vert_scrollbar) slider_set_params(&mused.pattern_horiz_slider_param, 0, pv - 1, first, last, &mused.pattern_horiz_position, 1, SLIDER_HORIZONTAL);
 			}
 		}
 	}
+	
+	if (vert_scrollbar) 
+		slider_set_params(&mused.pattern_horiz_slider_param, 0, top_i, first, last, &mused.pattern_horiz_position, 1, SLIDER_HORIZONTAL);
+	else
+		slider_set_params(&mused.pattern_horiz_slider_param, 0, top_i, mused.pattern_horiz_position, top_i, &mused.pattern_horiz_position, 1, SLIDER_HORIZONTAL);
 	
 	SDL_SetClipRect(mused.screen, NULL);
 	
