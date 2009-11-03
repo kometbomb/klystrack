@@ -92,10 +92,20 @@ static const Menu infomenu[] =
 };
 
 
+static const Menu editmenu[] =
+{
+	{ 0, mainmenu, "Copy",  NULL, generic_action, copy, 0, 0 },
+	{ 0, mainmenu, "Paste",  NULL, generic_action, paste, 0, 0 },
+	{ 0, mainmenu, "Deselect",  NULL, clear_selection, 0, 0, 0 },
+	{ 0, NULL, NULL }
+};
+
+
 static const Menu mainmenu[] =
 {
 	{ 0, NULL, "FILE", filemenu },
 	{ 0, NULL, "PLAY", playmenu },
+	{ 0, NULL, "EDIT", editmenu },
 	{ 0, NULL, "SHOW", showmenu },
 	{ 0, NULL, "PREFS", prefsmenu },
 	{ 0, NULL, "INFO", infomenu },
