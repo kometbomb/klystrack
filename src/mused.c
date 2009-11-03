@@ -73,10 +73,12 @@ void update_ghost_patterns()
 
 void change_mode(int newmode)
 {
-	if (newmode < VIRTUAL_MODE && mused.mode != MENU) SDL_FillRect(mused.screen, NULL, 0);
+	if (newmode < VIRTUAL_MODE && mused.mode != MENU) 
+	{
+		SDL_FillRect(mused.screen, NULL, 0);
+		clear_selection(0,0,0);
+	}
 
-	clear_selection(0,0,0);
-	
 	if (mused.mode < VIRTUAL_MODE)
 		mused.prev_mode = mused.mode;
 	
