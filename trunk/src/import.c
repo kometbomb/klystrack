@@ -28,6 +28,7 @@ OTHER DEALINGS IN THE SOFTWARE.
 #include "import.h"
 #include "toolutil.h"
 #include "msgbox.h"
+#include "diskop.h"
 #include "SDL_endian.h"
 
 extern Mused mused;
