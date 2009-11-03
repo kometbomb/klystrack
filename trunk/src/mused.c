@@ -92,6 +92,8 @@ void change_mode(int newmode)
 		if (mused.mode == EDITSEQUENCE || newmode == EDITCLASSIC)
 		{
 			update_ghost_patterns();
+			move_position(&mused.current_sequencetrack, &mused.pattern_horiz_position, &mused.pattern_horiz_slider_param, 0, mused.pattern_horiz_slider_param.last - mused.pattern_horiz_slider_param.first + 1);
+			move_position(&mused.current_patternstep, &mused.pattern_position, &mused.pattern_slider_param, 0, mused.song.pattern[mused.current_pattern].num_steps);
 		}
 		else
 		{
