@@ -1,6 +1,10 @@
 #summary Changelog
 #labels Featured
 
+=1.3.0=
+
+  * Basic Protracker etc. module import
+
 =1.2.0=
 
   * New YM2149 (Atari ST, CPC, +2 Speccy etc.) style envelope that allows recreating the common buzzer effect
