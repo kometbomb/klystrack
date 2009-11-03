@@ -176,6 +176,11 @@ static int import_mod(FILE *f)
 
 void import_module(void *type, void* unused1, void* unused2)
 {
+	int r = confirm_ync("Save song?");
+				
+	if (r == 0) return;
+	if (r == 1) { change_mode(EDITSEQUENCE); if (!save_data()) return; }
+
 	FILE * f = open_dialog("rb", "Import module", "mod");
 	
 	if (!f) return;
