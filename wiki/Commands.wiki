@@ -42,6 +42,7 @@ _{{{xx}}}, {{{yy}}} = parameter to command_
 || {{{3f0x}}} || set buzz shape (0-3) ||
 || {{{39xx}}} || set buzz finetune (0x80 = 0, 0x00 = -128, 0xff = 127) ||
 || {{{3axx}}} || set buzz semitune (0x80 = 0, 0x00 = -128, 0xff = 127) ||
+|| {{{6xxx}}} || set fine cutoff frequency (0-7ff) ||
 || {{{fd00}}} || loop begin ||
 || {{{fexx}}} || loop to previous "fd00" xx times ||
 || {{{ffxx}}} || go to step xx ||
