@@ -461,7 +461,7 @@ static int getalphanum(const SDL_keysym *keysym)
 	}
 	else if ((keysym->mod & KMOD_SHIFT) && key >= SDLK_a && key <= SDLK_z)
 	{
-		return key - SDLK_a + 0xa + SDLK_z + 1;
+		return key - SDLK_a + 0xa + (SDLK_z - SDLK_a) + 1;
 	}
 	else return -1;
 }
