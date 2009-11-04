@@ -21,7 +21,7 @@ static const Menu showmenu[];
 
 extern Menu thememenu[];
 
-static const Menu editormenu[] =
+Menu editormenu[] =
 {
 	{ 0, showmenu, "Instrument",  NULL, change_mode_action, (void*)EDITINSTRUMENT, 0, 0 },
 	{ 0, showmenu, "Pattern",  NULL, change_mode_action, (void*)EDITPATTERN, 0, 0 },
@@ -42,6 +42,7 @@ static const Menu showmenu[] =
 
 
 const Menu prefsmenu[];
+
 
 Menu pixelmenu[] =
 {
