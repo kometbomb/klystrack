@@ -133,11 +133,11 @@ static int import_mod(FILE *f)
 	int pat = 0;
 	int patterns = 0;
 	
-	for (int i = 0 ; i < 128 ; ++i)
+	for (int i = 0 ; i * 64 < mused.song.song_length ; ++i)
 	{
 		patterns = my_max(patterns, sequence[i]);
 		for (int c = 0 ; c < channels ; ++c)
-		add_sequence(c, i * 64, sequence[i] * channels + c, 0);
+			add_sequence(c, i * 64, sequence[i] * channels + c, 0);
 	}
 	
 	for (Uint8 i = 0 ; i <= patterns ; ++i)
