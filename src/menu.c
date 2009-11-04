@@ -100,6 +100,7 @@ static const Menu editmenu[] =
 	{ 0, mainmenu, "Deselect",  NULL, clear_selection, 0, 0, 0 },
 	{ 0, mainmenu, "", NULL, NULL },
 	{ 0, mainmenu, "Clone pattern",  NULL, clone_pattern, 0, 0, 0 },
+	{ 0, mainmenu, "Find empty pattern",  NULL, get_unused_pattern, 0, 0, 0 },
 	{ 0, NULL, NULL }
 };
 
