@@ -444,6 +444,8 @@ void change_timesig(void *delta, void *b, void *c)
 
 void clone_pattern(void *unused1, void *unused2, void *unused3)
 {
+	if (mused.focus != EDITPATTERN) return;
+
 	for (int empty = 0 ; empty < NUM_PATTERNS ; ++empty)
 	{
 		int not_empty = 0;
