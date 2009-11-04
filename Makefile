@@ -110,7 +110,9 @@ zip: doc/* res/Default $(DLLS) examples/* linux/Makefile
 	make CFG=release
 	@mkdir -p zip/data/res
 	@mkdir -p zip/data/examples/songs
+	@mkdir -p zip/data/examples/instruments
 	cp examples/songs/*.sng zip/data/examples/songs
+	cp examples/instruments/*.ins zip/data/examples/instruments
 	cp res/Default zip/data/res/Default
 	cp doc/LICENSE zip/data/LICENSE
 	cp doc/SDL.txt zip/data/SDL.txt
