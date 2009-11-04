@@ -171,6 +171,8 @@ static int import_mod(FILE *f)
 		}
 	}
 	
+	mused.sequenceview_steps = 64;
+	
 	return 1;
 }
 
