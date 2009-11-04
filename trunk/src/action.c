@@ -440,3 +440,36 @@ void change_timesig(void *delta, void *b, void *c)
 	if (i < 0) i = sizeof(sigs) / sizeof(sigs[0]) - 1;
 	mused.time_signature = sigs[i];
 }
+
+
+void clone_pattern(void *unused1, void *unused2, void *unused3)
+{
+	for (int empty = 0 ; empty < NUM_PATTERNS ; ++empty)
+	{
+		int not_empty = 0;
+		for (int s = 0 ; s < mused.song.pattern[empty].num_steps && !not_empty ; ++s)
+			if (mused.song.pattern[empty].step[s].note != MUS_NOTE_NO_INSTRUMENT
+				|| mused.song.pattern[empty].step[s].ctrl != 0 
+				|| mused.song.pattern[empty].step[s].instrument != MUS_NOTE_NO_INSTRUMENT
+				|| mused.song.pattern[empty].step[s].command != 0)
+				not_empty = 1;
+		
+		if (!not_empty)
+		{
+			mused.song.pattern[empty].num_steps = mused.song.pattern[mused.current_pattern].num_steps;
+			memcpy(mused.song.pattern[empty].step, mused.song.pattern[mused.current_pattern].step, 
+				mused.song.pattern[mused.current_pattern].num_steps * sizeof(mused.song.pattern[mused.current_pattern].step[0]));
+			
+			for (int i = 0 ; i < mused.song.num_sequences[mused.current_sequencetrack] ; ++i)
+				if (mused.song.sequence[mused.current_sequencetrack][i].position == mused.current_sequencepos
+					&& mused.song.sequence[mused.current_sequencetrack][i].pattern == mused.current_pattern)
+					mused.song.sequence[mused.current_sequencetrack][i].pattern = empty;
+			
+			mused.current_pattern = empty;
+			
+			update_ghost_patterns();
+			
+			return;
+		}
+	}
+}
