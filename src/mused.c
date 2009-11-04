@@ -32,7 +32,7 @@ OTHER DEALINGS IN THE SOFTWARE.
 #include "theme.h"
 
 extern Mused mused;
-
+extern Menu editormenu[];
 
 void set_edit_buffer(char *buffer, size_t size)
 { 
@@ -80,7 +80,11 @@ void change_mode(int newmode)
 	}
 
 	if (mused.mode < VIRTUAL_MODE)
+	{
+		for (int i = 0 ; editormenu[i].parent ; ++i)
+			editormenu[i].flags = (editormenu[i].flags & ~MENU_BULLET) | (mused.mode == CASTPTR(int, editormenu[i].p1) ? MENU_BULLET : 0);
 		mused.prev_mode = mused.mode;
+	}
 	
 	switch (newmode)
 	{
