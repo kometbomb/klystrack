@@ -94,6 +94,22 @@ static const Menu infomenu[] =
 };
 
 
+static const Menu editmenu[];
+
+
+static const Menu editpatternmenu[] =
+{
+	{ 0, editmenu, "Clone",  NULL, clone_pattern, 0, 0, 0 },
+	{ 0, editmenu, "Find empty",  NULL, get_unused_pattern, 0, 0, 0 },
+	{ 0, editmenu, "",  NULL },
+	{ 0, editmenu, "Expand 2X",  NULL, expand_pattern, MAKEPTR(2), 0, 0 },
+	{ 0, editmenu, "Shrink 2X",  NULL, shrink_pattern, MAKEPTR(2), 0, 0 },
+	{ 0, editmenu, "Expand 3X",  NULL, expand_pattern, MAKEPTR(3), 0, 0 },
+	{ 0, editmenu, "Shrink 3X",  NULL, shrink_pattern, MAKEPTR(3), 0, 0 },
+	{ 0, NULL, NULL }
+};
+
+
 static const Menu editmenu[] =
 {
 	{ 0, mainmenu, "Copy",  NULL, generic_action, copy, 0, 0 },
@@ -102,10 +118,7 @@ static const Menu editmenu[] =
 	{ 0, mainmenu, "Delete",  NULL, generic_action, delete, 0, 0 },
 	{ 0, mainmenu, "Deselect",  NULL, clear_selection, 0, 0, 0 },
 	{ 0, mainmenu, "", NULL, NULL },
-	{ 0, mainmenu, "Clone pattern",  NULL, clone_pattern, 0, 0, 0 },
-	{ 0, mainmenu, "Find empty pattern",  NULL, get_unused_pattern, 0, 0, 0 },
-	{ 0, mainmenu, "Expand pattern",  NULL, expand_pattern, MAKEPTR(2), 0, 0 },
-	{ 0, mainmenu, "Shrink pattern",  NULL, shrink_pattern, MAKEPTR(2), 0, 0 },
+	{ 0, mainmenu, "Pattern", editpatternmenu, NULL },
 	{ 0, NULL, NULL }
 };
 

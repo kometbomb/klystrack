@@ -190,6 +190,17 @@ void default_instrument(MusInstrument *inst)
 }
 
 
+void resize_pattern(MusPattern * pattern, Uint16 new_size)
+{
+	if (new_size > pattern->num_steps)
+	{
+		pattern->step = realloc(pattern->step, sizeof(pattern->step[0]) * (size_t)new_size);
+	}
+	
+	pattern->num_steps = new_size;
+}
+
+
 void init(MusInstrument *instrument, MusPattern *pattern, MusSeqPattern sequence[MUS_MAX_CHANNELS][NUM_SEQUENCES], MusChannel *channel, SDL_Surface *screen)
 {
 	debug("init");
@@ -228,8 +239,9 @@ void init(MusInstrument *instrument, MusPattern *pattern, MusSeqPattern sequence
 	
 	for (int i = 0 ; i < NUM_PATTERNS ; ++i)
 	{
-		mused.song.pattern[i].step = malloc(NUM_STEPS*sizeof(*pattern[i].step));
-		mused.song.pattern[i].num_steps = 16;
+		mused.song.pattern[i].step = NULL; 
+		mused.song.pattern[i].num_steps = 0;
+		resize_pattern(&mused.song.pattern[i], 16);
 	}
 	
 	new_song();

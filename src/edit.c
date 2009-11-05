@@ -53,7 +53,8 @@ void clone_pattern(void *unused1, void *unused2, void *unused3)
 		return;
 	}
 	
-	mused.song.pattern[empty].num_steps = mused.song.pattern[mused.current_pattern].num_steps;
+	resize_pattern(&mused.song.pattern[empty], mused.song.pattern[mused.current_pattern].num_steps);
+	
 	memcpy(mused.song.pattern[empty].step, mused.song.pattern[mused.current_pattern].step, 
 		mused.song.pattern[mused.current_pattern].num_steps * sizeof(mused.song.pattern[mused.current_pattern].step[0]));
 		
@@ -91,12 +92,10 @@ void expand_pattern(void *factor, void *unused2, void *unused3)
 	
 	MusPattern *pattern = &mused.song.pattern[mused.current_pattern];
 	
-	if (pattern->num_steps * CASTPTR(int,factor) > NUM_STEPS) return;
-	
 	MusStep *temp = malloc(pattern->num_steps * sizeof(pattern->step[0]));
 	memcpy(temp, pattern->step, pattern->num_steps * sizeof(pattern->step[0]));
 	
-	pattern->num_steps *= CASTPTR(int,factor);
+	resize_pattern(pattern, pattern->num_steps * CASTPTR(int,factor));
 	
 	for (int i = 0 ; i < pattern->num_steps ; ++i)
 	{
@@ -124,7 +123,7 @@ void shrink_pattern(void *factor, void *unused2, void *unused3)
 	
 	if (pattern->num_steps <= CASTPTR(int,factor)) return;
 	
-	pattern->num_steps /= CASTPTR(int,factor);
+	resize_pattern(pattern, pattern->num_steps / CASTPTR(int,factor));
 	
 	for (int i = 0, ti = 0 ; i < pattern->num_steps ; ++i, ti += CASTPTR(int,factor))
 	{

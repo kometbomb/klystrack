@@ -145,7 +145,7 @@ static int import_mod(FILE *f)
 		for (int c = 0 ; c < channels ; ++c)
 		{
 			pat = i * channels + c;
-			mused.song.pattern[pat].num_steps = 64;
+			resize_pattern(&mused.song.pattern[pat], 64);
 			memset(mused.song.pattern[pat].step, 0, sizeof(mused.song.pattern[pat].step[0]) * 64);
 		}
 		

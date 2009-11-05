@@ -118,7 +118,6 @@ typedef struct
 	int pixel_scale;
 } Mused;
 
-#define NUM_STEPS 256
 #define NUM_PATTERNS 256
 #define NUM_INSTRUMENTS 32
 #define NUM_SEQUENCES 1024
@@ -134,5 +133,6 @@ void set_edit_buffer(char *buffer, size_t size);
 void update_ghost_patterns();
 void change_pixel_scale(void *a, void*b, void*c);
 void mirror_flags();
+void resize_pattern(MusPattern * pattern, Uint16 new_size);
 
 #endif
