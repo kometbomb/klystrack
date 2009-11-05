@@ -62,6 +62,49 @@ void save_instrument(FILE *f, MusInstrument *inst)
 	_VER_WRITE(&inst->buzz_offset, 0);
 }
 
+
+static void write_packed_pattern(FILE *f, const MusPattern *pattern)
+{
+	fwrite(&pattern->num_steps, 1, sizeof(pattern->num_steps), f);
+	
+	Uint8 buffer = 0;
+	for (int i = 0 ; i < pattern->num_steps ; ++i)
+	{
+		if (pattern->step[i].note != MUS_NOTE_NONE)
+			buffer |= MUS_PAK_BIT_NOTE;
+			
+		if (pattern->step[i].instrument != MUS_NOTE_NO_INSTRUMENT)
+			buffer |= MUS_PAK_BIT_INST;
+			
+		if (pattern->step[i].ctrl != 0)
+			buffer |= MUS_PAK_BIT_CTRL;
+			
+		if (pattern->step[i].command != 0)
+			buffer |= MUS_PAK_BIT_CMD;
+			
+		if (i & 1 || i + 1 >= pattern->num_steps)
+			fwrite(&buffer, 1, sizeof(buffer), f);
+			
+		buffer <<= 4;
+	}
+	
+	for (int i = 0 ; i < pattern->num_steps ; ++i)
+	{
+		if (pattern->step[i].note != MUS_NOTE_NONE)
+			fwrite(&pattern->step[i].note, 1, sizeof(pattern->step[i].note), f);
+			
+		if (pattern->step[i].instrument != MUS_NOTE_NO_INSTRUMENT)
+			fwrite(&pattern->step[i].instrument, 1, sizeof(pattern->step[i].instrument), f);
+			
+		if (pattern->step[i].ctrl != 0)
+			fwrite(&pattern->step[i].ctrl, 1, sizeof(pattern->step[i].ctrl), f);
+			
+		if (pattern->step[i].command != 0)
+			fwrite(&pattern->step[i].command, 1, sizeof(pattern->step[i].command), f);
+	}
+}
+
+
 int save_data()
 {
 	switch (mused.mode)
@@ -149,8 +192,7 @@ int save_data()
 				
 				for (int i = 0 ; i < mused.song.num_patterns; ++i)
 				{
-					fwrite(&mused.song.pattern[i].num_steps, 1, sizeof(mused.song.pattern[i].num_steps), f);
-					fwrite(mused.song.pattern[i].step, mused.song.pattern[i].num_steps, sizeof(mused.song.pattern[i].step[0]), f);
+					write_packed_pattern(f, &mused.song.pattern[i]);
 				}
 				
 				fclose(f);
