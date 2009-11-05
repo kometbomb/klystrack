@@ -34,19 +34,29 @@ extern Mused mused;
 	
 void save_instrument(FILE *f, MusInstrument *inst)
 {
-	_VER_WRITE(&inst->flags, 0);
-	_VER_WRITE(&inst->cydflags, 0);
+	Uint32 temp32 = inst->flags;
+	FIX_ENDIAN(temp32);
+	_VER_WRITE(&temp32, 0);
+	temp32 = inst->cydflags;
+	FIX_ENDIAN(temp32);
+	_VER_WRITE(&temp32, 0);
 	_VER_WRITE(&inst->adsr, 0);
 	_VER_WRITE(&inst->sync_source, 0);
 	_VER_WRITE(&inst->ring_mod, 0); 
-	_VER_WRITE(&inst->pw, 0);
+	Uint16 temp16 = inst->pw;
+	FIX_ENDIAN(temp16);
+	_VER_WRITE(&temp16, 0);
 	_VER_WRITE(&inst->volume, 0);
 	Uint8 progsteps = 0;
 	for (int i = 0 ; i < MUS_PROG_LEN ; ++i)
 		if (inst->program[i] != MUS_FX_NOP) progsteps = i+1;
 	_VER_WRITE(&progsteps, 0);
-	if (progsteps)
-		_VER_WRITE(&inst->program, (int)(progsteps)*sizeof(inst->program[0]));
+	for (int i = 0 ; i < progsteps ; ++i)
+	{
+		temp16 = inst->program[i];
+		FIX_ENDIAN(temp16);
+		_VER_WRITE(&temp16, sizeof(inst->program[i]));
+	}
 	_VER_WRITE(&inst->prog_period, 0); 
 	_VER_WRITE(&inst->vibrato_speed, 0); 
 	_VER_WRITE(&inst->vibrato_depth, 0); 
@@ -55,11 +65,15 @@ void save_instrument(FILE *f, MusInstrument *inst)
 	_VER_WRITE(&inst->slide_speed, 0);
 	_VER_WRITE(&inst->base_note, 0);
 	_VER_WRITE(inst->name, sizeof(inst->name));
-	_VER_WRITE(&inst->cutoff, 0);
+	temp16 = inst->cutoff;
+	FIX_ENDIAN(temp16);
+	_VER_WRITE(&temp16, 0);
 	_VER_WRITE(&inst->resonance, 0);
 	_VER_WRITE(&inst->flttype, 0);
 	_VER_WRITE(&inst->ym_env_shape, 0);
-	_VER_WRITE(&inst->buzz_offset, 0);
+	temp16 = inst->buzz_offset;
+	FIX_ENDIAN(temp16);
+	_VER_WRITE(&temp16, 0);
 }
 
 
@@ -100,7 +114,11 @@ static void write_packed_pattern(FILE *f, const MusPattern *pattern)
 			fwrite(&pattern->step[i].ctrl, 1, sizeof(pattern->step[i].ctrl), f);
 			
 		if (pattern->step[i].command != 0)
-			fwrite(&pattern->step[i].command, 1, sizeof(pattern->step[i].command), f);
+		{
+			Uint16 c = pattern->step[i].command;
+			FIX_ENDIAN(c);
+			fwrite(&c, 1, sizeof(pattern->step[i].command), f);
+		}
 	}
 }
 
@@ -159,24 +177,42 @@ int save_data()
 				fwrite(&version, 1, sizeof(version), f);
 				
 				fwrite(&mused.song.num_channels, 1, sizeof(mused.song.num_channels), f);
-				fwrite(&mused.song.time_signature, 1, sizeof(mused.song.time_signature), f);
+				Uint16 temp16 = mused.song.time_signature;
+				fwrite(&temp16, 1, sizeof(mused.song.time_signature), f);
 				fwrite(&mused.song.num_instruments, 1, sizeof(mused.song.num_instruments), f);
-				fwrite(&mused.song.num_patterns, 1, sizeof(mused.song.num_patterns), f);
-				fwrite(mused.song.num_sequences, 1, sizeof(mused.song.num_sequences[0]) * (int)mused.song.num_channels, f);
-				fwrite(&mused.song.song_length, 1, sizeof(mused.song.song_length), f);
-				fwrite(&mused.song.loop_point, 1, sizeof(mused.song.loop_point), f);
+				temp16 = mused.song.num_patterns;
+				FIX_ENDIAN(temp16);
+				fwrite(&temp16, 1, sizeof(mused.song.num_patterns), f);
+				for (int i = 0 ; i < mused.song.num_channels ; ++i)
+				{
+					temp16 = mused.song.num_sequences[i];
+					FIX_ENDIAN(temp16);
+					fwrite(&temp16, 1, sizeof(mused.song.num_sequences[i]), f);
+				}
+				temp16 = mused.song.song_length;
+				FIX_ENDIAN(temp16);
+				fwrite(&temp16, 1, sizeof(mused.song.song_length), f);
+				temp16 = mused.song.loop_point;
+				FIX_ENDIAN(temp16);
+				fwrite(&temp16, 1, sizeof(mused.song.loop_point), f);
 				fwrite(&mused.song.song_speed, 1, sizeof(mused.song.song_speed), f);
 				fwrite(&mused.song.song_speed2, 1, sizeof(mused.song.song_speed2), f);
 				fwrite(&mused.song.song_rate, 1, sizeof(mused.song.song_rate), f);
-				fwrite(&mused.song.flags, 1, sizeof(mused.song.flags), f);
+				Uint32 temp32 = mused.song.flags;
+				FIX_ENDIAN(temp32);
+				fwrite(&temp32, 1, sizeof(mused.song.flags), f);
 				fwrite(mused.song.title, 1, MUS_TITLE_LEN + 1, f);
 				
 				if (mused.song.flags & MUS_ENABLE_REVERB)
 				{
 					for (int i = 0 ; i < CYDRVB_TAPS ; ++i)	
 					{
-						fwrite(&mused.song.rvbtap[i].gain, 1, sizeof(mused.song.rvbtap[i].gain), f);
-						fwrite(&mused.song.rvbtap[i].delay, 1, sizeof(mused.song.rvbtap[i].delay), f);
+						Sint32 temp32 = mused.song.rvbtap[i].gain;
+						FIX_ENDIAN(temp32);
+						fwrite(&temp32, 1, sizeof(mused.song.rvbtap[i].gain), f);
+						temp32 = mused.song.rvbtap[i].delay;
+						FIX_ENDIAN(temp32);
+						fwrite(&temp32, 1, sizeof(mused.song.rvbtap[i].delay), f);
 					}
 				}
 				
