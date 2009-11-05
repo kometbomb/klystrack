@@ -52,15 +52,16 @@ void update_ghost_patterns()
 	for (int e = 0 ; e < mused.song.num_sequences[mused.current_sequencetrack] ; ++e)
 			if (mused.song.sequence[mused.current_sequencetrack][e].position == mused.current_sequencepos)
 				mused.current_sequencepos = mused.song.sequence[mused.current_sequencetrack][e].position;
+				
+	memset(mused.ghost_pattern, 0, sizeof(mused.ghost_pattern));
+				
 	int p = 0;				
-	for (int i = 0 ; i < MUS_MAX_CHANNELS ; ++i)
+	for (int i = 0 ; i < mused.song.num_channels ; ++i)
 	{
-		mused.ghost_pattern[i] = NULL;
-		
 		for (int e = 0 ; e < mused.song.num_sequences[i] ; ++e)
 			if (mused.song.sequence[i][e].position == mused.current_sequencepos)
 			{
-				mused.ghost_pattern[i] = (int*)&mused.song.sequence[i][e].pattern;
+				mused.ghost_pattern[i] = &mused.song.sequence[i][e].pattern;
 				if (i == mused.current_sequencetrack) mused.current_pattern = mused.song.sequence[i][e].pattern; 
 				++p;
 			}
@@ -178,6 +179,8 @@ void new_song()
 		memset(mused.song.sequence[i], 0, NUM_SEQUENCES * sizeof(*mused.song.sequence));
 		mused.song.num_sequences[i] = 0;
 	}
+	
+	memset(mused.ghost_pattern, 0, sizeof(mused.ghost_pattern));
 }
 
 
