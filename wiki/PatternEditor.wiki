@@ -1,5 +1,7 @@
 #summary How to edit patterns
 
+= Basics =
+
 The pattern editor is a pretty traditional tracker pattern editor. A pattern is the meat of any tracker tune, without pattern data there is no music.
 
 Basically, each pattern is a queue of notes and parameters. 
@@ -39,6 +41,10 @@ Z X C V B N M
 {{{Alt+Insert}}} adds a step to the end and {{{Alt+Delete}}} removes a row. Any pattern parameter (or note) can be erased with {{{.}}} (period). See the full list of [KeyboardShortcuts keyboard shortcuts]. It is suggested that {{{Return}}} is used to jump back and forth between the pattern editor and the sequence editor to quickly navigate around the song. 
 
 If the compact mode is enabled, some of the parameters will not be shown and the whole view is greatly condensed.
+
+= Multi pattern editing =
+
+If you use {{{Return}}} to switch from the sequence to the pattern editor and more than one pattern would be played at that position, the pattern editor will show each pattern side by side. Is makes it easier to see what is happening at the same time on other channels.
 
 = Editing tools =
 
