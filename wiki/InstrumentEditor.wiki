@@ -14,17 +14,21 @@ The program can be edited by moving to the program and pressing return on the in
 
 The following example is a simple 0-4-7 major arpeggio:
 
-|| {{{00 00 0000}}} || set arpeggio note to 0 (the same note as played) || 
-|| {{{01 01 0004}}} || set arpeggio note to 4 (played note plus 4 semitones) || 
-|| {{{02 02 0007}}} || set arpeggio note to 7|| 
-|| {{{03 03 ff00}}} || jump back to step 00 || 
+{{{
+00 00 0000   set arpeggio note to 0 (the same note as played)
+01 01 0004   set arpeggio note to 4 (played note plus 4 semitones)
+02 02 0007   set arpeggio note to 7
+03 03 FF00   jump back to step 00
+}}}
 
 Note that you can also specify the arpeggio notes by using the track command {{{10xy}}}. This makes it possible to use the same instrument to play different arpeggio chords. In the program, you can refer to those two notes with {{00f0}} and {{00f1}}. For the above example, the following program and track data achieves the same:
 
-|| {{{00 00 0000}}} || set arpeggio note to 0 (the same note as played) || 
-|| {{{01 01 00f0}}} || set arpeggio note to external arpeggio note 0 || 
-|| {{{02 02 00f1}}} || set arpeggio note to external arpeggio note 1 || 
-|| {{{03 03 ff00}}} || jump back to step 00 || 
+{{{
+00 00 0000   set arpeggio note to 0 (the same note as played)
+01 01 00F0   set arpeggio note to external arpeggio note 0 
+02 02 00F1   set arpeggio note to external arpeggio note 1
+03 03 FF00   jump back to step 00
+}}}
 
 And the track data:
 
@@ -36,12 +40,15 @@ C-4 00 ... 0047
 
 ==Combining commands==
 
-In the following example, the first three commands are executed inside the same program tick. This can be achieved by entering the commands and pressing space to combine the command with the command below.
+Use {{{Space}}} to combine the currently selected command with the command that is directly below it. This means klystrack sees the combined commands as one, meaning they are executed at the same time. 
 
-|| {{{00 00 000c ,}}} || set arpeggio note to +12 semitones|| 
-|| {{{01    0102 |}}} || portamento up by 2/256 semitones|| 
-|| {{{02    0710 '}}} || pw down by 10 steps || 
-|| {{{03 01 ff00}}} || go to beginning || 
+{{{
+00 00 000C ,   set arpeggio note to +12 semitones  (press Space here)
+01    0918 '   set PW
+02 01 0000 ,   set arpeggio note to +0 semitones   (press Space here)  <--,
+03    0102 |   portamento up by 2/256 semitones    (press Space here)     |
+04    0710 '   PW down by 10                                              |
+05 02 FF02     jump to location 02 ---------------------------------------'
+}}}
 
-Note how the second column doesn't follow the leftmost column. I.e. when played, all commands are executed at step 00. When the next step (01 in the second column) is executed, it will be the jump command at 03, skipping past the two commands combined with 
-
+Note how the second column doesn't follow the leftmost column as it did in the previous examples. This is because some of the commands are no longer executed separately. Also note that the jump is to the number in the _leftmost_ column.
