@@ -1,6 +1,7 @@
 #include "shortcuts.h"
 #include "SDL.h"
 #include "action.h"
+#include "edit.h"
 #include "mused.h"
 #include "view.h"
 

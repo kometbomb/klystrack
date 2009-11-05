@@ -60,7 +60,5 @@ void change_pixel_scale(void *scale, void*, void*);
 void toggle_fullscreen(void *a, void*b, void*c);
 void change_fullscreen(void *a, void*b, void*c);
 void load_theme_action(void *a, void*b, void*c);
-void clone_pattern(void *unused1, void *unused2, void *unused3);
-void get_unused_pattern(void*, void*, void*);
 
 #endif

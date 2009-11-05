@@ -4,6 +4,7 @@
 #include "gfx/font.h"
 #include "view.h"
 #include "action.h"
+#include "edit.h"
 #include "shortcuts.h"
 #include "msgbox.h"
 #include "import.h"
@@ -103,6 +104,8 @@ static const Menu editmenu[] =
 	{ 0, mainmenu, "", NULL, NULL },
 	{ 0, mainmenu, "Clone pattern",  NULL, clone_pattern, 0, 0, 0 },
 	{ 0, mainmenu, "Find empty pattern",  NULL, get_unused_pattern, 0, 0, 0 },
+	{ 0, mainmenu, "Expand pattern",  NULL, expand_pattern, MAKEPTR(2), 0, 0 },
+	{ 0, mainmenu, "Shrink pattern",  NULL, shrink_pattern, MAKEPTR(2), 0, 0 },
 	{ 0, NULL, NULL }
 };
 
