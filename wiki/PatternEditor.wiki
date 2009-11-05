@@ -73,4 +73,4 @@ C-4 01 6000
 
 ==Expand and shrink pattern==
 
-The current pattern can be expanded (inserts blank steps between existing steps) or shrunk (expand in reverse). This is useful if you want to halve the tempo or you need to insert stuff between steps (for this you also need to double the tempo).
+The current pattern can be expanded (inserts blank steps between existing steps) or shrunk (expand in reverse). This is useful if you want to halve the tempo or you need to insert stuff between steps (for this you also need to double the song speed after expanding).
