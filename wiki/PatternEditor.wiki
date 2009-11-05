@@ -51,16 +51,24 @@ The interpolation automatically fills in command parameters between two values. 
   # Enter the desired command and starting parameter in the first pattern step
   # Enter the desired ending parameter on the pattern step you wish the interpolation to end
   # Select the area including the first and last steps you just edited
-  # When you press {{{Ctrl+I}}}, on all the steps with the same command as on the first step of the selection, the command parameter will be filled with smoothly interpolated values. This means if you e.g. want to interpolate the cutoff with command 6xxx and have Cxx (set volume) and other unrelated commands already in the pattern, only the steps with 6xxx will receive the new parameter. All other commands will be left as they are. Consider the following: {{{
+  # When you press {{{Ctrl+I}}}, on all the steps with the same command as on the first step of the selection, the command parameter will be filled with smoothly interpolated values. This means if you e.g. want to interpolate the cutoff with command 6xxx and have Cxx (set volume) and other unrelated commands already in the pattern, only the steps with 6xxx will receive the new parameter. All other commands will be left as they are. 
+
+Consider the following: 
+
+{{{
 C-4 01 6100 <--- Start selection here
 ... .. 6000
 ... .. 0C30
 ... .. 6300 <--- End selection here
-}}} The result will be something like: {{{
-C-4 01 6000 <--- Start selection here
+}}} 
+
+The result will be something like:
+
+{{{
+C-4 01 6000 
 ... .. 6100
 ... .. 0C30
-... .. 6300 <--- End selection here
+... .. 6300 
 }}}
 
 ==Expand and shrink pattern==
