@@ -6,7 +6,6 @@
     * [Features Features]
     * [Changelog Changelog]
   * *How to use klystrack*
-    * [Manual]
     * [InstrumentEditor Instrument editor]
     * [PatternEditor Pattern editor]
     * [SequenceEditor Sequence editor]
