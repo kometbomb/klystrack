@@ -770,11 +770,8 @@ void pattern_event(SDL_Event *e)
 			{
 				if ((e->key.keysym.mod & KMOD_ALT)) 
 				{
-					if (mused.song.pattern[mused.current_pattern].num_steps < NUM_STEPS)	
-					{
-						++mused.song.pattern[mused.current_pattern].num_steps;
-						zero_step(&mused.song.pattern[mused.current_pattern].step[mused.song.pattern[mused.current_pattern].num_steps - 1]);
-					}
+					resize_pattern(&mused.song.pattern[mused.current_pattern], mused.song.pattern[mused.current_pattern].num_steps + 1);
+					zero_step(&mused.song.pattern[mused.current_pattern].step[mused.song.pattern[mused.current_pattern].num_steps - 1]);
 					break;
 				}
 					
@@ -796,7 +793,9 @@ void pattern_event(SDL_Event *e)
 				
 				if ((e->key.keysym.mod & KMOD_ALT)) 
 				{
-					--mused.song.pattern[mused.current_pattern].num_steps;
+					if (mused.song.pattern[mused.current_pattern].num_steps > 1)
+						resize_pattern(&mused.song.pattern[mused.current_pattern], mused.song.pattern[mused.current_pattern].num_steps - 1);
+						
 					if (mused.current_patternstep >= mused.song.pattern[mused.current_pattern].num_steps) --mused.current_patternstep;
 					break;
 				}
