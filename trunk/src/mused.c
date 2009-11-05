@@ -230,6 +230,9 @@ void init(MusInstrument *instrument, MusPattern *pattern, MusSeqPattern sequence
 	mused.prev_mode = 0;
 	mused.edit_backup_buffer = NULL;
 	mused.pixel_scale = 1;
+	mused.mix_rate = 44100;
+	mused.mix_buffer = 2048;
+	
 	strcpy(mused.themename, "Default");
 	
 	memset(&mused.cp, 0, sizeof(mused.cp));
