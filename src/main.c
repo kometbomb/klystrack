@@ -168,10 +168,10 @@ int main(int argc, char **argv)
 	
 	load_config(TOSTRING(CONFIG_PATH));
 	
-	if (Mix_OpenAudio(44100, AUDIO_S16SYS, 2, 2048)) warning("Mix_OpenAudio failed: %s", Mix_GetError());
+	if (Mix_OpenAudio(mused.mix_rate, AUDIO_S16SYS, 2, mused.mix_buffer)) warning("Mix_OpenAudio failed: %s", Mix_GetError());
 	Mix_AllocateChannels(1);
 	
-	cyd_init(&mused.cyd, 44100, MUS_MAX_CHANNELS);
+	cyd_init(&mused.cyd, mused.mix_rate, MUS_MAX_CHANNELS);
 	mus_init_engine(&mused.mus, &mused.cyd);
 	
 #ifdef DEBUG

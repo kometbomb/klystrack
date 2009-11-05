@@ -116,6 +116,7 @@ typedef struct
 	SDL_Surface *screen;
 	char themename[100];
 	int pixel_scale;
+	int mix_rate, mix_buffer;
 } Mused;
 
 #define NUM_PATTERNS 256
