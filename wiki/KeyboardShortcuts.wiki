@@ -32,6 +32,7 @@
 =Pattern editor=
 
 || Return || jump to sequence editor || 
+|| ALT+insert/delete || change pattern length ||
 || Cursor keys/pg up/pg dn || move cursor || 
 || CTRL+left/right || change current pattern || 
 || Space || Note-off ||
