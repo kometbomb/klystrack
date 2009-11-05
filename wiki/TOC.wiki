@@ -1,6 +1,6 @@
 #summary Manual sidebar
 
-  * [klystrack Home]
+  * [TOC Home]
   * *Preface*
     * [IntroductionToTrackers Introduction to trackers]
     * [Features Features]
