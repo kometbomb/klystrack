@@ -594,7 +594,7 @@ void pattern_view_stepcounter(const SDL_Rect *dest, const SDL_Event *event, void
 }
 
 
-static void pattern_header(const SDL_Event *event, int x, int channel, const SDL_Rect *topleft, int pattern_width, int *pattern_var)
+static void pattern_header(const SDL_Event *event, int x, int channel, const SDL_Rect *topleft, int pattern_width, Uint16 *pattern_var)
 {
 	SDL_Rect button, pattern, area;
 	copy_rect(&area, topleft);
@@ -746,7 +746,7 @@ void pattern_view(const SDL_Rect *dest, const SDL_Event *event, void *param)
 		console_set_clip(mused.console, &pos);
 		console_clear(mused.console);
 		
-		pattern_header(event, pos.x, -1, &button_topleft, pattern_width, &mused.current_pattern);
+		pattern_header(event, pos.x, -1, &button_topleft, pattern_width, (Uint16*)&mused.current_pattern);
 	
 		pattern_view_inner(&pos, dest, event, mused.current_pattern, -1);
 	}

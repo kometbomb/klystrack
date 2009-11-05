@@ -215,6 +215,8 @@ void open_data()
 				cyd_set_callback(&mused.cyd, mus_advance_tick, &mused.mus, mused.song.song_rate);
 				mirror_flags();
 				
+				if (!mused.song.time_signature) mused.song.time_signature = 0x404;
+				
 				mused.time_signature = mused.song.time_signature;
 			}		
 		}
