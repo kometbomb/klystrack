@@ -7,7 +7,9 @@
     * [Changelog Changelog]
   * *How to use klystrack*
     * [Manual]
+    * [InstrumentEditor Instrument editor]
     * [PatternEditor Pattern editor]
+    * [SequenceEditor Sequence editor]
     * [Commands]
     * [Effects]
     * [KeyboardShortcuts Keyboard shortcuts] 
