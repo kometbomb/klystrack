@@ -445,18 +445,13 @@ int filebox(const char *title, int mode, char *buffer, size_t buffer_size, const
 				
 									int s = stat(exp ? exp : data.field, &attribute);
 									
-									if (exp) free(exp);
-									
 									if (s != -1)
 									{
 										if (mode == FB_SAVE)
 										{
 											if (msgbox("Overwrite?", MB_YES|MB_NO) == MB_YES)
 											{
-												set_repeat_timer(NULL);
-												strncpy(buffer, data.field, buffer_size);
-												free_files();
-												return FB_OK;
+												goto exit_ok;
 											}
 										}
 										else
@@ -465,10 +460,7 @@ int filebox(const char *title, int mode, char *buffer, size_t buffer_size, const
 												populate_files(data.field, extension);
 											else
 											{
-												set_repeat_timer(NULL);
-												strncpy(buffer, data.field, buffer_size);
-												free_files();
-												return FB_OK;
+												goto exit_ok;
 											}
 										}
 									}
@@ -476,12 +468,29 @@ int filebox(const char *title, int mode, char *buffer, size_t buffer_size, const
 									{
 										if (mode == FB_SAVE)
 										{
-											set_repeat_timer(NULL);
-											strncpy(buffer, data.field, buffer_size);
-											free_files();
-											return FB_OK;
+											goto exit_ok;
 										}
 									}
+									
+									if (0)
+									{
+									exit_ok:;
+										
+										set_repeat_timer(NULL);
+										strncpy(buffer, exp ? exp : data.field, buffer_size);
+										
+										if (mode == FB_SAVE && strchr(buffer, '.') == NULL)
+										{
+											strncat(buffer, ".", buffer_size);
+											strncat(buffer, extension, buffer_size);
+										}
+										
+										free_files();
+										if (exp) free(exp);
+										return FB_OK;
+									}
+									
+									if (exp) free(exp);
 								}
 								else if (r == -1)
 								{
