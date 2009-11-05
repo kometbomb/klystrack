@@ -34,7 +34,10 @@
 || Return || jump to sequence editor || 
 || ALT+insert/delete || change pattern length ||
 || Cursor keys/pg up/pg dn || move cursor || 
-|| CTRL+left/right || change current pattern || 
+|| Ctrl+left/right || change current pattern || 
+|| Ctrl+I || Interpolate selection ||
+|| Ctrl+K || Clone pattern ||
+|| Ctrl+U || Jump to an unused pattern ||
 || Space || Note-off ||
 || 0/1 || Set legato etc. bits ||
 || Insert/delete/backspace || do what you would expect || 
