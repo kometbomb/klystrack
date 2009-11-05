@@ -448,7 +448,7 @@ static int find_unused_pattern()
 	{
 		int not_empty = 0;
 		for (int s = 0 ; s < mused.song.pattern[empty].num_steps && !not_empty ; ++s)
-			if (empty == mused.current_pattern || (mused.song.pattern[empty].step[s].note != MUS_NOTE_NO_INSTRUMENT
+			if (empty == mused.current_pattern || (mused.song.pattern[empty].step[s].note != MUS_NOTE_NONE
 				|| mused.song.pattern[empty].step[s].ctrl != 0 
 				|| mused.song.pattern[empty].step[s].instrument != MUS_NOTE_NO_INSTRUMENT
 				|| mused.song.pattern[empty].step[s].command != 0))
