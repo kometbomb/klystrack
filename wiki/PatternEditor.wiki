@@ -42,7 +42,7 @@ Z X C V B N M
 
 If the compact mode is enabled, some of the parameters will not be shown and the whole view is greatly condensed.
 
-= Multi pattern editing =
+= Multi-pattern editing =
 
 If you use {{{Return}}} to switch from the sequence to the pattern editor and more than one pattern would be played at that position, the pattern editor will show each pattern side by side. Is makes it easier to see what is happening at the same time on other channels.
 
