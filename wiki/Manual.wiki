@@ -80,6 +80,6 @@ In the above example the pattern position is not a multiple of sequence pattern 
 
 Generally, one uses the sequence editor to enter patterns of similar length side by side and then jumps back and forth between the pattern editor and the sequence editor using the return key.
 
-== Effects ==
+= Effects =
 
 See [Effects].
