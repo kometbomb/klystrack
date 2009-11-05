@@ -7,21 +7,6 @@
 
 Hold right mouse button down to bring up the menu bar. Select the menu option by hovering over it and release right button.
 
-=Pattern editor=
-
-The pattern editor works like a standard tracker. Basically, each pattern is a queue of notes and parameters. 
-
-{{{
-     instrument
-note |  ______ legato, slide, vibrato
- |   | |||
-C-4 00 LSV 0000 <--- track command
-}}}
-
-If a note is set for a pattern step, a new note will be played when the player position hits the row. The instrument column tells which instrument to use. The note will continue playing until the volume is set to zero, the envelope fades out or a note-off command is encountered in the note column. 
-
-The [Commands track commands] modify the sound with effects like portamento, vibrato or volume fade.
-
 =Instrument editor=
 
 ==Instrument program==
