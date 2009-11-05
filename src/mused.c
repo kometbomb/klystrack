@@ -198,6 +198,12 @@ void resize_pattern(MusPattern * pattern, Uint16 new_size)
 	}
 	
 	pattern->num_steps = new_size;
+	
+	if (mused.focus == EDITPATTERN)
+	{
+		mused.selection.start = my_min(mused.selection.start, pattern->num_steps - 1);
+		mused.selection.end = my_min(mused.selection.end, pattern->num_steps - 1);
+	}	
 }
 
 

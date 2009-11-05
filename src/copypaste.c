@@ -178,6 +178,7 @@ void paste()
 
 void begin_selection(int position)
 {
+	mused.selection.start = mused.selection.end;
 	mused.selection.keydown = position;
 }
 

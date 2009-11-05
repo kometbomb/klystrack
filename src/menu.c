@@ -112,13 +112,15 @@ static const Menu editpatternmenu[] =
 
 static const Menu editmenu[] =
 {
-	{ 0, mainmenu, "Copy",  NULL, generic_action, copy, 0, 0 },
-	{ 0, mainmenu, "Paste",  NULL, generic_action, paste, 0, 0 },
-	{ 0, mainmenu, "Cut",  NULL, generic_action, cut, 0, 0 },
-	{ 0, mainmenu, "Delete",  NULL, generic_action, delete, 0, 0 },
-	{ 0, mainmenu, "Deselect",  NULL, clear_selection, 0, 0, 0 },
+	{ 0, mainmenu, "Copy", NULL, generic_action, copy, 0, 0 },
+	{ 0, mainmenu, "Paste", NULL, generic_action, paste, 0, 0 },
+	{ 0, mainmenu, "Cut", NULL, generic_action, cut, 0, 0 },
+	{ 0, mainmenu, "Delete", NULL, generic_action, delete, 0, 0 },
+	{ 0, mainmenu, "Deselect", NULL, clear_selection, 0, 0, 0 },
 	{ 0, mainmenu, "", NULL, NULL },
 	{ 0, mainmenu, "Pattern", editpatternmenu, NULL },
+	{ 0, mainmenu, "",  NULL },
+	{ 0, mainmenu, "Interpolate", NULL, interpolate, 0, 0, 0 },
 	{ 0, NULL, NULL }
 };
 
