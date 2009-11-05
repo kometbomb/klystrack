@@ -49,7 +49,7 @@ const KeyShortcut shortcuts[] =
 	{ KMOD_ALT, SDLK_RETURN, toggle_fullscreen, 0, 0, 0 },
 	{ KMOD_CTRL, SDLK_k, clone_pattern, 0, 0, 0 },
 	{ KMOD_CTRL, SDLK_u, get_unused_pattern, 0, 0, 0 },
-
+	{ KMOD_CTRL, SDLK_i, interpolate, 0, 0, 0 },
 	/* Null terminated */
 	{ 0, 0, NULL, 0, 0, 0 }
 };

@@ -130,3 +130,32 @@ void shrink_pattern(void *factor, void *unused2, void *unused3)
 		memcpy(&pattern->step[i], &pattern->step[ti], sizeof(pattern->step[i]));
 	}
 }
+
+
+void interpolate(void *unused1, void *unused2, void *unused3)
+{
+	if (mused.focus != EDITPATTERN || mused.selection.start >= mused.selection.end - 1) return;
+	
+	MusPattern *pat = &mused.song.pattern[mused.current_pattern];
+	
+	Uint16 command = pat->step[mused.selection.start].command;
+	Uint16 mask = 0xff00;
+	
+	if ((command & 0xf000) == MUS_FX_CUTOFF_FINE_SET) mask = 0xf000;
+	
+	command &= mask;
+	
+	int begin = pat->step[mused.selection.start].command & ~mask;
+	int end = pat->step[mused.selection.end - 1].command & ~mask;
+	
+	int l = mused.selection.end - mused.selection.start - 1;
+	
+	for (int i = mused.selection.start, p = 0 ; i < mused.selection.end ; ++i, ++p)
+	{
+		if ((pat->step[i].command & mask) == command)
+		{
+			Uint16 val = begin + (end - begin) * p / l;
+			pat->step[i].command = command | val;
+		}
+	}
+}
