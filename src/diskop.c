@@ -223,7 +223,17 @@ int save_data()
 				
 				for (int i = 0 ; i < mused.song.num_channels; ++i)
 				{
-					fwrite(mused.song.sequence[i], mused.song.num_sequences[i], sizeof(mused.song.sequence[i][0]), f);
+					for (int s= 0 ; s < mused.song.num_sequences[i] ; ++s)
+					{
+						temp16 = mused.song.sequence[i][s].position;
+						FIX_ENDIAN(temp16);
+						fwrite(&temp16, 1, sizeof(temp16), f);
+						temp16 = mused.song.sequence[i][s].pattern;
+						FIX_ENDIAN(temp16);
+						fwrite(&temp16, 1, sizeof(temp16), f);
+						fwrite(&mused.song.sequence[i][s].note_offset, 1, sizeof(mused.song.sequence[i][s].note_offset), f);
+						fwrite(&mused.song.sequence[i][s].note_offset, 1, sizeof(mused.song.sequence[i][s].note_offset), f);
+					}
 				}
 				
 				for (int i = 0 ; i < mused.song.num_patterns; ++i)
