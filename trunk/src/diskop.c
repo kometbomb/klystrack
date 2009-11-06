@@ -232,7 +232,6 @@ int save_data()
 						FIX_ENDIAN(temp16);
 						fwrite(&temp16, 1, sizeof(temp16), f);
 						fwrite(&mused.song.sequence[i][s].note_offset, 1, sizeof(mused.song.sequence[i][s].note_offset), f);
-						fwrite(&mused.song.sequence[i][s].note_offset, 1, sizeof(mused.song.sequence[i][s].note_offset), f);
 					}
 				}
 				
