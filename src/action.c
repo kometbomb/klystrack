@@ -212,6 +212,13 @@ void enable_channel(void *channel, void *unused1, void *unused2)
 }
 
 
+void unmute_all_action(void *unused1, void *unused2, void *unused3)
+{
+	for(int i = 0 ; i < MUS_MAX_CHANNELS ; ++i)
+		mused.mus.channel[i].flags &= ~MUS_CHN_DISABLED;
+}
+
+
 void enable_reverb(void *unused1, void *unused2, void *unused3)
 {
 	mused.cyd.flags ^= CYD_ENABLE_REVERB;
