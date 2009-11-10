@@ -83,6 +83,8 @@ static const Menu playmenu[] =
 	{ 0, mainmenu, "Play",  NULL, play, (void*)0, 0, 0 },
 	{ 0, mainmenu, "Stop",  NULL, stop, 0, 0, 0 },
 	{ 0, mainmenu, "Play from cursor",  NULL, play, (void*)1, 0, 0 },
+	{ 0, mainmenu, "",  NULL },
+	{ 0, mainmenu, "Unmute all channels",  NULL, unmute_all_action, 0, 0, 0 },
 	{ 0, NULL, NULL }
 };
 
