@@ -96,7 +96,7 @@ void change_mode(int newmode)
 		case EDITCLASSIC:
 		case EDITPATTERN:
 		if (mused.mode == EDITBUFFER) break;
-		if (mused.mode == EDITSEQUENCE || newmode == EDITCLASSIC)
+		if (mused.mode == EDITSEQUENCE || (mused.mode == MENU && !mused.single_pattern_edit) || newmode == EDITCLASSIC)
 		{
 			update_ghost_patterns();
 			move_position(&mused.current_sequencetrack, &mused.pattern_horiz_position, &mused.pattern_horiz_slider_param, 0, mused.pattern_horiz_slider_param.last - mused.pattern_horiz_slider_param.first + 1);
