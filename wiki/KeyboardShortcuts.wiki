@@ -22,6 +22,7 @@
 || CTRL+b || begin selection at cursor ||
 || CTRL+e || end selection at cursor ||
 || SHIFT+cursor || select || 
+|| CTRL+m || Unmute all channels ||
 || keypad plus/minus || select instrument || 
 || CTRL+keypad plus/minus || change song speed  || 
 || ALT+keypad plus/minus || change second song speed the two speeds mean the first speed is used for even steps and the other for odd steps. e.g. 8+4 will have a distinct shuffle in the tempo. || 
