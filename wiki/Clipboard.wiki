@@ -4,4 +4,4 @@ klystrack has a simple clipboard. To select pattern rows, program commands or se
 
 {{{Ctrl-B}}} and {{{Ctrl-E}}} can be used to set the selection start and end to the current cursor position, respectively. {{{Ctrl-X}}} and {{{Shift-Delete}}} clear the selected area. {{{Ctrl-D}}} deselects.
 
-The clipboard system works mostly as expected, however there are a few peculiarities. In the [PatternEditor pattern editor], it is possible to copy the entire pattern by pressin {{{Ctrl-C}}} when nothing is selected. In the [InstrumentEditor instrument editor] the instrument parameters will be copied (and pasted) when not editing the program.
+The clipboard system works mostly as expected, however there are a few peculiarities. In the [PatternEditor pattern editor], it is possible to copy the entire pattern by pressing {{{Ctrl-C}}} when nothing is selected. In the [InstrumentEditor instrument editor] the instrument parameters will be copied (and pasted) when not editing the program.
