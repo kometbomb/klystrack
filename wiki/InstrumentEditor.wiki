@@ -1,10 +1,64 @@
 #summary How to create instruments and sound effects
 
-The instrument editor view shows parameters that control the sound synthesis and the instrument program editor.
+The instrument editor view shows parameters that control the sound synthesis and the instrument program editor. The parameters are a quick way to add simple and common effects to the sound such as vibrato or pulse width modulation. The program is a more comprehensive way to achieve the same and much more.
+
+<wiki:toc max_depth="2" />
 
 =Parameters=
 
 [http://klystrack.googlecode.com/svn/trunk/doc/inst_editor.png]
+
+==Attributes==
+
+===Base note===
+
+This parameter is what note is played when C-4 is triggered. In other words, if the base note is raised one half tone to C#4, pressing the key for C-4 will trigger C#4.
+
+===Lock note===
+
+Use this flag to make the instrument always trigger at the base note. Useful for drums and sound effects.
+
+===Drum===
+
+This flag makes the instrument enable the noise waveform for the duration of the very first tick. A nod towards the Hubbard play routine.
+
+===Key sync===
+
+Triggering the note resets the oscillators.
+
+===Enable vibrato===
+
+This flips the vibrato bit, i.e. the vibrato bit is considered to be on except if the bit is set in the track data.
+
+===Set pulse width===
+
+Resets the pulse width to the pulse width parameter when a note is triggered.
+
+===Set cutoff===
+
+Resets the cutoff frequency to the cutoff parameter when a note is triggered.
+ 
+===Enable reverb===
+
+If enabled, the reverb effect will receive sound when the instrument is played.
+
+==Waveform==
+
+PUL, SAW, TRI and NOI select pulse (a.k.a. square wave), sawtooth, triangle and noise waveforms, respectively. If multiple forms are selected, they are ANDed to form a combination.
+
+The PW parameter controls the pulse width (duty cycle) of the pulse wave. 7FF is a symmetric square wave and 0 is no wave at all. Generally, the higher the value, the deeper the sound is and small values produce a thin sound.
+
+Triangle wave is an approximation of a sine wave. It's useful for soft sounds.
+
+The noise waveform can be controlled with the METAL flag which makes the noise values loop, in effect producing audible ringing when the played frequency is high enough. Refer to the cowbell example instrument.
+
+==Volume envelope==
+
+==Buzzer==
+
+==Sync/ring modulation==
+
+==Misc==
 
 =Instrument program=
 
