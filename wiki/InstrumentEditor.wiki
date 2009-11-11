@@ -54,11 +54,41 @@ The noise waveform can be controlled with the METAL flag which makes the noise v
 
 ==Volume envelope==
 
+The volume envelope is a standard attack-decay-sustain-release type envelope. When the note is triggered, the attack (ATK) parameter controls the speed at which the volume rises to the level specified by the volume (VOL) parameter. The volume then decays (DEC) to the sustain (SUS) level (which is relative to the overall volume). When a note-off is triggered, the played sound then decays at the rate controlled by the DEC parameter.
+
 ==Buzzer==
+
+The buzzer effect emulates the common technique from the YM2149 sound chip. The sound chip had a very simple envelope that had the (relatively unique) ability to repeat the envelope curve indefinitely. 
+
+Basically, the buzzer effect is just fast amplitude modulation relative to the player frequency. Generally, the envelope frequency is one octave higher than the played note. This makes the player waveform much more varied even if it was a square wave (the YM2149 only had very basic square wave oscillators). For the original buzzer sound from the Atari ST, use a pulse wave at pulse width of 7FF.
+
+*Note:* Buzzer overrides the ADSR envelope.
+
+===Detune/Fine===
+
+The DETUNE parameter controls the semitone the buzzer modulates the player waveform. The FINE parameter controls the fine tuning. 
+
+===Shape===
+
+The shape parameter sets the shape of the envelope. 0-1 are saw waves and 2-3 are triangle waves. 
 
 ==Sync/ring modulation==
 
+The SYNC and RING parameters control whether the oscillator synchronization and ring modulation are enabled. The SRC parameters specify the source channel that controls the modulation. If the source is set to FF, the same channel as the instrument is played on is used as source.
+
+Oscillator synchronization makes the source oscillator to reset the oscillator that the instrument is playing on every time the source oscillator cycles and the counter wraps over. 
+
+Ring modulation multiplies the source waveform with the instrument waveform.
+
 ==Misc==
+
+===Slide===
+
+===Program period===
+
+===Vibrato===
+
+===Pulse width modulation===
 
 =Instrument program=
 
