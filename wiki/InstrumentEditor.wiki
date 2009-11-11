@@ -4,6 +4,8 @@ The instrument editor view shows parameters that control the sound synthesis and
 
 =Parameters=
 
+[http://klystrack.googlecode.com/svn/trunk/doc/inst_editor.png]
+
 =Instrument program=
 
 When an instrument is triggered, the program starts executing from the beginning. The execution speed is independent from the song speed but relative to the routine update frequency. The program period instrument parameter controls how many routine updates it takes to advance the program one step.
