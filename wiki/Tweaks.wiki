@@ -1,0 +1,17 @@
+#summary Some "undocumented" settings
+
+<wiki:toc max_depth="1" />
+
+= Settings to modify if the audio is skipping =
+
+The default settings should be good for most cases but in case the audio seems to skip or you notice a significant delay, you can try changing the following values in the config file ({{{~/.klystrack}}} on Linux,  the file is located in your user folder on Windows).
+
+*Note:* You need to run klystrack once to create the config file.
+
+== Mix rate ==
+
+{{{mix_rate}}} sets the mixing rate, i.e. how many samples there are in a second. The bigger the value, the better quality the sound has. The default is 44100 (44.1 KHz). Note that changing {{{mix_rate}}} most likely has an effect on the filter output.
+
+== Buffer length ==
+
+If the sound is skipping, you can try raising the {{{mix_buffer}}} parameter which sets the length of the chunk audio is processed. A bigger buffer results in less overhead. A big buffer also creates an audible delay. The default is 2048 which results in {{{2048 / 44100}}} seconds of delay.
