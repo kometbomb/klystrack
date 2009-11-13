@@ -13,6 +13,7 @@
     * [Effects]
     * [KeyboardShortcuts Keyboard shortcuts] 
     * [Clipboard]
+    * [Tweaks]
   * *Developers*
     * [Themes Customizing how klystrack looks like]
     * [HowToCompile How to compile klystrack]
