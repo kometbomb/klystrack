@@ -1,7 +1,7 @@
 #summary Changelog
 #labels Featured
 
-*Note:* Only significant changes and new features are listed here. 
+_*Note:* Only significant changes and new features are listed here._ 
 
 =1.3.0=
 
