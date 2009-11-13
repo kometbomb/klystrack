@@ -35,6 +35,10 @@ The sequence is the order in which [#Pattern patterns] are played. Patterns can 
 
 A pattern is a sequence of notes and [#Command commands] that will play on a [#Channel channel]. All patterns always play at the same speed, synced by the current [#Step step].
 
+==Note==
+
+A note in pattern data is basically an instruction for the tracker program to start playing an instrument at the specified note. In klystrack, the note can be stopped with a note-off instruction, or by simply setting the volume to zero.
+
 ==Step==
 
 Step usually means one discrete row of pattern data. A song advances at a constant rate step by step. A step is divided into one or more [#Tick ticks].
@@ -47,6 +51,6 @@ In klystrack, the instrument program is also divided into steps, also called tic
 
 ==Command==
 
-A [Commands command] modifies the currently played note. This can be done on the track level or an instrument program can do it automatically. A track command might fade the note out and a program command might repeatedly change the played note to create an arpeggio. 
+A [Commands command], also known as _special effect_ or just _effect_ in Soundtracker and Protracker, modifies the currently played note. This can be done on the track level or an instrument program can do it automatically. A track command might fade the note out and a program command might repeatedly change the played note to create an arpeggio. 
 
 Program commands are also the way to create more interesting sounds that change the waveform or filter frequency when the note is played. A snare drum might repeatedly change the waveform from noise to triangle wave to simulate the rattle and resonance. A techno kick drum might have a portamento command to make the note dive.
