@@ -684,7 +684,7 @@ void pattern_view(const SDL_Rect *dest, const SDL_Event *event, void *param)
 	
 	checkbox(event, &compact, "S", &mused.flags, COMPACT_VIEW);
 	
-	const int pattern_width = mused.flags & COMPACT_VIEW ? 128 - 4 - 4 - 4 - 4 - 8 * 3 - 4 - 4 : 128 - 4 - 4 - 4;
+	const int pattern_width = mused.flags & COMPACT_VIEW ? mused.console->font.w * 16 - 4 - 4 - 4 - 4 - mused.console->font.w * 3 - 4 - 4 : mused.console->font.w * 16 - 4 - 4 - 4;
 		
 	pos.y += track_header_size;
 	pos.h -= track_header_size;
