@@ -26,12 +26,13 @@ OTHER DEALINGS IN THE SOFTWARE.
 #include "mused.h"
 #include "event.h"
 #include "import.h"
-#include "toolutil.h"
-#include "msgbox.h"
+#include "gui/toolutil.h"
+#include "gui/msgbox.h"
 #include "diskop.h"
 #include "SDL_endian.h"
 
 extern Mused mused;
+extern GfxDomain *domain;
 
 static Uint16 find_command(Uint16 command)
 {
@@ -179,18 +180,18 @@ static int import_mod(FILE *f)
 
 void import_module(void *type, void* unused1, void* unused2)
 {
-	int r = confirm_ync("Save song?");
+	int r = confirm_ync(domain, mused.slider_bevel, &mused.largefont, "Save song?");
 				
 	if (r == 0) return;
 	if (r == 1) { change_mode(EDITSEQUENCE); if (!save_data()) return; }
 
-	FILE * f = open_dialog("rb", "Import module", "mod");
+	FILE * f = open_dialog("rb", "Import module", "mod", domain, mused.slider_bevel, &mused.largefont, &mused.smallfont);
 	
 	if (!f) return;
 	
 	new_song();
 	
-	if (!import_mod(f)) msgbox("Not a Protracker module", MB_OK);
+	if (!import_mod(f)) msgbox(domain, mused.slider_bevel, &mused.largefont, "Not a Protracker module", MB_OK);
 	
 	fclose(f);
 }

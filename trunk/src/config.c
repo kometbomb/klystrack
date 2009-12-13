@@ -25,7 +25,7 @@ OTHER DEALINGS IN THE SOFTWARE.
 
 #include "config.h"
 #include "mused.h"
-#include "toolutil.h"
+#include "gui/toolutil.h"
 #include "action.h"
 #include "gfx/gfx.h"
 

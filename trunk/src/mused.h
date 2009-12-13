@@ -29,7 +29,7 @@ OTHER DEALINGS IN THE SOFTWARE.
 #include "snd/music.h"
 #include "gfx/font.h"
 #include "console.h"
-#include "slider.h"
+#include "gui/slider.h"
 
 enum
 {
