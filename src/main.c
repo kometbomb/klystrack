@@ -176,6 +176,8 @@ int main(int argc, char **argv)
 	
 	load_config(TOSTRING(CONFIG_PATH));
 	
+	init_scrollbars();
+	
 	if (Mix_OpenAudio(mused.mix_rate, AUDIO_S16SYS, 2, mused.mix_buffer)) warning("Mix_OpenAudio failed: %s", Mix_GetError());
 	Mix_AllocateChannels(1);
 	

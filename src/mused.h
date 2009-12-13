@@ -115,5 +115,6 @@ void update_ghost_patterns();
 void change_pixel_scale(void *a, void*b, void*c);
 void mirror_flags();
 void resize_pattern(MusPattern * pattern, Uint16 new_size);
+void init_scrollbars();
 
 #endif
