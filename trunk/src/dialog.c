@@ -24,9 +24,9 @@ OTHER DEALINGS IN THE SOFTWARE.
 */
 
 #include "dialog.h"
-#include "bevel.h"
+#include "gui/bevel.h"
 #include "mused.h"
-#include "mouse.h"
+#include "gui/mouse.h"
 #include "view.h"
 #include "gfx/font.h"
 
@@ -74,7 +74,7 @@ int button_event(const SDL_Event *event, const SDL_Rect *area, SDL_Surface *gfx,
 	void *p[3] = { param1, param2, param3 };
 	int pressed = check_event(event, area, delegate, action, p, MAKEPTR(mask));
 	pressed |= check_drag_event(event, area, NULL, MAKEPTR(mask)) << 1;
-	button(area, mused.slider_bevel, pressed ? offset_pressed : offset, decal);
+	button(mused.screen, area, mused.slider_bevel, pressed ? offset_pressed : offset, decal);
 	
 	return pressed;
 }
@@ -86,7 +86,7 @@ int button_text_event(const SDL_Event *event, const SDL_Rect *area, SDL_Surface 
 	void *p[3] = { param1, param2, param3 };
 	int pressed = check_event(event, area, delegate, action, p, MAKEPTR(mask));
 	pressed |= check_drag_event(event, area, NULL, MAKEPTR(mask)) << 1;
-	button_text(area, mused.slider_bevel, (pressed & 1) ? offset_pressed : offset, label);
+	button_text(mused.screen, area, mused.slider_bevel, (pressed & 1) ? offset_pressed : offset, &mused.smallfont, label);
 	
 	return pressed;
 }

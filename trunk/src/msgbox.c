@@ -24,12 +24,12 @@ OTHER DEALINGS IN THE SOFTWARE.
 */
 
 #include "msgbox.h"
-#include "bevel.h"
+#include "gui/bevel.h"
 #include "dialog.h"
 #include "gfx/gfx.h"
 #include "mused.h"
 #include "view.h"
-#include "mouse.h"
+#include "gui/mouse.h"
 
 extern GfxDomain *domain;
 extern Mused mused;
@@ -39,7 +39,7 @@ static int draw_box(const SDL_Event *event, const char *msg, int buttons, int *s
 {
 	SDL_Rect area = { mused.screen->w / 2 - 100, mused.screen->h / 2 - 24, 200, 48 };
 	
-	bevel(&area, mused.slider_bevel, BEV_MENU);
+	bevel(mused.screen,&area, mused.slider_bevel, BEV_MENU);
 	SDL_Rect content, pos;
 	copy_rect(&content, &area);
 	adjust_rect(&content, 8);
@@ -75,7 +75,7 @@ static int draw_box(const SDL_Event *event, const char *msg, int buttons, int *s
 				if (event->type == SDL_KEYDOWN && (event->key.keysym.sym == SDLK_SPACE || event->key.keysym.sym == SDLK_RETURN))
 					p = 1;
 			
-				bevel(&pos, mused.slider_bevel, BEV_CURSOR);
+				bevel(mused.screen,&pos, mused.slider_bevel, BEV_CURSOR);
 			}
 			
 			update_rect(&content, &pos);

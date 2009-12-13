@@ -35,13 +35,14 @@ OTHER DEALINGS IN THE SOFTWARE.
 #include "view.h"
 #include "slider.h"
 #include "action.h"
-#include "mouse.h"
-#include "bevel.h"
+#include "gui/mouse.h"
+#include "gui/bevel.h"
 #include "menu.h"
 #include "shortcuts.h"
 #include "version.h"
 #include "mused.h"
 #include "config.h"
+#include "bevdefs.h"
 
 //#define DUMPKEYS
 

@@ -1,5 +1,5 @@
 #include "menu.h"
-#include "bevel.h"
+#include "gui/bevel.h"
 #include "mused.h"
 #include "gfx/font.h"
 #include "view.h"
@@ -8,6 +8,7 @@
 #include "shortcuts.h"
 #include "msgbox.h"
 #include "import.h"
+#include "bevdefs.h"
 
 #define SC_SIZE 64
 #define MENU_CHECK (void*)1
@@ -278,13 +279,13 @@ static void draw_submenu(const SDL_Event *event, const Menu *items, const Menu *
 			copy_rect(&bev, &area);
 			adjust_rect(&bev, -6);
 			
-			if (pass == DRAW) bevel(&bev, mused.slider_bevel, BEV_MENU);
+			if (pass == DRAW) bevel(mused.screen,&bev, mused.slider_bevel, BEV_MENU);
 			
 			r.h = font->h + 1;
 		}
 		else
 		{
-			if (pass == DRAW) bevel(&area, mused.slider_bevel, BEV_MENUBAR);
+			if (pass == DRAW) bevel(mused.screen,&area, mused.slider_bevel, BEV_MENUBAR);
 			
 			copy_rect(&r, &area);
 			adjust_rect(&r, 2);
@@ -345,7 +346,7 @@ static void draw_submenu(const SDL_Event *event, const Menu *items, const Menu *
 					copy_rect(&bar, &r);
 					adjust_rect(&bar, -1);
 					bar.h --;
-					bevel(&bar, mused.slider_bevel, BEV_MENU_SELECTED);
+					bevel(mused.screen,&bar, mused.slider_bevel, BEV_MENU_SELECTED);
 				}
 				
 				if (pass == DRAW) 

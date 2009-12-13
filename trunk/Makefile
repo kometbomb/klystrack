@@ -138,7 +138,7 @@ inform:
 
 bin.$(CFG)/${TARGET}: $(Group0_OBJ) | inform
 	@mkdir -p bin.$(CFG)
-	$(CC) $(CFLAGS) -o $@ $^ $(INCLUDEFLAGS) -lengine_gfx -lengine_snd -lengine_util ${SDLLIBS}
+	$(CC) $(CFLAGS) -o $@ $^ $(INCLUDEFLAGS) -lengine_gfx -lengine_snd -lengine_util -lengine_gui ${SDLLIBS}
 
 objs.$(CFG)/Group0_%.o: %.c
 	@mkdir -p objs.$(CFG)
