@@ -26,8 +26,8 @@ OTHER DEALINGS IN THE SOFTWARE.
 
 #include "slider.h"
 #include "mused.h"
-#include "mouse.h"
-#include "bevel.h"
+#include "gui/mouse.h"
+#include "gui/bevel.h"
 #include "dialog.h"
 
 extern Mused mused;
@@ -117,7 +117,7 @@ void slider(const SDL_Rect *_area, const SDL_Event *event, void *_param)
 		dragarea.h -= button_size * 2;
 	}
 	
-	bevel(&dragarea, mused.slider_bevel, BEV_SLIDER_BG);
+	bevel(mused.screen,&dragarea, mused.slider_bevel, BEV_SLIDER_BG);
 	
 	{
 		SDL_Rect area = { _area->x, _area->y, _area->w, _area->h };
@@ -152,7 +152,7 @@ void slider(const SDL_Rect *_area, const SDL_Event *event, void *_param)
 		
 		int pressed = check_event(event, &area, drag_begin, MAKEPTR(event), param, MAKEPTR(&dragarea));
 		pressed |= check_drag_event(event, &area, drag_motion, MAKEPTR(param));
-		button(&area, mused.slider_bevel, pressed ? BEV_SLIDER_HANDLE_ACTIVE : BEV_SLIDER_HANDLE, (param->orientation == SLIDER_HORIZONTAL) ? DECAL_GRAB_HORIZ : DECAL_GRAB_VERT);
+		button(mused.screen, &area, mused.slider_bevel, pressed ? BEV_SLIDER_HANDLE_ACTIVE : BEV_SLIDER_HANDLE, (param->orientation == SLIDER_HORIZONTAL) ? DECAL_GRAB_HORIZ : DECAL_GRAB_VERT);
 	}
 	
 	{

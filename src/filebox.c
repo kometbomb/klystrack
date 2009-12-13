@@ -25,12 +25,12 @@ OTHER DEALINGS IN THE SOFTWARE.
 
 #include "filebox.h"
 #include "msgbox.h"
-#include "bevel.h"
+#include "gui/bevel.h"
 #include "dialog.h"
 #include "gfx/gfx.h"
 #include "mused.h"
 #include "view.h"
-#include "mouse.h"
+#include "gui/mouse.h"
 #include "event.h"
 #include "toolutil.h"
 #include <dirent.h>
@@ -130,7 +130,7 @@ void file_list_view(const SDL_Rect *area, const SDL_Event *event, void *param)
 	adjust_rect(&content, 1);
 	copy_rect(&pos, &content);
 	pos.h = mused.largefont.h;
-	bevel(area, mused.slider_bevel, BEV_FIELD);
+	bevel(mused.screen,area, mused.slider_bevel, BEV_FIELD);
 	
 	SDL_SetClipRect(mused.screen, &content);
 	
@@ -138,7 +138,7 @@ void file_list_view(const SDL_Rect *area, const SDL_Event *event, void *param)
 	{
 		if (data.selected_file == i && data.focus == FOCUS_LIST)
 		{
-			bevel(&pos, mused.slider_bevel, BEV_SELECTED_PATTERN_ROW);
+			bevel(mused.screen,&pos, mused.slider_bevel, BEV_SELECTED_PATTERN_ROW);
 		}
 	
 		if (data.files[i].type == FB_FILE)
@@ -167,7 +167,7 @@ void field_view(const SDL_Rect *area, const SDL_Event *event, void *param)
 	copy_rect(&pos, &content);
 	pos.w = mused.largefont.w;
 	pos.h = mused.largefont.h;
-	bevel(area, mused.slider_bevel, BEV_FIELD);
+	bevel(mused.screen,area, mused.slider_bevel, BEV_FIELD);
 	
 	if (data.focus == FOCUS_FIELD)
 	{

@@ -27,6 +27,7 @@ OTHER DEALINGS IN THE SOFTWARE.
 */
 
 #include "SDL.h"
+#include "bevdefs.h"
 
 int checkbox(const SDL_Event *event, const SDL_Rect *area, const char* label, Uint32 *flags, Uint32 mask);
 int spinner(const SDL_Event *event, const SDL_Rect *area, int param);
