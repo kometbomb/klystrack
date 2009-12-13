@@ -1,4 +1,4 @@
-#include "shortcuts.h"
+#include "shortcutdefs.h"
 #include "SDL.h"
 #include "action.h"
 #include "edit.h"
@@ -54,23 +54,3 @@ const KeyShortcut shortcuts[] =
 	/* Null terminated */
 	{ 0, 0, NULL, 0, 0, 0 }
 };
-
-
-void do_shortcuts(SDL_KeyboardEvent *e)
-{
-	for (int i = 0 ; shortcuts[i].action ; ++i)
-	{
-		if (e->keysym.sym == shortcuts[i].key
-			&& (!(e->keysym.mod & KMOD_SHIFT) == !(shortcuts[i].mod & KMOD_SHIFT))
-			&& (!(e->keysym.mod & KMOD_CTRL) == !(shortcuts[i].mod & KMOD_CTRL))
-			&& (!(e->keysym.mod & KMOD_ALT) == !(shortcuts[i].mod & KMOD_ALT))
-		)
-		{
-			cyd_lock(&mused.cyd, 1);
-			shortcuts[i].action((void*)shortcuts[i].p1, (void*)shortcuts[i].p2, (void*)shortcuts[i].p3);
-			cyd_lock(&mused.cyd, 0);
-			e->keysym.sym = 0;
-			break;
-		}
-	}
-}

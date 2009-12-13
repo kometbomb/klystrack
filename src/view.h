@@ -1,5 +1,4 @@
-#ifndef VIEW_H
-#define VIEW_H
+#pragma once
 
 /*
 Copyright (c) 2009 Tero Lindeman (kometbomb)
@@ -44,15 +43,9 @@ typedef struct
 	int focus;
 } View;
 
-#define SEPARATOR_HEIGHT 6
-#define ELEMENT_MARGIN 4
+#include "gui/view.h"
 
 void draw_view(const View* views, const SDL_Event *event);
-void adjust_rect(SDL_Rect *rect, int margin);
-void copy_rect(SDL_Rect *dest, const SDL_Rect *src);
-void update_rect(const SDL_Rect *parent, SDL_Rect *rect);
-void clip_rect(SDL_Rect *rect, const SDL_Rect *limits);
-void separator(const SDL_Rect *parent, SDL_Rect *rect);
 
 /* 
 "Controls"
@@ -71,5 +64,3 @@ void instrument_view2(const SDL_Rect *dest, const SDL_Event *event, void *param)
 void instrument_list(const SDL_Rect *dest, const SDL_Event *event, void *param);
 void reverb_view(const SDL_Rect *dest, const SDL_Event *event, void *param);
 void bevel_view(const SDL_Rect *dest, const SDL_Event *event, void *param);
-
-#endif

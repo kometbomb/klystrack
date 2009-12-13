@@ -40,6 +40,12 @@ extern Mused mused;
 
 extern int event_hit;
 
+static void my_separator(const SDL_Rect *parent, SDL_Rect *rect)
+{
+	separator(mused.screen, parent, rect, mused.slider_bevel, BEV_SEPARATOR);
+}
+
+
 void draw_view(const View* views, const SDL_Event *_event)
 {
 	SDL_Event event;
@@ -73,36 +79,6 @@ void draw_view(const View* views, const SDL_Event *_event)
 }
 
 
-void update_rect(const SDL_Rect *parent, SDL_Rect *rect)
-{
-	rect->x += rect->w + ELEMENT_MARGIN;
-	
-	if (rect->x + rect->w - ELEMENT_MARGIN >= parent->x + parent->w)
-	{
-		rect->x = parent->x;
-		rect->y += rect->h;
-	}
-}
-
-
-void separator(const SDL_Rect *parent, SDL_Rect *rect)
-{
-	while (rect->x > parent->x) update_rect(parent, rect);
-	
-	SDL_Rect r;
-	copy_rect(&r, rect);
-	
-	rect->x = parent->x;
-	rect->y += SEPARATOR_HEIGHT;
-	
-	r.y += SEPARATOR_HEIGHT/3;
-	r.h = SEPARATOR_HEIGHT/2;
-	r.w = parent->w;
-	
-	bevel(mused.screen,&r, mused.slider_bevel, BEV_SEPARATOR);
-}
-
-
 char * notename(Uint8 note)
 {	
 	static char buffer[4];
@@ -112,30 +88,6 @@ char * notename(Uint8 note)
 	};
 	sprintf(buffer, "%s%d", notename[note % 12], (note - note % 12) / 12);
 	return buffer;
-}
-
-
-void adjust_rect(SDL_Rect *rect, int margin)
-{
-	rect->x += margin;
-	rect->y += margin;
-	rect->w -= margin * 2;
-	rect->h -= margin * 2;
-}
-
-
-void copy_rect(SDL_Rect *dest, const SDL_Rect *src)
-{
-	memcpy(dest, src, sizeof(*dest));
-}
-
-
-void clip_rect(SDL_Rect *rect, const SDL_Rect *limits)
-{
-	if (rect->x < limits->x) { rect->w -= limits->x - rect->x; rect->x = limits->x; }
-	if (rect->y < limits->y) { rect->h -= limits->y - rect->y; rect->y = limits->y; }
-	if (rect->w + rect->x > limits->w + limits->x) { rect->w = limits->w + limits->x - rect->x; }
-	if (rect->h + rect->y > limits->h + limits->y) { rect->h = limits->h + limits->y - rect->y; }
 }
 
 
@@ -1270,7 +1222,7 @@ void instrument_view(const SDL_Rect *dest, const SDL_Event *event, void *param)
 	{
 		int tmp = r.w;
 		r.w = frame.w / 3 - 2;
-		separator(&frame, &r);
+		my_separator(&frame, &r);
 		inst_flags(event, &r, P_PULSE, "PUL", &inst->cydflags, CYD_CHN_ENABLE_PULSE);
 		update_rect(&frame, &r);
 		r.w = frame.w / 2 - 2;
@@ -1289,7 +1241,7 @@ void instrument_view(const SDL_Rect *dest, const SDL_Event *event, void *param)
 		r.w = tmp;
 	}
 	
-	separator(&frame, &r);
+	my_separator(&frame, &r);
 	inst_text(event, &r, P_VOLUME, "VOL", "%02X", MAKEPTR(inst->volume), 2);
 	update_rect(&frame, &r);
 	inst_text(event, &r, P_ATTACK, "ATK", "%02X", MAKEPTR(inst->adsr.a), 2);
@@ -1302,7 +1254,7 @@ void instrument_view(const SDL_Rect *dest, const SDL_Event *event, void *param)
 	update_rect(&frame, &r);
 	
 	{
-		separator(&frame, &r);
+		my_separator(&frame, &r);
 		int tmp = r.w;
 		r.w = frame.w / 3 + 8;
 		inst_flags(event, &r, P_BUZZ, "BUZZ", &inst->flags, MUS_INST_YM_BUZZ);
@@ -1319,7 +1271,7 @@ void instrument_view(const SDL_Rect *dest, const SDL_Event *event, void *param)
 		r.w = tmp;
 	}
 	
-	separator(&frame, &r);
+	my_separator(&frame, &r);
 	inst_flags(event, &r, P_SYNC, "SYNC", &inst->cydflags, CYD_CHN_ENABLE_SYNC);
 	update_rect(&frame, &r);
 	inst_text(event, &r, P_SYNCSRC, "SRC", "%02X", MAKEPTR(inst->sync_source), 2);
@@ -1331,7 +1283,7 @@ void instrument_view(const SDL_Rect *dest, const SDL_Event *event, void *param)
 	
 	static const char *flttype[] = { "LP", "HP", "BP" };
 	
-	separator(&frame, &r);
+	my_separator(&frame, &r);
 	inst_flags(event, &r, P_FILTER, "FILTER", &inst->cydflags, CYD_CHN_ENABLE_FILTER);
 	update_rect(&frame, &r);
 	inst_text(event, &r, P_FLTTYPE, "TYPE", "%s", (char*)flttype[inst->flttype], 2);
@@ -1429,7 +1381,7 @@ void reverb_view(const SDL_Rect *dest, const SDL_Event *event, void *param)
 	if (checkbox(event, &r, "ENABLE BITCRUSH", &mused.song.flags, MUS_ENABLE_CRUSH)) mused.edit_reverb_param = R_ENABLE;
 	update_rect(&area, &r);
 	
-	separator(&area, &r);
+	my_separator(&area, &r);
 	
 	if (checkbox(event, &r, "ENABLE REVERB", &mused.song.flags, MUS_ENABLE_REVERB)) mused.edit_reverb_param = R_ENABLE;
 	update_rect(&area, &r);
@@ -1440,7 +1392,7 @@ void reverb_view(const SDL_Rect *dest, const SDL_Event *event, void *param)
 	
 	for (int i = 0 ; i < CYDRVB_TAPS ; ++i)
 	{
-		separator(&area, &r);
+		my_separator(&area, &r);
 	
 		char label[20], value[20];
 		

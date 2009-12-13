@@ -37,8 +37,8 @@ OTHER DEALINGS IN THE SOFTWARE.
 #include "action.h"
 #include "gui/mouse.h"
 #include "gui/bevel.h"
-#include "menu.h"
-#include "shortcuts.h"
+#include "gui/menu.h"
+#include "shortcutdefs.h"
 #include "version.h"
 #include "mused.h"
 #include "config.h"
@@ -55,6 +55,8 @@ int stat_pattern_position[MUS_MAX_CHANNELS];
 MusPattern *stat_pattern[MUS_MAX_CHANNELS];
 int stat_pattern_number[MUS_MAX_CHANNELS];
 GfxDomain *domain;
+
+extern const Menu mainmenu[];
 
 #define INST_LIST (6*8 + 3*2)
 #define INFO 13
@@ -129,6 +131,12 @@ const View *tab[] =
 	reverb_view_tab,
 	classic_view_tab
 };
+
+
+static void menu_close_hook(void)
+{
+	change_mode(mused.prev_mode);
+}
 
 
 // mingw kludge for console output
@@ -220,7 +228,10 @@ int main(int argc, char **argv)
 					e.button.x /= domain->scale;
 					e.button.y /= domain->scale;
 					if (e.button.button == SDL_BUTTON_RIGHT)
-						open_menu();
+					{
+						change_mode(MENU);
+						open_menu(mainmenu, menu_close_hook, shortcuts, &mused.largefont, &mused.smallfont, mused.slider_bevel, BEV_MENUBAR, BEV_MENU, BEV_MENU_SELECTED, BEV_SEPARATOR, '§', '^');
+					}
 				break;
 				
 				case SDL_MOUSEBUTTONUP:
@@ -247,7 +258,9 @@ int main(int argc, char **argv)
 									
 					if (mused.mode != EDITBUFFER) 
 					{
-						do_shortcuts(&e.key);
+						cyd_lock(&mused.cyd, 1);
+						do_shortcuts(&e.key, shortcuts);
+						cyd_lock(&mused.cyd, 0);
 					}
 					
 					if (e.key.keysym.sym != 0)
@@ -317,7 +330,7 @@ int main(int argc, char **argv)
 				{
 					SDL_Event foo = {0};
 					draw_view(tab[m], &foo);
-					draw_menu(&e);
+					draw_menu(mused.screen, &e);
 					if (menu_closed) close_menu();
 				}
 				else
