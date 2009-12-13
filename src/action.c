@@ -26,10 +26,10 @@ OTHER DEALINGS IN THE SOFTWARE.
 #include "action.h"
 #include "mused.h"
 #include "diskop.h"
-#include "toolutil.h"
+#include "gui/toolutil.h"
 #include "view.h"
 #include "event.h"
-#include "msgbox.h"
+#include "gui/msgbox.h"
 #include "version.h"
 #include "../../klystron/src/version.h"
 #include "gfx/gfx.h"
@@ -149,7 +149,7 @@ void select_program_step(void *idx, void *unused1, void *unused2)
 
 void new_song_action(void *unused1, void *unused2, void *unused3)
 {
-	if (confirm("Clear song and data?"))
+	if (confirm(domain, mused.slider_bevel, &mused.largefont, "Clear song and data?"))
 	{
 		stop(0,0,0);
 		new_song();
@@ -169,7 +169,7 @@ void open_song_action(void *unused1, void *unused2, void *unused3)
 {
 	if (mused.mode != EDITINSTRUMENT && mused.mode != EDITPROG)
 	{
-		int r = confirm_ync("Save song?");
+		int r = confirm_ync(domain, mused.slider_bevel, &mused.largefont, "Save song?");
 				
 		if (r == 0) return;
 		if (r == 1) { change_mode(EDITSEQUENCE); if (!save_data()) return; }
@@ -329,7 +329,7 @@ void change_seq_steps(void *delta, void *unused1, void *unused2)
 
 void show_about_box(void *unused1, void *unused2, void *unused3)
 {
-	msgbox(VERSION_STRING "\n" KLYSTRON_VERSION_STRING, MB_OK);
+	msgbox(domain, mused.slider_bevel, &mused.largefont, VERSION_STRING "\n" KLYSTRON_VERSION_STRING, MB_OK);
 }
 
 

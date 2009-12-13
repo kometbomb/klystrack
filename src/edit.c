@@ -1,8 +1,9 @@
 #include "edit.h"
 #include "mused.h"
-#include "msgbox.h"
+#include "gui/msgbox.h"
 
 extern Mused mused;
+extern GfxDomain *domain;
 
 static int find_unused_pattern()
 {
@@ -20,7 +21,7 @@ static int find_unused_pattern()
 			return empty;
 	}
 	
-	msgbox("Max patterns exceeded!", MB_OK);
+	msgbox(domain, mused.slider_bevel, &mused.largefont, "Max patterns exceeded!", MB_OK);
 	
 	return -1;
 }

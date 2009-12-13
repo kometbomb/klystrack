@@ -27,13 +27,12 @@ OTHER DEALINGS IN THE SOFTWARE.
 #include "SDL_mixer.h"
 #include "gfx/gfx.h"
 #include "snd/music.h"
-#include "toolutil.h"
+#include "gui/toolutil.h"
 #include "copypaste.h"
-#include "toolutil.h"
 #include "diskop.h"
 #include "event.h"
 #include "view.h"
-#include "slider.h"
+#include "gui/slider.h"
 #include "action.h"
 #include "gui/mouse.h"
 #include "gui/bevel.h"
@@ -42,7 +41,7 @@ OTHER DEALINGS IN THE SOFTWARE.
 #include "version.h"
 #include "mused.h"
 #include "config.h"
-#include "bevdefs.h"
+#include "gui/bevdefs.h"
 
 //#define DUMPKEYS
 
@@ -230,7 +229,7 @@ int main(int argc, char **argv)
 					if (e.button.button == SDL_BUTTON_RIGHT)
 					{
 						change_mode(MENU);
-						open_menu(mainmenu, menu_close_hook, shortcuts, &mused.largefont, &mused.smallfont, mused.slider_bevel, BEV_MENUBAR, BEV_MENU, BEV_MENU_SELECTED, BEV_SEPARATOR, '§', '^');
+						open_menu(mainmenu, menu_close_hook, shortcuts, &mused.largefont, &mused.smallfont, mused.slider_bevel);
 					}
 				break;
 				
@@ -329,13 +328,13 @@ int main(int argc, char **argv)
 				if (mused.mode == MENU) 
 				{
 					SDL_Event foo = {0};
-					draw_view(tab[m], &foo);
+					my_draw_view(tab[m], &foo);
 					draw_menu(mused.screen, &e);
 					if (menu_closed) close_menu();
 				}
 				else
 				{
-					draw_view(tab[m], &e);
+					my_draw_view(tab[m], &e);
 				}
 				
 				e.type = 0;
@@ -349,7 +348,7 @@ int main(int argc, char **argv)
 		
 		if (mused.done) 
 		{
-			int r = confirm_ync("Save song?");
+			int r = confirm_ync(domain, mused.slider_bevel, &mused.largefont, "Save song?");
 			
 			if (r == 0) mused.done = 0;
 			if (r == -1) break;
