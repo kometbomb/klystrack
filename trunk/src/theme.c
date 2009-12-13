@@ -29,7 +29,7 @@ OTHER DEALINGS IN THE SOFTWARE.
 #include "util/bundle.h"
 #include "gfx/gfx.h"
 #include "mused.h"
-#include "menu.h"
+#include "gui/menu.h"
 #include <unistd.h>
 #include <dirent.h>
 #include <sys/stat.h>

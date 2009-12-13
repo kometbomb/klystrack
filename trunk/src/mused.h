@@ -31,24 +31,6 @@ OTHER DEALINGS IN THE SOFTWARE.
 #include "console.h"
 #include "slider.h"
 
-// Makes "warning: cast to pointer from integer of different size" disappear
-
-#define CASTPTR(t,x) (*(t*)&x)
-#ifdef __i386__
-#  define CASTTOPTR(t,x) (t*)x
-#else
-#  define CASTTOPTR(t,x) (t*)(Uint64)x
-#endif
-
-#if __i386__
-#define MAKEPTR(x) ((void*)(Uint32)(x))
-#else
-#define MAKEPTR(x) ((void*)(Uint64)(x))
-#endif
-
-#define STRINGIFY(x) #x
-#define TOSTRING(x) STRINGIFY(x)
-
 enum
 {
 	EDITINSTRUMENT,
@@ -66,7 +48,7 @@ enum
 
 #include "clipboard.h"
 #include "copypaste.h"
-#include "menu.h"
+#include "gui/menu.h"
 
 #define SCREEN_WIDTH 320
 #define SCREEN_HEIGHT 240
@@ -111,8 +93,6 @@ typedef struct
 	int stat_pattern_number[MUS_MAX_CHANNELS];
 	SDL_Surface *slider_bevel;
 	Font smallfont, largefont;
-	const Menu *current_menu;
-	const Menu *current_menu_action;
 	SDL_Surface *screen;
 	char themename[100];
 	int pixel_scale;

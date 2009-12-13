@@ -34,7 +34,7 @@ OTHER DEALINGS IN THE SOFTWARE.
 #include "../../klystron/src/version.h"
 #include "gfx/gfx.h"
 #include "theme.h"
-#include "menu.h"
+#include "gui/menu.h"
 
 extern Mused mused;
 extern GfxDomain *domain;
