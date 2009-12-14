@@ -84,11 +84,23 @@ Ring modulation multiplies the source waveform with the instrument waveform.
 
 ===Slide===
 
+The slide parameter controls the speed the played note slides to the new note if the slide bit is set in the track data.
+
 ===Program period===
+
+Program period controls how many ticks one program tick takes to execute. E.g. if program period is 2 and the song speed is 6, every row in a channel equals 3 program ticks.
 
 ===Vibrato===
 
+PWM modulates the pulse width parameter at the set speed (VIB.S) and depth (VIB.D) if the vibrato bit is set in the track data or if the VIB flag is set for the instrument (which inverses the bit). The modulating waveform is a sine wave.
+
+Vibrato can also be achieved with a little program that uses the portamento commands (01xx and 02xx) to modulate the played note.
+
 ===Pulse width modulation===
+
+PWM modulates the pulse width parameter at the set speed (PWM.S) and depth (PWM.D). PWM is useful for making square wave instruments like leads sound more varied with little effort. The modulating waveform is a sine wave.
+
+As with vibrato, related commands can be used to create PWM using the instrument program.
 
 =Instrument program=
 
