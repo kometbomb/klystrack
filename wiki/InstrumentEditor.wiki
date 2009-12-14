@@ -84,7 +84,7 @@ Ring modulation multiplies the source waveform with the instrument waveform.
 
 ===Slide===
 
-The slide parameter controls the speed the played note slides to the new note if the slide bit is set in the track data.
+The slide parameter controls the time it takes for the previous note to change into the new note if the slide bit is set in the track data. A bigger value means shorter time.
 
 ===Program period===
 
