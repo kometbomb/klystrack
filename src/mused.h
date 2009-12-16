@@ -58,7 +58,8 @@ enum
 {
 	COMPACT_VIEW = 1,
 	SONG_PLAYING = 2,
-	FULLSCREEN = 4
+	FULLSCREEN = 4,
+	MULTICHANNEL_PREVIEW = 8
 };
 
 typedef struct
