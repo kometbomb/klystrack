@@ -42,6 +42,7 @@ static const struct { int type; const char *name; void *param; int mask; } confi
 	{ C_INT, "mix_buffer", &mused.mix_buffer },
 	{ C_BOOL, "compact", &mused.flags, COMPACT_VIEW },
 	{ C_STR, "theme", mused.themename, sizeof(mused.themename) - 1 },
+	{ C_BOOL, "multichannel_instrument_edit", &mused.flags, MULTICHANNEL_PREVIEW },
 	{ C_END }
 };
 

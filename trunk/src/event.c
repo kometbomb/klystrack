@@ -396,7 +396,7 @@ void edit_instrument_event(SDL_Event *e)
 			int note = find_note(e->key.keysym.sym, mused.octave);
 			if (note != -1) 
 			{
-				mus_trigger_instrument(&mused.mus, -1, &mused.song.instrument[mused.current_instrument], note);
+				mus_trigger_instrument(&mused.mus, mused.flags & MULTICHANNEL_PREVIEW ? -1 : 0, &mused.song.instrument[mused.current_instrument], note);
 			}
 			}
 			break;

@@ -50,6 +50,8 @@ const Menu prefsmenu[] =
 	{ 0, mainmenu, "", NULL, NULL },
 	{ 0, mainmenu, "Pixel size", pixelmenu },
 	{ 0, mainmenu, "Fullscreen", NULL, MENU_CHECK_NOSET, &mused.flags, (void*)FULLSCREEN, toggle_fullscreen },
+	{ 0, mainmenu, "", NULL, NULL },
+	{ 0, mainmenu, "Keyjazz", NULL, MENU_CHECK, &mused.flags, (void*)MULTICHANNEL_PREVIEW, 0 },
 	{ 0, NULL, NULL }
 };
 
