@@ -3,7 +3,7 @@ ARCHIVE = klystrack.zip
 VPATH=src:src
 ECHO = echo
 CFG = debug
-MACHINE = -march=pentium4 -mfpmath=sse -msse3 
+MACHINE = -march=pentium2 
 ZIP = pkzipc -exclude=.* -zipdate=newest -path=relative -silent -rec -dir -add
 ZIPEXT = pkzipc -ext -silent
 WGET = wget --quiet
