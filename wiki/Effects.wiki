@@ -11,3 +11,7 @@ The reverb is global for all sounds but it can be enabled only for selected inst
 =Bitcrush=
 
 The bitcrush effect simply drops the bit depth of the output signal. This is done by masking out the lowest few bits. This produces ringing artifacts in the sound especially for low volumes.
+
+=Channel multiplexing=
+
+This feature simply enables one channel and mutes all other channels at the set period (in ticks). Use for extreme low tech music as it essentially reduces the channels to one. Multiplexing can be used for arpeggios.
