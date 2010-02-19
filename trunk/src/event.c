@@ -1131,25 +1131,50 @@ void edit_text(SDL_Event *e)
 
 void reverb_add_param(int d)
 {
-	if (mused.edit_reverb_param == R_ENABLE)
+	switch (mused.edit_reverb_param)
 	{
-		flipbit(mused.song.flags, MUS_ENABLE_REVERB);
-	}
-	else
-	{
-		int p = mused.edit_reverb_param - R_DELAY;
-		int tap = (p & ~1) / 2;
-		if (!(p & 1))
+		case R_CRUSH:
 		{
-			clamp(mused.song.rvbtap[tap].delay, d * 1, 0, CYDRVB_SIZE - 1);
+			flipbit(mused.song.flags, MUS_ENABLE_CRUSH);
 		}
-		else
+		break;
+		
+		case R_MULTIPLEX:
 		{
-			clamp(mused.song.rvbtap[tap].gain, d * 1, CYDRVB_LOW_LIMIT, 0);
+			flipbit(mused.song.flags, MUS_ENABLE_MULTIPLEX);
 		}
+		break;
+		
+		case R_MULTIPLEX_PERIOD:
+		{
+			clamp(mused.song.multiplex_period, d, 0, 255);
+		}
+		break;
+	
+		case R_ENABLE:
+		{
+			flipbit(mused.song.flags, MUS_ENABLE_REVERB);
+		}
+		break;
+		
+		default:
+		{
+			int p = mused.edit_reverb_param - R_DELAY;
+			int tap = (p & ~1) / 2;
+			if (!(p & 1))
+			{
+				clamp(mused.song.rvbtap[tap].delay, d * 1, 0, CYDRVB_SIZE - 1);
+			}
+			else
+			{
+				clamp(mused.song.rvbtap[tap].gain, d * 1, CYDRVB_LOW_LIMIT, 0);
+			}
+			
+			mus_set_reverb(&mused.mus, &mused.song);
+		}
+		break;
 	}
 	
-	mus_set_reverb(&mused.mus, &mused.song);
 }
 
 

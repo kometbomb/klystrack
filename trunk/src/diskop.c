@@ -201,6 +201,7 @@ int save_data()
 				Uint32 temp32 = mused.song.flags;
 				FIX_ENDIAN(temp32);
 				fwrite(&temp32, 1, sizeof(mused.song.flags), f);
+				fwrite(&mused.song.multiplex_period, 1, sizeof(mused.song.multiplex_period), f);
 				fwrite(mused.song.title, 1, MUS_TITLE_LEN + 1, f);
 				
 				if (mused.song.flags & MUS_ENABLE_REVERB)

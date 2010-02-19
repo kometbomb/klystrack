@@ -1376,7 +1376,20 @@ void reverb_view(SDL_Surface *dest_surface, const SDL_Rect *dest, const SDL_Even
 	
 	r.h = 10;
 	
-	if (checkbox(dest_surface, event, &r, mused.slider_bevel, &mused.smallfont, "ENABLE BITCRUSH", &mused.song.flags, MUS_ENABLE_CRUSH)) mused.edit_reverb_param = R_ENABLE;
+	if (checkbox(dest_surface, event, &r, mused.slider_bevel, &mused.smallfont, "ENABLE BITCRUSH", &mused.song.flags, MUS_ENABLE_CRUSH)) mused.edit_reverb_param = R_CRUSH;
+	update_rect(&area, &r);
+	
+	my_separator(&area, &r);
+	
+	if (checkbox(dest_surface, event, &r, mused.slider_bevel, &mused.smallfont, "ENABLE MULTIPLEXING", &mused.song.flags, MUS_ENABLE_MULTIPLEX)) mused.edit_reverb_param = R_MULTIPLEX;
+	update_rect(&area, &r);
+	
+	int d = generic_field(event, &r, R_MULTIPLEX_PERIOD, "PERIOD", "%2X", MAKEPTR(mused.song.multiplex_period), 2);
+		
+	if (d) mused.edit_reverb_param = R_MULTIPLEX_PERIOD;
+	if (d < 0) reverb_add_param(-1);
+	else if (d > 0) reverb_add_param(1);
+	
 	update_rect(&area, &r);
 	
 	my_separator(&area, &r);
@@ -1390,7 +1403,7 @@ void reverb_view(SDL_Surface *dest_surface, const SDL_Rect *dest, const SDL_Even
 	
 	for (int i = 0 ; i < CYDRVB_TAPS ; ++i)
 	{
-		my_separator(&area, &r);
+		if (i) my_separator(&area, &r);
 	
 		char label[20], value[20];
 		

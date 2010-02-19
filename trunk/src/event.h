@@ -104,6 +104,9 @@ enum
 
 enum
 {
+	R_CRUSH,
+	R_MULTIPLEX,
+	R_MULTIPLEX_PERIOD,
 	R_ENABLE,
 	R_DELAY,
 	R_GAIN
