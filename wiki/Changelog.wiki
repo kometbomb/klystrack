@@ -3,6 +3,10 @@
 
 _*Note:* Only significant changes and new features are listed here._ 
 
+=1.3.3=
+
+  * Multiplexing for single channel music
+
 =1.3.2=
 
   * Compiled to run on P2+ platforms
