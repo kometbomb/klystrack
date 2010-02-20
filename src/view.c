@@ -632,7 +632,7 @@ void pattern_view(SDL_Surface *dest_surface, const SDL_Rect *dest, const SDL_Eve
 	
 	adjust_rect(&compact, 2);
 	
-	checkbox(mused.screen, event, &compact, mused.slider_bevel, &mused.smallfont, "S", &mused.flags, COMPACT_VIEW);
+	checkbox(mused.screen, event, &compact, mused.slider_bevel, &mused.smallfont, BEV_BUTTON, BEV_BUTTON_ACTIVE, DECAL_TICK, "S", &mused.flags, COMPACT_VIEW);
 	
 	const int pattern_width = mused.flags & COMPACT_VIEW ? mused.console->font.w * 16 - 4 - 4 - 4 - 4 - mused.console->font.w * 3 - 4 - 4 : mused.console->font.w * 16 - 4 - 4 - 4;
 		
@@ -1073,7 +1073,7 @@ static void inst_flags(const SDL_Event *e, const SDL_Rect *_area, int p, const c
 	SDL_Rect area;
 	copy_rect(&area, _area);
 	area.y += 1;
-	if (checkbox(mused.screen, e, &area, mused.slider_bevel, &mused.smallfont, label, flags, mask)) mused.selected_param = p;
+	if (checkbox(mused.screen, e, &area, mused.slider_bevel, &mused.smallfont, BEV_BUTTON, BEV_BUTTON_ACTIVE, DECAL_TICK,label, flags, mask)) mused.selected_param = p;
 	if (p == mused.selected_param && mused.focus == EDITINSTRUMENT)
 	{
 		SDL_Rect r;
@@ -1376,12 +1376,12 @@ void reverb_view(SDL_Surface *dest_surface, const SDL_Rect *dest, const SDL_Even
 	
 	r.h = 10;
 	
-	if (checkbox(dest_surface, event, &r, mused.slider_bevel, &mused.smallfont, "ENABLE BITCRUSH", &mused.song.flags, MUS_ENABLE_CRUSH)) mused.edit_reverb_param = R_CRUSH;
+	if (checkbox(dest_surface, event, &r, mused.slider_bevel, &mused.smallfont, BEV_BUTTON, BEV_BUTTON_ACTIVE, DECAL_TICK, "ENABLE BITCRUSH", &mused.song.flags, MUS_ENABLE_CRUSH)) mused.edit_reverb_param = R_CRUSH;
 	update_rect(&area, &r);
 	
 	my_separator(&area, &r);
 	
-	if (checkbox(dest_surface, event, &r, mused.slider_bevel, &mused.smallfont, "ENABLE MULTIPLEXING", &mused.song.flags, MUS_ENABLE_MULTIPLEX)) mused.edit_reverb_param = R_MULTIPLEX;
+	if (checkbox(dest_surface, event, &r, mused.slider_bevel, &mused.smallfont, BEV_BUTTON, BEV_BUTTON_ACTIVE, DECAL_TICK, "ENABLE MULTIPLEXING", &mused.song.flags, MUS_ENABLE_MULTIPLEX)) mused.edit_reverb_param = R_MULTIPLEX;
 	update_rect(&area, &r);
 	
 	int d = generic_field(event, &r, R_MULTIPLEX_PERIOD, "PERIOD", "%2X", MAKEPTR(mused.song.multiplex_period), 2);
@@ -1394,7 +1394,7 @@ void reverb_view(SDL_Surface *dest_surface, const SDL_Rect *dest, const SDL_Even
 	
 	my_separator(&area, &r);
 	
-	if (checkbox(dest_surface, event, &r, mused.slider_bevel, &mused.smallfont, "ENABLE REVERB", &mused.song.flags, MUS_ENABLE_REVERB)) mused.edit_reverb_param = R_ENABLE;
+	if (checkbox(dest_surface, event, &r, mused.slider_bevel, &mused.smallfont, BEV_BUTTON, BEV_BUTTON_ACTIVE, DECAL_TICK, "ENABLE REVERB", &mused.song.flags, MUS_ENABLE_REVERB)) mused.edit_reverb_param = R_ENABLE;
 	update_rect(&area, &r);
 	
 	mirror_flags();
