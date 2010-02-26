@@ -63,6 +63,7 @@ static const Menu filemenu[] =
 	{ 0, mainmenu, "Save", NULL, save_song_action },
 	{ 0, mainmenu, "", NULL, NULL },
 	{ 0, mainmenu, "Import .MOD", NULL, import_module },
+	{ 0, mainmenu, "Export .WAV", NULL, export_wav_action },
 	{ 0, mainmenu, "", NULL, NULL },
 	{ 0, mainmenu, "Exit", NULL, quit_action },
 	{ 0, NULL, NULL }
