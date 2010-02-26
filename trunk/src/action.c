@@ -35,6 +35,7 @@ OTHER DEALINGS IN THE SOFTWARE.
 #include "gfx/gfx.h"
 #include "theme.h"
 #include "gui/menu.h"
+#include "export.h"
 
 extern Mused mused;
 extern GfxDomain *domain;
@@ -446,4 +447,12 @@ void change_timesig(void *delta, void *b, void *c)
 	if (i >= (int)(sizeof(sigs) / sizeof(sigs[0]) - 1)) i = 0;
 	if (i < 0) i = sizeof(sigs) / sizeof(sigs[0]) - 1;
 	mused.time_signature = sigs[i];
+}
+
+
+void export_wav_action(void *a, void*b, void*c)
+{
+	FILE * f = open_dialog("wb", "Export .WAV", "wav", domain, mused.slider_bevel, &mused.largefont, &mused.smallfont);
+	export_wav(&mused.song, f);
+	fclose(f);
 }
