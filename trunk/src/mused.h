@@ -2,7 +2,7 @@
 #define MUSED_H
 
 /*
-Copyright (c) 2009 Tero Lindeman (kometbomb)
+Copyright (c) 2009-2010 Tero Lindeman (kometbomb)
 
 Permission is hereby granted, free of charge, to any person
 obtaining a copy of this software and associated documentation

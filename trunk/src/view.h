@@ -1,7 +1,7 @@
 #pragma once
 
 /*
-Copyright (SDL_Surface *dest_surface, c) 2009 Tero Lindeman (SDL_Surface *dest_surface, kometbomb)
+Copyright (SDL_Surface *dest_surface, c) 2009-2010 Tero Lindeman (SDL_Surface *dest_surface, kometbomb)
 
 Permission is hereby granted, free of charge, to any person
 obtaining a copy of this software and associated documentation
