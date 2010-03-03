@@ -37,16 +37,11 @@ void export_wav(MusSong *song, FILE *f)
 	mus_set_reverb(&mus, song);
 	cyd_set_callback(&cyd, mus_advance_tick, &mus, song->song_rate);
 	mus_set_song(&mus, song, 0);
+	song->flags |= MUS_NO_REPEAT;
 	
-#ifdef STEREOOUTPUT 
 	const int channels = 2;
-#else
-	const int channels = 1;
-#endif
-	
 	Sint16 buffer[2000 * channels];
 	
-	Uint16 prev_pos = 0;
 	Uint32 tmp = 0;
 	
 	fwrite("RIFF", 4, 1, f);
@@ -113,11 +108,10 @@ void export_wav(MusSong *song, FILE *f)
 		memset(buffer, 0, sizeof(buffer)); // Zero the input to cyd
 		cyd_output_buffer_stereo(0, buffer, sizeof(buffer), &cyd);
 		
-		fwrite(buffer, 1, sizeof(buffer), f);
+		if (cyd.samples_output > 0)
+			fwrite(buffer, cyd.samples_output * channels * sizeof(buffer[0]), 1, f);
 		
-		if (prev_pos > mus.song_position) break;
-		
-		prev_pos = mus.song_position;
+		if (mus.song_position >= song->song_length) break;
 	}
 	
 	Uint32 sz = ftell(f) - 8;
@@ -136,5 +130,7 @@ void export_wav(MusSong *song, FILE *f)
 	fwrite(&sz, sizeof(sz), 1, f);
 	
 	cyd_deinit(&cyd);
+	
+	song->flags &= ~MUS_NO_REPEAT;
 }
 
