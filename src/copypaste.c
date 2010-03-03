@@ -149,7 +149,7 @@ void paste()
 				cp_paste_items(&mused.cp, CP_PATTERN, mused.song.pattern[mused.current_pattern].step, 0, sizeof(mused.song.pattern[mused.current_pattern].step[0]));
 			}
 			else if (mused.cp.type == CP_PATTERNSEGMENT)
-				cp_paste_items(&mused.cp, CP_PATTERNSEGMENT, &mused.song.pattern[mused.current_pattern].step[mused.current_patternstep], 0, 
+				cp_paste_items(&mused.cp, CP_PATTERNSEGMENT, &mused.song.pattern[mused.current_pattern].step[mused.current_patternstep], mused.song.pattern[mused.current_pattern].num_steps-mused.current_patternstep, 
 					sizeof(mused.song.pattern[mused.current_pattern].step[0]));
 		}
 		break;
