@@ -25,6 +25,7 @@ OTHER DEALINGS IN THE SOFTWARE.
 
 #include "export.h"
 #include "snd/cyd.h"
+#include "macros.h"
 
 void export_wav(MusSong *song, FILE *f)
 {
@@ -50,7 +51,9 @@ void export_wav(MusSong *song, FILE *f)
 	
 	fwrite("RIFF", 4, 1, f);
 	
-	size_t riffsize = ftell(f);
+	Uint32 riffsize = ftell(f);
+	
+	FIX_ENDIAN(riffsize);
 	
 	fwrite(&tmp, 4, 1, f);
 	fwrite("WAVE", 4, 1, f);
@@ -58,27 +61,43 @@ void export_wav(MusSong *song, FILE *f)
 	
 	tmp = 16;
 	
+	FIX_ENDIAN(tmp);
+	
 	fwrite(&tmp, 4, 1, f);
 	
 	tmp = 1;
 	
+	FIX_ENDIAN((*(Uint16*)&tmp));
+	
 	fwrite(&tmp, 2, 1, f);
+	
+	tmp = channels;
+	
+	FIX_ENDIAN((*(Uint16*)&tmp));
 	
 	fwrite(&channels, 2, 1, f);
 	
 	tmp = 44100;
 	
+	FIX_ENDIAN(tmp);
+	
 	fwrite(&tmp, 4, 1, f);
 	
 	tmp = 44100 * channels * sizeof(buffer[0]);
+	
+	FIX_ENDIAN(tmp);
 	
 	fwrite(&tmp, 4, 1, f);
 	
 	tmp = channels * sizeof(buffer[0]);
 	
+	FIX_ENDIAN((*(Uint16*)&tmp));
+	
 	fwrite(&tmp, 2, 1, f);
 	
 	tmp = 16;
+	
+	FIX_ENDIAN((*(Uint16*)&tmp));
 	
 	fwrite(&tmp, 2, 1, f);
 	
@@ -87,10 +106,11 @@ void export_wav(MusSong *song, FILE *f)
 	size_t chunksize = ftell(f);
 	
 	tmp = 0;
-	fwrite(&tmp, 2, 1, f);
+	fwrite(&tmp, 4, 1, f);
 	
 	for (;;)
 	{
+		memset(buffer, 0, sizeof(buffer)); // Zero the input to cyd
 		cyd_output_buffer_stereo(0, buffer, sizeof(buffer), &cyd);
 		
 		fwrite(buffer, 1, sizeof(buffer), f);
@@ -102,12 +122,17 @@ void export_wav(MusSong *song, FILE *f)
 	
 	Uint32 sz = ftell(f) - 8;
 	
+	FIX_ENDIAN(sz);
+	
 	fseek(f, riffsize, SEEK_SET);
 	fwrite(&sz, sizeof(sz), 1, f);
 	
 	sz = sz + 8 - (chunksize + 4);
 	
 	fseek(f, chunksize, SEEK_SET);
+	
+	FIX_ENDIAN(sz);
+	
 	fwrite(&sz, sizeof(sz), 1, f);
 	
 	cyd_deinit(&cyd);
