@@ -266,7 +266,6 @@ void sequence_view(SDL_Surface *dest_surface, const SDL_Rect *dest, const SDL_Ev
 				{
 					break;
 				}
-				
 			}
 			
 			SDL_Rect r;
