@@ -27,7 +27,7 @@ OTHER DEALINGS IN THE SOFTWARE.
 
 #include "gui/view.h"
 
-void my_draw_view(const View* views, const SDL_Event *_event);
+void my_draw_view(const View* views, const SDL_Event *_event, const SDL_Surface *screen);
 
 /* 
 "Controls"

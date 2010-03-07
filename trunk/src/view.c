@@ -47,20 +47,25 @@ static void my_separator(const SDL_Rect *parent, SDL_Rect *rect)
 
 // note: since we need to handle the focus this piece of code is duplicated from gui/view.c
 
-void my_draw_view(const View* views, const SDL_Event *_event)
+void my_draw_view(const View* views, const SDL_Event *_event, const SDL_Surface *screen)
 {
 	SDL_Event event;
 	memcpy(&event, _event, sizeof(event));
 	for (int i = 0 ; views[i].handler ; ++i)
 	{
 		const View *view = &views[i];
+		SDL_Rect area;
+		area.x = view->position.x >= 0 ? view->position.x : screen->w + view->position.x;
+		area.y = view->position.y >= 0 ? view->position.y : screen->h + view->position.y;
+		area.w = *(Sint16*)&view->position.w > 0 ? *(Sint16*)&view->position.w : screen->w + *(Sint16*)&view->position.w - view->position.x;
+		area.h = *(Sint16*)&view->position.h > 0 ? *(Sint16*)&view->position.h : screen->h + *(Sint16*)&view->position.h - view->position.y;
 
-		memcpy(&mused.console->clip, &view->position, sizeof(view->position));
+		memcpy(&mused.console->clip, &area, sizeof(view->position));
 		int iter = 0;
 		do
 		{
 			event_hit = 0;
-			view->handler(mused.screen, &view->position, &event, view->param);
+			view->handler(mused.screen, &area, &event, view->param);
 			if (event_hit) 
 			{
 				event.type = SDL_USEREVENT + 1;

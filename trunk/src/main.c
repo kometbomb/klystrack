@@ -65,60 +65,60 @@ void change_pixel_scale(void *, void*, void*);
 
 static const View instrument_view_tab[] =
 {
-	{{0, 0, 164 + 32 + 4 + 8, 14}, bevel_view, (void*)BEV_BACKGROUND, EDITINSTRUMENT },
-	{{2, 2, 164 + 32 + 8, 10}, instrument_name_view, (void*)1, -1 },
-	{{164 + 32 + 4 + 8, 0, SCREEN_WIDTH - 164 - 32 - 2 - 2 - 8, 14}, instrument_disk_view, NULL, -1 },
-	{{0, 14, 154, SCREEN_HEIGHT-14-INFO }, instrument_view, NULL, EDITINSTRUMENT },
-	{{154, 14 + INST_LIST, SCREEN_WIDTH - 154, INST_VIEW2 }, instrument_view2, NULL, EDITINSTRUMENT },
-	{{154, 14, SCREEN_WIDTH - 154 - SCROLLBAR, INST_LIST }, instrument_list, NULL, -1},
-	{{154, 14 + INST_LIST + INST_VIEW2, SCREEN_WIDTH - 154 - SCROLLBAR, SCREEN_HEIGHT-(14 + INST_LIST)-INFO-INST_VIEW2 }, program_view, NULL, EDITPROG },
-	{{SCREEN_WIDTH - SCROLLBAR, 14 + INST_LIST + INST_VIEW2, SCROLLBAR, SCREEN_HEIGHT-(14 + INST_LIST)-INFO-INST_VIEW2 }, slider, &mused.program_slider_param, EDITPROG },
-	{{SCREEN_WIDTH - SCROLLBAR, 14, SCROLLBAR, INST_LIST }, slider, &mused.instrument_list_slider_param, EDITINSTRUMENT },
-	{{0, SCREEN_HEIGHT - INFO, SCREEN_WIDTH, INFO }, info_line, NULL, -1 },
+	{{0, 0, -130, 14}, bevel_view, (void*)BEV_BACKGROUND, EDITINSTRUMENT },
+	{{2, 2, -130-2, 10}, instrument_name_view, (void*)1, -1 },
+	{{-130, 0, 130, 14}, instrument_disk_view, NULL, -1},
+	{{0, 14, 154, -INFO }, instrument_view, NULL, EDITINSTRUMENT },
+	{{154, 14 + INST_LIST, 0, INST_VIEW2 }, instrument_view2, NULL, EDITINSTRUMENT },
+	{{154, 14, - SCROLLBAR, INST_LIST }, instrument_list, NULL, -1},
+	{{154, 14 + INST_LIST + INST_VIEW2, 0 - SCROLLBAR, -INFO }, program_view, NULL, EDITPROG },
+	{{0 - SCROLLBAR, 14 + INST_LIST + INST_VIEW2, SCROLLBAR, -INFO }, slider, &mused.program_slider_param, EDITPROG },
+	{{0 - SCROLLBAR, 14, SCROLLBAR, INST_LIST }, slider, &mused.instrument_list_slider_param, EDITINSTRUMENT },
+	{{0, 0 - INFO, 0, INFO }, info_line, NULL, -1 },
 	{{0, 0, 0, 0}, NULL}
 };
 
 static const View pattern_view_tab[] =
 {
-	{{0, 0, SCREEN_WIDTH, 14}, bevel_view, (void*)BEV_BACKGROUND, -1},
+	{{0, 0, 0, 14}, bevel_view, (void*)BEV_BACKGROUND, -1},
 	{{2, 2, 164 + 32, 10}, instrument_name_view, (void*)1, -1},
-	{{0, 14, SCREEN_WIDTH-SCROLLBAR, SCREEN_HEIGHT - INFO - 14}, pattern_view, NULL, -1},
-	{{SCREEN_WIDTH-SCROLLBAR, 14, SCROLLBAR, SCREEN_HEIGHT - INFO -14}, slider, &mused.pattern_slider_param, -1},
-	{{0, SCREEN_HEIGHT - INFO, SCREEN_WIDTH, INFO }, info_line, NULL, -1},
+	{{0, 14, 0-SCROLLBAR, 0 - INFO}, pattern_view, NULL, -1},
+	{{0-SCROLLBAR, 14, SCROLLBAR, 0 - INFO}, slider, &mused.pattern_slider_param, -1},
+	{{0, 0 - INFO, 0, INFO }, info_line, NULL, -1},
 	{{0, 0, 0, 0}, NULL}
 };
 
-#define CLASSIC_PAT (SCREEN_HEIGHT / 2 + 20 - 2 - 7)
+#define CLASSIC_PAT (0 / 2 + 20 - 2 - 7)
 #define CLASSIC_SONG_INFO (94)
 
 static const View classic_view_tab[] =
 {
-	{{0,0,CLASSIC_SONG_INFO,SCREEN_HEIGHT - INFO - CLASSIC_PAT}, info_view, NULL, -1},
-	{{CLASSIC_SONG_INFO, 0, SCREEN_WIDTH-SCROLLBAR-CLASSIC_SONG_INFO, SCREEN_HEIGHT - CLASSIC_PAT - INFO - 10 - 10 - 5}, sequence_view, NULL, EDITSEQUENCE},
-	{{SCREEN_WIDTH-SCROLLBAR, 0, SCROLLBAR, SCREEN_HEIGHT - CLASSIC_PAT - INFO - 10 - 10 - 5}, slider, &mused.sequence_slider_param, EDITSEQUENCE},
-	{{CLASSIC_SONG_INFO, SCREEN_HEIGHT - CLASSIC_PAT - INFO - 10 - 10 - 5, SCREEN_WIDTH - CLASSIC_SONG_INFO, 25}, bevel_view, (void*)BEV_BACKGROUND, -1},
-	{{CLASSIC_SONG_INFO + 2, SCREEN_HEIGHT - CLASSIC_PAT - INFO - 20 - 2 - 1, 164 + 32, 10}, song_name_view, NULL, -1},
-	{{CLASSIC_SONG_INFO + 2, SCREEN_HEIGHT - CLASSIC_PAT - INFO - 10 - 2, 164 + 32, 10}, instrument_name_view, (void*)1, -1},
-	{{0, SCREEN_HEIGHT - INFO - CLASSIC_PAT, SCREEN_WIDTH-SCROLLBAR, CLASSIC_PAT}, pattern_view, NULL, EDITPATTERN},
-	{{SCREEN_WIDTH - SCROLLBAR, SCREEN_HEIGHT - INFO - CLASSIC_PAT, SCROLLBAR, CLASSIC_PAT}, slider, &mused.pattern_slider_param, EDITPATTERN},
-	{{0, SCREEN_HEIGHT - INFO, SCREEN_WIDTH, INFO }, info_line, NULL, -1},
+	{{0,0,CLASSIC_SONG_INFO,100}, info_view, NULL, -1},
+	{{CLASSIC_SONG_INFO, 0, 0-SCROLLBAR, 100 - 25}, sequence_view, NULL, EDITSEQUENCE},
+	{{0-SCROLLBAR, 0, SCROLLBAR, 100 - 25}, slider, &mused.sequence_slider_param, EDITSEQUENCE},
+	{{CLASSIC_SONG_INFO, 100-25, 0, 25}, bevel_view, (void*)BEV_BACKGROUND, -1},
+	{{CLASSIC_SONG_INFO + 2, 100 - 25 + 2, -2, 10}, song_name_view, NULL, -1},
+	{{CLASSIC_SONG_INFO + 2, 100 - 25 + 2 + 10 + 1, -2, 10}, instrument_name_view, (void*)1, -1},
+	{{0, 100, 0-SCROLLBAR, -INFO}, pattern_view, NULL, EDITPATTERN},
+	{{0 - SCROLLBAR, 100, SCROLLBAR, -INFO}, slider, &mused.pattern_slider_param, EDITPATTERN},
+	{{0, 0 - INFO, 0, INFO }, info_line, NULL, -1},
 	{{0, 0, 0, 0}, NULL}
 };
 
 static const View sequence_view_tab[] =
 {
-	{{0,0,SCREEN_WIDTH,33+4}, info_view, NULL, -1},
-	{{0, 33+4, 164 + 32 + 4 + 8, 14}, bevel_view, (void*)BEV_BACKGROUND, -1},
-	{{2, 33+4+2, 164 + 32 + 8, 10}, song_name_view, NULL, -1},
-	{{164 + 32 + 4 + 8, 33+4, SCREEN_WIDTH - 164 - 32 - 2 - 2 - 8, 14}, instrument_disk_view, NULL, -1},
-	{{0, 33+4+14, SCREEN_WIDTH-SCROLLBAR, SCREEN_HEIGHT-(33+4+14)}, sequence_view, NULL, -1},
-	{{SCREEN_WIDTH-SCROLLBAR, 33+4+14, SCROLLBAR, SCREEN_HEIGHT-(33+4+14)}, slider, &mused.sequence_slider_param, -1},
+	{{0,0,0,33+4}, info_view, NULL, -1},
+	{{0, 33+4, -130, 14}, bevel_view, (void*)BEV_BACKGROUND, -1},
+	{{2, 33+4+2, -130-2, 10}, song_name_view, NULL, -1},
+	{{-130, 33+4, 130, 14}, instrument_disk_view, NULL, -1},
+	{{0, 33+4+14, 0-SCROLLBAR, 0}, sequence_view, NULL, -1},
+	{{0-SCROLLBAR, 33+4+14, SCROLLBAR, 0}, slider, &mused.sequence_slider_param, -1},
 	{{0, 0, 0, 0}, NULL}
 };
 
 static const View reverb_view_tab[] =
 {
-	{{0, 0, SCREEN_WIDTH, SCREEN_HEIGHT}, reverb_view, NULL, -1},
+	{{0, 0, 0, 0}, reverb_view, NULL, -1},
 	{{0, 0, 0, 0}, NULL}
 };
 
@@ -161,6 +161,7 @@ int main(int argc, char **argv)
 	domain->screen_h = SCREEN_HEIGHT;
 	domain->fps = 20;
 	domain->scale = 1;
+	domain->flags = SDL_RESIZABLE;
 	gfx_domain_update(domain);
 	
 	SDL_EnableKeyRepeat(SDL_DEFAULT_REPEAT_DELAY, SDL_DEFAULT_REPEAT_INTERVAL);
@@ -204,6 +205,15 @@ int main(int argc, char **argv)
 			{
 				case SDL_QUIT:
 				quit_action(0,0,0);
+				break;
+				
+				case SDL_VIDEORESIZE:
+					domain->screen_w = my_max(320, e.resize.w / domain->scale);
+					domain->screen_h = my_max(240, e.resize.h / domain->scale);
+					mused.window_w = e.resize.w;
+					mused.window_h = e.resize.h;
+					gfx_domain_update(domain);
+					mused.screen = gfx_domain_get_surface(domain);
 				break;
 				
 				case SDL_ACTIVEEVENT:
@@ -330,13 +340,13 @@ int main(int argc, char **argv)
 				if (mused.mode == MENU) 
 				{
 					SDL_Event foo = {0};
-					my_draw_view(tab[m], &foo);
+					my_draw_view(tab[m], &foo, mused.screen);
 					draw_menu(mused.screen, &e);
 					if (menu_closed) close_menu();
 				}
 				else
 				{
-					my_draw_view(tab[m], &e);
+					my_draw_view(tab[m], &e, mused.screen);
 				}
 				
 				e.type = 0;
@@ -346,7 +356,7 @@ int main(int argc, char **argv)
 			gfx_domain_flip(domain);
 		}
 		else
-			SDL_Delay(5);
+			SDL_Delay(10);
 		
 		if (mused.done) 
 		{

@@ -38,6 +38,8 @@ static const struct { int type; const char *name; void *param; int mask; } confi
 {
 	{ C_BOOL, "fullscreen", &mused.flags, FULLSCREEN },
 	{ C_INT, "pixel_size", &mused.pixel_scale },
+	{ C_INT, "window_width", &mused.window_w },
+	{ C_INT, "window_height", &mused.window_h },
 	{ C_INT, "mix_rate", &mused.mix_rate },
 	{ C_INT, "mix_buffer", &mused.mix_buffer },
 	{ C_BOOL, "compact", &mused.flags, COMPACT_VIEW },

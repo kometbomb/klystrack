@@ -98,6 +98,7 @@ typedef struct
 	char themename[100];
 	int pixel_scale;
 	int mix_rate, mix_buffer;
+	int window_w, window_h;
 } Mused;
 
 #define NUM_PATTERNS 256
