@@ -394,6 +394,8 @@ void toggle_pixel_scale(void *a, void*b, void*c)
 void change_pixel_scale(void *scale, void*b, void*c)
 {	
 	mused.pixel_scale = CASTPTR(int,scale);
+	domain->screen_w = my_max(320, mused.window_w / mused.pixel_scale);
+	domain->screen_h = my_max(240, mused.window_h / mused.pixel_scale);
 	domain->scale = mused.pixel_scale;
 	gfx_domain_update(domain);
 	mused.screen = gfx_domain_get_surface(domain);
