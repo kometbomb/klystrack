@@ -66,7 +66,7 @@ static Uint16 find_command_ahx(Uint8 command, Uint8 data, Uint8 *ctrl)
 	}
 	else if (command == 0x3)
 	{
-		return 0x300|(data * 4);
+		return 0x300|my_min(0xff, data * 8);
 	}
 	else if (command == 0x5)
 	{
@@ -75,11 +75,11 @@ static Uint16 find_command_ahx(Uint8 command, Uint8 data, Uint8 *ctrl)
 	}
 	else if (command == 0x1)
 	{
-		return 0x100 | (data * 4);
+		return 0x100 | my_min(0xff, data * 8);
 	}
 	else if (command == 0x2)
 	{
-		return 0x200 | (data * 4);
+		return 0x200 | my_min(0xff, data * 8);
 	}
 	else if (command == 0xf)
 	{
@@ -246,11 +246,50 @@ static int import_mod(FILE *f)
 }
 
 
+static void ahx_program(Uint8 fx1, Uint8 data1, int *pidx, MusInstrument *i)
+{
+	switch (fx1)
+	{
+		case 0: 	
+			i->program[*pidx] = MUS_FX_CUTOFF_SET | ((data1 & 0x3f) * 4);
+			break;
+			
+		case 1: 	
+			i->program[*pidx] = MUS_FX_PORTA_UP | ((data1 & 0xff));
+			break;
+			
+		case 2: 	
+			i->program[*pidx] = MUS_FX_PORTA_DN | ((data1 & 0xff));
+			break;
+			
+		case 3: 	
+			i->program[*pidx] = MUS_FX_PW_SET | ((data1 & 0xff));
+			break;
+		
+		case 0xf:		
+		case 7:
+		case 4:
+			--*pidx; // not supported
+			i->program[*pidx] &= ~0x8000;
+			break;
+			
+		case 5:
+			i->program[*pidx] = MUS_FX_JUMP | ((data1 & (MUS_PROG_LEN - 1)));
+			break;
+			
+		case 0xc:
+		case 6:
+			i->program[*pidx] = MUS_FX_SET_VOLUME | ((data1 & 0x3f) * 2);
+			break;
+	}
+}
+
+
 static int import_ahx(FILE *f)
 {
 	char sig[4];
 	
-	fread(sig, 1, sizeof(sig), f);
+	fread(sig, 1, 4, f);
 	
 	int ver = 0;
 	
@@ -316,16 +355,20 @@ static int import_ahx(FILE *f)
 			fread(&pat, 1, 1, f);
 			fread(&trans, 1, 1, f);
 			
-			if (!track0 && pat == 0)
-				continue;
+			/*if (!track0 && pat == 0)
+				continue;*/
 			
-			add_sequence(c, i * TRL, pat - !track0, trans);
+			add_sequence(c, i * TRL, pat, trans);
 		}	
 	}
 	
-	for (int pat = 0 ; pat < TRK ; ++pat)
+	debug("position = %d", ftell(f));
+	
+	for (int pat = 0 ; pat < TRK + 1; ++pat)
 	{
 		resize_pattern(&mused.song.pattern[pat], TRL);
+		
+		if (track0 && pat == 0) continue;
 		
 		for (int s = 0 ; s < TRL ; ++s)
 		{
@@ -344,6 +387,157 @@ static int import_ahx(FILE *f)
 			mused.song.pattern[pat].step[s].ctrl = 0;
 			mused.song.pattern[pat].step[s].command = find_command_ahx(command, data, &mused.song.pattern[pat].step[s].ctrl);
 		}
+	}
+	
+	debug("position = %d", ftell(f));
+	
+	for (int smp = 0 ; smp < SMP ; ++smp)
+	{
+		fread(&byte, 1, 1, f);
+		
+		MusInstrument *i = &mused.song.instrument[smp];
+		
+		mus_get_default_instrument(i);
+		i->flags = MUS_INST_SET_PW|MUS_INST_SET_CUTOFF;
+		i->cydflags = CYD_CHN_ENABLE_FILTER|CYD_CHN_ENABLE_PULSE;
+		
+		i->volume = byte * 2;
+		
+		fread(&byte, 1, 1, f);
+		
+		i->base_note = (MIDDLE_C + 36) - my_min(5, byte & 0x7) * 12;
+		
+		fread(&byte, 1, 1, f);
+		i->adsr.a = byte / 16;
+		fread(&byte, 1, 1, f);
+		
+		fread(&byte, 1, 1, f);
+		i->adsr.d = byte / 16;
+		
+		fread(&byte, 1, 1, f);
+		i->adsr.s = byte / 4;
+		fread(&byte, 1, 1, f);
+		
+		fread(&byte, 1, 1, f);
+		i->adsr.r = byte / 16;
+		
+		fread(&byte, 1, 1, f);
+		
+		/* --- */
+		
+		fread(&byte, 1, 1, f);
+		fread(&byte, 1, 1, f);
+		fread(&byte, 1, 1, f);
+		
+		fread(&byte, 1, 1, f);
+		fread(&byte, 1, 1, f);
+		
+		fread(&byte, 1, 1, f);
+		i->vibrato_depth = (byte & 0xf) * 4;
+		
+		fread(&byte, 1, 1, f);
+		i->vibrato_speed = byte / 4;
+		
+		Uint8 lower, upper;
+		fread(&lower, 1, 1, f);
+		fread(&upper, 1, 1, f);
+		
+		i->pwm_depth = (upper - lower);
+		i->pw = ((upper + lower) / 2) * 2047 / 63;
+		
+		fread(&byte, 1, 1, f);
+		i->pwm_speed = byte / 4;
+		
+		fread(&byte, 1, 1, f);
+		
+		fread(&byte, 1, 1, f);
+		i->prog_period = byte;
+		
+		int PLEN;
+		fread(&byte, 1, 1, f);
+		
+		PLEN = byte;
+		
+		int pidx = 0;
+		
+		for (int s = 0 ; s < PLEN ; ++s)
+		{
+			Uint32 step = 0;
+			fread(&step, 4, 1, f);
+			
+			step = SDL_SwapBE32(step);
+			
+			if (pidx < MUS_PROG_LEN - 1)
+			{
+				Uint8 fx2 = (step & 0xe0000000) >> 29 ;
+				Uint8 fx1 = (step & 0x1c000000) >> 26;
+				Uint8 wave = (step & 0x3800000) >> 23;
+				Uint8 note = (step >> 16) & 63;
+				Uint8 data1 = (step >> 8) & 0xff;
+				Uint8 data2 = (step) & 0xff;
+				
+				if (wave != 0)
+				{
+					// 1=triangle,
+                    //  2=sawtooth, 3=square, 4=noise
+					
+					switch (wave)
+					{
+						case 1:
+							i->program[pidx] = MUS_FX_SET_WAVEFORM | CYD_CHN_ENABLE_TRIANGLE;
+							break;
+						case 2:
+							i->program[pidx] = MUS_FX_SET_WAVEFORM | CYD_CHN_ENABLE_SAW;
+							break;
+						case 3:
+							i->program[pidx] = MUS_FX_SET_WAVEFORM | CYD_CHN_ENABLE_PULSE;
+							break;
+						case 4:
+							i->program[pidx] = MUS_FX_SET_WAVEFORM | CYD_CHN_ENABLE_NOISE;
+							break;
+						default:
+							break;
+					}
+				}
+				
+				if (note)
+				{
+					if (wave && pidx < MUS_PROG_LEN - 1)
+					{
+						i->program[pidx] |= 0x8000;
+						++pidx;					
+					}
+					
+					i->program[pidx] = 0 | ((note - 1) & 63);
+				}
+				
+				if (fx1 || data1)
+				{
+					if ((wave || note) && pidx < MUS_PROG_LEN - 1)
+					{
+						i->program[pidx] |= 0x8000;
+						++pidx;
+					}
+					
+					ahx_program(fx1, data1, &pidx, i);
+				}
+				
+				if (fx2 || data2)
+				{
+					if ((wave || note || (fx1 || data1)) && pidx < MUS_PROG_LEN - 1)
+					{
+						i->program[pidx] |= 0x8000;
+						++pidx;
+					}
+					
+					ahx_program(fx2, data2, &pidx, i);
+				}
+				
+				++pidx;
+			}
+		}
+		
+		i->program[pidx] = MUS_FX_END;
 	}
 	
 	return 1;
