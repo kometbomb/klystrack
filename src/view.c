@@ -1449,6 +1449,26 @@ void fx_view(SDL_Surface *dest_surface, const SDL_Rect *dest, const SDL_Event *e
 				
 		update_rect(&area, &r);
 		
+		r.w = 32;
+		
+		if (button_text_event(dest_surface, event, &r, mused.slider_bevel, &mused.smallfont, BEV_BUTTON, BEV_BUTTON_ACTIVE, "-INF", NULL, NULL, NULL, NULL) & 1)
+		{
+			mused.song.fx[mused.fx_bus].rvbtap[i].gain = CYDRVB_LOW_LIMIT;
+			mused.edit_reverb_param = p;
+			fx_add_param(0);
+		}
+		
+		update_rect(&area, &r);
+		
+		if (button_text_event(dest_surface, event, &r, mused.slider_bevel, &mused.smallfont, BEV_BUTTON, BEV_BUTTON_ACTIVE, "0", NULL, NULL, NULL, NULL) & 1)
+		{
+			mused.song.fx[mused.fx_bus].rvbtap[i].gain = 0;
+			mused.edit_reverb_param = p;
+			fx_add_param(0); // update taps
+		}
+		
+		update_rect(&area, &r);
+		
 		my_separator(&area, &r);
 		
 		++p;
