@@ -35,8 +35,8 @@ void pattern_event(SDL_Event *e);
 void edit_program_event(SDL_Event *e);
 void edit_text(SDL_Event *e);
 int generic_edit_text(SDL_Event *e, char *edit_buffer, size_t edit_buffer_size, int *editpos);
-void reverb_event(SDL_Event *e);
-void reverb_add_param(int d);
+void fx_event(SDL_Event *e);
+void fx_add_param(int d);
 void instrument_add_param(int a);
 void del_sequence(int first,int last,int track);
 void add_sequence(int channel, int position, int pattern, int offset);
@@ -69,7 +69,7 @@ enum
 	P_INVVIB,
 	P_SETPW,
 	P_SETCUTOFF,
-	P_REVERB,
+	P_FX,
 	P_PULSE,
 	P_PW,
 	P_SAW,
@@ -99,14 +99,16 @@ enum
 	P_VIBDEPTH,
 	P_PWMSPEED,
 	P_PWMDEPTH,
+	P_FXBUS,
 	P_PARAMS
 };
 
 enum
 {
-	R_CRUSH,
 	R_MULTIPLEX,
 	R_MULTIPLEX_PERIOD,
+	R_FX_BUS,
+	R_CRUSH,
 	R_ENABLE,
 	R_DELAY,
 	R_GAIN

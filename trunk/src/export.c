@@ -35,7 +35,7 @@ void export_wav(MusSong *song, FILE *f)
 	cyd_init(&cyd, 44100, MUS_MAX_CHANNELS);
 	cyd.flags |= CYD_SINGLE_THREAD;
 	mus_init_engine(&mus, &cyd);
-	mus_set_reverb(&mus, song);
+	mus_set_fx(&mus, song);
 	cyd_set_callback(&cyd, mus_advance_tick, &mus, song->song_rate);
 	mus_set_song(&mus, song, 0);
 	song->flags |= MUS_NO_REPEAT;

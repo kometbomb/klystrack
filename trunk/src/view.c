@@ -881,7 +881,7 @@ void info_line(SDL_Surface *dest_surface, const SDL_Rect *dest, const SDL_Event 
 				"Reverse vibrato bit",
 				"Set PW on keydown",
 				"Set cutoff on keydown",
-				"Send signal to reverb",
+				"Send signal to FX chain",
 				"Pulse wave",
 				"Pulse width",
 				"Saw wave",
@@ -910,7 +910,8 @@ void info_line(SDL_Surface *dest_surface, const SDL_Rect *dest, const SDL_Event 
 				"Vibrato speed",
 				"Vibrato depth",
 				"Pulse width modulation speed",
-				"Pulse width modulation depth"
+				"Pulse width modulation depth",
+				"FX bus"
 			};
 			strcpy(text, param_desc[mused.selected_param]);
 		}
@@ -1217,7 +1218,7 @@ void instrument_view(SDL_Surface *dest_surface, const SDL_Rect *dest, const SDL_
 		update_rect(&frame, &r);
 		inst_flags(event, &r, P_SETCUTOFF, "SET CUT", &inst->flags, MUS_INST_SET_CUTOFF);
 		update_rect(&frame, &r);
-		inst_flags(event, &r, P_REVERB, "RVB", &inst->cydflags, CYD_CHN_ENABLE_REVERB);
+		inst_flags(event, &r, P_FX, "FX", &inst->cydflags, CYD_CHN_ENABLE_FX);
 		update_rect(&frame, &r);
 	}
 	
@@ -1321,6 +1322,8 @@ void instrument_view2(SDL_Surface *dest_surface, const SDL_Rect *dest, const SDL
 	update_rect(&frame, &r);
 	inst_text(event, &r, P_PWMDEPTH,   "PWM.D", "%02X", MAKEPTR(inst->pwm_depth), 2);
 	update_rect(&frame, &r);
+	inst_text(event, &r, P_FXBUS,   "FXBUS", "%02X", MAKEPTR(inst->fx_bus), 2);
+	update_rect(&frame, &r);
 }
 
 
@@ -1366,7 +1369,7 @@ void instrument_list(SDL_Surface *dest_surface, const SDL_Rect *dest, const SDL_
 }
 
 
-void reverb_view(SDL_Surface *dest_surface, const SDL_Rect *dest, const SDL_Event *event, void *param)
+void fx_view(SDL_Surface *dest_surface, const SDL_Rect *dest, const SDL_Event *event, void *param)
 {
 	SDL_Rect area;
 	copy_rect(&area, dest);
@@ -1380,25 +1383,33 @@ void reverb_view(SDL_Surface *dest_surface, const SDL_Rect *dest, const SDL_Even
 	
 	r.h = 10;
 	
-	if (checkbox(dest_surface, event, &r, mused.slider_bevel, &mused.smallfont, BEV_BUTTON, BEV_BUTTON_ACTIVE, DECAL_TICK, "ENABLE BITCRUSH", &mused.song.flags, MUS_ENABLE_CRUSH)) mused.edit_reverb_param = R_CRUSH;
+	if (checkbox(dest_surface, event, &r, mused.slider_bevel, &mused.smallfont, BEV_BUTTON, BEV_BUTTON_ACTIVE, DECAL_TICK, "MULTIPLEX", &mused.song.flags, MUS_ENABLE_MULTIPLEX)) mused.edit_reverb_param = R_MULTIPLEX;
 	update_rect(&area, &r);
-	
-	my_separator(&area, &r);
-	
-	if (checkbox(dest_surface, event, &r, mused.slider_bevel, &mused.smallfont, BEV_BUTTON, BEV_BUTTON_ACTIVE, DECAL_TICK, "ENABLE MULTIPLEXING", &mused.song.flags, MUS_ENABLE_MULTIPLEX)) mused.edit_reverb_param = R_MULTIPLEX;
-	update_rect(&area, &r);
-	
+		
 	int d = generic_field(event, &r, R_MULTIPLEX_PERIOD, "PERIOD", "%2X", MAKEPTR(mused.song.multiplex_period), 2);
 		
 	if (d) mused.edit_reverb_param = R_MULTIPLEX_PERIOD;
-	if (d < 0) reverb_add_param(-1);
-	else if (d > 0) reverb_add_param(1);
+	if (d < 0) fx_add_param(-1);
+	else if (d > 0) fx_add_param(1);
 	
+	update_rect(&area, &r);
+	my_separator(&area, &r);
+	
+	d = generic_field(event, &r, R_FX_BUS, "FX BUS", "%2X", MAKEPTR(mused.fx_bus), 2);
+		
+	if (d) mused.edit_reverb_param = R_FX_BUS;
+	if (d < 0) fx_add_param(-1);
+	else if (d > 0) fx_add_param(1);
+	
+	update_rect(&area, &r);
+	my_separator(&area, &r);
+	
+	if (checkbox(dest_surface, event, &r, mused.slider_bevel, &mused.smallfont, BEV_BUTTON, BEV_BUTTON_ACTIVE, DECAL_TICK, "CRUSH", &mused.song.fx[mused.fx_bus].flags, CYDFX_ENABLE_CRUSH)) mused.edit_reverb_param = R_CRUSH;
 	update_rect(&area, &r);
 	
 	my_separator(&area, &r);
 	
-	if (checkbox(dest_surface, event, &r, mused.slider_bevel, &mused.smallfont, BEV_BUTTON, BEV_BUTTON_ACTIVE, DECAL_TICK, "ENABLE REVERB", &mused.song.flags, MUS_ENABLE_REVERB)) mused.edit_reverb_param = R_ENABLE;
+	if (checkbox(dest_surface, event, &r, mused.slider_bevel, &mused.smallfont, BEV_BUTTON, BEV_BUTTON_ACTIVE, DECAL_TICK, "REVERB", &mused.song.fx[mused.fx_bus].flags, CYDFX_ENABLE_REVERB)) mused.edit_reverb_param = R_ENABLE;
 	update_rect(&area, &r);
 	
 	mirror_flags();
@@ -1407,19 +1418,17 @@ void reverb_view(SDL_Surface *dest_surface, const SDL_Rect *dest, const SDL_Even
 	
 	for (int i = 0 ; i < CYDRVB_TAPS ; ++i)
 	{
-		if (i) my_separator(&area, &r);
-	
 		char label[20], value[20];
 		
 		sprintf(label, "TAP %d", i);
 		
 		r.w = 120;
 		
-		int d = generic_field(event, &r, p, label, "%4d ms", MAKEPTR(mused.song.rvbtap[i].delay), 7);
+		int d = generic_field(event, &r, p, label, "%4d ms", MAKEPTR(mused.song.fx[mused.fx_bus].rvbtap[i].delay), 7);
 		
 		if (d) mused.edit_reverb_param = p;
-		if (d < 0) reverb_add_param(-1);
-		else if (d > 0) reverb_add_param(1);
+		if (d < 0) fx_add_param(-1);
+		else if (d > 0) fx_add_param(1);
 		
 		update_rect(&area, &r);
 		
@@ -1427,18 +1436,20 @@ void reverb_view(SDL_Surface *dest_surface, const SDL_Rect *dest, const SDL_Even
 		
 		++p;
 		
-		if (mused.song.rvbtap[i].gain <= CYDRVB_LOW_LIMIT)
+		if (mused.song.fx[0].rvbtap[i].gain <= CYDRVB_LOW_LIMIT)
 			strcpy(value, "- INF");
 		else
-			sprintf(value, "%+5.1f", (double)mused.song.rvbtap[i].gain * 0.1);
+			sprintf(value, "%+5.1f", (double)mused.song.fx[mused.fx_bus].rvbtap[i].gain * 0.1);
 			
 		d = generic_field(event, &r, p, "", "%s dB", value, 8);
 		
 		if (d) mused.edit_reverb_param = p;
-		if (d < 0) reverb_add_param(-1);
-		else if (d > 0) reverb_add_param(1);
+		if (d < 0) fx_add_param(-1);
+		else if (d > 0) fx_add_param(1);
 				
 		update_rect(&area, &r);
+		
+		my_separator(&area, &r);
 		
 		++p;
 	}

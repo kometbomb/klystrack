@@ -220,17 +220,6 @@ void unmute_all_action(void *unused1, void *unused2, void *unused3)
 }
 
 
-void enable_reverb(void *unused1, void *unused2, void *unused3)
-{
-	mused.cyd.flags ^= CYD_ENABLE_REVERB;
-
-	if (mused.cyd.flags & CYD_ENABLE_REVERB)
-		mused.song.flags |= MUS_ENABLE_REVERB;
-	else
-		mused.song.flags &= ~MUS_ENABLE_REVERB;
-}
-
-
 void clear_selection(void *unused1, void *unused2, void *unused3)
 {
 	mused.selection.start = 0;
