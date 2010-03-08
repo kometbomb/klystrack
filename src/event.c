@@ -171,9 +171,15 @@ void instrument_add_param(int a)
 		
 		break;
 		
-		case P_REVERB:
+		case P_FX:
 		
-		flipbit(i->cydflags, CYD_CHN_ENABLE_REVERB);
+		flipbit(i->cydflags, CYD_CHN_ENABLE_FX);
+		
+		break;
+		
+		case P_FXBUS:
+		
+		clamp(i->fx_bus, a, 0, 31);
 		
 		break;
 	
@@ -1129,19 +1135,25 @@ void edit_text(SDL_Event *e)
 }
 
 
-void reverb_add_param(int d)
+void fx_add_param(int d)
 {
 	switch (mused.edit_reverb_param)
 	{
+		case R_FX_BUS:
+		{
+			clamp(mused.fx_bus, d, 0, CYD_MAX_FX_CHANNELS - 1);
+		}
+		break;
+	
 		case R_CRUSH:
 		{
-			flipbit(mused.song.flags, MUS_ENABLE_CRUSH);
+			flipbit(mused.song.fx[mused.fx_bus].flags, CYDFX_ENABLE_CRUSH);
 		}
 		break;
 		
 		case R_MULTIPLEX:
 		{
-			flipbit(mused.song.flags, MUS_ENABLE_MULTIPLEX);
+			flipbit(mused.song.fx[mused.fx_bus].flags, MUS_ENABLE_MULTIPLEX);
 		}
 		break;
 		
@@ -1153,7 +1165,7 @@ void reverb_add_param(int d)
 	
 		case R_ENABLE:
 		{
-			flipbit(mused.song.flags, MUS_ENABLE_REVERB);
+			flipbit(mused.song.fx[mused.fx_bus].flags, CYDFX_ENABLE_REVERB);
 		}
 		break;
 		
@@ -1163,14 +1175,14 @@ void reverb_add_param(int d)
 			int tap = (p & ~1) / 2;
 			if (!(p & 1))
 			{
-				clamp(mused.song.rvbtap[tap].delay, d * 1, 0, CYDRVB_SIZE - 1);
+				clamp(mused.song.fx[mused.fx_bus].rvbtap[tap].delay, d * 1, 0, CYDRVB_SIZE - 1);
 			}
 			else
 			{
-				clamp(mused.song.rvbtap[tap].gain, d * 1, CYDRVB_LOW_LIMIT, 0);
+				clamp(mused.song.fx[mused.fx_bus].rvbtap[tap].gain, d * 1, CYDRVB_LOW_LIMIT, 0);
 			}
 			
-			mus_set_reverb(&mused.mus, &mused.song);
+			mus_set_fx(&mused.mus, &mused.song);
 		}
 		break;
 	}
@@ -1178,7 +1190,7 @@ void reverb_add_param(int d)
 }
 
 
-void reverb_event(SDL_Event *e)
+void fx_event(SDL_Event *e)
 {
 	switch (e->type)
 	{
@@ -1202,13 +1214,13 @@ void reverb_event(SDL_Event *e)
 		
 			case SDLK_RIGHT:
 			{
-				reverb_add_param(e->key.keysym.mod & KMOD_SHIFT ? +10 : +1);
+				fx_add_param(e->key.keysym.mod & KMOD_SHIFT ? +10 : +1);
 			}
 			break;
 			
 			case SDLK_LEFT:
 			{
-				reverb_add_param(e->key.keysym.mod & KMOD_SHIFT ? -10 : -1);
+				fx_add_param(e->key.keysym.mod & KMOD_SHIFT ? -10 : -1);
 			}
 			break;
 		

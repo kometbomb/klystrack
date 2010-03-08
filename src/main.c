@@ -59,7 +59,7 @@ extern const Menu mainmenu[];
 
 #define INST_LIST (6*8 + 3*2)
 #define INFO 13
-#define INST_VIEW2 38
+#define INST_VIEW2 (38+10)
 
 void change_pixel_scale(void *, void*, void*);
 
@@ -116,9 +116,9 @@ static const View sequence_view_tab[] =
 	{{0, 0, 0, 0}, NULL}
 };
 
-static const View reverb_view_tab[] =
+static const View fx_view_tab[] =
 {
-	{{0, 0, 0, 0}, reverb_view, NULL, -1},
+	{{0, 0, 0, 0}, fx_view, NULL, -1},
 	{{0, 0, 0, 0}, NULL}
 };
 
@@ -127,7 +127,7 @@ const View *tab[] =
 	instrument_view_tab,
 	pattern_view_tab,
 	sequence_view_tab,
-	reverb_view_tab,
+	fx_view_tab,
 	classic_view_tab
 };
 
@@ -300,8 +300,8 @@ int main(int argc, char **argv)
 							sequence_event(&e);
 							break;
 							
-							case EDITREVERB:
-							reverb_event(&e);
+							case EDITFX:
+							fx_event(&e);
 							break;
 						}
 						

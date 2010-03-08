@@ -45,7 +45,7 @@ else
 	REV = cp -f
 endif
 
-INCLUDEFLAGS= -I src $(SDLFLAGS) -I ../klystron/src -L../klystron/bin.$(CFG) -DRES_PATH="$(RES_PATH)" -DCONFIG_PATH="$(CONFIG_PATH)" $(EXTFLAGS)
+INCLUDEFLAGS= -I src $(SDLFLAGS) -I ../klystron/src -L../klystron/bin.$(CFG) -DRES_PATH="$(RES_PATH)" -DCONFIG_PATH="$(CONFIG_PATH)" $(EXTFLAGS) -DUSESDLMUTEXES -DENABLEAUDIODUMP -DSTEREOOUTPUT
 	
 # What compiler to use for generating dependencies: 
 # it will be invoked with -MM

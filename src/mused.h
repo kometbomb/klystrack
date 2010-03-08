@@ -36,7 +36,7 @@ enum
 	EDITINSTRUMENT,
 	EDITPATTERN,
 	EDITSEQUENCE,
-	EDITREVERB,
+	EDITFX,
 	EDITCLASSIC,
 	EDITPROG,
 	/* Virtual modes, i.e. what are not modes itself but should be considered happening "inside" prev_mode */
@@ -99,6 +99,7 @@ typedef struct
 	int pixel_scale;
 	int mix_rate, mix_buffer;
 	int window_w, window_h;
+	int fx_bus;
 } Mused;
 
 #define NUM_PATTERNS 256

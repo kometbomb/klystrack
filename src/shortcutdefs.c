@@ -40,7 +40,7 @@ const KeyShortcut shortcuts[] =
 	{ KMOD_ALT, SDLK_F4, quit_action, 0, 0, 0 },
 	{ 0, SDLK_F2, change_mode_action, (void*)EDITPATTERN, 0, 0},
 	{ 0, SDLK_F3, change_mode_action, (void*)EDITINSTRUMENT, 0, 0},
-	{ KMOD_SHIFT, SDLK_F3, change_mode_action, (void*)EDITREVERB, 0, 0},
+	{ KMOD_SHIFT, SDLK_F3, change_mode_action, (void*)EDITFX, 0, 0},
 	{ 0, SDLK_F4, change_mode_action, (void*)EDITSEQUENCE, 0, 0},
 	{ KMOD_SHIFT, SDLK_F4, change_mode_action, (void*)EDITCLASSIC, 0, 0},
 	{ 0, SDLK_F5, play, 0, 0, 0 },

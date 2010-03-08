@@ -168,10 +168,13 @@ void new_song()
 		clear_pattern(&mused.song.pattern[i]);
 	}
 	
-	for (int i = 0 ; i < CYDRVB_TAPS ; ++i)
+	for (int fx = 0 ; fx < CYD_MAX_FX_CHANNELS ; ++fx)
 	{
-		mused.song.rvbtap[i].delay = i * 100 + 50;
-		mused.song.rvbtap[i].gain = (i + 1) * -30;
+		for (int i = 0 ; i < CYDRVB_TAPS ; ++i)
+		{
+			mused.song.fx[fx].rvbtap[i].delay = i * 100 + 50;
+			mused.song.fx[fx].rvbtap[i].gain = (i + 1) * -30;
+		}
 	}
 	
 	for (int i = 0 ; i < MUS_MAX_CHANNELS ; ++i)
@@ -290,14 +293,8 @@ void deinit()
 void mirror_flags()
 {
 	// We need to mirror the flags to the corresponding Cyd flags
-	
-	if (mused.song.flags & MUS_ENABLE_REVERB)
-		mused.cyd.flags |= CYD_ENABLE_REVERB;
-	else
-		mused.cyd.flags &= ~CYD_ENABLE_REVERB;
-		
-	if (mused.song.flags & MUS_ENABLE_CRUSH)
-		mused.cyd.flags |= CYD_ENABLE_CRUSH;
-	else
-		mused.cyd.flags &= ~CYD_ENABLE_CRUSH;
+	for (int fx = 0 ; fx < CYD_MAX_FX_CHANNELS ; ++fx)
+	{
+		mused.cyd.fx[0].flags = mused.song.fx[0].flags;
+	}
 }
