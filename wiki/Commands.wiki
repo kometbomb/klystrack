@@ -26,6 +26,7 @@ _{{{xx}}}, {{{yy}}} = parameter to command_
 || {{{0eax}}} || fine fade volume down by x ||
 || {{{0ebx}}} || fine fade volume up by x ||
 || {{{0ecx}}} || set volume to zero on tick x (note cut) ||
+|| {{{0edx}}} || start playing current note on tick x (note delay) ||
 || {{{0fxy}}} || set play speeds to x and y. if x is 0, set both to y ||
 || {{{10xy}}} || set external arpeggio notes (used with 00f0 and 00f1 in the program) ||
 || {{{11xx}}} || portamento up by one semitone ||
