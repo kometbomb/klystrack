@@ -93,14 +93,14 @@ static const View pattern_view_tab[] =
 
 static const View classic_view_tab[] =
 {
-	{{0,0,CLASSIC_SONG_INFO,100}, info_view, NULL, -1},
-	{{CLASSIC_SONG_INFO, 0, 0-SCROLLBAR, 100 - 25}, sequence_view, NULL, EDITSEQUENCE},
-	{{0-SCROLLBAR, 0, SCROLLBAR, 100 - 25}, slider, &mused.sequence_slider_param, EDITSEQUENCE},
-	{{CLASSIC_SONG_INFO, 100-25, 0, 25}, bevel_view, (void*)BEV_BACKGROUND, -1},
-	{{CLASSIC_SONG_INFO + 2, 100 - 25 + 2, -2, 10}, song_name_view, NULL, -1},
-	{{CLASSIC_SONG_INFO + 2, 100 - 25 + 2 + 10 + 1, -2, 10}, instrument_name_view, (void*)1, -1},
-	{{0, 100, 0-SCROLLBAR, -INFO}, pattern_view, NULL, EDITPATTERN},
-	{{0 - SCROLLBAR, 100, SCROLLBAR, -INFO}, slider, &mused.pattern_slider_param, EDITPATTERN},
+	{{0,0,CLASSIC_SONG_INFO,96}, info_view, NULL, -1},
+	{{CLASSIC_SONG_INFO, 0, 0-SCROLLBAR, 96 - 25}, sequence_view, NULL, EDITSEQUENCE},
+	{{0-SCROLLBAR, 0, SCROLLBAR, 96 - 25}, slider, &mused.sequence_slider_param, EDITSEQUENCE},
+	{{CLASSIC_SONG_INFO, 96-25, 0, 25}, bevel_view, (void*)BEV_BACKGROUND, -1},
+	{{CLASSIC_SONG_INFO + 2, 96 - 25 + 2, -2, 10}, song_name_view, NULL, -1},
+	{{CLASSIC_SONG_INFO + 2, 96 - 25 + 2 + 10 + 1, -2, 10}, instrument_name_view, (void*)1, -1},
+	{{0, 96, 0-SCROLLBAR, -INFO}, pattern_view, NULL, EDITPATTERN},
+	{{0 - SCROLLBAR, 96, SCROLLBAR, -INFO}, slider, &mused.pattern_slider_param, EDITPATTERN},
 	{{0, 0 - INFO, 0, INFO }, info_line, NULL, -1},
 	{{0, 0, 0, 0}, NULL}
 };
