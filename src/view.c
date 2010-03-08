@@ -1432,9 +1432,25 @@ void fx_view(SDL_Surface *dest_surface, const SDL_Rect *dest, const SDL_Event *e
 		
 		update_rect(&area, &r);
 		
-		r.w = 80;
+		r.w = 48;
+		
+		float spd = 1000.0 / mused.song.song_rate * ((float)(mused.song.song_speed + mused.song.song_speed2) / 2);
+		
+		char tmp[10];
+		snprintf(tmp, sizeof(tmp), "%d", (int)((float)(mused.song.fx[mused.fx_bus].rvbtap[i].delay / (int)spd * (int)spd) / spd));
+		
+		if (button_text_event(dest_surface, event, &r, mused.slider_bevel, &mused.smallfont, BEV_BUTTON, BEV_BUTTON_ACTIVE, tmp, NULL, NULL, NULL, NULL) & 1)
+		{
+			mused.song.fx[mused.fx_bus].rvbtap[i].delay = (mused.song.fx[mused.fx_bus].rvbtap[i].delay) / (int)spd * (int)spd;
+			mused.edit_reverb_param = p;
+			fx_add_param(0); // update taps
+		}
+				
+		update_rect(&area, &r);
 		
 		++p;
+		
+		r.w = 80;
 		
 		if (mused.song.fx[0].rvbtap[i].gain <= CYDRVB_LOW_LIMIT)
 			strcpy(value, "- INF");
