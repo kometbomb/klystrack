@@ -157,8 +157,8 @@ void sequence_view(SDL_Surface *dest_surface, const SDL_Rect *dest, const SDL_Ev
 	int loop_begin = -1, loop_end = -1;
 	SDL_Rect selection_begin = {-1, -1}, selection_end = {-1, -1};
 	
-	const int POS_WIDTH = 4 * 8 + 4;
-	const int CHANNEL_WIDTH = (mused.flags & COMPACT_VIEW ? 2 * 8 : 5 * 8) + 4; 
+	const int POS_WIDTH = 4 * mused.console->font.w + 4;
+	const int CHANNEL_WIDTH = (mused.flags & COMPACT_VIEW ? 2 * mused.console->font.w : (5 + ((mused.flags & SHOW_PATTERN_POS_OFFSET) ? 3 : 0)) * mused.console->font.w) + 4; 
 	int vert_scrollbar = 0;
 	SDL_Rect scrollbar;
 	
@@ -237,12 +237,16 @@ void sequence_view(SDL_Surface *dest_surface, const SDL_Rect *dest, const SDL_Ev
 			console_reset_cursor(mused.console);
 			console_set_background(mused.console, 0);
 			
-			sprintf(text, "--");
+			sprintf(text, "..");
  			
 			if ((draw_colon[c]) > mused.sequenceview_steps)
 			{
 				draw_colon[c] -=  mused.sequenceview_steps;
-				sprintf(text, "::");
+				
+				if (draw_colon[c] <= mused.sequenceview_steps)
+					sprintf(text, "\1\2");
+				else	
+					sprintf(text, "\3\4");
 			}
 			else
 			{
@@ -253,14 +257,16 @@ void sequence_view(SDL_Surface *dest_surface, const SDL_Rect *dest, const SDL_Ev
 			{
 				if (mused.song.sequence[c][p[c]].position >= i && mused.song.sequence[c][p[c]].position < i + mused.sequenceview_steps && draw_colon_id[c] != mused.song.sequence[c][p[c]].position)
 				{
-					if (mused.song.sequence[c][p[c]].position != i && !(mused.flags & COMPACT_VIEW))
+					if (!(mused.flags & COMPACT_VIEW))
 					{	
-						//sprintf(text, "%02x+%02x %+3d ", mused.song.sequence[c][p[c]].pattern, mused.song.sequence[c][p[c]].position - i, mused.song.sequence[c][p[c]].note_offset);
-						sprintf(text, "%02X+%02X", mused.song.sequence[c][p[c]].pattern, mused.song.sequence[c][p[c]].position - i);
+						if (mused.song.sequence[c][p[c]].position != i && (mused.flags & SHOW_PATTERN_POS_OFFSET))
+							sprintf(text, "%02X+%02d%+02d", mused.song.sequence[c][p[c]].pattern, mused.song.sequence[c][p[c]].position - i, mused.song.sequence[c][p[c]].note_offset);
+						else
+							sprintf(text, "%02X%+02d", mused.song.sequence[c][p[c]].pattern, mused.song.sequence[c][p[c]].note_offset);
 					}
 					else
 					{
-						//sprintf(text, "%02x   %+3d  ", mused.song.sequence[c][p[c]].pattern, mused.song.sequence[c][p[c]].note_offset);
+						//sprintf(text, "%02x   %02X  ", mused.song.sequence[c][p[c]].pattern, mused.song.sequence[c][p[c]].note_offset);
 						sprintf(text, "%02X", mused.song.sequence[c][p[c]].pattern);
 					}
 					draw_colon[c] = mused.song.pattern[mused.song.sequence[c][p[c]].pattern].num_steps;
@@ -791,6 +797,7 @@ void get_command_desc(char *text, Uint16 inst)
 		{MUS_FX_CUTOFF_UP, "Filter cutoff up"},
 		{MUS_FX_CUTOFF_DN, "Filter cutoff down"},
 		{MUS_FX_CUTOFF_SET, "Set filter cutoff"},
+		{MUS_FX_FILTER_TYPE, "Set filter type"},
 		{MUS_FX_PW_DN, "PW down"},
 		{MUS_FX_PW_UP, "PW up"},
 		{MUS_FX_PW_SET, "Set PW"},
@@ -839,6 +846,11 @@ void get_command_desc(char *text, Uint16 inst)
 	if ((fi & 0x7f00) == MUS_FX_SET_WAVEFORM)
 	{
 		sprintf(text, "%s (%s%s%s%s)\n", name, (inst & CYD_CHN_ENABLE_NOISE) ? "N" : "", (inst & CYD_CHN_ENABLE_SAW) ? "S" : "", (inst & CYD_CHN_ENABLE_TRIANGLE) ? "T" : "", (inst & CYD_CHN_ENABLE_PULSE) ? "P" : "");
+	}
+	else if ((fi & 0x7f00) == MUS_FX_FILTER_TYPE)
+	{
+		static const char *fn[FLT_TYPES] = {"LP", "HP", "BP"};
+		sprintf(text, "%s (%s)\n", name, fn[(fi & 0xf) % FLT_TYPES]);
 	}
 	else if (name == NULL) sprintf(text, "Unknown\n");
 	else sprintf(text, "%s\n", name);
