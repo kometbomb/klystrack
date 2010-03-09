@@ -26,7 +26,9 @@ FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 OTHER DEALINGS IN THE SOFTWARE.
 */
 
-void zero_step();
+#include "snd/music.h"
+
+void zero_step(MusStep *step);
 void clone_pattern(void *, void *, void *);
 void get_unused_pattern(void*, void*, void*);
 void expand_pattern(void *factor, void *, void *);
