@@ -3,6 +3,11 @@
 
 _*Note:* Only significant changes and new features are listed here._ 
 
+=1.4.0=
+
+  * Resizable window, supports any window size
+  * AHX module import with instrument conversion
+
 =1.3.4=
 
   * WAV file export
