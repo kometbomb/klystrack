@@ -272,7 +272,7 @@ static void ahx_program(Uint8 fx1, Uint8 data1, int *pidx, MusInstrument *i, con
 			break;
 			
 		case 3: 	
-			i->program[*pidx] = MUS_FX_PW_SET | (((int)(data1) * 255 / 63) & 0xff);
+			i->program[*pidx] = MUS_FX_PW_SET | (((int)(data1) * 255 / 128) & 0xff);
 			break;
 		
 		case 0xf:		
@@ -289,7 +289,7 @@ static void ahx_program(Uint8 fx1, Uint8 data1, int *pidx, MusInstrument *i, con
 			
 		case 0xc:
 		case 6:
-			i->program[*pidx] = MUS_FX_SET_VOLUME | my_min(MAX_VOLUME, data1);
+			i->program[*pidx] = MUS_FX_SET_VOLUME | my_min(MAX_VOLUME, i->volume ? (int)data1 * MAX_VOLUME / i->volume : 0);
 			break;
 	}
 }
@@ -442,7 +442,12 @@ static int import_ahx(FILE *f)
 		fread(&byte, 1, 1, f);
 		fread(&byte, 1, 1, f);
 		
-		fread(&byte, 1, 1, f);
+		Uint8 flt_upper, flt_lower;
+		
+		fread(&flt_lower, 1, 1, f);
+		
+		flt_lower &= 63;
+		
 		fread(&byte, 1, 1, f);
 		
 		fread(&byte, 1, 1, f);
@@ -455,13 +460,20 @@ static int import_ahx(FILE *f)
 		fread(&lower, 1, 1, f);
 		fread(&upper, 1, 1, f);
 		
-		i->pwm_depth = (upper - lower);
+		i->pwm_depth = my_min(255, (int)(upper - lower) * 3);
 		i->pw = ((upper + lower) / 2) * 2047 / 63;
 		
 		fread(&byte, 1, 1, f);
-		i->pwm_speed = byte / 4;
+		i->pwm_speed = (16 / my_max(1, byte));
 		
-		fread(&byte, 1, 1, f);
+		fread(&flt_upper, 1, 1, f);
+		
+		flt_upper &= 63;
+		
+		if (flt_upper != flt_lower) // Probably AHX0
+			i->cutoff = 2047 * (int)(flt_upper - flt_lower) / 63;
+		else
+			i->cutoff = 2047;
 		
 		fread(&byte, 1, 1, f);
 		i->prog_period = byte;
