@@ -1,10 +1,14 @@
-#summary Info in importing modules
+#summary How to import AHX and Protracker modules
 
-Currently, Protracker and AHX modules can be imported. klystrack can't save songs in these formats, however.
+Currently, only Protracker and AHX modules can be imported. klystrack can't save songs in these formats, however.
+
+It is strongly suggested that the import feature is used only as a basis for a conversion, manual work will be needed in most cases.
 
 =Protracker=
 
-4-32 channel modules are supported. No attempt is made to emulate the instruments as they are sample based and deducing base notes etc. from sample loop lengths would be still mostly guesswork. Some effects are converted but because Protracker works on sample periods and not notes when e.g. pitch bending, the actual speeds will be off.
+4-32 channel modules are supported. No attempt is made to emulate the instruments as they are sample-based and deducing base notes etc. from sample loop lengths would still be mostly guesswork. 
+
+Some effects are converted but because Protracker works on sample periods and not notes when e.g. pitch bending, the actual speeds will be off.
 
 =AHX=
 
