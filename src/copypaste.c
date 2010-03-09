@@ -146,7 +146,7 @@ void paste()
 			if (mused.cp.type == CP_PATTERN)
 			{
 				resize_pattern(&mused.song.pattern[mused.current_pattern], cp_get_item_count(&mused.cp, sizeof(mused.song.pattern[mused.current_pattern].step[0])));
-				cp_paste_items(&mused.cp, CP_PATTERN, mused.song.pattern[mused.current_pattern].step, 0, sizeof(mused.song.pattern[mused.current_pattern].step[0]));
+				cp_paste_items(&mused.cp, CP_PATTERN, mused.song.pattern[mused.current_pattern].step, cp_get_item_count(&mused.cp, sizeof(mused.song.pattern[mused.current_pattern].step[0])), sizeof(mused.song.pattern[mused.current_pattern].step[0]));
 			}
 			else if (mused.cp.type == CP_PATTERNSEGMENT)
 				cp_paste_items(&mused.cp, CP_PATTERNSEGMENT, &mused.song.pattern[mused.current_pattern].step[mused.current_patternstep], mused.song.pattern[mused.current_pattern].num_steps-mused.current_patternstep, 

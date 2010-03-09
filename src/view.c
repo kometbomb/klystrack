@@ -130,7 +130,7 @@ static int generic_field(const SDL_Event *e, const SDL_Rect *area, int param, co
 	
 	font_write_args(&mused.largefont, mused.screen, &field, format, value);
 
-	return spinner(mused.screen, e, &spinner_area, mused.slider_bevel, area->x << 16 | area->y);
+	return spinner(mused.screen, e, &spinner_area, mused.slider_bevel, (Uint32)area->x << 16 | area->y);
 }
 
 
@@ -158,7 +158,8 @@ void sequence_view(SDL_Surface *dest_surface, const SDL_Rect *dest, const SDL_Ev
 	SDL_Rect selection_begin = {-1, -1}, selection_end = {-1, -1};
 	
 	const int POS_WIDTH = 4 * mused.console->font.w + 4;
-	const int CHANNEL_WIDTH = (mused.flags & COMPACT_VIEW ? 2 * mused.console->font.w : (5 + ((mused.flags & SHOW_PATTERN_POS_OFFSET) ? 3 : 0)) * mused.console->font.w) + 4; 
+	const int channel_chars = (mused.flags & COMPACT_VIEW) ? 2 : (5 + ((mused.flags & SHOW_PATTERN_POS_OFFSET) ? 3 : 0));
+	const int CHANNEL_WIDTH = channel_chars * mused.console->font.w + 4; 
 	int vert_scrollbar = 0;
 	SDL_Rect scrollbar;
 	
@@ -224,7 +225,7 @@ void sequence_view(SDL_Surface *dest_surface, const SDL_Rect *dest, const SDL_Ev
 		console_write_args(mused.console, "%04X", i);
 		
 		pos.x += POS_WIDTH;
-		pos.w = POS_WIDTH;
+		pos.w = CHANNEL_WIDTH;
 		
 		int first = mused.sequence_horiz_position;
 		int last = 0;
@@ -237,16 +238,28 @@ void sequence_view(SDL_Surface *dest_surface, const SDL_Rect *dest, const SDL_Ev
 			console_reset_cursor(mused.console);
 			console_set_background(mused.console, 0);
 			
-			sprintf(text, "..");
+			for (int i =0 ; i < channel_chars ; ++i)
+				text[i] = '\7';
+			text[channel_chars] = '\0';
  			
 			if ((draw_colon[c]) > mused.sequenceview_steps)
 			{
 				draw_colon[c] -=  mused.sequenceview_steps;
 				
 				if (draw_colon[c] <= mused.sequenceview_steps)
-					sprintf(text, "\1\2");
+				{
+					text[0] = '\1';
+					for (int i = 1 ; i < channel_chars - 1 ; ++i)
+						text[i] = '\6';
+					text[channel_chars-1] = '\2';
+				}
 				else	
-					sprintf(text, "\3\4");
+				{
+					text[0] = '\3';
+					for (int i = 1 ; i < channel_chars - 1 ; ++i)
+						text[i] = '\5';
+					text[channel_chars-1] = '\4';
+				}
 			}
 			else
 			{
@@ -280,7 +293,7 @@ void sequence_view(SDL_Surface *dest_surface, const SDL_Rect *dest, const SDL_Ev
 			}
 			
 			SDL_Rect r;
-			copy_rect(&r, console_write_args(mused.console,"%*s", (mused.flags & COMPACT_VIEW) ? -2 : -5, text));
+			copy_rect(&r, console_write_args(mused.console,"%*s", -channel_chars, text));
 			
 			clip_rect(&r, &content);
 			
@@ -414,7 +427,7 @@ void pattern_view_inner(SDL_Surface *dest_surface, const SDL_Rect *dest, const S
 		SDL_Rect clipped;
 		
 		if (mused.song.pattern[current_pattern].step[i].note == MUS_NOTE_RELEASE)
-			r = console_write(mused.console, "---");
+			r = console_write(mused.console, "\x08\x09\x0b");
 		else if (mused.song.pattern[current_pattern].step[i].note == MUS_NOTE_NONE)
 			r = console_write(mused.console, "...");
 		else

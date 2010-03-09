@@ -604,6 +604,30 @@ static int import_ahx(FILE *f)
 		i->program[pidx] = MUS_FX_END;
 	}
 	
+	size_t begin_names = ftell(f);
+	fseek(f, 0, SEEK_END);
+	size_t bytes = ftell(f) - begin_names;
+	
+	char *txt = malloc(bytes);
+	
+	fseek(f, begin_names, SEEK_SET);
+	
+	fread(txt, bytes, 1, f);
+	
+	char *ptr = txt;
+	
+	strncpy(mused.song.title, ptr, MUS_TITLE_LEN);
+	
+	ptr += strlen(ptr) + 1;
+	
+	for (int smp = 0 ; smp < SMP ; ++smp)
+	{
+		strncpy(mused.song.instrument[smp].name, ptr, sizeof(mused.song.instrument[smp].name));
+		ptr += strlen(ptr) + 1;
+	}
+	
+	free(txt);
+	
 	return 1;
 }
 
