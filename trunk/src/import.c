@@ -30,6 +30,7 @@ OTHER DEALINGS IN THE SOFTWARE.
 #include "gui/msgbox.h"
 #include "diskop.h"
 #include "SDL_endian.h"
+#include <math.h>
 
 extern Mused mused;
 extern GfxDomain *domain;
@@ -58,7 +59,7 @@ static Uint16 find_command_ahx(Uint8 command, Uint8 data, Uint8 *ctrl)
 	if (command == 0xc)
 	{
 		if (data <= 0x40)
-			return 0xC00 | (data * 2);
+			return 0xC00 | ((int)data * 2);
 	}
 	else if (command == 0xa)
 	{
@@ -66,7 +67,15 @@ static Uint16 find_command_ahx(Uint8 command, Uint8 data, Uint8 *ctrl)
 	}
 	else if (command == 0x3)
 	{
-		return 0x300|my_min(0xff, data * 8);
+		if (data < 0x20)
+		{
+			return 0x300|my_min(0xff, data * 8);
+		}
+		else
+		{
+			*ctrl |= MUS_CTRL_LEGATO;
+			return 0;
+		}
 	}
 	else if (command == 0x5)
 	{
@@ -246,7 +255,7 @@ static int import_mod(FILE *f)
 }
 
 
-static void ahx_program(Uint8 fx1, Uint8 data1, int *pidx, MusInstrument *i)
+static void ahx_program(Uint8 fx1, Uint8 data1, int *pidx, MusInstrument *i, const int *pos)
 {
 	switch (fx1)
 	{
@@ -263,7 +272,7 @@ static void ahx_program(Uint8 fx1, Uint8 data1, int *pidx, MusInstrument *i)
 			break;
 			
 		case 3: 	
-			i->program[*pidx] = MUS_FX_PW_SET | ((data1 & 0xff));
+			i->program[*pidx] = MUS_FX_PW_SET | (((int)(data1) * 255 / 63) & 0xff);
 			break;
 		
 		case 0xf:		
@@ -274,12 +283,13 @@ static void ahx_program(Uint8 fx1, Uint8 data1, int *pidx, MusInstrument *i)
 			break;
 			
 		case 5:
-			i->program[*pidx] = MUS_FX_JUMP | ((data1 & (MUS_PROG_LEN - 1)));
+			i->program[*pidx] = MUS_FX_JUMP | pos[data1];
+			if (*pidx > 0) i->program[*pidx - 1] &= ~0x8000;
 			break;
 			
 		case 0xc:
 		case 6:
-			i->program[*pidx] = MUS_FX_SET_VOLUME | ((data1 & 0x3f) * 2);
+			i->program[*pidx] = MUS_FX_SET_VOLUME | my_min(MAX_VOLUME, data1);
 			break;
 	}
 }
@@ -310,8 +320,6 @@ static int import_ahx(FILE *f)
 	fread(&word, 1, sizeof(word), f); 
 	
 	word = SDL_SwapBE16(word);
-	
-	debug("word = %x", word);
 	
 	int track0 = (word & 0x8000) != 0;
 	
@@ -344,8 +352,6 @@ static int import_ahx(FILE *f)
 	
 	fseek(f, SS * 2, SEEK_CUR); // we don't need the subsong positions
 	
-	debug("LEN = %d TRL = %d TRK = %d SMP = %d SS = %d", LEN, TRL, TRK, SMP, SS);
-	
 	for (int i = 0 ; i < LEN ; ++i)
 	{
 		for (int c = 0 ; c < 4 ; ++c)
@@ -361,8 +367,6 @@ static int import_ahx(FILE *f)
 			add_sequence(c, i * TRL, pat, trans);
 		}	
 	}
-	
-	debug("position = %d", ftell(f));
 	
 	for (int pat = 0 ; pat < TRK + 1; ++pat)
 	{
@@ -382,46 +386,55 @@ static int import_ahx(FILE *f)
 			Uint8 command = (step >> 8) & 0xf;
 			Uint8 data = step & 0xff;
 			
-			mused.song.pattern[pat].step[s].note = note ? (note - 1) + 12 : MUS_NOTE_NONE;
+			mused.song.pattern[pat].step[s].note = note ? (note - 1) : MUS_NOTE_NONE;
 			mused.song.pattern[pat].step[s].instrument = instrument ? instrument - 1 : MUS_NOTE_NO_INSTRUMENT;
 			mused.song.pattern[pat].step[s].ctrl = 0;
 			mused.song.pattern[pat].step[s].command = find_command_ahx(command, data, &mused.song.pattern[pat].step[s].ctrl);
 		}
 	}
 	
-	debug("position = %d", ftell(f));
-	
 	for (int smp = 0 ; smp < SMP ; ++smp)
 	{
-		fread(&byte, 1, 1, f);
-		
 		MusInstrument *i = &mused.song.instrument[smp];
 		
 		mus_get_default_instrument(i);
-		i->flags = MUS_INST_SET_PW|MUS_INST_SET_CUTOFF;
+		i->flags = MUS_INST_SET_PW|MUS_INST_SET_CUTOFF|MUS_INST_INVERT_VIBRATO_BIT|MUS_INST_RELATIVE_VOLUME;
 		i->cydflags = CYD_CHN_ENABLE_FILTER|CYD_CHN_ENABLE_PULSE;
 		
-		i->volume = byte * 2;
+		fread(&byte, 1, 1, f);
+		
+		i->volume = byte;
+		i->slide_speed = 0xc0;
 		
 		fread(&byte, 1, 1, f);
 		
-		i->base_note = (MIDDLE_C + 36) - my_min(5, byte & 0x7) * 12;
+		int wavelen_semitones = my_min(5, byte & 0x7) * 12;
+		
+		i->base_note = (MIDDLE_C + 48) - wavelen_semitones;
+		
+		Uint8 vol, len;
+		fread(&len, 1, 1, f);
+		fread(&vol, 1, 1, f);
+		i->adsr.a = my_min(31, vol > 0x10 ? 0 : (vol ? (len / vol) / 2 : len / 4));
+		
+		fread(&len, 1, 1, f);
+		fread(&vol, 1, 1, f);
+		
+		i->adsr.d = my_min(31, sqrt((float)len / 255) * 31 * 2 + 1); // AHX envelopes are linear, we have exponential
+		i->adsr.s = my_min(31, vol / 2);
 		
 		fread(&byte, 1, 1, f);
-		i->adsr.a = byte / 16;
-		fread(&byte, 1, 1, f);
 		
-		fread(&byte, 1, 1, f);
-		i->adsr.d = byte / 16;
+		fread(&len, 1, 1, f);
+		fread(&vol, 1, 1, f);
+		i->adsr.r = 1;
+		i->adsr.s = my_max(my_min(31, vol / 2), i->adsr.s);
 		
-		fread(&byte, 1, 1, f);
-		i->adsr.s = byte / 4;
-		fread(&byte, 1, 1, f);
-		
-		fread(&byte, 1, 1, f);
-		i->adsr.r = byte / 16;
-		
-		fread(&byte, 1, 1, f);
+		if (vol == 0)
+		{
+			i->adsr.s = 0;
+			i->adsr.d = my_min(i->adsr.d, sqrt((float)len / 255) * 31 * 2 + 1);
+		}
 		
 		/* --- */
 		
@@ -433,10 +446,10 @@ static int import_ahx(FILE *f)
 		fread(&byte, 1, 1, f);
 		
 		fread(&byte, 1, 1, f);
-		i->vibrato_depth = (byte & 0xf) * 4;
+		i->vibrato_depth = (byte & 0xf) * 8;
 		
 		fread(&byte, 1, 1, f);
-		i->vibrato_speed = byte / 4;
+		i->vibrato_speed = byte * 3;
 		
 		Uint8 lower, upper;
 		fread(&lower, 1, 1, f);
@@ -459,6 +472,8 @@ static int import_ahx(FILE *f)
 		PLEN = byte;
 		
 		int pidx = 0;
+		int pos[256];
+		int was_fixed = 0;
 		
 		for (int s = 0 ; s < PLEN ; ++s)
 		{
@@ -467,11 +482,14 @@ static int import_ahx(FILE *f)
 			
 			step = SDL_SwapBE32(step);
 			
+			pos[s] = pidx; // map multiple klystrack program steps to the ahx program step
+			
 			if (pidx < MUS_PROG_LEN - 1)
 			{
 				Uint8 fx2 = (step & 0xe0000000) >> 29 ;
 				Uint8 fx1 = (step & 0x1c000000) >> 26;
 				Uint8 wave = (step & 0x3800000) >> 23;
+				Uint8 fixed_note = (step >> 22) & 1;
 				Uint8 note = (step >> 16) & 63;
 				Uint8 data1 = (step >> 8) & 0xff;
 				Uint8 data2 = (step) & 0xff;
@@ -500,7 +518,7 @@ static int import_ahx(FILE *f)
 					}
 				}
 				
-				if (note)
+				if (note || was_fixed)
 				{
 					if (wave && pidx < MUS_PROG_LEN - 1)
 					{
@@ -508,7 +526,11 @@ static int import_ahx(FILE *f)
 						++pidx;					
 					}
 					
-					i->program[pidx] = 0 | ((note - 1) & 63);
+					int n = note - 1;
+					
+					if (fixed_note) n = my_min(0xf0, my_max(0, (int)n)) + 48 - wavelen_semitones;
+					
+					if (pidx < MUS_PROG_LEN - 1) i->program[pidx] = (fixed_note ? MUS_FX_ARPEGGIO_ABS : MUS_FX_ARPEGGIO) | ((n) & 0xff);
 				}
 				
 				if (fx1 || data1)
@@ -519,7 +541,7 @@ static int import_ahx(FILE *f)
 						++pidx;
 					}
 					
-					ahx_program(fx1, data1, &pidx, i);
+					if (pidx < MUS_PROG_LEN - 1) ahx_program(fx1, data1, &pidx, i, pos);
 				}
 				
 				if (fx2 || data2)
@@ -530,8 +552,10 @@ static int import_ahx(FILE *f)
 						++pidx;
 					}
 					
-					ahx_program(fx2, data2, &pidx, i);
+					if (pidx < MUS_PROG_LEN - 1) ahx_program(fx2, data2, &pidx, i, pos);
 				}
+				
+				was_fixed = fixed_note;
 				
 				++pidx;
 			}
