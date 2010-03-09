@@ -780,6 +780,7 @@ void get_command_desc(char *text, Uint16 inst)
 	static const struct { Uint16 opcode; char* name; }  instructions[] =
 	{
 		{MUS_FX_ARPEGGIO, "Arpeggio"},
+		{MUS_FX_ARPEGGIO_ABS, "Absolute arpeggio"},
 		{MUS_FX_SET_EXT_ARP, "Set external arpeggio notes"},
 		{MUS_FX_PORTA_UP, "Portamento up"},
 		{MUS_FX_PORTA_DN, "Portamento down"},
@@ -889,6 +890,7 @@ void info_line(SDL_Surface *dest_surface, const SDL_Rect *dest, const SDL_Event 
 				"Noise",
 				"Loop noise",
 				"Volume",
+				"Relative volume commands",
 				"Envelope attack",
 				"Envelope decay",
 				"Envelope sustain",
@@ -1036,10 +1038,10 @@ void program_view(SDL_Surface *dest_surface, const SDL_Rect *dest, const SDL_Eve
 				select_program_step, MAKEPTR(i), 0, 0);
 		}
 		
-		if ((inst->program[i] & 0x7f00) == MUS_FX_ARPEGGIO)
+		if ((inst->program[i] & 0x7f00) == MUS_FX_ARPEGGIO || (inst->program[i] & 0x7f00) == MUS_FX_ARPEGGIO_ABS)
 		{
 			if ((inst->program[i] & 0xff) != 0xf0 && (inst->program[i] & 0xff) != 0xf1)
-				console_write_args(mused.console, "%s\n", notename(inst->base_note + (inst->program[i] & 0xff)));
+				console_write_args(mused.console, "%s\n", notename(((inst->program[i] & 0x7f00) == MUS_FX_ARPEGGIO_ABS ? 0 : inst->base_note) + (inst->program[i] & 0xff)));
 			else
 				console_write_args(mused.console, "EXT%x\n", inst->program[i] & 0x0f);
 		}
@@ -1246,6 +1248,8 @@ void instrument_view(SDL_Surface *dest_surface, const SDL_Rect *dest, const SDL_
 	
 	my_separator(&frame, &r);
 	inst_text(event, &r, P_VOLUME, "VOL", "%02X", MAKEPTR(inst->volume), 2);
+	update_rect(&frame, &r);
+	inst_flags(event, &r, P_RELVOL, "RELATIVE", &inst->flags, MUS_INST_RELATIVE_VOLUME);
 	update_rect(&frame, &r);
 	inst_text(event, &r, P_ATTACK, "ATK", "%02X", MAKEPTR(inst->adsr.a), 2);
 	update_rect(&frame, &r);
