@@ -31,6 +31,7 @@ OTHER DEALINGS IN THE SOFTWARE.
 #include "diskop.h"
 #include "SDL_endian.h"
 #include "action.h"
+#include "edit.h"
 #include <math.h>
 
 extern Mused mused;
@@ -282,7 +283,7 @@ static void ahx_program(Uint8 fx1, Uint8 data1, int *pidx, MusInstrument *i, con
 			break;
 			
 		case 3: 	
-			i->program[*pidx] = MUS_FX_PW_SET | (((int)(data1) * 255 / 128) & 0xff);
+			i->program[*pidx] = MUS_FX_PW_SET | (my_min(255, 8 + ((int)(data1) * 244 / 128)) & 0xff);
 			break;
 			
 		case 0xf:		
@@ -390,6 +391,9 @@ static int import_ahx(FILE *f)
 	{
 		resize_pattern(&mused.song.pattern[pat], TRL);
 		
+		for (int s = 0 ; s < TRL ; ++s)
+			zero_step(&mused.song.pattern[pat].step[s]);
+		
 		if (track0 && pat == 0) continue;
 		
 		for (int s = 0 ; s < TRL ; ++s)
@@ -489,7 +493,7 @@ static int import_ahx(FILE *f)
 		flt_upper &= 63;
 		
 		if (flt_upper != flt_lower) // Probably AHX0
-			i->cutoff = 2047 * (int)(flt_upper - flt_lower) / 63;
+			i->cutoff = 2047 * (int)((flt_upper - flt_lower) & 63) / 63;
 		else
 			i->cutoff = 2047;
 		
