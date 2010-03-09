@@ -63,7 +63,8 @@ static Uint16 find_command_ahx(Uint8 command, Uint8 data, Uint8 *ctrl)
 	}
 	else if (command == 0xa)
 	{
-		return 0xa00 | data;
+_0xa00:
+		return 0x0a00 | (my_min(0xf, (data & 0x0f) * 2)) | (my_min(0xf, ((data & 0xf0) >> 4) * 2) << 4);
 	}
 	else if (command == 0x3)
 	{
@@ -80,7 +81,7 @@ static Uint16 find_command_ahx(Uint8 command, Uint8 data, Uint8 *ctrl)
 	else if (command == 0x5)
 	{
 		*ctrl |= MUS_CTRL_SLIDE|MUS_CTRL_LEGATO;
-		return 0xa00 | data;
+		goto _0xa00;
 	}
 	else if (command == 0x1)
 	{
@@ -89,6 +90,14 @@ static Uint16 find_command_ahx(Uint8 command, Uint8 data, Uint8 *ctrl)
 	else if (command == 0x2)
 	{
 		return 0x200 | my_min(0xff, data * 8);
+	}
+	else if (command == 0x4)
+	{
+		return MUS_FX_CUTOFF_SET | ((int)(data & 63) * 255 / 63);
+	}
+	else if (command == 0x9)
+	{
+		return MUS_FX_PW_SET | ((int)(data & 63) * 0x80 / 63);
 	}
 	else if (command == 0xf)
 	{
@@ -255,7 +264,7 @@ static int import_mod(FILE *f)
 }
 
 
-static void ahx_program(Uint8 fx1, Uint8 data1, int *pidx, MusInstrument *i, const int *pos)
+static void ahx_program(Uint8 fx1, Uint8 data1, int *pidx, MusInstrument *i, const int *pos, int *has_4xx)
 {
 	switch (fx1)
 	{
@@ -275,9 +284,10 @@ static void ahx_program(Uint8 fx1, Uint8 data1, int *pidx, MusInstrument *i, con
 			i->program[*pidx] = MUS_FX_PW_SET | (((int)(data1) * 255 / 128) & 0xff);
 			break;
 		
+		case 4:
+			*has_4xx = 1;
 		case 0xf:		
 		case 7:
-		case 4:
 			--*pidx; // not supported
 			i->program[*pidx] &= ~0x8000;
 			break;
@@ -460,7 +470,7 @@ static int import_ahx(FILE *f)
 		fread(&lower, 1, 1, f);
 		fread(&upper, 1, 1, f);
 		
-		i->pwm_depth = my_min(255, (int)(upper - lower) * 3);
+		i->pwm_depth = my_min(255, (int)(upper - lower) * 2);
 		i->pw = ((upper + lower) / 2) * 2047 / 63;
 		
 		fread(&byte, 1, 1, f);
@@ -485,7 +495,7 @@ static int import_ahx(FILE *f)
 		
 		int pidx = 0;
 		int pos[256];
-		int was_fixed = 0;
+		int was_fixed = 0, has_4xx = 0;
 		
 		for (int s = 0 ; s < PLEN ; ++s)
 		{
@@ -553,7 +563,7 @@ static int import_ahx(FILE *f)
 						++pidx;
 					}
 					
-					if (pidx < MUS_PROG_LEN - 1) ahx_program(fx1, data1, &pidx, i, pos);
+					if (pidx < MUS_PROG_LEN - 1) ahx_program(fx1, data1, &pidx, i, pos, &has_4xx);
 				}
 				
 				if (fx2 || data2)
@@ -564,13 +574,18 @@ static int import_ahx(FILE *f)
 						++pidx;
 					}
 					
-					if (pidx < MUS_PROG_LEN - 1) ahx_program(fx2, data2, &pidx, i, pos);
+					if (pidx < MUS_PROG_LEN - 1) ahx_program(fx2, data2, &pidx, i, pos, &has_4xx);
 				}
 				
 				was_fixed = fixed_note;
 				
 				++pidx;
 			}
+		}
+		
+		if (!has_4xx)
+		{
+			i->pwm_depth = 0 ; // no modulation set so disable
 		}
 		
 		i->program[pidx] = MUS_FX_END;
