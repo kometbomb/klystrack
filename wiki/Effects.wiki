@@ -1,10 +1,14 @@
 #summary Description of effects in klystrack/klystron
 
+==Effect channels==
+
+Instruments can send their output to any effect channels and any channel can receive input from any number of instruments. This makes it possible to have different reverb settings for e.g. drums (little reverb) and lead (massive echo).
+
 = Reverb =
 
 The reverb effect is a 8-tap FIR. The delay and gain of each tap can be individually set. The reverb is meant to mimic the reverb effect found in SNES, it is not meant to sound as good as more sophisticated reverbs with dozens of taps and feedback.
 
-The reverb is global for all sounds but it can be enabled only for selected instruments. For example, the reverb is useful for drum sounds while a bass can sound better "dry".
+Use the buttons to quickly mute or enable individual taps or to snap the delay time to pattern step length (useful for simple, clear delay effects.)
 
 *Tip:* It is possible to create a flange effect by setting very short delays and relatively high gain.
 
@@ -12,6 +16,10 @@ The reverb is global for all sounds but it can be enabled only for selected inst
 
 The bitcrush effect simply drops the bit depth of the output signal. This is done by masking out the lowest few bits. This produces ringing artifacts in the sound especially for low volumes.
 
-=Channel multiplexing=
+=Global effects=
+
+Global effects affect the master output, their effect will be audible on any instruments even if they itself don't use any effects.
+
+==Channel multiplexing==
 
 This feature simply enables one channel and mutes all other channels at the set period (in ticks). Use for extreme low tech music as it essentially reduces the channels to one. Multiplexing can be used for arpeggios.
