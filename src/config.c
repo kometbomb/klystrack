@@ -45,6 +45,7 @@ static const struct { int type; const char *name; void *param; int mask; } confi
 	{ C_BOOL, "compact", &mused.flags, COMPACT_VIEW },
 	{ C_STR, "theme", mused.themename, sizeof(mused.themename) - 1 },
 	{ C_BOOL, "multichannel_instrument_edit", &mused.flags, MULTICHANNEL_PREVIEW },
+	{ C_BOOL, "shot_position_offset", &mused.flags, SHOW_PATTERN_POS_OFFSET},
 	{ C_END }
 };
 

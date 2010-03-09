@@ -52,6 +52,7 @@ static const Menu showmenu[] =
 	{ 0, mainmenu, "Editor", editormenu, NULL },
 	{ 0, mainmenu, "", NULL, NULL },
 	{ 0, mainmenu, "Compact", NULL, MENU_CHECK, &mused.flags, (void*)COMPACT_VIEW, 0 },
+	{ 0, mainmenu, "Show position offset", NULL, MENU_CHECK, &mused.flags, (void*)SHOW_PATTERN_POS_OFFSET, 0 },
 	{ 0, NULL, NULL }
 };
 

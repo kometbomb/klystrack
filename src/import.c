@@ -30,6 +30,7 @@ OTHER DEALINGS IN THE SOFTWARE.
 #include "gui/msgbox.h"
 #include "diskop.h"
 #include "SDL_endian.h"
+#include "action.h"
 #include <math.h>
 
 extern Mused mused;
@@ -283,23 +284,30 @@ static void ahx_program(Uint8 fx1, Uint8 data1, int *pidx, MusInstrument *i, con
 		case 3: 	
 			i->program[*pidx] = MUS_FX_PW_SET | (((int)(data1) * 255 / 128) & 0xff);
 			break;
+			
+		case 0xf:		
+			i->program[*pidx] = MUS_FX_SET_SPEED | data1;
+			break;
 		
 		case 4:
-			*has_4xx = 1;
-		case 0xf:		
+			*has_4xx |= data1;
 		case 7:
 			--*pidx; // not supported
 			i->program[*pidx] &= ~0x8000;
 			break;
 			
 		case 5:
-			i->program[*pidx] = MUS_FX_JUMP | pos[data1];
+			i->program[*pidx] = MUS_FX_JUMP | (pos[data1] & (MUS_PROG_LEN - 1));
 			if (*pidx > 0) i->program[*pidx - 1] &= ~0x8000;
 			break;
 			
 		case 0xc:
 		case 6:
-			i->program[*pidx] = MUS_FX_SET_VOLUME | my_min(MAX_VOLUME, i->volume ? (int)data1 * MAX_VOLUME / i->volume : 0);
+			if (data1<=0x40)
+				i->program[*pidx] = MUS_FX_SET_VOLUME | (data1 * 2);
+			else if (data1>=0x50 && data1<=0x90)
+				i->program[*pidx] = MUS_FX_SET_VOLUME | ((int)(data1 - 0x50) * 2);
+			
 			break;
 	}
 }
@@ -413,7 +421,7 @@ static int import_ahx(FILE *f)
 		
 		fread(&byte, 1, 1, f);
 		
-		i->volume = byte;
+		i->volume = byte * 2;
 		i->slide_speed = 0xc0;
 		
 		fread(&byte, 1, 1, f);
@@ -431,14 +439,14 @@ static int import_ahx(FILE *f)
 		fread(&vol, 1, 1, f);
 		
 		i->adsr.d = my_min(31, sqrt((float)len / 255) * 31 * 2 + 1); // AHX envelopes are linear, we have exponential
-		i->adsr.s = my_min(31, vol / 2);
+		i->adsr.s = my_min(31, sqrt((float)vol / 64) * 31);
 		
 		fread(&byte, 1, 1, f);
 		
 		fread(&len, 1, 1, f);
 		fread(&vol, 1, 1, f);
 		i->adsr.r = 1;
-		i->adsr.s = my_max(my_min(31, vol / 2), i->adsr.s);
+		i->adsr.s = my_max(my_min(31, sqrt((float)vol / 64) * 31), i->adsr.s);
 		
 		if (vol == 0)
 		{
@@ -583,9 +591,14 @@ static int import_ahx(FILE *f)
 			}
 		}
 		
-		if (!has_4xx)
+		if (!(has_4xx & 0x0f))
 		{
 			i->pwm_depth = 0 ; // no modulation set so disable
+		}
+		
+		if (!(has_4xx & 0xf0))
+		{
+			i->cutoff = 2047 ; // no modulation set so disable
 		}
 		
 		i->program[pidx] = MUS_FX_END;
@@ -612,6 +625,7 @@ void import_module(void *type, void* unused1, void* unused2)
 	
 	if (!f) return;
 	
+	stop(NULL, NULL, NULL);
 	new_song();
 	
 	switch ((int)type)
