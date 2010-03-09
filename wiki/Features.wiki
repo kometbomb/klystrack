@@ -12,3 +12,4 @@
   * Stereo output
   * Reverb for SNES cheese
   * Protracker module import (no samples)
+  * AHX module import (including instruments)
