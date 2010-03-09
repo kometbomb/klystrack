@@ -2,7 +2,7 @@
 
 Currently, only Protracker and AHX modules can be imported. klystrack can't save songs in these formats, however.
 
-It is strongly suggested that the import feature is used only as a basis for a conversion, manual work will be needed in most cases.
+*Note:* It is strongly suggested that the import feature is used only as a basis for a conversion, manual work will be needed in most cases.
 
 =Protracker=
 
