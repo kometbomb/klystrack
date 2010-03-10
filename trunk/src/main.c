@@ -42,6 +42,8 @@ OTHER DEALINGS IN THE SOFTWARE.
 #include "mused.h"
 #include "config.h"
 #include "gui/bevdefs.h"
+#include <time.h>
+#include "util/rnd.h"
 
 //#define DUMPKEYS
 
@@ -145,6 +147,7 @@ static void menu_close_hook(void)
 
 int main(int argc, char **argv)
 {
+	init_genrand(time(NULL));
 	debug("Starting %s", VERSION_STRING);
 
 #ifdef DEBUG

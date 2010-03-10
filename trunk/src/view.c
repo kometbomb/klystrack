@@ -1415,20 +1415,22 @@ void fx_view(SDL_Surface *dest_surface, const SDL_Rect *dest, const SDL_Event *e
 	if (checkbox(dest_surface, event, &r, mused.slider_bevel, &mused.smallfont, BEV_BUTTON, BEV_BUTTON_ACTIVE, DECAL_TICK, "MULTIPLEX", &mused.song.flags, MUS_ENABLE_MULTIPLEX)) mused.edit_reverb_param = R_MULTIPLEX;
 	update_rect(&area, &r);
 		
-	int d = generic_field(event, &r, R_MULTIPLEX_PERIOD, "PERIOD", "%2X", MAKEPTR(mused.song.multiplex_period), 2);
+	int d;
 		
-	if (d) mused.edit_reverb_param = R_MULTIPLEX_PERIOD;
-	if (d < 0) fx_add_param(-1);
-	else if (d > 0) fx_add_param(1);
+	if ((d = generic_field(event, &r, R_MULTIPLEX_PERIOD, "PERIOD", "%2X", MAKEPTR(mused.song.multiplex_period), 2))) 
+	{
+		mused.edit_reverb_param = R_MULTIPLEX_PERIOD;
+		fx_add_param(d);
+	}
 	
 	update_rect(&area, &r);
 	my_separator(&area, &r);
 	
-	d = generic_field(event, &r, R_FX_BUS, "FX BUS", "%2X", MAKEPTR(mused.fx_bus), 2);
-		
-	if (d) mused.edit_reverb_param = R_FX_BUS;
-	if (d < 0) fx_add_param(-1);
-	else if (d > 0) fx_add_param(1);
+	if ((d = generic_field(event, &r, R_FX_BUS, "FX BUS", "%2X", MAKEPTR(mused.fx_bus), 2))) 
+	{
+		mused.edit_reverb_param = R_FX_BUS;
+		fx_add_param(-d);
+	}
 	
 	update_rect(&area, &r);
 	my_separator(&area, &r);
@@ -1443,6 +1445,37 @@ void fx_view(SDL_Surface *dest_surface, const SDL_Rect *dest, const SDL_Event *e
 	
 	mirror_flags();
 	
+	if ((d = generic_field(event, &r, R_ROOMSIZE, "ROOMSIZE", "%02X", MAKEPTR(mused.fx_room_size), 2)))
+	{
+		mused.edit_reverb_param = R_ROOMSIZE;
+		fx_add_param(d);
+	}	
+	
+	update_rect(&area, &r);
+	
+	if ((d = generic_field(event, &r, R_ROOMVOL, "VOL", "%02X", MAKEPTR(mused.fx_room_vol), 2)))
+	{
+		mused.edit_reverb_param = R_ROOMVOL;
+		fx_add_param(d);
+	}	
+	
+	update_rect(&area, &r);
+	
+	if ((d = generic_field(event, &r, R_ROOMDECAY, "DEC", "%d", MAKEPTR(mused.fx_room_dec), 1)))
+	{
+		mused.edit_reverb_param = R_ROOMDECAY;
+		fx_add_param(d);
+	}	
+	
+	update_rect(&area, &r);
+	
+	if (button_text_event(dest_surface, event, &r, mused.slider_bevel, &mused.smallfont, BEV_BUTTON, BEV_BUTTON_ACTIVE, "SET", NULL, NULL, NULL, NULL) & 1)
+	{
+		set_room_size(mused.fx_bus, mused.fx_room_size, mused.fx_room_vol, mused.fx_room_dec);
+	}
+	
+	update_rect(&area, &r);
+	
 	int p = R_DELAY;
 	
 	for (int i = 0 ; i < CYDRVB_TAPS ; ++i)
@@ -1453,11 +1486,13 @@ void fx_view(SDL_Surface *dest_surface, const SDL_Rect *dest, const SDL_Event *e
 		
 		r.w = 120;
 		
-		int d = generic_field(event, &r, p, label, "%4d ms", MAKEPTR(mused.song.fx[mused.fx_bus].rvbtap[i].delay), 7);
+		int d;
 		
-		if (d) mused.edit_reverb_param = p;
-		if (d < 0) fx_add_param(-1);
-		else if (d > 0) fx_add_param(1);
+		if ((d = generic_field(event, &r, p, label, "%4d ms", MAKEPTR(mused.song.fx[mused.fx_bus].rvbtap[i].delay), 7))) 
+		{
+			mused.edit_reverb_param = p;
+			fx_add_param(d);
+		}
 		
 		update_rect(&area, &r);
 		
@@ -1488,9 +1523,11 @@ void fx_view(SDL_Surface *dest_surface, const SDL_Rect *dest, const SDL_Event *e
 			
 		d = generic_field(event, &r, p, "", "%s dB", value, 8);
 		
-		if (d) mused.edit_reverb_param = p;
-		if (d < 0) fx_add_param(-1);
-		else if (d > 0) fx_add_param(1);
+		if ((d = generic_field(event, &r, p, "", "%s dB", value, 8))) 
+		{
+			mused.edit_reverb_param = p;
+			fx_add_param(d);
+		}
 				
 		update_rect(&area, &r);
 		
