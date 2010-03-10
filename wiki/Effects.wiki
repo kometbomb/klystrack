@@ -8,7 +8,7 @@ Instruments can send their output to any effect channels and any channel can rec
 
 The reverb effect is a 8-tap FIR. The delay and gain of each tap can be individually set. The reverb is meant to mimic the reverb effect found in SNES, it is not meant to sound as good as more sophisticated reverbs with dozens of taps and feedback.
 
-Use the buttons to quickly mute or enable individual taps or to snap the delay time to pattern step length (useful for simple, clear delay effects.)
+Use the buttons to quickly mute or enable individual taps or to snap the delay time to pattern step length (useful for simple, clear delay effects.) The room wizard can be used to set a random reverb.
 
 *Tip:* It is possible to create a flange effect by setting very short delays and relatively high gain.
 
