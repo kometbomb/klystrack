@@ -28,6 +28,7 @@ OTHER DEALINGS IN THE SOFTWARE.
 #include "mused.h"
 #include "action.h"
 #include "edit.h"
+#include "util/rnd.h"
 #include <string.h>
 
 
@@ -344,6 +345,24 @@ void instrument_add_param(int a)
 }
 
 
+static void play_the_jams(int sym)
+{
+	if (sym == SDLK_SPACE)
+	{
+		for (int i = 0 ; i < MUS_MAX_CHANNELS ; ++i)
+			cyd_enable_gate(mused.mus.cyd, &mused.mus.cyd->channel[i], 0);
+	}
+	else
+	{
+		int note = find_note(sym, mused.octave);
+		if (note != -1) 
+		{
+			mus_trigger_instrument(&mused.mus, mused.flags & MULTICHANNEL_PREVIEW ? -1 : 0, &mused.song.instrument[mused.current_instrument], note);
+		}
+	}
+}
+
+
 void edit_instrument_event(SDL_Event *e)
 {
 	switch (e->type)
@@ -352,13 +371,6 @@ void edit_instrument_event(SDL_Event *e)
 		
 		switch (e->key.keysym.sym)
 		{
-			case SDLK_SPACE:
-			{
-				for (int i = 0 ; i < MUS_MAX_CHANNELS ; ++i)
-					cyd_enable_gate(mused.mus.cyd, &mused.mus.cyd->channel[i], 0);
-			}
-			break;
-		
 			case SDLK_RETURN:
 			{
 				if (mused.selected_param == P_NAME) 
@@ -399,11 +411,7 @@ void edit_instrument_event(SDL_Event *e)
 		
 			default:
 			{
-			int note = find_note(e->key.keysym.sym, mused.octave);
-			if (note != -1) 
-			{
-				mus_trigger_instrument(&mused.mus, mused.flags & MULTICHANNEL_PREVIEW ? -1 : 0, &mused.song.instrument[mused.current_instrument], note);
-			}
+				play_the_jams(e->key.keysym.sym);
 			}
 			break;
 		}
@@ -1135,6 +1143,21 @@ void edit_text(SDL_Event *e)
 }
 
 
+void set_room_size(int fx, int size, int vol, int dec)
+{
+	int ms = CYDRVB_SIZE * size / 64;
+	
+	for (int i = 0 ; i < CYDRVB_TAPS ;++i)
+	{
+		int p = rnd(i * ms / CYDRVB_TAPS, (i + 1) * ms / CYDRVB_TAPS);
+		mused.song.fx[fx].rvbtap[i].delay = p;
+		mused.song.fx[fx].rvbtap[i].gain = CYDRVB_LOW_LIMIT-CYDRVB_LOW_LIMIT * pow(1.0 - (double)p / ms, (double)dec / 3) * vol / 16;
+	}
+	
+	mus_set_fx(&mused.mus, &mused.song);
+}
+
+
 void fx_add_param(int d)
 {
 	switch (mused.edit_reverb_param)
@@ -1166,6 +1189,24 @@ void fx_add_param(int d)
 		case R_ENABLE:
 		{
 			flipbit(mused.song.fx[mused.fx_bus].flags, CYDFX_ENABLE_REVERB);
+		}
+		break;
+		
+		case R_ROOMSIZE:
+		{
+			clamp(mused.fx_room_size, d, 1, 64);
+		}
+		break;
+		
+		case R_ROOMDECAY:
+		{
+			clamp(mused.fx_room_dec, d, 1, 9);
+		}
+		break;
+		
+		case R_ROOMVOL:
+		{
+			clamp(mused.fx_room_vol, d, 1, 16);
 		}
 		break;
 		
@@ -1224,7 +1265,9 @@ void fx_event(SDL_Event *e)
 			}
 			break;
 		
-			default: break;
+			default: 
+				play_the_jams(e->key.keysym.sym);
+			break;
 		}
 		
 		break;

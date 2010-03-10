@@ -100,7 +100,7 @@ typedef struct
 	int pixel_scale;
 	int mix_rate, mix_buffer;
 	int window_w, window_h;
-	int fx_bus;
+	int fx_bus, fx_room_size, fx_room_vol, fx_room_dec;
 } Mused;
 
 #define NUM_PATTERNS 256

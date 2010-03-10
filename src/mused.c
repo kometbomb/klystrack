@@ -169,7 +169,7 @@ void new_song()
 	}
 	
 	for (int fx = 0 ; fx < CYD_MAX_FX_CHANNELS ; ++fx)
-	{
+	{	
 		for (int i = 0 ; i < CYDRVB_TAPS ; ++i)
 		{
 			mused.song.fx[fx].rvbtap[i].delay = i * 100 + 50;
@@ -238,7 +238,10 @@ void init(MusInstrument *instrument, MusPattern *pattern, MusSeqPattern sequence
 	mused.mix_buffer = 2048;
 	mused.window_w = 640;
 	mused.window_h = 480;
-	
+	mused.fx_room_size = 16;
+	mused.fx_room_vol = 8;
+	mused.fx_room_dec = 8;
+		
 	strcpy(mused.themename, "Default");
 	
 	memset(&mused.cp, 0, sizeof(mused.cp));
