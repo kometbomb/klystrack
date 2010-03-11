@@ -1476,6 +1476,14 @@ void fx_view(SDL_Surface *dest_surface, const SDL_Rect *dest, const SDL_Event *e
 	
 	update_rect(&area, &r);
 	
+	if ((d = generic_field(event, &r, R_SPREAD, "SPREAD", "%02X", MAKEPTR(mused.song.fx[mused.fx_bus].rvb_spread), 2)))
+	{
+		mused.edit_reverb_param = R_SPREAD;
+		fx_add_param(d);
+	}	
+	
+	update_rect(&area, &r);
+	
 	int p = R_DELAY;
 	
 	for (int i = 0 ; i < CYDRVB_TAPS ; ++i)

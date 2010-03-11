@@ -1145,11 +1145,12 @@ void edit_text(SDL_Event *e)
 
 void set_room_size(int fx, int size, int vol, int dec)
 {
-	int ms = CYDRVB_SIZE * size / 64;
+	const int min_delay = 5;
+	int ms = (CYDRVB_SIZE - min_delay) * size / 64;
 	
 	for (int i = 0 ; i < CYDRVB_TAPS ;++i)
 	{
-		int p = rnd(i * ms / CYDRVB_TAPS, (i + 1) * ms / CYDRVB_TAPS);
+		int p = rnd(i * ms / CYDRVB_TAPS, (i + 1) * ms / CYDRVB_TAPS) + min_delay;
 		mused.song.fx[fx].rvbtap[i].delay = p;
 		mused.song.fx[fx].rvbtap[i].gain = CYDRVB_LOW_LIMIT-CYDRVB_LOW_LIMIT * pow(1.0 - (double)p / ms, (double)dec / 3) * vol / 16;
 	}
@@ -1207,6 +1208,13 @@ void fx_add_param(int d)
 		case R_ROOMVOL:
 		{
 			clamp(mused.fx_room_vol, d, 1, 16);
+		}
+		break;
+		
+		case R_SPREAD:
+		{
+			clamp(mused.song.fx[mused.fx_bus].rvb_spread, d, 0, 0xff);
+			mus_set_fx(&mused.mus, &mused.song);
 		}
 		break;
 		
