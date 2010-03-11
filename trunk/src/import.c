@@ -40,13 +40,13 @@ extern GfxDomain *domain;
 static Uint16 find_command_pt(Uint16 command)
 {
 	if ((command & 0xff00) == 0x0c00)
-		command = 0x0c00 | ((command & 0xff) * 2);
+		command = MUS_FX_SET_SPEED | ((command & 0xff) * 2);
 	else if ((command & 0xff00) == 0x0a00)
-		command = 0x0a00 | (my_min(0xf, (command & 0x0f) * 2)) | (my_min(0xf, ((command & 0xf0) >> 4) * 2) << 4);
+		command = MUS_FX_FADE_VOLUME | (my_min(0xf, (command & 0x0f) * 2)) | (my_min(0xf, ((command & 0xf0) >> 4) * 2) << 4);
 	else if ((command & 0xfff0) == 0x0ea0 || (command & 0xfff0) == 0x0eb0)
 		command = (command & 0xfff0) | (my_min(0xf, (command & 0x0f) * 2));
 	else if ((command & 0xff00) == 0x0f00 && (command & 0xff) < 32)
-		command = 0x0f00 | (command & 0xff);
+		command = MUS_FX_SET_SPEED | (command & 0xff);
 	else if ((command & 0xff00) == 0x0100 || (command & 0xff00) == 0x0200 || (command & 0xff00) == 0x0300) 
 		command = (command & 0xff00) | my_min(0xff, (command & 0xff) * 8);
 	else if ((command & 0xff00) != 0x0400 && (command & 0xff00) != 0x0000) 
@@ -61,18 +61,18 @@ static Uint16 find_command_ahx(Uint8 command, Uint8 data, Uint8 *ctrl)
 	if (command == 0xc)
 	{
 		if (data <= 0x40)
-			return 0xC00 | ((int)data * 2);
+			return MUS_FX_SET_VOLUME | ((int)data * 2);
 	}
 	else if (command == 0xa)
 	{
 _0xa00:
-		return 0x0a00 | (my_min(0xf, (data & 0x0f) * 2)) | (my_min(0xf, ((data & 0xf0) >> 4) * 2) << 4);
+		return MUS_FX_FADE_VOLUME | (my_min(0xf, (data & 0x0f) * 2)) | (my_min(0xf, ((data & 0xf0) >> 4) * 2) << 4);
 	}
 	else if (command == 0x3)
 	{
 		if (data < 0x20)
 		{
-			return 0x300|my_min(0xff, data * 8);
+			return MUS_FX_SLIDE | my_min(0xff, data * 6);
 		}
 		else
 		{
@@ -87,11 +87,11 @@ _0xa00:
 	}
 	else if (command == 0x1)
 	{
-		return 0x100 | my_min(0xff, data * 8);
+		return MUS_FX_PORTA_UP | my_min(0xff, data * 6);
 	}
 	else if (command == 0x2)
 	{
-		return 0x200 | my_min(0xff, data * 8);
+		return MUS_FX_PORTA_DN | my_min(0xff, data * 6);
 	}
 	else if (command == 0x4)
 	{
@@ -103,42 +103,43 @@ _0xa00:
 	}
 	else if (command == 0xf)
 	{
-		return 0xf00 | (data & 0xf);
+		return MUS_FX_SET_SPEED | (data & 0xf);
 	}
 	else if (command == 0xe)
 	{
 		if ((data & 0xf0) == 0xc0)
 		{
-			return 0xec0|(data&0xf);
+			return MUS_FX_EXT_NOTE_CUT | (data & 0xf);
 		}
 		else if ((data & 0xf0) == 0xd0)
 		{
-			return 0xed0|(data&0xf);
+			return MUS_FX_EXT_NOTE_DELAY | (data & 0xf);
 		}
 		else if ((data & 0xf0) == 0x40)
 		{
-			return 0x400|(data&0xf);
+			return MUS_FX_VIBRATO | (data & 0xf);
 		}
 		else if ((data & 0xf0) == 0x10)
 		{
-			return 0xe10|((data&0xf));
+			return MUS_FX_EXT_PORTA_UP | (data & 0xf);
 		}
 		else if ((data & 0xf0) == 0x20)
 		{
-			return 0xe20|((data&0xf));
+			return MUS_FX_EXT_PORTA_DN | (data & 0xf);
 		}
 		else if ((data & 0xf0) == 0xa0)
 		{
-			return 0xeb0|((data&0xf));
+			return MUS_FX_EXT_FADE_VOLUME_UP | (data & 0xf);
 		}
 		else if ((data & 0xf0) == 0xb0)
 		{
-			return 0xea0|((data&0xf));
+			return MUS_FX_EXT_FADE_VOLUME_DN | (data & 0xf);
 		}
 	}
 	
 	return 0;
 }
+
 
 static Uint8 find_note(Uint16 period)
 {
@@ -157,6 +158,7 @@ static Uint8 find_note(Uint16 period)
 		
 	return MUS_NOTE_NONE;
 }
+
 
 static int import_mod(FILE *f)
 {
@@ -307,7 +309,7 @@ static void ahx_program(Uint8 fx1, Uint8 data1, int *pidx, MusInstrument *i, con
 			if (data1<=0x40)
 				i->program[*pidx] = MUS_FX_SET_VOLUME | (data1 * 2);
 			else if (data1>=0x50 && data1<=0x90)
-				i->program[*pidx] = MUS_FX_SET_VOLUME | ((int)(data1 - 0x50) * 2);
+				i->program[*pidx] = MUS_FX_SET_VOLUME | ((int)(data1 - 0x50) * 2); // should be relative but no can do
 			
 			break;
 	}
@@ -371,20 +373,21 @@ static int import_ahx(FILE *f)
 	
 	fseek(f, SS * 2, SEEK_CUR); // we don't need the subsong positions
 	
-	for (int i = 0 ; i < LEN ; ++i)
 	{
-		for (int c = 0 ; c < 4 ; ++c)
+		Uint8 seq[2 * 0x1000 * 4];
+		
+		fread(&seq, 1, LEN * 2 * 4, f);
+		
+		for (int i = 0 ; i < LEN ; ++i)
 		{
-			Uint8 pat;
-			Sint8 trans;
-			fread(&pat, 1, 1, f);
-			fread(&trans, 1, 1, f);
-			
-			/*if (!track0 && pat == 0)
-				continue;*/
-			
-			add_sequence(c, i * TRL, pat, trans);
-		}	
+			for (int c = 0 ; c < 4 ; ++c)
+			{
+				/*if (!track0 && pat == 0)
+					continue;*/
+				
+				add_sequence(c, i * TRL, seq[c * 2 + i * 4 * 2], *(Sint8*)&seq[c * 2 + i * 4 * 2 + 1]);
+			}	
+		}
 	}
 	
 	for (int pat = 0 ; pat < TRK + 1; ++pat)
@@ -396,12 +399,13 @@ static int import_ahx(FILE *f)
 		
 		if (track0 && pat == 0) continue;
 		
+		Uint8 steps[64 * 3 + 1];
+		
+		fread(steps, 3, TRL, f);
+		
 		for (int s = 0 ; s < TRL ; ++s)
 		{
-			Uint32 step = 0;
-			fread((Uint8*)&step + 1, 3, 1, f);
-			
-			step = SDL_SwapBE32(step);
+			Uint32 step = SDL_SwapLE32(((Uint32)steps[s * 3] << 16) | ((Uint32)steps[s * 3 + 1] << 8) | ((Uint32)steps[s * 3 + 2]));
 			
 			Uint8 note = (step >> 18) & 0x3f;
 			Uint8 instrument = (step >> 12) & 0x3f;
@@ -509,12 +513,12 @@ static int import_ahx(FILE *f)
 		int pos[256];
 		int was_fixed = 0, has_4xx = 0;
 		
+		Uint32 steps[256];
+		fread(&steps, sizeof(Uint32), PLEN, f);
+		
 		for (int s = 0 ; s < PLEN ; ++s)
 		{
-			Uint32 step = 0;
-			fread(&step, 4, 1, f);
-			
-			step = SDL_SwapBE32(step);
+			Uint32 step = SDL_SwapBE32(steps[s]);
 			
 			pos[s] = pidx; // map multiple klystrack program steps to the ahx program step
 			
