@@ -1,4 +1,5 @@
-#pragma once
+#ifndef VIEW_H
+#define VIEW_H
 
 /*
 Copyright (SDL_Surface *dest_surface, c) 2009-2010 Tero Lindeman (SDL_Surface *dest_surface, kometbomb)
@@ -46,3 +47,5 @@ void instrument_view2(SDL_Surface *dest_surface, const SDL_Rect *dest, const SDL
 void instrument_list(SDL_Surface *dest_surface, const SDL_Rect *dest, const SDL_Event *event, void *param);
 void fx_view(SDL_Surface *dest_surface, const SDL_Rect *dest, const SDL_Event *event, void *param);
 void bevel_view(SDL_Surface *dest_surface, const SDL_Rect *dest, const SDL_Event *event, void *param);
+
+#endif
