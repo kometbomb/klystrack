@@ -1,8 +1,6 @@
-TARGET=klystrack
-ARCHIVE = klystrack.zip
-VPATH=src:src
-ECHO = echo
-CFG = debug
+TARGET := klystrack
+ECHO := echo
+CFG := debug
 MACHINE = -march=pentium2 
 ZIP = pkzipc -exclude=.* -zipdate=newest -path=relative -silent -rec -dir -add
 ZIPEXT = pkzipc -ext -silent
@@ -11,28 +9,10 @@ REV = SubWCRev.exe .
 UPLOAD = cmd.exe /c upload.bat
 MAKEBUNDLE = ../klystron/tools/bin/makebundle.exe
 DLLS = zip/data/SDL.dll zip/data/SDL_mixer.dll
-DESTDIR?=/usr
-
-ifdef COMSPEC
-	RES_PATH = .
-	CONFIG_PATH = ~/.klystrack
-else
-	RES_PATH = $(DESTDIR)/lib/klystrack
-	CONFIG_PATH = ~/.klystrack
-endif
-
-# The directories containing the source files, separated by ':'
-
-
-# The source files: regardless of where they reside in 
-# the source tree, VPATH will locate them...
-Group0_SRC = $(notdir ${wildcard src/*.c})
-
-# Build a Dependency list and an Object list, by replacing 
-# the .cpp extension to .d for dependency files, and .o for 
-# object files.
-Group0_DEP = $(patsubst %.c, deps/Group0_$(CFG)_%.d, ${Group0_SRC})
-Group0_OBJ = $(patsubst %.c, objs.$(CFG)/Group0_%.o, ${Group0_SRC}) 
+DESTDIR ?= /usr
+EXT := .c
+CC := gcc
+CDEP := gcc -E -MM
 
 ifdef COMSPEC
 	TARGET =klystrack.exe
@@ -45,39 +25,68 @@ else
 	REV = cp -f
 endif
 
-INCLUDEFLAGS= -I src $(SDLFLAGS) -I ../klystron/src -L../klystron/bin.$(CFG) -DRES_PATH="$(RES_PATH)" -DCONFIG_PATH="$(CONFIG_PATH)" $(EXTFLAGS) -DUSESDLMUTEXES -DENABLEAUDIODUMP -DSTEREOOUTPUT
-	
-# What compiler to use for generating dependencies: 
-# it will be invoked with -MM
-CC = gcc -std=gnu99 --no-strict-aliasing
-CDEP = gcc -E -std=gnu99
-
-ifndef CFLAGS
-	CFLAGS = $(MACHINE) -ftree-vectorize
-endif
-
-# Separate compile options per configuration
-ifeq ($(CFG),debug)
-	CFLAGS += -O3 -g -Wall -DDEBUG -fno-inline $(DEBUGPARAMS)
+ifdef COMSPEC
+	RES_PATH = .
+	CONFIG_PATH = ~/.klystrack
 else
-	ifeq ($(CFG),profile)
-		CFLAGS += -O3 -g -pg -Wall
-	else
-		ifeq ($(CFG),release)
-			CFLAGS += -O3 -Wall -s
-			ifdef COMSPEC
-				CFLAGS += -mwindows
-			endif
-		else
-			@$(ECHO) "Invalid configuration "$(CFG)" specified."
-			@$(ECHO) "You must specify a configuration when "
-			@$(ECHO) "running make, e.g. make CFG=debug"
-			@$(ECHO) "Possible choices for configuration are "
-			@$(ECHO) "'release', 'profile' and 'debug'"
-			@exit 1
-		endif
-	endif
+	RES_PATH = $(DESTDIR)/lib/klystrack
+	CONFIG_PATH = ~/.klystrack
 endif
+
+CFLAGS := $(MACHINE) -mthreads -ftree-vectorize -std=gnu99 --no-strict-aliasing
+LDFLAGS :=  -lmingw32 -L ../klystron/bin.$(CFG) -lengine_gfx -lengine_util -lengine_snd -lengine_gui -lSDLmain -lSDL -lSDL_mixer 
+INCLUDEFLAGS := -I src $(SDLFLAGS) -I ../klystron/src -L../klystron/bin.$(CFG) -DRES_PATH="$(RES_PATH)" -DCONFIG_PATH="$(CONFIG_PATH)" $(EXTFLAGS) -DUSESDLMUTEXES -DENABLEAUDIODUMP -DSTEREOOUTPUT
+
+DIRS := $(notdir $(wildcard src/*)) 
+
+ifeq ($(CFG),debug)
+ CFLAGS += -O3 -g -Wall -DDEBUG -fno-inline 
+else
+ ifeq ($(CFG),profile)
+  CFLAGS += -O3 -pg -Wall 
+ else
+  ifeq ($(CFG),release)
+   CFLAGS += -O3 -Wall -s
+  else
+   @$(ECHO) "Invalid configuration "$(CFG)" specified."
+   @$(ECHO) "Possible choices for configuration are "
+   @$(ECHO) "'release', 'profile' and 'debug'"
+   @exit 1
+  endif
+ endif
+endif
+
+# $(1) = subdir, $(2) = filename prefix (i.e. subdir without a slash)
+define directory_defs
+ SRC := $$(notdir $$(wildcard src/$(value 1)/*$(EXT))) 
+ DEP := $$(patsubst %$(EXT),deps/$(CFG)_$(2)%.d,$$(SRC))
+ OBJ := $$(patsubst %$(EXT),objs.$(CFG)/$(2)%.o,$$(SRC))
+ 
+ OBJS := $(OBJS) $$(OBJ)
+ DEPS := $(DEPS) $$(DEP)
+ 
+objs.$(CFG)/$(2)%.o: src/$(1)%$(EXT)
+	@$(ECHO) "Compiling $$(notdir $$<)..."
+	@mkdir -p objs.$(CFG)
+	@$(CC) -static $(INCLUDEFLAGS) -c $(CFLAGS) -o $$@ $$<
+
+deps/$(CFG)_$(2)%.d: src/$(1)%$(EXT)
+	@mkdir -p deps
+	@$(ECHO) "Generating dependencies for $$(notdir $$<)..."
+	@set -e ; $(CDEP) $(INCLUDEFLAGS) $$< > $$@.$$$$$$$$; \
+	sed 's,\($$*\)\.o[ :]*,objs.$(CFG)\/$(2)\1.o $$@ : ,g' \
+		< $$@.$$$$$$$$ > $$@; \
+	rm -f $$@.$$$$$$$$
+endef
+
+# root (i.e. src/*.c)
+$(eval $(call directory_defs,,))
+# subdirs (src/*/*.c)
+$(foreach dir,$(DIRS),$(eval $(call directory_defs,$(dir)/,$(dir)_)))
+
+.PHONY: all zip release
+
+all: bin.$(CFG)/$(TARGET) res/Default
 
 build: Makefile src/version
 	@echo '#ifndef VERSION_NUMBER' > src/version_number.h
@@ -100,8 +109,6 @@ else
 endif
 	make -C ../klystron CFG=$(CFG) EXTFLAGS="$(EXTFLAGS)"
 	make all CFG=$(CFG) EXTFLAGS="$(EXTFLAGS)"
-
-all:	inform bin.$(CFG)/$(TARGET) res/Default
 
 .PHONY: zip all build nightly
 
@@ -132,26 +139,23 @@ ifneq ($(UPLOAD),)
 endif
 	rm -f ver.txt
 
-inform:
-	@echo "Configuration "$(CFG)
-	@echo "------------------------"
+clean:
+	@rm -rf deps objs.$(CFG) bin.$(CFG)
 
-bin.$(CFG)/${TARGET}: $(Group0_OBJ) | inform
+bin.$(CFG)/$(TARGET): $(OBJS)
+	@$(ECHO) "Linking $(TARGET)..."
 	@mkdir -p bin.$(CFG)
-	$(CC) $(CFLAGS) -o $@ $^ $(INCLUDEFLAGS) -lengine_gfx -lengine_snd -lengine_util -lengine_gui ${SDLLIBS}
+	@$(CC) $(CFLAGS) -o $@ $^ $(LDFLAGS)
 
-objs.$(CFG)/Group0_%.o: %.c
-	@mkdir -p objs.$(CFG)
-	@$(ECHO) "Compiling "$(notdir $<)"..."
-	@$(CC) $(CFLAGS) $(INCLUDEFLAGS) -c -o $@ $<
-
-deps/Group0_$(CFG)_%.d: %.c
-	@mkdir -p deps
-	@$(ECHO) "Generating dependencies for $<"
-	@set -e ; $(CDEP) -MM $(INCLUDEFLAGS) $< > $@.$$$$; \
-	sed 's,\($*\)\.o[ :]*,objs.$(CFG)\/Group0_\1.o $@ : ,g' \
-		< $@.$$$$ > $@; \
-	rm -f $@.$$$$
+release: bin.release/$(TARGET)
+	@$(ECHO) "Building release -->"
+	
+bin.release/$(TARGET): 
+	@make CFG=release
+	
+ifneq ($(MAKECMDGOALS),clean)
+-include $(DEPS)
+endif
 	
 res/Default: data/bevel.bmp temp/8x8.fnt temp/7x6.fnt data/colors.txt
 	@mkdir -p res
@@ -177,14 +181,3 @@ zip/data/SDL_mixer.dll:
 	cd temp ; $(WGET) http://www.libsdl.org/projects/SDL_mixer/release/SDL_mixer-1.2.8-win32.zip ; $(ZIPEXT) SDL_mixer-1.2.8-win32.zip SDL_mixer.dll ; rm SDL_mixer-1.2.8-win32.zip
 	@mkdir -p zip/data
 	mv temp/SDL_mixer.dll zip/data/SDL_mixer.dll
-		
-clean:
-	@rm -rf deps objs.release objs.debug objs.profile bin.release bin.debug bin.profile res temp zip ver.txt
-
-# Unless "make clean" is called, include the dependency files
-# which are auto-generated. Don't fail if they are missing
-# (-include), since they will be missing in the first 
-# invocation!
-ifneq ($(MAKECMDGOALS),clean)
--include ${Group0_DEP}
-endif
