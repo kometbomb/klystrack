@@ -217,6 +217,7 @@ int save_data()
 					
 					if (mused.song.fx[fx].flags & CYDFX_ENABLE_REVERB)
 					{
+						fwrite(&mused.song.fx[fx].rvb_spread, 1, sizeof(mused.song.fx[fx].rvb_spread), f);
 						for (int i = 0 ; i < CYDRVB_TAPS ; ++i)	
 						{
 							temp32 = mused.song.fx[fx].rvbtap[i].gain;

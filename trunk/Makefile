@@ -84,9 +84,7 @@ $(eval $(call directory_defs,,))
 # subdirs (src/*/*.c)
 $(foreach dir,$(DIRS),$(eval $(call directory_defs,$(dir)/,$(dir)_)))
 
-.PHONY: all zip release
-
-all: bin.$(CFG)/$(TARGET) res/Default
+.PHONY: zip all build nightly
 
 build: Makefile src/version
 	@echo '#ifndef VERSION_NUMBER' > src/version_number.h
@@ -110,8 +108,8 @@ endif
 	make -C ../klystron CFG=$(CFG) EXTFLAGS="$(EXTFLAGS)"
 	make all CFG=$(CFG) EXTFLAGS="$(EXTFLAGS)"
 
-.PHONY: zip all build nightly
-
+all: bin.$(CFG)/$(TARGET) res/Default
+	
 zip: doc/* res/Default $(DLLS) examples/* linux/Makefile
 	make -C ../klystron CFG=release EXTFLAGS="$(EXTFLAGS)"
 	make CFG=release
