@@ -27,7 +27,7 @@ OTHER DEALINGS IN THE SOFTWARE.
 #include "action.h"
 #include "edit.h"
 #include "mused.h"
-#include "import.h"
+#include "import/import.h"
 
 extern Mused mused;
 
