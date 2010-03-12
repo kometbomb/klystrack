@@ -205,30 +205,15 @@ int save_data()
 				fwrite(&mused.song.multiplex_period, 1, sizeof(mused.song.multiplex_period), f);
 				fwrite(mused.song.title, 1, MUS_TITLE_LEN + 1, f);
 				
-				Uint8 n_fx = CYD_MAX_FX_CHANNELS;
+				Uint8 n_fx = 0;
+				
+				for (int i = 0 ; i < mused.song.num_instruments ; ++i)
+					if (mused.song.instrument[i].cydflags & CYD_CHN_ENABLE_FX) n_fx = my_max(n_fx, mused.song.instrument[i].fx_bus) + 1;
 				
 				fwrite(&n_fx, 1, sizeof(n_fx), f);
 				
 				for (int fx = 0 ; fx < n_fx ; ++fx)
 				{
-					/*Sint32 temp32 = mused.song.fx[fx].flags;
-					FIX_ENDIAN(temp32);
-					fwrite(&temp32, 1, sizeof(mused.song.fx[fx].flags), f);
-					
-					if (mused.song.fx[fx].flags & CYDFX_ENABLE_REVERB)
-					{
-						fwrite(&mused.song.fx[fx].rvb_spread, 1, sizeof(mused.song.fx[fx].rvb_spread), f);
-						for (int i = 0 ; i < CYDRVB_TAPS ; ++i)	
-						{
-							temp32 = mused.song.fx[fx].rvbtap[i].gain;
-							FIX_ENDIAN(temp32);
-							fwrite(&temp32, 1, sizeof(mused.song.fx[fx].rvbtap[i].gain), f);
-							temp32 = mused.song.fx[fx].rvbtap[i].delay;
-							FIX_ENDIAN(temp32);
-							fwrite(&temp32, 1, sizeof(mused.song.fx[fx].rvbtap[i].delay), f);
-						}
-					}*/
-					
 					CydFxSerialized temp;
 					memcpy(&temp, &mused.song.fx[fx], sizeof(temp));
 					
