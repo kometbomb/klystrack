@@ -1145,7 +1145,7 @@ void edit_text(SDL_Event *e)
 
 void set_room_size(int fx, int size, int vol, int dec)
 {
-	const int min_delay = 2;
+	const int min_delay = 5;
 	int ms = (CYDRVB_SIZE - min_delay) * size / 64;
 	
 	for (int i = 0 ; i < CYDRVB_TAPS ;++i)
