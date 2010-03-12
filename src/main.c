@@ -188,6 +188,9 @@ int main(int argc, char **argv)
 	cyd_init(&mused.cyd, mused.mix_rate, MUS_MAX_CHANNELS);
 	mus_init_engine(&mused.mus, &mused.cyd);
 	
+	for (int i = 0 ; i < CYD_MAX_FX_CHANNELS ; ++i)
+		cydfx_set(&mused.cyd.fx[i], &mused.song.fx[i]);
+	
 #ifdef DEBUG
 	/* This is because I couldn't get my soundcard to record stereo mix for demo videos */
 	if (argc > 1 && strcmp(argv[1], "-dump") == 0) cyd_enable_audio_dump(&mused.cyd);
@@ -251,7 +254,12 @@ int main(int argc, char **argv)
 				case SDL_MOUSEBUTTONUP:
 				{
 					if (e.button.button == SDL_BUTTON_LEFT)
+					{
 						mouse_released(&e);
+						
+						if (mused.focus == EDITFX)
+							mus_set_fx(&mused.mus, &mused.song); // for the chorus effect which does a heavy precalc 
+					}
 					else if (e.button.button == SDL_BUTTON_RIGHT)	
 						menu_closed = 1;
 				}
