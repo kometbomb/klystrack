@@ -208,7 +208,7 @@ int save_data()
 				Uint8 n_fx = 0;
 				
 				for (int i = 0 ; i < mused.song.num_instruments ; ++i)
-					if (mused.song.instrument[i].cydflags & CYD_CHN_ENABLE_FX) n_fx = my_max(n_fx, mused.song.instrument[i].fx_bus) + 1;
+					if (mused.song.instrument[i].cydflags & CYD_CHN_ENABLE_FX) n_fx = my_max(n_fx, mused.song.instrument[i].fx_bus + 1);
 				
 				fwrite(&n_fx, 1, sizeof(n_fx), f);
 				
