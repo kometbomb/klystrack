@@ -171,11 +171,11 @@ void new_song()
 	for (int fx = 0 ; fx < CYD_MAX_FX_CHANNELS ; ++fx)
 	{	
 		mused.song.fx[fx].flags = 0;
-		mused.song.fx[fx].rvb_spread = 0;
+		mused.song.fx[fx].rvb.spread = 0;
 		for (int i = 0 ; i < CYDRVB_TAPS ; ++i)
 		{
-			mused.song.fx[fx].rvbtap[i].delay = i * 100 + 50;
-			mused.song.fx[fx].rvbtap[i].gain = (i + 1) * -30;
+			mused.song.fx[fx].rvb.tap[i].delay = i * 100 + 50;
+			mused.song.fx[fx].rvb.tap[i].gain = (i + 1) * -30;
 		}
 	}
 	
