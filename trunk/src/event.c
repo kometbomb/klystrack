@@ -1175,6 +1175,39 @@ void fx_add_param(int d)
 		}
 		break;
 		
+		case R_CRUSHBITS:
+		{
+			clamp(mused.song.fx[mused.fx_bus].crush.bit_drop, d, 0, 15);
+			mus_set_fx(&mused.mus, &mused.song);
+		}
+		break;
+		
+		case R_CHORUS:
+		{
+			flipbit(mused.song.fx[mused.fx_bus].flags, CYDFX_ENABLE_CHORUS);
+		}
+		break;
+		
+		case R_MINDELAY:
+		{
+			clamp(mused.song.fx[mused.fx_bus].chr.min_delay, d, 0, mused.song.fx[mused.fx_bus].chr.max_delay);
+			clamp(mused.song.fx[mused.fx_bus].chr.min_delay, 0, mused.song.fx[mused.fx_bus].chr.min_delay, 255);
+		}
+		break;
+		
+		case R_MAXDELAY:
+		{
+			clamp(mused.song.fx[mused.fx_bus].chr.max_delay, d, mused.song.fx[mused.fx_bus].chr.min_delay, 255);
+			clamp(mused.song.fx[mused.fx_bus].chr.min_delay, 0, 0, mused.song.fx[mused.fx_bus].chr.max_delay);
+		}
+		break;
+		
+		case R_RATE:
+		{
+			clamp(mused.song.fx[mused.fx_bus].chr.rate, d, 0, 255);
+		}
+		break;
+		
 		case R_MULTIPLEX:
 		{
 			flipbit(mused.song.fx[mused.fx_bus].flags, MUS_ENABLE_MULTIPLEX);

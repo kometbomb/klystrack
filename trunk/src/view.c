@@ -1429,13 +1429,62 @@ void fx_view(SDL_Surface *dest_surface, const SDL_Rect *dest, const SDL_Event *e
 	if ((d = generic_field(event, &r, R_FX_BUS, "FX BUS", "%2X", MAKEPTR(mused.fx_bus), 2))) 
 	{
 		mused.edit_reverb_param = R_FX_BUS;
-		fx_add_param(-d);
+		fx_add_param(d);
 	}
 	
 	update_rect(&area, &r);
 	my_separator(&area, &r);
 	
 	if (checkbox(dest_surface, event, &r, mused.slider_bevel, &mused.smallfont, BEV_BUTTON, BEV_BUTTON_ACTIVE, DECAL_TICK, "CRUSH", &mused.song.fx[mused.fx_bus].flags, CYDFX_ENABLE_CRUSH)) mused.edit_reverb_param = R_CRUSH;
+	update_rect(&area, &r);
+	
+	if ((d = generic_field(event, &r, R_ROOMSIZE, "BITS", "%01X", MAKEPTR(mused.song.fx[mused.fx_bus].crush.bit_drop), 1)))
+	{
+		mused.edit_reverb_param = R_CRUSHBITS;
+		fx_add_param(d);
+	}
+	
+	update_rect(&area, &r);
+	
+	if (checkbox(dest_surface, event, &r, mused.slider_bevel, &mused.smallfont, BEV_BUTTON, BEV_BUTTON_ACTIVE, DECAL_TICK, "STEREO", &mused.song.fx[mused.fx_bus].flags, CYDFX_ENABLE_CHORUS)) mused.edit_reverb_param = R_CHORUS;
+	update_rect(&area, &r);
+	
+	// hacky-hack, we need different addresses for the different fields
+	// because the address of the string is used as an ad-hoc identifier for
+	// the fields...
+	char temp1[10], temp2[10], temp3[10]; 
+	
+	sprintf(temp1, "%4.1f ms", (float)mused.song.fx[mused.fx_bus].chr.min_delay / 10);
+	
+	if ((d = generic_field(event, &r, R_MINDELAY, "MIN", temp1, NULL, 7)))
+	{
+		mused.edit_reverb_param = R_MINDELAY;
+		fx_add_param(d);
+	}
+	
+	update_rect(&area, &r);
+	
+	sprintf(temp2, "%4.1f ms", (float)mused.song.fx[mused.fx_bus].chr.max_delay / 10);
+	
+	if ((d = generic_field(event, &r, R_MAXDELAY, "MAX", temp2, NULL, 7)))
+	{
+		mused.edit_reverb_param = R_MAXDELAY;
+		fx_add_param(d);
+	}
+	
+	update_rect(&area, &r);
+	
+	if (mused.song.fx[mused.fx_bus].chr.rate != 0)
+		sprintf(temp3, "%5.2f Hz", (((float)(mused.song.fx[mused.fx_bus].chr.rate - 1) + 10) / 40));
+	else
+		strcpy(temp3, "OFF");
+	
+	if ((d = generic_field(event, &r, R_RATE, "MOD", temp3, NULL, 8)))
+	{
+		mused.edit_reverb_param = R_RATE;
+		fx_add_param(d);
+	}
+	
 	update_rect(&area, &r);
 	
 	my_separator(&area, &r);
