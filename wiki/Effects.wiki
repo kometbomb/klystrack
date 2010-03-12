@@ -1,5 +1,11 @@
 #summary Description of effects in klystrack/klystron
 
+=A general note on effects=
+
+As can be expected, the klystrack effects are mostly for slightly complimenting the chiptune sound. Thus, the sound quality might not be very good for foreground sounds and are best used minimally and only when necessary. 
+
+An example would be slightly opening a background sound or replacing duplicated "echo tracks" commonly used in modules with a reverb with the same delay length. An example of what not to do would be using the chorus effect with maxed out knobs to create psychedelic, un-chiptuney sounds.
+
 =Effect channels=
 
 Instruments can send their output to any effect channels and any channel can receive input from any number of instruments. This makes it possible to have different reverb settings for e.g. drums (little reverb) and lead (massive echo).
@@ -17,6 +23,10 @@ Use the buttons to quickly mute or enable individual taps or to snap the delay t
 ==Bitcrush==
 
 The bitcrush effect simply drops the bit depth of the output signal. This is done by masking out the lowest few bits. This produces ringing artifacts in the sound especially for low volumes.
+
+==Stereo chorus==
+
+This effect can be used to spread a monophonic sound over the left and the right channel. It modulates the right channel so that the two channels are out of phase generating an illusion of surrounding sound. 
 
 =Global effects=
 
