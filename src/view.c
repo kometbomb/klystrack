@@ -1476,7 +1476,7 @@ void fx_view(SDL_Surface *dest_surface, const SDL_Rect *dest, const SDL_Event *e
 	
 	update_rect(&area, &r);
 	
-	if ((d = generic_field(event, &r, R_SPREAD, "SPREAD", "%02X", MAKEPTR(mused.song.fx[mused.fx_bus].rvb_spread), 2)))
+	if ((d = generic_field(event, &r, R_SPREAD, "SPREAD", "%02X", MAKEPTR(mused.song.fx[mused.fx_bus].rvb.spread), 2)))
 	{
 		mused.edit_reverb_param = R_SPREAD;
 		fx_add_param(d);
@@ -1496,7 +1496,7 @@ void fx_view(SDL_Surface *dest_surface, const SDL_Rect *dest, const SDL_Event *e
 		
 		int d;
 		
-		if ((d = generic_field(event, &r, p, label, "%4d ms", MAKEPTR(mused.song.fx[mused.fx_bus].rvbtap[i].delay), 7))) 
+		if ((d = generic_field(event, &r, p, label, "%4d ms", MAKEPTR(mused.song.fx[mused.fx_bus].rvb.tap[i].delay), 7))) 
 		{
 			mused.edit_reverb_param = p;
 			fx_add_param(d);
@@ -1509,11 +1509,11 @@ void fx_view(SDL_Surface *dest_surface, const SDL_Rect *dest, const SDL_Event *e
 		float spd = 1000.0 / mused.song.song_rate * ((float)(mused.song.song_speed + mused.song.song_speed2) / 2);
 		
 		char tmp[10];
-		snprintf(tmp, sizeof(tmp), "%d", (int)((float)(mused.song.fx[mused.fx_bus].rvbtap[i].delay / (int)spd * (int)spd) / spd));
+		snprintf(tmp, sizeof(tmp), "%d", (int)((float)(mused.song.fx[mused.fx_bus].rvb.tap[i].delay / (int)spd * (int)spd) / spd));
 		
 		if (button_text_event(dest_surface, event, &r, mused.slider_bevel, &mused.smallfont, BEV_BUTTON, BEV_BUTTON_ACTIVE, tmp, NULL, NULL, NULL, NULL) & 1)
 		{
-			mused.song.fx[mused.fx_bus].rvbtap[i].delay = (mused.song.fx[mused.fx_bus].rvbtap[i].delay) / (int)spd * (int)spd;
+			mused.song.fx[mused.fx_bus].rvb.tap[i].delay = (mused.song.fx[mused.fx_bus].rvb.tap[i].delay) / (int)spd * (int)spd;
 			mused.edit_reverb_param = p;
 			fx_add_param(0); // update taps
 		}
@@ -1524,10 +1524,10 @@ void fx_view(SDL_Surface *dest_surface, const SDL_Rect *dest, const SDL_Event *e
 		
 		r.w = 80;
 		
-		if (mused.song.fx[0].rvbtap[i].gain <= CYDRVB_LOW_LIMIT)
+		if (mused.song.fx[0].rvb.tap[i].gain <= CYDRVB_LOW_LIMIT)
 			strcpy(value, "- INF");
 		else
-			sprintf(value, "%+5.1f", (double)mused.song.fx[mused.fx_bus].rvbtap[i].gain * 0.1);
+			sprintf(value, "%+5.1f", (double)mused.song.fx[mused.fx_bus].rvb.tap[i].gain * 0.1);
 			
 		d = generic_field(event, &r, p, "", "%s dB", value, 8);
 		
@@ -1543,7 +1543,7 @@ void fx_view(SDL_Surface *dest_surface, const SDL_Rect *dest, const SDL_Event *e
 		
 		if (button_text_event(dest_surface, event, &r, mused.slider_bevel, &mused.smallfont, BEV_BUTTON, BEV_BUTTON_ACTIVE, "-INF", NULL, NULL, NULL, NULL) & 1)
 		{
-			mused.song.fx[mused.fx_bus].rvbtap[i].gain = CYDRVB_LOW_LIMIT;
+			mused.song.fx[mused.fx_bus].rvb.tap[i].gain = CYDRVB_LOW_LIMIT;
 			mused.edit_reverb_param = p;
 			fx_add_param(0);
 		}
@@ -1552,7 +1552,7 @@ void fx_view(SDL_Surface *dest_surface, const SDL_Rect *dest, const SDL_Event *e
 		
 		if (button_text_event(dest_surface, event, &r, mused.slider_bevel, &mused.smallfont, BEV_BUTTON, BEV_BUTTON_ACTIVE, "0", NULL, NULL, NULL, NULL) & 1)
 		{
-			mused.song.fx[mused.fx_bus].rvbtap[i].gain = 0;
+			mused.song.fx[mused.fx_bus].rvb.tap[i].gain = 0;
 			mused.edit_reverb_param = p;
 			fx_add_param(0); // update taps
 		}

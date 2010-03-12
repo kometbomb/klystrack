@@ -211,7 +211,7 @@ int save_data()
 				
 				for (int fx = 0 ; fx < n_fx ; ++fx)
 				{
-					Sint32 temp32 = mused.song.fx[fx].flags;
+					/*Sint32 temp32 = mused.song.fx[fx].flags;
 					FIX_ENDIAN(temp32);
 					fwrite(&temp32, 1, sizeof(mused.song.fx[fx].flags), f);
 					
@@ -227,7 +227,19 @@ int save_data()
 							FIX_ENDIAN(temp32);
 							fwrite(&temp32, 1, sizeof(mused.song.fx[fx].rvbtap[i].delay), f);
 						}
+					}*/
+					
+					CydFxSerialized temp;
+					memcpy(&temp, &mused.song.fx[fx], sizeof(temp));
+					
+					FIX_ENDIAN(temp.flags);
+					for (int i = 0 ; i < CYDRVB_TAPS ; ++i)	
+					{
+						FIX_ENDIAN(temp.rvb.tap[i].gain);
+						FIX_ENDIAN(temp.rvb.tap[i].delay);
 					}
+					
+					fwrite(&temp, 1, sizeof(temp), f);
 				}
 				
 				for (int i = 0 ; i < mused.song.num_instruments; ++i)

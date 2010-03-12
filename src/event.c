@@ -1145,14 +1145,14 @@ void edit_text(SDL_Event *e)
 
 void set_room_size(int fx, int size, int vol, int dec)
 {
-	const int min_delay = 5;
+	const int min_delay = 2;
 	int ms = (CYDRVB_SIZE - min_delay) * size / 64;
 	
 	for (int i = 0 ; i < CYDRVB_TAPS ;++i)
 	{
 		int p = rnd(i * ms / CYDRVB_TAPS, (i + 1) * ms / CYDRVB_TAPS) + min_delay;
-		mused.song.fx[fx].rvbtap[i].delay = p;
-		mused.song.fx[fx].rvbtap[i].gain = CYDRVB_LOW_LIMIT-CYDRVB_LOW_LIMIT * pow(1.0 - (double)p / ms, (double)dec / 3) * vol / 16;
+		mused.song.fx[fx].rvb.tap[i].delay = p;
+		mused.song.fx[fx].rvb.tap[i].gain = CYDRVB_LOW_LIMIT-CYDRVB_LOW_LIMIT * pow(1.0 - (double)p / ms, (double)dec / 3) * vol / 16;
 	}
 	
 	mus_set_fx(&mused.mus, &mused.song);
@@ -1213,7 +1213,7 @@ void fx_add_param(int d)
 		
 		case R_SPREAD:
 		{
-			clamp(mused.song.fx[mused.fx_bus].rvb_spread, d, 0, 0xff);
+			clamp(mused.song.fx[mused.fx_bus].rvb.spread, d, 0, 0xff);
 			mus_set_fx(&mused.mus, &mused.song);
 		}
 		break;
@@ -1224,11 +1224,11 @@ void fx_add_param(int d)
 			int tap = (p & ~1) / 2;
 			if (!(p & 1))
 			{
-				clamp(mused.song.fx[mused.fx_bus].rvbtap[tap].delay, d * 1, 0, CYDRVB_SIZE - 1);
+				clamp(mused.song.fx[mused.fx_bus].rvb.tap[tap].delay, d * 1, 0, CYDRVB_SIZE - 1);
 			}
 			else
 			{
-				clamp(mused.song.fx[mused.fx_bus].rvbtap[tap].gain, d * 1, CYDRVB_LOW_LIMIT, 0);
+				clamp(mused.song.fx[mused.fx_bus].rvb.tap[tap].gain, d * 1, CYDRVB_LOW_LIMIT, 0);
 			}
 			
 			mus_set_fx(&mused.mus, &mused.song);

@@ -35,83 +35,107 @@ extern Mused mused;
 
 static Uint16 find_command_ahx(Uint8 command, Uint8 data, Uint8 *ctrl)
 {
-	if (command == 0xc)
+	switch (command)
 	{
-		if (data <= 0x40)
-			return MUS_FX_SET_VOLUME | ((int)data * 2);
-	}
-	else if (command == 0xa)
-	{
-_0xa00:
-		return MUS_FX_FADE_VOLUME | (my_min(0xf, (data & 0x0f) * 2)) | (my_min(0xf, ((data & 0xf0) >> 4) * 2) << 4);
-	}
-	else if (command == 0x3)
-	{
-		if (data < 0x20)
+		case 0xc:
 		{
-			return MUS_FX_SLIDE | my_min(0xff, data * 6);
+			if (data <= 0x40)
+				return MUS_FX_SET_VOLUME | ((int)data * 2);
 		}
-		else
+		break;
+		
+		case 0xa:
 		{
-			*ctrl |= MUS_CTRL_LEGATO;
-			return 0;
+	_0xa00:
+			return MUS_FX_FADE_VOLUME | (my_min(0xf, (data & 0x0f) * 2)) | (my_min(0xf, ((data & 0xf0) >> 4) * 2) << 4);
 		}
-	}
-	else if (command == 0x5)
-	{
-		*ctrl |= MUS_CTRL_SLIDE|MUS_CTRL_LEGATO;
-		goto _0xa00;
-	}
-	else if (command == 0x1)
-	{
-		return MUS_FX_PORTA_UP | my_min(0xff, data * 6);
-	}
-	else if (command == 0x2)
-	{
-		return MUS_FX_PORTA_DN | my_min(0xff, data * 6);
-	}
-	else if (command == 0x4)
-	{
-		return MUS_FX_CUTOFF_SET | ((int)(data & 63) * 255 / 63);
-	}
-	else if (command == 0x9)
-	{
-		return MUS_FX_PW_SET | ((int)(data & 63) * 0x80 / 63);
-	}
-	else if (command == 0xf)
-	{
-		return MUS_FX_SET_SPEED | (data & 0xf);
-	}
-	else if (command == 0xe)
-	{
-		if ((data & 0xf0) == 0xc0)
+		break;
+		
+		case 0x3:
 		{
-			return MUS_FX_EXT_NOTE_CUT | (data & 0xf);
+			if (data < 0x20)
+			{
+				return MUS_FX_SLIDE | my_min(0xff, data * 6);
+			}
+			else
+			{
+				*ctrl |= MUS_CTRL_LEGATO;
+				return 0;
+			}
 		}
-		else if ((data & 0xf0) == 0xd0)
+		break;
+		
+		case 0x5:
 		{
-			return MUS_FX_EXT_NOTE_DELAY | (data & 0xf);
+			*ctrl |= MUS_CTRL_SLIDE|MUS_CTRL_LEGATO;
+			goto _0xa00;
 		}
-		else if ((data & 0xf0) == 0x40)
+		break;
+		
+		case 0x1:
 		{
-			return MUS_FX_VIBRATO | (data & 0xf);
+			return MUS_FX_PORTA_UP | my_min(0xff, data * 6);
 		}
-		else if ((data & 0xf0) == 0x10)
+		break;
+		
+		case 0x2:
 		{
-			return MUS_FX_EXT_PORTA_UP | (data & 0xf);
+			return MUS_FX_PORTA_DN | my_min(0xff, data * 6);
 		}
-		else if ((data & 0xf0) == 0x20)
+		break;
+		
+		case 0x4:
 		{
-			return MUS_FX_EXT_PORTA_DN | (data & 0xf);
+			return MUS_FX_CUTOFF_SET | ((int)(data & 63) * 255 / 63);
 		}
-		else if ((data & 0xf0) == 0xa0)
+		break;
+		
+		case 0x9:
 		{
-			return MUS_FX_EXT_FADE_VOLUME_UP | (data & 0xf);
+			return MUS_FX_PW_SET | ((int)(data & 63) * 0x80 / 63);
 		}
-		else if ((data & 0xf0) == 0xb0)
+		break;
+		
+		case 0xf:
 		{
-			return MUS_FX_EXT_FADE_VOLUME_DN | (data & 0xf);
+			return MUS_FX_SET_SPEED | (data & 0xf);
 		}
+		break;
+		
+		case 0xe:
+		{
+			if ((data & 0xf0) == 0xc0)
+			{
+				return MUS_FX_EXT_NOTE_CUT | (data & 0xf);
+			}
+			else if ((data & 0xf0) == 0xd0)
+			{
+				return MUS_FX_EXT_NOTE_DELAY | (data & 0xf);
+			}
+			else if ((data & 0xf0) == 0x40)
+			{
+				return MUS_FX_VIBRATO | (data & 0xf);
+			}
+			else if ((data & 0xf0) == 0x10)
+			{
+				return MUS_FX_EXT_PORTA_UP | (data & 0xf);
+			}
+			else if ((data & 0xf0) == 0x20)
+			{
+				return MUS_FX_EXT_PORTA_DN | (data & 0xf);
+			}
+			else if ((data & 0xf0) == 0xa0)
+			{
+				return MUS_FX_EXT_FADE_VOLUME_UP | (data & 0xf);
+			}
+			else if ((data & 0xf0) == 0xb0)
+			{
+				return MUS_FX_EXT_FADE_VOLUME_DN | (data & 0xf);
+			}
+		}
+		break;
+		
+		default: break;
 	}
 	
 	return 0;
