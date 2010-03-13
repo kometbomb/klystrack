@@ -1456,54 +1456,63 @@ void fx_view(SDL_Surface *dest_surface, const SDL_Rect *dest, const SDL_Event *e
 	
 	update_rect(&area, &r);
 	
+	my_separator(&area, &r);
+	
 	if (checkbox(dest_surface, event, &r, mused.slider_bevel, &mused.smallfont, BEV_BUTTON, BEV_BUTTON_ACTIVE, DECAL_TICK, "STEREO", &mused.song.fx[mused.fx_bus].flags, CYDFX_ENABLE_CHORUS)) mused.edit_reverb_param = R_CHORUS;
 	update_rect(&area, &r);
 	
 	// hacky-hack, we need different addresses for the different fields
 	// because the address of the string is used as an ad-hoc identifier for
 	// the fields...
-	char temp1[10], temp2[10], temp3[10]; 
 	
-	sprintf(temp1, "%4.1f ms", (float)mused.song.fx[mused.fx_bus].chr.min_delay / 10);
-	
-	if ((d = generic_field(event, &r, R_MINDELAY, "MIN", temp1, NULL, 7)))
 	{
-		mused.edit_reverb_param = R_MINDELAY;
-		fx_add_param(d);
+		int tmp = r.w;
+		r.w = r.w / 3;
+		char temp1[10], temp2[10], temp3[10]; 
+		
+		sprintf(temp1, "%4.1f ms", (float)mused.song.fx[mused.fx_bus].chr.min_delay / 10);
+		
+		if ((d = generic_field(event, &r, R_MINDELAY, "MIN", temp1, NULL, 7)))
+		{
+			mused.edit_reverb_param = R_MINDELAY;
+			fx_add_param(d);
+		}
+		
+		update_rect(&area, &r);
+		
+		sprintf(temp2, "%4.1f ms", (float)mused.song.fx[mused.fx_bus].chr.max_delay / 10);
+		
+		if ((d = generic_field(event, &r, R_MAXDELAY, "MAX", temp2, NULL, 7)))
+		{
+			mused.edit_reverb_param = R_MAXDELAY;
+			fx_add_param(d);
+		}
+		
+		update_rect(&area, &r);
+		
+		if ((d = generic_field(event, &r, R_SEPARATION, "SEP", "%02X", MAKEPTR(mused.song.fx[mused.fx_bus].chr.sep), 2)))
+		{
+			mused.edit_reverb_param = R_SEPARATION;
+			fx_add_param(d);
+		}
+		
+		update_rect(&area, &r);
+		
+		if (mused.song.fx[mused.fx_bus].chr.rate != 0)
+			sprintf(temp3, "%5.2f Hz", (((float)(mused.song.fx[mused.fx_bus].chr.rate - 1) + 10) / 40));
+		else
+			strcpy(temp3, "OFF");
+		
+		if ((d = generic_field(event, &r, R_RATE, "MOD", temp3, NULL, 8)))
+		{
+			mused.edit_reverb_param = R_RATE;
+			fx_add_param(d);
+		}
+		
+		update_rect(&area, &r);
+		
+		r.w = tmp;
 	}
-	
-	update_rect(&area, &r);
-	
-	sprintf(temp2, "%4.1f ms", (float)mused.song.fx[mused.fx_bus].chr.max_delay / 10);
-	
-	if ((d = generic_field(event, &r, R_MAXDELAY, "MAX", temp2, NULL, 7)))
-	{
-		mused.edit_reverb_param = R_MAXDELAY;
-		fx_add_param(d);
-	}
-	
-	update_rect(&area, &r);
-	
-	if ((d = generic_field(event, &r, R_SEPARATION, "SEP", "%02X", MAKEPTR(mused.song.fx[mused.fx_bus].chr.sep), 2)))
-	{
-		mused.edit_reverb_param = R_SEPARATION;
-		fx_add_param(d);
-	}
-	
-	update_rect(&area, &r);
-	
-	if (mused.song.fx[mused.fx_bus].chr.rate != 0)
-		sprintf(temp3, "%5.2f Hz", (((float)(mused.song.fx[mused.fx_bus].chr.rate - 1) + 10) / 40));
-	else
-		strcpy(temp3, "OFF");
-	
-	if ((d = generic_field(event, &r, R_RATE, "MOD", temp3, NULL, 8)))
-	{
-		mused.edit_reverb_param = R_RATE;
-		fx_add_param(d);
-	}
-	
-	update_rect(&area, &r);
 	
 	my_separator(&area, &r);
 	
@@ -1512,36 +1521,51 @@ void fx_view(SDL_Surface *dest_surface, const SDL_Rect *dest, const SDL_Event *e
 	
 	mirror_flags();
 	
-	if ((d = generic_field(event, &r, R_ROOMSIZE, "ROOMSIZE", "%02X", MAKEPTR(mused.fx_room_size), 2)))
 	{
-		mused.edit_reverb_param = R_ROOMSIZE;
-		fx_add_param(d);
-	}	
+		int tmp = r.w;
+		r.w = 64 + 32;
 	
-	update_rect(&area, &r);
-	
-	if ((d = generic_field(event, &r, R_ROOMVOL, "VOL", "%02X", MAKEPTR(mused.fx_room_vol), 2)))
-	{
-		mused.edit_reverb_param = R_ROOMVOL;
-		fx_add_param(d);
-	}	
-	
-	update_rect(&area, &r);
-	
-	if ((d = generic_field(event, &r, R_ROOMDECAY, "DEC", "%d", MAKEPTR(mused.fx_room_dec), 1)))
-	{
-		mused.edit_reverb_param = R_ROOMDECAY;
-		fx_add_param(d);
-	}	
-	
-	update_rect(&area, &r);
-	
-	if (button_text_event(dest_surface, event, &r, mused.slider_bevel, &mused.smallfont, BEV_BUTTON, BEV_BUTTON_ACTIVE, "SET", NULL, NULL, NULL, NULL) & 1)
-	{
-		set_room_size(mused.fx_bus, mused.fx_room_size, mused.fx_room_vol, mused.fx_room_dec);
+		if ((d = generic_field(event, &r, R_ROOMSIZE, "ROOMSIZE", "%02X", MAKEPTR(mused.fx_room_size), 2)))
+		{
+			mused.edit_reverb_param = R_ROOMSIZE;
+			fx_add_param(d);
+		}	
+		
+		update_rect(&area, &r);
+		
+		r.w = 24 + 32;
+		
+		if ((d = generic_field(event, &r, R_ROOMVOL, "VOL", "%02X", MAKEPTR(mused.fx_room_vol), 2)))
+		{
+			mused.edit_reverb_param = R_ROOMVOL;
+			fx_add_param(d);
+		}	
+		
+		update_rect(&area, &r);
+		
+		r.w = 16 + 32;
+		
+		if ((d = generic_field(event, &r, R_ROOMDECAY, "DEC", "%d", MAKEPTR(mused.fx_room_dec), 1)))
+		{
+			mused.edit_reverb_param = R_ROOMDECAY;
+			fx_add_param(d);
+		}	
+		
+		update_rect(&area, &r);
+		
+		r.w = 32;
+		
+		if (button_text_event(dest_surface, event, &r, mused.slider_bevel, &mused.smallfont, BEV_BUTTON, BEV_BUTTON_ACTIVE, "SET", NULL, NULL, NULL, NULL) & 1)
+		{
+			set_room_size(mused.fx_bus, mused.fx_room_size, mused.fx_room_vol, mused.fx_room_dec);
+		}
+		
+		update_rect(&area, &r);
+		
+		r.w = tmp;
 	}
 	
-	update_rect(&area, &r);
+	my_separator(&area, &r);
 	
 	if ((d = generic_field(event, &r, R_SPREAD, "SPREAD", "%02X", MAKEPTR(mused.song.fx[mused.fx_bus].rvb.spread), 2)))
 	{
@@ -1571,7 +1595,7 @@ void fx_view(SDL_Surface *dest_surface, const SDL_Rect *dest, const SDL_Event *e
 		
 		update_rect(&area, &r);
 		
-		r.w = 48;
+		r.w = 18;
 		
 		float spd = 1000.0 / mused.song.song_rate * ((float)(mused.song.song_speed + mused.song.song_speed2) / 2);
 		
