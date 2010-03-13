@@ -131,7 +131,7 @@ int save_data()
 		case EDITPROG:
 		case EDITINSTRUMENT:
 		{
-			FILE * f = open_dialog("wb", "Save instrument", "ins", domain, mused.slider_bevel, &mused.largefont, &mused.smallfont);
+			FILE * f = open_dialog("wb", "Save instrument", "ki", domain, mused.slider_bevel, &mused.largefont, &mused.smallfont);
 			
 			if (f)
 			{
@@ -152,7 +152,7 @@ int save_data()
 		
 		default:
 		{
-			FILE * f = open_dialog("wb", "Save song", "sng", domain, mused.slider_bevel, &mused.largefont, &mused.smallfont);
+			FILE * f = open_dialog("wb", "Save song", "kt", domain, mused.slider_bevel, &mused.largefont, &mused.smallfont);
 			
 			if (f)
 			{
@@ -270,7 +270,7 @@ void open_data()
 	{
 		case EDITINSTRUMENT:
 		{
-			FILE * f = open_dialog("rb", "Load instrument", "ins", domain, mused.slider_bevel, &mused.largefont, &mused.smallfont);
+			FILE * f = open_dialog("rb", "Load instrument", "ki", domain, mused.slider_bevel, &mused.largefont, &mused.smallfont);
 			
 			if (f)
 			{
@@ -283,7 +283,7 @@ void open_data()
 		
 		default:
 		{
-			FILE * f = open_dialog("rb", "Load song", "sng", domain, mused.slider_bevel, &mused.largefont, &mused.smallfont);
+			FILE * f = open_dialog("rb", "Load song", "kt", domain, mused.slider_bevel, &mused.largefont, &mused.smallfont);
 			
 			if (f)
 			{
