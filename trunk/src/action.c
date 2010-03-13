@@ -43,6 +43,9 @@ extern Menu pixelmenu[];
 
 void select_sequence_position(void *channel, void *position, void* unused)
 {
+	if ((mused.flags & SONG_PLAYING) && (mused.flags & FOLLOW_PLAY_POSITION))
+		return;
+
 	if (CASTPTR(int,channel) != -1)
 		mused.current_sequencetrack = CASTPTR(int,channel);
 	
@@ -55,9 +58,12 @@ void select_sequence_position(void *channel, void *position, void* unused)
 
 void select_pattern_param(void *id, void *position, void *pattern)
 {
+	if ((mused.flags & SONG_PLAYING) && (mused.flags & FOLLOW_PLAY_POSITION))
+		return;
+	
+	mused.current_patternx = CASTPTR(int,id);
 	mused.current_pattern = CASTPTR(int,pattern);
 	mused.current_patternstep = CASTPTR(int,position);
-	mused.current_patternx = CASTPTR(int,id);
 }
 
 
