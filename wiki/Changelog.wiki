@@ -5,6 +5,7 @@ _*Note:* Only significant changes and new features are listed here._
 
 =1.4.0=
 
+  * File extensions are now {{{.kt}}} for songs and {{{.ki}}} for instruments
   * Resizable window, supports any window size
   * AHX module import with instrument conversion
   * Patterns can now be transposed (à la AHX)
