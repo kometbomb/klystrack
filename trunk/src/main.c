@@ -335,6 +335,16 @@ int main(int argc, char **argv)
 		{
 			mus_poll_status(&mused.mus, &mused.stat_song_position, mused.stat_pattern_position, mused.stat_pattern, channel);
 		
+			if ((mused.flags & FOLLOW_PLAY_POSITION) && (mused.flags & SONG_PLAYING))
+			{
+				mused.current_sequencepos = mused.stat_song_position - mused.stat_song_position % mused.sequenceview_steps;
+				int tmp = mused.current_patternx;
+				update_ghost_patterns();
+				mused.current_patternx = tmp;
+				mused.current_patternstep = mused.stat_pattern_position[mused.current_sequencetrack];
+				update_position_sliders();
+			}
+		
 			for (int i = 0 ; i < MUS_MAX_CHANNELS ; ++i)
 			{
 				stat_pattern_number[i] = (stat_pattern[i] - &mused.song.pattern[0])/sizeof(mused.song.pattern[0]);

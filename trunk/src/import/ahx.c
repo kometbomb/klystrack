@@ -55,7 +55,7 @@ static Uint16 find_command_ahx(Uint8 command, Uint8 data, Uint8 *ctrl)
 		{
 			if (data < 0x20)
 			{
-				return MUS_FX_SLIDE | my_min(0xff, data * 6);
+				return MUS_FX_SLIDE | my_min(0xff, data * 8);
 			}
 			else
 			{
@@ -74,13 +74,13 @@ static Uint16 find_command_ahx(Uint8 command, Uint8 data, Uint8 *ctrl)
 		
 		case 0x1:
 		{
-			return MUS_FX_PORTA_UP | my_min(0xff, data * 6);
+			return MUS_FX_PORTA_UP | my_min(0xff, data * 8);
 		}
 		break;
 		
 		case 0x2:
 		{
-			return MUS_FX_PORTA_DN | my_min(0xff, data * 6);
+			return MUS_FX_PORTA_DN | my_min(0xff, data * 8);
 		}
 		break;
 		
@@ -151,15 +151,15 @@ static void ahx_program(Uint8 fx1, Uint8 data1, int *pidx, MusInstrument *i, con
 			break;
 			
 		case 1: 	
-			i->program[*pidx] = MUS_FX_PORTA_UP | ((data1 & 0xff));
+			i->program[*pidx] = MUS_FX_PORTA_UP | (data1 & 0xff);
 			break;
 			
 		case 2: 	
-			i->program[*pidx] = MUS_FX_PORTA_DN | ((data1 & 0xff));
+			i->program[*pidx] = MUS_FX_PORTA_DN | (data1 & 0xff);
 			break;
 			
 		case 3: 	
-			i->program[*pidx] = MUS_FX_PW_SET | (my_min(255, 8 + ((int)(data1) * 244 / 128)) & 0xff);
+			i->program[*pidx] = MUS_FX_PW_SET | my_min(255, my_max(8, ((int)(data1) * 4)));
 			break;
 			
 		case 0xf:		
@@ -444,6 +444,19 @@ int import_ahx(FILE *f)
 					
 					if (pidx < MUS_PROG_LEN - 1) i->program[pidx] = (fixed_note ? MUS_FX_ARPEGGIO_ABS : MUS_FX_ARPEGGIO) | ((n) & 0xff);
 				}
+				
+				if (fx1 == 0x5 && fx2 != 0x0)
+				{
+					// jump should be processed after fx2 has been processed or it will jump to wrong row
+				
+					fx1 ^= fx2;
+					fx2 ^= fx1;
+					fx1 ^= fx2;
+					
+					data1 ^= data2;
+					data2 ^= data1;
+					data1 ^= data2;
+				}				
 				
 				if (fx1 || data1)
 				{

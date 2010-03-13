@@ -66,6 +66,7 @@ void update_ghost_patterns()
 				++p;
 			}
 	}
+	
 	mused.current_patternstep = 0;
 	mused.current_patternx = 0;
 	mused.single_pattern_edit = (p <= 1);
@@ -161,6 +162,10 @@ void new_song()
 	mused.song.song_length = 0;
 	mused.song.loop_point = 0;
 	mused.song.flags = 0;
+	mused.current_patternstep = 0;
+	mused.current_sequencepos = 0;
+	mused.current_sequencetrack = 0;
+	update_position_sliders();
 	memset(mused.song.title, 0, sizeof(mused.song.title));
 	
 	for (int i = 0 ; i < NUM_PATTERNS ; ++i)

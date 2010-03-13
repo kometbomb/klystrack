@@ -180,7 +180,7 @@ void instrument_add_param(int a)
 		
 		case P_FXBUS:
 		
-		clamp(i->fx_bus, a, 0, 31);
+		clamp(i->fx_bus, a, 0, CYD_MAX_FX_CHANNELS - 1);
 		
 		break;
 	
@@ -529,6 +529,26 @@ void add_note_offset(int a)
 }
 
 
+static void update_sequence_slider(int d)
+{
+	slider_move_position(&mused.current_sequencepos, &mused.sequence_position, &mused.sequence_slider_param, d, my_max(0, quant((mused.song.song_length - mused.sequenceview_steps), mused.sequenceview_steps)) + 1);
+}
+
+
+
+static void update_pattern_slider(int d)
+{
+	slider_move_position(&mused.current_patternstep, &mused.pattern_position, &mused.pattern_slider_param, d, mused.song.pattern[mused.current_pattern].num_steps);
+}
+
+
+void update_position_sliders()
+{
+	update_pattern_slider(0);
+	update_sequence_slider(0);
+}
+
+
 void sequence_event(SDL_Event *e)
 {
 	switch (e->type)
@@ -582,7 +602,7 @@ void sequence_event(SDL_Event *e)
 				}
 				else
 				{
-					slider_move_position(&mused.current_sequencepos, &mused.sequence_position, &mused.sequence_slider_param, steps, my_max(0, quant((mused.song.song_length - mused.sequenceview_steps), mused.sequenceview_steps)) + 1);
+					update_sequence_slider(steps);
 				}
 				
 				if (((e->key.keysym.mod & KMOD_SHIFT) && !(e->key.keysym.mod & KMOD_CTRL)) )
@@ -618,7 +638,7 @@ void sequence_event(SDL_Event *e)
 				}
 				else
 				{
-					slider_move_position(&mused.current_sequencepos, &mused.sequence_position, &mused.sequence_slider_param, -steps, my_max(0, quant((mused.song.song_length - mused.sequenceview_steps), mused.sequenceview_steps)) + 1);
+					update_sequence_slider(-steps);
 				}
 				
 				if (((e->key.keysym.mod & KMOD_SHIFT) && !(e->key.keysym.mod & KMOD_CTRL)) )
@@ -737,7 +757,7 @@ void pattern_event(SDL_Event *e)
 				int steps = 1;
 				if (e->key.keysym.sym == SDLK_PAGEDOWN) steps *= 16;
 				
-				slider_move_position(&mused.current_patternstep, &mused.pattern_position, &mused.pattern_slider_param, +steps, mused.song.pattern[mused.current_pattern].num_steps);
+				update_pattern_slider(steps);
 				
 				if (e->key.keysym.mod & KMOD_SHIFT)
 				{
@@ -752,7 +772,7 @@ void pattern_event(SDL_Event *e)
 				int steps = 1;
 				if (e->key.keysym.sym == SDLK_PAGEUP) steps *= 16;
 				
-				slider_move_position(&mused.current_patternstep, &mused.pattern_position, &mused.pattern_slider_param, -steps, mused.song.pattern[mused.current_pattern].num_steps);
+				update_pattern_slider(-steps);
 			
 				if (e->key.keysym.mod & KMOD_SHIFT)
 				{
