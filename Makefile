@@ -13,6 +13,7 @@ DESTDIR ?= /usr
 EXT := .c
 CC := gcc
 CDEP := gcc -E -MM
+ARCHIVE = klystrack.zip
 
 ifdef COMSPEC
 	TARGET =klystrack.exe
@@ -112,7 +113,7 @@ all: bin.$(CFG)/$(TARGET) res/Default
 	
 zip: doc/* res/Default $(DLLS) examples/* linux/Makefile
 	make -C ../klystron CFG=release EXTFLAGS="$(EXTFLAGS)"
-	make CFG=release
+	make build CFG=release
 	@mkdir -p zip/data/res
 	@mkdir -p zip/data/examples/songs
 	@mkdir -p zip/data/examples/instruments
@@ -148,8 +149,8 @@ bin.$(CFG)/$(TARGET): $(OBJS)
 release: bin.release/$(TARGET)
 	@$(ECHO) "Building release -->"
 	
-bin.release/$(TARGET): 
-	@make CFG=release
+#bin.release/$(TARGET): 
+#	@make CFG=release
 	
 ifneq ($(MAKECMDGOALS),clean)
 -include $(DEPS)
