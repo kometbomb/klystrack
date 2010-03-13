@@ -90,34 +90,34 @@ void change_mode(int newmode)
 	
 	switch (newmode)
 	{
-		case EDITINSTRUMENT:
-		
-		break;
-		
+		case EDITFX:
+			if (mused.mode == EDITINSTRUMENT)
+			{
+				mused.fx_bus = mused.song.instrument[mused.current_instrument].fx_bus;
+			}
+			
+			break;
+	
 		case EDITCLASSIC:
 		case EDITPATTERN:
-		if (mused.mode == EDITBUFFER) break;
-		if (mused.mode == EDITSEQUENCE || (mused.mode == MENU && !mused.single_pattern_edit) || newmode == EDITCLASSIC)
-		{
-			update_ghost_patterns();
-			slider_move_position(&mused.current_sequencetrack, &mused.pattern_horiz_position, &mused.pattern_horiz_slider_param, 0, mused.pattern_horiz_slider_param.last - mused.pattern_horiz_slider_param.first + 1);
-			slider_move_position(&mused.current_patternstep, &mused.pattern_position, &mused.pattern_slider_param, 0, mused.song.pattern[mused.current_pattern].num_steps);
-		}
-		else
-		{
-			mused.single_pattern_edit = 1;
-			for (int i = 0 ; i < MUS_MAX_CHANNELS ; ++i)
+			if (mused.mode == EDITBUFFER) break;
+			if (mused.mode == EDITSEQUENCE || (mused.mode == MENU && !mused.single_pattern_edit) || newmode == EDITCLASSIC)
 			{
-				mused.ghost_pattern[i] = NULL;
+				update_ghost_patterns();
+				slider_move_position(&mused.current_sequencetrack, &mused.pattern_horiz_position, &mused.pattern_horiz_slider_param, 0, mused.pattern_horiz_slider_param.last - mused.pattern_horiz_slider_param.first + 1);
+				slider_move_position(&mused.current_patternstep, &mused.pattern_position, &mused.pattern_slider_param, 0, mused.song.pattern[mused.current_pattern].num_steps);
 			}
-			mused.current_patternstep = 0;
-			mused.current_patternx = 0;
-		}
-		break;
-		
-		case EDITSEQUENCE:
-		
-		break;
+			else
+			{
+				mused.single_pattern_edit = 1;
+				for (int i = 0 ; i < MUS_MAX_CHANNELS ; ++i)
+				{
+					mused.ghost_pattern[i] = NULL;
+				}
+				mused.current_patternstep = 0;
+				mused.current_patternx = 0;
+			}
+			break;
 	}
 
 	mused.mode = newmode;

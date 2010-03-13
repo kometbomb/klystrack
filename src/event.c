@@ -1222,6 +1222,12 @@ void fx_add_param(int d)
 		}
 		break;
 		
+		case R_SEPARATION:
+		{
+			clamp(mused.song.fx[mused.fx_bus].chr.sep, d, 0, 64);
+		}
+		break;
+		
 		case R_RATE:
 		{
 			clamp(mused.song.fx[mused.fx_bus].chr.rate, d, 0, 255);

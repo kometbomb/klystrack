@@ -1474,6 +1474,14 @@ void fx_view(SDL_Surface *dest_surface, const SDL_Rect *dest, const SDL_Event *e
 	
 	update_rect(&area, &r);
 	
+	if ((d = generic_field(event, &r, R_SEPARATION, "SEP", "%02X", MAKEPTR(mused.song.fx[mused.fx_bus].chr.sep), 2)))
+	{
+		mused.edit_reverb_param = R_SEPARATION;
+		fx_add_param(d);
+	}
+	
+	update_rect(&area, &r);
+	
 	if (mused.song.fx[mused.fx_bus].chr.rate != 0)
 		sprintf(temp3, "%5.2f Hz", (((float)(mused.song.fx[mused.fx_bus].chr.rate - 1) + 10) / 40));
 	else
