@@ -1,37 +1,39 @@
 TARGET := klystrack
 ECHO := echo
 CFG := debug
-MACHINE = -march=pentium2 
-ZIP = pkzipc -exclude=.* -zipdate=newest -path=relative -silent -rec -dir -add
-ZIPEXT = pkzipc -ext -silent
-WGET = wget --quiet
-REV = SubWCRev.exe .
-UPLOAD = cmd.exe /c upload.bat
-MAKEBUNDLE = ../klystron/tools/bin/makebundle.exe
-DLLS = zip/data/SDL.dll zip/data/SDL_mixer.dll
+MACHINE := -march=pentium2 
+ZIP := pkzipc -exclude=.* -zipdate=newest -path=relative -silent -rec -dir -add
+ZIPEXT := pkzipc -ext -silent
+WGET := wget --quiet
+REV := SubWCRev.exe .
+UPLOAD := cmd.exe /c upload.bat
+MAKEBUNDLE := ../klystron/tools/bin/makebundle.exe
+DLLS := zip/data/SDL.dll zip/data/SDL_mixer.dll
 DESTDIR ?= /usr
 EXT := .c
 CC := gcc
 CDEP := gcc -E -MM
 ARCHIVE = klystrack.zip
+MIXERVER := 1.2.11
+SDLVER := 1.2.14
 
 ifdef COMSPEC
-	TARGET =klystrack.exe
-	SDLFLAGS = -I /mingw/include/sdl
-	SDLLIBS =  -lmingw32 -lSDLmain -lSDL -lSDL_mixer -mthreads 
+	TARGET := klystrack.exe
+	SDLFLAGS := -I /mingw/include/sdl
+	SDLLIBS :=  -lmingw32 -lSDLmain -lSDL -lSDL_mixer -mthreads 
 else
 	DLLS = 
-	SDLFLAGS = `sdl-config --cflags` -U_FORTIFY_SOURCE
-	SDLLIBS = `sdl-config --libs` -lSDL_mixer
-	REV = cp -f
+	SDLFLAGS := `sdl-config --cflags` -U_FORTIFY_SOURCE
+	SDLLIBS := `sdl-config --libs` -lSDL_mixer
+	REV := cp -f
 endif
 
 ifdef COMSPEC
-	RES_PATH = .
-	CONFIG_PATH = ~/.klystrack
+	RES_PATH := .
+	CONFIG_PATH := ~/.klystrack
 else
-	RES_PATH = $(DESTDIR)/lib/klystrack
-	CONFIG_PATH = ~/.klystrack
+	RES_PATH := $(DESTDIR)/lib/klystrack
+	CONFIG_PATH := ~/.klystrack
 endif
 
 CFLAGS := $(MACHINE) -mthreads -ftree-vectorize -std=gnu99 --no-strict-aliasing
@@ -172,11 +174,11 @@ temp/7x6.fnt: data/font7x6/*
 	$(MAKEBUNDLE) $@ data/font7x6
 
 zip/data/SDL.dll:
-	cd temp ; $(WGET) http://www.libsdl.org/release/SDL-1.2.14-win32.zip ; $(ZIPEXT) SDL-1.2.14-win32.zip SDL.dll ; rm SDL-1.2.14-win32.zip
+	cd temp ; $(WGET) http://www.libsdl.org/release/SDL-$(SDLVER)-win32.zip ; $(ZIPEXT) SDL-$(SDLVER)-win32.zip SDL.dll ; rm SDL-$(SDLVER)-win32.zip
 	@mkdir -p zip/data
 	mv temp/SDL.dll zip/data/SDL.dll
 		
 zip/data/SDL_mixer.dll:
-	cd temp ; $(WGET) http://www.libsdl.org/projects/SDL_mixer/release/SDL_mixer-1.2.11-win32.zip ; $(ZIPEXT) SDL_mixer-1.2.11-win32.zip SDL_mixer.dll ; rm SDL_mixer-1.2.11-win32.zip
+	cd temp ; $(WGET) http://www.libsdl.org/projects/SDL_mixer/release/SDL_mixer-$(MIXERVER)-win32.zip ; $(ZIPEXT) SDL_mixer-$(MIXERVER)-win32.zip SDL_mixer.dll ; rm SDL_mixer-$(MIXERVER)-win32.zip
 	@mkdir -p zip/data
 	mv temp/SDL_mixer.dll zip/data/SDL_mixer.dll
