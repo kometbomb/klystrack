@@ -1573,7 +1573,7 @@ void fx_view(SDL_Surface *dest_surface, const SDL_Rect *dest, const SDL_Event *e
 		
 		r.w = 80;
 		
-		if (mused.song.fx[0].rvb.tap[i].gain <= CYDRVB_LOW_LIMIT)
+		if (mused.song.fx[mused.fx_bus].rvb.tap[i].gain <= CYDRVB_LOW_LIMIT)
 			strcpy(value, "- INF");
 		else
 			sprintf(value, "%+5.1f", (double)mused.song.fx[mused.fx_bus].rvb.tap[i].gain * 0.1);
