@@ -148,7 +148,18 @@ void sequence_view(SDL_Surface *dest_surface, const SDL_Rect *dest, const SDL_Ev
 	int draw_colon[MUS_MAX_CHANNELS] = {0};
 	int draw_colon_id[MUS_MAX_CHANNELS] = {0xff};
 	
-	bevel(mused.screen,dest, mused.slider_bevel, BEV_SEQUENCE_BORDER);
+	const int POS_WIDTH = 4 * mused.console->font.w + 4;
+	
+	{
+		SDL_Rect tmp;
+		copy_rect(&tmp, dest);
+		tmp.w = POS_WIDTH;
+		bevel(mused.screen, &tmp, mused.slider_bevel, BEV_SEQUENCE_BORDER);
+		copy_rect(&tmp, dest);
+		tmp.x += POS_WIDTH;
+		tmp.w -= POS_WIDTH;
+		bevel(mused.screen, &tmp, mused.slider_bevel, BEV_SEQUENCE_BORDER);
+	}
 	
 	SDL_Rect content;
 	copy_rect(&content, dest);
@@ -157,7 +168,6 @@ void sequence_view(SDL_Surface *dest_surface, const SDL_Rect *dest, const SDL_Ev
 	int loop_begin = -1, loop_end = -1;
 	SDL_Rect selection_begin = {-1, -1}, selection_end = {-1, -1};
 	
-	const int POS_WIDTH = 4 * mused.console->font.w + 4;
 	const int channel_chars = (mused.flags & COMPACT_VIEW) ? 2 : (5 + ((mused.flags & SHOW_PATTERN_POS_OFFSET) ? 3 : 0));
 	const int CHANNEL_WIDTH = channel_chars * mused.console->font.w + 4; 
 	int vert_scrollbar = 0;
@@ -515,7 +525,7 @@ void pattern_view_inner(SDL_Surface *dest_surface, const SDL_Rect *dest, const S
 		
 		if (selection_begin > selection_end) swap(selection_begin, selection_end);
 		
-		SDL_Rect selection = { clipped.x+2, selection_begin, clipped.w-4, selection_end - selection_begin };
+		SDL_Rect selection = { clipped.x+2, selection_begin + 1, clipped.w-4, selection_end - selection_begin };
 		adjust_rect(&selection, -4);
 		bevel(mused.screen,&selection, mused.slider_bevel, BEV_SELECTION);
 	}
@@ -1089,7 +1099,7 @@ void program_view(SDL_Surface *dest_surface, const SDL_Rect *dest, const SDL_Eve
 		
 		if (selection_begin > selection_end) swap(selection_begin, selection_end);
 		
-		SDL_Rect selection = { area.x, selection_begin, area.w, selection_end - selection_begin };
+		SDL_Rect selection = { area.x, selection_begin - 1, area.w, selection_end - selection_begin + 1 };
 		adjust_rect(&selection, -4);
 		bevel(mused.screen,&selection, mused.slider_bevel, BEV_SELECTION);
 	}
