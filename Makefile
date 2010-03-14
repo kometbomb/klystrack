@@ -51,7 +51,7 @@ else
   CFLAGS += -O3 -pg -Wall 
  else
   ifeq ($(CFG),release)
-   CFLAGS += -O3 -Wall -s
+   CFLAGS += -O3 -Wall -s -mwindows
   else
    @$(ECHO) "Invalid configuration "$(CFG)" specified."
    @$(ECHO) "Possible choices for configuration are "
