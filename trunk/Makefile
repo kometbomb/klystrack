@@ -56,7 +56,10 @@ else
   CFLAGS += -O3 -pg -Wall 
  else
   ifeq ($(CFG),release)
-   CFLAGS += -O3 -Wall -s -mwindows
+   CFLAGS += -O3 -Wall -s 
+   ifdef COMSPEC
+	 CFLAGS += -mwindows
+   endif
   else
    @$(ECHO) "Invalid configuration "$(CFG)" specified."
    @$(ECHO) "Possible choices for configuration are "
