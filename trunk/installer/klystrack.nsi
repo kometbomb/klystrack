@@ -144,6 +144,10 @@ Section "" ;No components page, name is not important
   
   ${File} "zip\data\examples\songs\" ringmod.kt
   
+  ; For CreateShortCut
+  
+  ${SetOutPath} $INSTDIR
+  
   ${CreateDirectory} "$SMPROGRAMS\klystrack"
   ${CreateShortCut} "$SMPROGRAMS\klystrack\klystrack.lnk" $INSTDIR\klystrack.exe
   ${CreateShortCut} "$SMPROGRAMS\klystrack\Uninstall klystrack.lnk" $INSTDIR\uninstall.exe
