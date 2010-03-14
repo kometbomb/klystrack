@@ -171,7 +171,6 @@ Section -closelogfile
 SectionEnd
  
 Section Uninstall
- 
  ; Can't uninstall if uninstall log is missing!
  IfFileExists "$INSTDIR\${UninstLog}" +3
   MessageBox MB_OK|MB_ICONSTOP "$(UninstLogMissing)"
