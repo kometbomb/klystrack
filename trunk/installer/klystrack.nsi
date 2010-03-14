@@ -86,7 +86,8 @@ InstallDirRegKey HKCU "Software\klystrack" ""
 InstallDir $PROGRAMFILES32\klystrack
 
 ; Request application privileges for Windows Vista
-RequestExecutionLevel user
+; Windows should detect NSIS
+;RequestExecutionLevel user
 
 ;--------------------------------
 
@@ -175,7 +176,7 @@ Section Uninstall
   MessageBox MB_OK|MB_ICONSTOP "$(UninstLogMissing)"
    Abort
  
- Delete /REBOOTOK "${PROFILE}\.klystrack"
+ Delete /REBOOTOK "$PROFILE\.klystrack"
  DeleteRegKey /ifempty HKCU "Software\klystrack"
  
  Push $R0
