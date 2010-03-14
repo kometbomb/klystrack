@@ -1415,17 +1415,22 @@ void fx_view(SDL_Surface *dest_surface, const SDL_Rect *dest, const SDL_Event *e
 	console_set_clip(mused.console, &area);
 	console_clear(mused.console);
 	bevel(mused.screen,&area, mused.slider_bevel, BEV_BACKGROUND);
-	adjust_rect(&area, 3);
+	adjust_rect(&area, 4);
 	console_set_clip(mused.console, &area);
 	SDL_Rect r;
 	copy_rect(&r, &area);
 	
 	r.h = 10;
 	
+	r.w = 112;
+	
 	if (checkbox(dest_surface, event, &r, mused.slider_bevel, &mused.smallfont, BEV_BUTTON, BEV_BUTTON_ACTIVE, DECAL_TICK, "MULTIPLEX", &mused.song.flags, MUS_ENABLE_MULTIPLEX)) mused.edit_reverb_param = R_MULTIPLEX;
 	update_rect(&area, &r);
 		
 	int d;
+	
+	r.x = 100;
+	r.w = 80;
 		
 	if ((d = generic_field(event, &r, R_MULTIPLEX_PERIOD, "PERIOD", "%2X", MAKEPTR(mused.song.multiplex_period), 2))) 
 	{
@@ -1436,17 +1441,29 @@ void fx_view(SDL_Surface *dest_surface, const SDL_Rect *dest, const SDL_Event *e
 	update_rect(&area, &r);
 	my_separator(&area, &r);
 	
-	if ((d = generic_field(event, &r, R_FX_BUS, "FX BUS", "%2X", MAKEPTR(mused.fx_bus), 2))) 
+	r.w = dest->w / (CYD_MAX_FX_CHANNELS) - 5;
+	
+	for (int i = 0 ; i < CYD_MAX_FX_CHANNELS ; ++i)
 	{
-		mused.edit_reverb_param = R_FX_BUS;
-		fx_add_param(d);
+		char txt[10];
+		sprintf(txt, "FX%d", i);
+		if (button_text_event(dest_surface, event, &r, mused.slider_bevel, &mused.smallfont, i == mused.fx_bus ? BEV_BUTTON_ACTIVE : BEV_BUTTON, BEV_BUTTON_ACTIVE, txt, NULL, MAKEPTR(R_FX_BUS), MAKEPTR(i), NULL) & 1)
+		{
+			mused.edit_reverb_param = R_FX_BUS;
+			mused.fx_bus = i;
+			fx_add_param(0);
+		}
+		
+		update_rect(&area, &r);
 	}
 	
-	update_rect(&area, &r);
 	my_separator(&area, &r);
 	
 	if (checkbox(dest_surface, event, &r, mused.slider_bevel, &mused.smallfont, BEV_BUTTON, BEV_BUTTON_ACTIVE, DECAL_TICK, "CRUSH", &mused.song.fx[mused.fx_bus].flags, CYDFX_ENABLE_CRUSH)) mused.edit_reverb_param = R_CRUSH;
 	update_rect(&area, &r);
+	
+	r.x = 100;
+	r.w = 60;
 	
 	if ((d = generic_field(event, &r, R_ROOMSIZE, "BITS", "%01X", MAKEPTR(mused.song.fx[mused.fx_bus].crush.bit_drop), 1)))
 	{
@@ -1458,19 +1475,23 @@ void fx_view(SDL_Surface *dest_surface, const SDL_Rect *dest, const SDL_Event *e
 	
 	my_separator(&area, &r);
 	
+	r.w = 60;
+	
 	if (checkbox(dest_surface, event, &r, mused.slider_bevel, &mused.smallfont, BEV_BUTTON, BEV_BUTTON_ACTIVE, DECAL_TICK, "STEREO", &mused.song.fx[mused.fx_bus].flags, CYDFX_ENABLE_CHORUS)) mused.edit_reverb_param = R_CHORUS;
+	
 	update_rect(&area, &r);
 	
-	// hacky-hack, we need different addresses for the different fields
-	// because the address of the string is used as an ad-hoc identifier for
-	// the fields...
-	
 	{
-		int tmp = r.w;
-		r.w = r.w / 3;
+		// hacky-hack, we need different addresses for the different fields
+		// because the address of the string is used as an ad-hoc identifier for
+		// the fields...
+		
 		char temp1[10], temp2[10], temp3[10]; 
 		
 		sprintf(temp1, "%4.1f ms", (float)mused.song.fx[mused.fx_bus].chr.min_delay / 10);
+		
+		r.x = 100;
+		r.w = 104;
 		
 		if ((d = generic_field(event, &r, R_MINDELAY, "MIN", temp1, NULL, 7)))
 		{
@@ -1488,9 +1509,10 @@ void fx_view(SDL_Surface *dest_surface, const SDL_Rect *dest, const SDL_Event *e
 			fx_add_param(d);
 		}
 		
-		update_rect(&area, &r);
+		r.x = 100;
+		r.y += r.h;
 		
-		if ((d = generic_field(event, &r, R_SEPARATION, "SEP", "%02X", MAKEPTR(mused.song.fx[mused.fx_bus].chr.sep), 2)))
+		if ((d = generic_field(event, &r, R_SEPARATION, "PHASE", "%02X", MAKEPTR(mused.song.fx[mused.fx_bus].chr.sep), 2)))
 		{
 			mused.edit_reverb_param = R_SEPARATION;
 			fx_add_param(d);
@@ -1510,20 +1532,34 @@ void fx_view(SDL_Surface *dest_surface, const SDL_Rect *dest, const SDL_Event *e
 		}
 		
 		update_rect(&area, &r);
-		
-		r.w = tmp;
 	}
 	
 	my_separator(&area, &r);
 	
-	if (checkbox(dest_surface, event, &r, mused.slider_bevel, &mused.smallfont, BEV_BUTTON, BEV_BUTTON_ACTIVE, DECAL_TICK, "REVERB", &mused.song.fx[mused.fx_bus].flags, CYDFX_ENABLE_REVERB)) mused.edit_reverb_param = R_ENABLE;
+	if (checkbox(dest_surface, event, &r, mused.slider_bevel, &mused.smallfont, BEV_BUTTON, BEV_BUTTON_ACTIVE, DECAL_TICK, "REVERB", &mused.song.fx[mused.fx_bus].flags, CYDFX_ENABLE_REVERB)) 
+		mused.edit_reverb_param = R_ENABLE;
+	
 	update_rect(&area, &r);
 	
-	mirror_flags();
+	r.w = 80;
+	
+	r.x = 4;
+	r.y += r.h;
+	
+	if ((d = generic_field(event, &r, R_SPREAD, "SPREAD", "%02X", MAKEPTR(mused.song.fx[mused.fx_bus].rvb.spread), 2)))
+	{
+		mused.edit_reverb_param = R_SPREAD;
+		fx_add_param(d);
+	}	
+	
+	update_rect(&area, &r);
 	
 	{
+		r.x = 130;
+		r.y -= r.h;
+		
 		int tmp = r.w;
-		r.w = 64 + 32;
+		r.w = 60 + 32;
 	
 		if ((d = generic_field(event, &r, R_ROOMSIZE, "ROOMSIZE", "%02X", MAKEPTR(mused.fx_room_size), 2)))
 		{
@@ -1533,19 +1569,20 @@ void fx_view(SDL_Surface *dest_surface, const SDL_Rect *dest, const SDL_Event *e
 		
 		update_rect(&area, &r);
 		
-		r.w = 24 + 32;
+		r.w = area.w - r.x;
 		
-		if ((d = generic_field(event, &r, R_ROOMVOL, "VOL", "%02X", MAKEPTR(mused.fx_room_vol), 2)))
+		if ((d = generic_field(event, &r, R_ROOMVOL, "VOLUME", "%02X", MAKEPTR(mused.fx_room_vol), 2)))
 		{
 			mused.edit_reverb_param = R_ROOMVOL;
 			fx_add_param(d);
 		}	
 		
-		update_rect(&area, &r);
+		r.x = 130;
+		r.y += r.h;
 		
-		r.w = 16 + 32;
+		r.w = 60+32;
 		
-		if ((d = generic_field(event, &r, R_ROOMDECAY, "DEC", "%d", MAKEPTR(mused.fx_room_dec), 1)))
+		if ((d = generic_field(event, &r, R_ROOMDECAY, "DECAY", "%d", MAKEPTR(mused.fx_room_dec), 1)))
 		{
 			mused.edit_reverb_param = R_ROOMDECAY;
 			fx_add_param(d);
@@ -1567,14 +1604,6 @@ void fx_view(SDL_Surface *dest_surface, const SDL_Rect *dest, const SDL_Event *e
 	
 	my_separator(&area, &r);
 	
-	if ((d = generic_field(event, &r, R_SPREAD, "SPREAD", "%02X", MAKEPTR(mused.song.fx[mused.fx_bus].rvb.spread), 2)))
-	{
-		mused.edit_reverb_param = R_SPREAD;
-		fx_add_param(d);
-	}	
-	
-	update_rect(&area, &r);
-	
 	int p = R_DELAY;
 	
 	for (int i = 0 ; i < CYDRVB_TAPS ; ++i)
@@ -1595,7 +1624,7 @@ void fx_view(SDL_Surface *dest_surface, const SDL_Rect *dest, const SDL_Event *e
 		
 		update_rect(&area, &r);
 		
-		r.w = 18;
+		r.w = 22;
 		
 		float spd = 1000.0 / mused.song.song_rate * ((float)(mused.song.song_speed + mused.song.song_speed2) / 2);
 		
@@ -1654,6 +1683,8 @@ void fx_view(SDL_Surface *dest_surface, const SDL_Rect *dest, const SDL_Event *e
 		
 		++p;
 	}
+	
+	mirror_flags();
 }
 
 

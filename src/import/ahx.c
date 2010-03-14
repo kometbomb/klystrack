@@ -159,7 +159,7 @@ static void ahx_program(Uint8 fx1, Uint8 data1, int *pidx, MusInstrument *i, con
 			break;
 			
 		case 3: 	
-			i->program[*pidx] = MUS_FX_PW_SET | my_min(255, my_max(8, ((int)(data1) * 4)));
+			i->program[*pidx] = MUS_FX_PW_SET | my_min(255, my_max(8, ((int)(data1) * 0x80 / 63)));
 			break;
 			
 		case 0xf:		
