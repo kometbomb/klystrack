@@ -40,11 +40,11 @@ else
 endif
 
 CFLAGS := $(MACHINE) -ftree-vectorize -std=gnu99 --no-strict-aliasing
-LDFLAGS :=  -L ../klystron/bin.$(CFG) -lengine_gfx -lengine_util -lengine_snd -lengine_gui -lSDLmain -lSDL -lSDL_mixer 
+LDFLAGS :=  -L ../klystron/bin.$(CFG) -lengine_gfx -lengine_util -lengine_snd -lengine_gui $(SDLLIBS)
 INCLUDEFLAGS := -I src $(SDLFLAGS) -I ../klystron/src -L../klystron/bin.$(CFG) -DRES_PATH="$(RES_PATH)" -DCONFIG_PATH="$(CONFIG_PATH)" $(EXTFLAGS) -DUSESDLMUTEXES -DENABLEAUDIODUMP -DSTEREOOUTPUT
 
 ifdef COMSPEC
-	LDFLAGS += -lmingw32 
+	LDFLAGS := -lmingw32 $(LDFLAGS)
 endif
 
 DIRS := $(notdir $(wildcard src/*)) 
