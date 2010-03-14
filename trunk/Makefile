@@ -2,6 +2,7 @@ TARGET := klystrack
 ECHO := echo
 CFG := debug
 MACHINE := -march=pentium2 
+NSIS := C:/program\ files\ \(x86\)/nsis/makensis.exe /V2 /NOCD
 ZIP := pkzipc -exclude=.* -zipdate=newest -path=relative -silent -rec -dir -add
 ZIPEXT := pkzipc -ext -silent
 WGET := wget --quiet
@@ -13,7 +14,8 @@ DESTDIR ?= /usr
 EXT := .c
 CC := gcc
 CDEP := gcc -E -MM
-ARCHIVE = klystrack.zip
+ARCHIVE := klystrack.zip
+INSTALLER := klystrack.exe
 MIXERVER := 1.2.11
 SDLVER := 1.2.14
 
@@ -97,7 +99,7 @@ build: Makefile src/version
 	@echo '"' >> src/version_number.h
 	@echo '#endif' >> src/version_number.h
 ifdef COMSPEC
-	$(REV) ./src/version.in ./src/version.h
+	@$(REV) ./src/version.in ./src/version.h
 else
 	@echo '#ifndef VERSION_H' > ./src/version.h
 	@echo '#define VERSION_H' >> ./src/version.h
@@ -108,37 +110,41 @@ else
 	@echo '#define VERSION_STRING "klystrack " VERSION " " REVISION' >> ./src/version.h
 	@echo '#endif' >> ./src/version.h
 endif
-	make -C ../klystron CFG=$(CFG) EXTFLAGS="$(EXTFLAGS)"
-	make all CFG=$(CFG) EXTFLAGS="$(EXTFLAGS)"
+	@make -C ../klystron CFG=$(CFG) EXTFLAGS="$(EXTFLAGS)"
+	@make all CFG=$(CFG) EXTFLAGS="$(EXTFLAGS)"
 
 all: bin.$(CFG)/$(TARGET) res/Default
 	
 zip: doc/* res/Default $(DLLS) examples/* linux/Makefile
-	make -C ../klystron CFG=release EXTFLAGS="$(EXTFLAGS)"
-	make build CFG=release
+	@make -C ../klystron CFG=release EXTFLAGS="$(EXTFLAGS)"
+	@make build CFG=release
 	@mkdir -p zip/data/res
 	@mkdir -p zip/data/examples/songs
 	@mkdir -p zip/data/examples/instruments
-	cp examples/songs/*.sng zip/data/examples/songs
-	cp examples/instruments/*.ins zip/data/examples/instruments
-	cp res/Default zip/data/res/Default
-	cp doc/LICENSE zip/data/LICENSE
-	cp doc/SDL.txt zip/data/SDL.txt
-	cp bin.release/$(TARGET) zip/data/$(TARGET)
+	@cp examples/songs/*.kt zip/data/examples/songs
+	@cp examples/instruments/*.ki zip/data/examples/instruments
+	@cp res/Default zip/data/res/Default
+	@cp doc/LICENSE zip/data/LICENSE
+	@cp doc/SDL.txt zip/data/SDL.txt
+	@cp bin.release/$(TARGET) zip/data/$(TARGET)
 ifdef COMSPEC
-	cd zip/data; rm -f ../$(ARCHIVE); $(ZIP) ../$(ARCHIVE) "*"
-	cp -f zip/klystrack.zip zip/klystrack-`cat src/version`-win32.zip
+	@cd zip/data; rm -f ../$(ARCHIVE); $(ZIP) ../$(ARCHIVE) "*"
+	@cp -f zip/klystrack.zip zip/klystrack-`cat src/version`-win32.zip
 else
-	cp -f linux/Makefile zip/data
+	@cp -f linux/Makefile zip/data
+endif
+	
+ifdef COMSPEC
+	@$(NSIS) /DVERSION=`cat src/version` installer/klystrack.nsi
 endif
 	
 nightly: zip
-	$(REV) ver.in ver.txt
-	cp zip/$(ARCHIVE) zip/klystrack-nightly-`cat ver.txt`-win32.zip
+	@$(REV) ver.in ver.txt
+	@cp zip/$(ARCHIVE) zip/klystrack-nightly-`cat ver.txt`-win32.zip
 ifneq ($(UPLOAD),)
-	$(UPLOAD) zip/klystrack-nightly-`cat ver.txt`-win32.zip
+	@$(UPLOAD) zip/klystrack-nightly-`cat ver.txt`-win32.zip
 endif
-	rm -f ver.txt
+	@rm -f ver.txt
 
 clean:
 	@rm -rf deps objs.$(CFG) bin.$(CFG)
@@ -161,24 +167,26 @@ endif
 res/Default: data/bevel.bmp temp/8x8.fnt temp/7x6.fnt data/colors.txt
 	@mkdir -p res
 	@mkdir -p temp
-	cp -f data/colors.txt temp
-	cp -f data/bevel.bmp temp
-	$(MAKEBUNDLE) $@ temp
+	@cp -f data/colors.txt temp
+	@cp -f data/bevel.bmp temp
+	@$(MAKEBUNDLE) $@ temp
 
 temp/8x8.fnt: data/font/*
 	@mkdir -p temp
-	$(MAKEBUNDLE) $@ data/font
+	@$(MAKEBUNDLE) $@ data/font
 
 temp/7x6.fnt: data/font7x6/*
 	@mkdir -p temp
-	$(MAKEBUNDLE) $@ data/font7x6
+	@$(MAKEBUNDLE) $@ data/font7x6
 
 zip/data/SDL.dll:
-	cd temp ; $(WGET) http://www.libsdl.org/release/SDL-$(SDLVER)-win32.zip ; $(ZIPEXT) SDL-$(SDLVER)-win32.zip SDL.dll ; rm SDL-$(SDLVER)-win32.zip
+	@$(ECHO) "Downloading SDL.dll..."
+	@cd temp ; $(WGET) http://www.libsdl.org/release/SDL-$(SDLVER)-win32.zip ; $(ZIPEXT) SDL-$(SDLVER)-win32.zip SDL.dll ; rm SDL-$(SDLVER)-win32.zip
 	@mkdir -p zip/data
-	mv temp/SDL.dll zip/data/SDL.dll
+	@mv temp/SDL.dll zip/data/SDL.dll
 		
 zip/data/SDL_mixer.dll:
-	cd temp ; $(WGET) http://www.libsdl.org/projects/SDL_mixer/release/SDL_mixer-$(MIXERVER)-win32.zip ; $(ZIPEXT) SDL_mixer-$(MIXERVER)-win32.zip SDL_mixer.dll ; rm SDL_mixer-$(MIXERVER)-win32.zip
+	@$(ECHO) "Downloading SDL_mixer.dll..."
+	@cd temp ; $(WGET) http://www.libsdl.org/projects/SDL_mixer/release/SDL_mixer-$(MIXERVER)-win32.zip ; $(ZIPEXT) SDL_mixer-$(MIXERVER)-win32.zip SDL_mixer.dll ; rm SDL_mixer-$(MIXERVER)-win32.zip
 	@mkdir -p zip/data
-	mv temp/SDL_mixer.dll zip/data/SDL_mixer.dll
+	@mv temp/SDL_mixer.dll zip/data/SDL_mixer.dll
