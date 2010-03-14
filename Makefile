@@ -89,7 +89,7 @@ $(eval $(call directory_defs,,))
 # subdirs (src/*/*.c)
 $(foreach dir,$(DIRS),$(eval $(call directory_defs,$(dir)/,$(dir)_)))
 
-.PHONY: zip all build nightly
+.PHONY: zip all build nightly installer
 
 build: Makefile src/version
 	@echo '#ifndef VERSION_NUMBER' > src/version_number.h
@@ -134,6 +134,7 @@ else
 	@cp -f linux/Makefile zip/data
 endif
 	
+installer: zip installer/klystrack.nsi
 ifdef COMSPEC
 	@$(NSIS) /DVERSION=`cat src/version` installer/klystrack.nsi
 endif

@@ -1,3 +1,5 @@
+!include "MUI.nsh"
+
 !define UninstLog "uninstall.log"
 Var UninstLog
  
@@ -24,7 +26,7 @@ LangString UninstLogMissing ${LANG_ENGLISH} "${UninstLog} not found!$\r$\nUninst
  CreateShortCut "${FilePath}" "${FilePointer}"
 !macroend
 !define CreateShortcut "!insertmacro CreateShortcut"
- 
+
 ; Copy files macro
 !macro CopyFiles SourcePath DestPath
  IfFileExists "${DestPath}" +2
@@ -78,6 +80,8 @@ Name "klystrack ${VERSION}"
 ; The file to write
 OutFile "zip\klystrack-${VERSION}.exe"
 
+InstallDirRegKey HKCU "Software\klystrack" ""
+
 ; The default installation directory
 InstallDir $PROGRAMFILES32\klystrack
 
@@ -88,13 +92,18 @@ RequestExecutionLevel user
 
 ; Pages
 
-Page directory
-Page instfiles
+!insertmacro MUI_PAGE_LICENSE "doc\LICENSE"
+!insertmacro MUI_PAGE_DIRECTORY
+!insertmacro MUI_PAGE_INSTFILES
 
-UninstPage uninstConfirm
-UninstPage instfiles
+; Uninst
+
+!insertmacro MUI_UNPAGE_CONFIRM
+!insertmacro MUI_UNPAGE_INSTFILES
 
 ;--------------------------------
+
+!insertmacro MUI_LANGUAGE "English"
 
 ; The stuff to install
 Section "" ;No components page, name is not important
@@ -111,29 +120,38 @@ Section "" ;No components page, name is not important
   
   ${SetOutPath} $INSTDIR\res
   
-  ${File} "zip\data\" res\Default
+  ${File} "zip\data\res\" Default
+  
+  ${CreateDirectory} $INSTDIR\examples
   
   ${SetOutPath} $INSTDIR\examples\instruments
   
-  ${File} "zip\data\" examples\instruments\bass.ki
-  ${File} "zip\data\" examples\instruments\bass2.ki
-  ${File} "zip\data\" examples\instruments\bigsnare.ki
-  ${File} "zip\data\" examples\instruments\clap.ki
-  ${File} "zip\data\" examples\instruments\cowbell.ki
-  ${File} "zip\data\" examples\instruments\hardkick.ki
-  ${File} "zip\data\" examples\instruments\kick.ki
-  ${File} "zip\data\" examples\instruments\lead1.ki
-  ${File} "zip\data\" examples\instruments\major.ki
-  ${File} "zip\data\" examples\instruments\ssnare.ki
-  ${File} "zip\data\" examples\instruments\stabmaj.ki
-  ${File} "zip\data\" examples\instruments\stabmin.ki
-  ${File} "zip\data\" examples\instruments\tom.ki
+  ${File} "zip\data\examples\instruments\" bass.ki
+  ${File} "zip\data\examples\instruments\" bass2.ki
+  ${File} "zip\data\examples\instruments\" bigsnare.ki
+  ${File} "zip\data\examples\instruments\" clap.ki
+  ${File} "zip\data\examples\instruments\" cowbell.ki
+  ${File} "zip\data\examples\instruments\" hardkick.ki
+  ${File} "zip\data\examples\instruments\" kick.ki
+  ${File} "zip\data\examples\instruments\" lead1.ki
+  ${File} "zip\data\examples\instruments\" major.ki
+  ${File} "zip\data\examples\instruments\" ssnare.ki
+  ${File} "zip\data\examples\instruments\" stabmaj.ki
+  ${File} "zip\data\examples\instruments\" stabmin.ki
+  ${File} "zip\data\examples\instruments\" tom.ki
   
   ${SetOutPath} $INSTDIR\examples\songs
   
-  ${File} "zip\data\" examples\songs\ringmod.kt
+  ${File} "zip\data\examples\songs\" ringmod.kt
   
-  ${CreateShortCut} "$SMPROGRAMS\klystrack.lnk" $INSTDIR\klystrack.exe
+  ${CreateDirectory} "$SMPROGRAMS\klystrack"
+  ${CreateShortCut} "$SMPROGRAMS\klystrack\klystrack.lnk" $INSTDIR\klystrack.exe
+  ${CreateShortCut} "$SMPROGRAMS\klystrack\Uninstall klystrack.lnk" $INSTDIR\uninstall.exe
+  
+  WriteRegStr HKCU "Software\klystrack" "" $INSTDIR
+  WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\klystrack" "DisplayName" "klystrack (remove only)"
+  WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\klystrack" "DisplayVersion" "${VERSION}"
+  WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\klystrack" "UninstallString" "$INSTDIR\uninstall.exe"
   
   ${WriteUninstaller} "$INSTDIR\uninstall.exe"
   
@@ -152,6 +170,8 @@ Section Uninstall
  IfFileExists "$INSTDIR\${UninstLog}" +3
   MessageBox MB_OK|MB_ICONSTOP "$(UninstLogMissing)"
    Abort
+   
+ DeleteRegKey /ifempty HKCU "Software\klystrack"
  
  Push $R0
  Push $R1
