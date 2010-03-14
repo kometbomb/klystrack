@@ -22,7 +22,8 @@ SDLVER := 1.2.14
 ifdef COMSPEC
 	TARGET := klystrack.exe
 	SDLFLAGS := -I /mingw/include/sdl
-	SDLLIBS :=  -lmingw32 -lSDLmain -lSDL -lSDL_mixer -mthreads 
+	SDLLIBS :=  -lmingw32 -lSDLmain -lSDL -lSDL_mixer 
+	CFLAGS += -mthreads 
 else
 	DLLS = 
 	SDLFLAGS := `sdl-config --cflags` -U_FORTIFY_SOURCE
@@ -38,7 +39,7 @@ else
 	CONFIG_PATH := ~/.klystrack
 endif
 
-CFLAGS := $(MACHINE) -mthreads -ftree-vectorize -std=gnu99 --no-strict-aliasing
+CFLAGS := $(MACHINE) -ftree-vectorize -std=gnu99 --no-strict-aliasing
 LDFLAGS :=  -lmingw32 -L ../klystron/bin.$(CFG) -lengine_gfx -lengine_util -lengine_snd -lengine_gui -lSDLmain -lSDL -lSDL_mixer 
 INCLUDEFLAGS := -I src $(SDLFLAGS) -I ../klystron/src -L../klystron/bin.$(CFG) -DRES_PATH="$(RES_PATH)" -DCONFIG_PATH="$(CONFIG_PATH)" $(EXTFLAGS) -DUSESDLMUTEXES -DENABLEAUDIODUMP -DSTEREOOUTPUT
 
