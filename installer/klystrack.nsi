@@ -170,7 +170,8 @@ Section Uninstall
  IfFileExists "$INSTDIR\${UninstLog}" +3
   MessageBox MB_OK|MB_ICONSTOP "$(UninstLogMissing)"
    Abort
-   
+ 
+ Delete /REBOOTOK "${PROFILE}\.klystrack"
  DeleteRegKey /ifempty HKCU "Software\klystrack"
  
  Push $R0
