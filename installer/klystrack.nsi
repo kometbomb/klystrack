@@ -87,7 +87,7 @@ InstallDir $PROGRAMFILES32\klystrack
 
 ; Request application privileges for Windows Vista
 ; Windows should detect NSIS
-;RequestExecutionLevel user
+RequestExecutionLevel none
 
 ;--------------------------------
 
@@ -113,7 +113,6 @@ Section "" ;No components page, name is not important
   ${SetOutPath} $INSTDIR
   
   ; Put file there
-  ${File} "zip\data\" klystrack.exe
   ${File} "zip\data\" LICENSE
   ${File} "zip\data\" SDL.dll
   ${File} "zip\data\" SDL.txt
@@ -148,6 +147,8 @@ Section "" ;No components page, name is not important
   ; For CreateShortCut
   
   ${SetOutPath} $INSTDIR
+  
+  ${File} "zip\data\" klystrack.exe
   
   ${CreateDirectory} "$SMPROGRAMS\klystrack"
   ${CreateShortCut} "$SMPROGRAMS\klystrack\klystrack.lnk" $INSTDIR\klystrack.exe
