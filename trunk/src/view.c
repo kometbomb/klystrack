@@ -1441,7 +1441,7 @@ void fx_view(SDL_Surface *dest_surface, const SDL_Rect *dest, const SDL_Event *e
 	update_rect(&area, &r);
 	my_separator(&area, &r);
 	
-	r.w = dest->w / (CYD_MAX_FX_CHANNELS) - 5;
+	r.w = 320 / (CYD_MAX_FX_CHANNELS) - 5;
 	
 	for (int i = 0 ; i < CYD_MAX_FX_CHANNELS ; ++i)
 	{
@@ -1569,7 +1569,7 @@ void fx_view(SDL_Surface *dest_surface, const SDL_Rect *dest, const SDL_Event *e
 		
 		update_rect(&area, &r);
 		
-		r.w = area.w - r.x;
+		r.w = 320 - 8 - r.x;
 		
 		if ((d = generic_field(event, &r, R_ROOMVOL, "VOLUME", "%02X", MAKEPTR(mused.fx_room_vol), 2)))
 		{

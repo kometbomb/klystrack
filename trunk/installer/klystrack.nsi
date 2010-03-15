@@ -86,8 +86,7 @@ InstallDirRegKey HKCU "Software\klystrack" ""
 InstallDir $PROGRAMFILES32\klystrack
 
 ; Request application privileges for Windows Vista
-; Windows should detect NSIS
-RequestExecutionLevel none
+RequestExecutionLevel admin
 
 ;--------------------------------
 
