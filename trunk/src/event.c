@@ -264,6 +264,18 @@ void instrument_add_param(int a)
 		
 		break;
 		
+		case P_VIBDELAY:
+		
+		clamp(i->vib_delay, a, 0, 0xff);
+		
+		break;
+		
+		case P_VIBSHAPE:
+		
+		clamp(i->vib_shape, a, 0, MUS_NUM_SHAPES - 1);
+		
+		break;
+		
 		case P_VIBSPEED:
 		
 		clamp(i->vibrato_speed, a, 0, 0xff);
@@ -279,6 +291,12 @@ void instrument_add_param(int a)
 		case P_PWMSPEED:
 		
 		clamp(i->pwm_speed, a, 0, 0xff);
+		
+		break;
+		
+		case P_PWMSHAPE:
+		
+		clamp(i->pwm_shape, a, 0, MUS_NUM_SHAPES - 1);
 		
 		break;
 		

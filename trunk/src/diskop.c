@@ -75,6 +75,9 @@ void save_instrument(FILE *f, MusInstrument *inst)
 	FIX_ENDIAN(temp16);
 	_VER_WRITE(&temp16, 0);
 	_VER_WRITE(&inst->fx_bus, 0);
+	_VER_WRITE(&inst->vib_shape, 0);
+	_VER_WRITE(&inst->vib_delay, 0);
+	_VER_WRITE(&inst->pwm_shape, 0);
 }
 
 
