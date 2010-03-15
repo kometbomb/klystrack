@@ -2,10 +2,9 @@
 
 = Stable builds =
 
-|| Windows || [http://code.google.com/p/klystrack/downloads/list?can=2&q=label%3AOpSys-Windows Windows+label%3AType-Installer Installer] ||
-|| Windows || [http://code.google.com/p/klystrack/downloads/list?can=2&q=label%3AOpSys-Windows Windows+label%3AType-Archive .zip archive] ||
-
-|| Linux || [http://code.google.com/p/klystrack/downloads/list?can=2&q=label%3AOpSys-Linux+label%3AType-Package .deb package] ||
+|| *Windows (32 and 64-bit)* || [http://code.google.com/p/klystrack/downloads/list?can=2&q=label%3AOpSys-Windows Windows+label%3AType-Installer Installer] ||
+|| *Windows (32 and 64-bit)* || [http://code.google.com/p/klystrack/downloads/list?can=2&q=label%3AOpSys-Windows Windows+label%3AType-Archive .zip archive] ||
+|| *Linux* || [http://code.google.com/p/klystrack/downloads/list?can=2&q=label%3AOpSys-Linux+label%3AType-Package .deb package] ||
 
 Or, checkout the source tagged e.g. 1.4.0 and roll your own. 
 
