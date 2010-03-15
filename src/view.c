@@ -745,13 +745,17 @@ void info_view(SDL_Surface *dest_surface, const SDL_Rect *dest, const SDL_Event 
 	console_set_clip(mused.console, &area);
 	console_clear(mused.console);
 	bevel(mused.screen,&area, mused.slider_bevel, BEV_BACKGROUND);
+	
+	area.w = my_min(320, area.w);
+	
 	adjust_rect(&area, 3);
 	SDL_Rect r;
 	copy_rect(&r, &area);
 	r.w = 100-8;
+	
 	if (area.w > r.w)
 	{
-		r.w = area.w / (int)(area.w / r.w) - 8;
+		r.w = area.w / (int)(area.w / r.w) - 5;
 	}
 	else
 	{

@@ -64,7 +64,10 @@ void save_instrument(FILE *f, MusInstrument *inst)
 	_VER_WRITE(&inst->pwm_depth, 0); 
 	_VER_WRITE(&inst->slide_speed, 0);
 	_VER_WRITE(&inst->base_note, 0);
-	_VER_WRITE(inst->name, sizeof(inst->name));
+	Uint8 len = strlen(inst->name);
+	_VER_WRITE(&len, 0);
+	if (len)
+		_VER_WRITE(inst->name, len);
 	temp16 = inst->cutoff;
 	FIX_ENDIAN(temp16);
 	_VER_WRITE(&temp16, 0);
@@ -159,7 +162,8 @@ int save_data()
 			
 			if (f)
 			{
-				if (!confirm(domain, mused.slider_bevel, &mused.largefont, "Keep unused patterns?"))
+				Uint8 n_inst = mused.song.num_instruments;
+				if (!confirm(domain, mused.slider_bevel, &mused.largefont, "Save unused patterns\nand instruments?"))
 				{
 					int maxpat = -1;
 					for (int c = 0 ; c < mused.song.num_channels ; ++c)
@@ -168,6 +172,13 @@ int save_data()
 							 if (maxpat < mused.song.sequence[c][i].pattern)
 								maxpat = mused.song.sequence[c][i].pattern;
 					}
+					
+					n_inst = 0;
+					
+					for (int i = 0 ; i < maxpat ; ++i)
+						for (int s = 0 ; s < mused.song.pattern[i].num_steps ; ++s)
+							if (mused.song.pattern[i].step[s].instrument != MUS_NOTE_NO_INSTRUMENT)
+								n_inst = my_max(n_inst, mused.song.pattern[i].step[s].instrument + 1);
 					
 					mused.song.num_patterns = maxpat + 1;
 				}
@@ -183,7 +194,7 @@ int save_data()
 				fwrite(&mused.song.num_channels, 1, sizeof(mused.song.num_channels), f);
 				Uint16 temp16 = mused.song.time_signature;
 				fwrite(&temp16, 1, sizeof(mused.song.time_signature), f);
-				fwrite(&mused.song.num_instruments, 1, sizeof(mused.song.num_instruments), f);
+				fwrite(&n_inst, 1, sizeof(mused.song.num_instruments), f);
 				temp16 = mused.song.num_patterns;
 				FIX_ENDIAN(temp16);
 				fwrite(&temp16, 1, sizeof(mused.song.num_patterns), f);
@@ -206,11 +217,15 @@ int save_data()
 				FIX_ENDIAN(temp32);
 				fwrite(&temp32, 1, sizeof(mused.song.flags), f);
 				fwrite(&mused.song.multiplex_period, 1, sizeof(mused.song.multiplex_period), f);
-				fwrite(mused.song.title, 1, MUS_TITLE_LEN + 1, f);
+				
+				Uint8 len = strlen(mused.song.title);
+				fwrite(&len, 1, 1, f);
+				if (len)
+					fwrite(mused.song.title, 1, len, f);
 				
 				Uint8 n_fx = 0;
 				
-				for (int i = 0 ; i < mused.song.num_instruments ; ++i)
+				for (int i = 0 ; i < n_inst ; ++i)
 					if (mused.song.instrument[i].cydflags & CYD_CHN_ENABLE_FX) n_fx = my_max(n_fx, mused.song.instrument[i].fx_bus + 1);
 				
 				fwrite(&n_fx, 1, sizeof(n_fx), f);
@@ -230,7 +245,7 @@ int save_data()
 					fwrite(&temp, 1, sizeof(temp), f);
 				}
 				
-				for (int i = 0 ; i < mused.song.num_instruments; ++i)
+				for (int i = 0 ; i < n_inst ; ++i)
 				{
 					save_instrument(f, &mused.song.instrument[i]);
 				}
