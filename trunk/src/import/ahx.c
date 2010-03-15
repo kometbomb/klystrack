@@ -29,6 +29,7 @@ OTHER DEALINGS IN THE SOFTWARE.
 #include "event.h"
 #include "SDL_endian.h"
 #include <math.h>
+#include "snd/freqs.h"
 
 extern Mused mused;
 
@@ -442,6 +443,8 @@ int import_ahx(FILE *f)
 					int n = note - 1;
 					
 					if (fixed_note) n = my_min(0xf0, my_max(0, (int)n)) + 48 - wavelen_semitones;
+					
+					n = my_max(0, my_min(n, FREQ_TAB_SIZE - 1));
 					
 					if (pidx < MUS_PROG_LEN - 1) i->program[pidx] = (fixed_note ? MUS_FX_ARPEGGIO_ABS : MUS_FX_ARPEGGIO) | ((n) & 0xff);
 				}
