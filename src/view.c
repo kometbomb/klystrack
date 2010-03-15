@@ -946,8 +946,11 @@ void info_line(SDL_Surface *dest_surface, const SDL_Rect *dest, const SDL_Event 
 				"Program period",
 				"Vibrato speed",
 				"Vibrato depth",
+				"Vibrato shape",
+				"Vibrato delay",
 				"Pulse width modulation speed",
 				"Pulse width modulation depth",
+				"Pulse width modulation shape",
 				"FX bus"
 			};
 			strcpy(text, param_desc[mused.selected_param]);
@@ -1357,9 +1360,15 @@ void instrument_view2(SDL_Surface *dest_surface, const SDL_Rect *dest, const SDL
 	update_rect(&frame, &r);
 	inst_text(event, &r, P_VIBDEPTH,   "VIB.D", "%02X", MAKEPTR(inst->vibrato_depth), 2);
 	update_rect(&frame, &r);
+	inst_text(event, &r, P_VIBSHAPE,   "VIB.SH", "%01X", MAKEPTR(inst->vib_shape), 1);
+	update_rect(&frame, &r);
+	inst_text(event, &r, P_VIBDELAY,   "V.DEL", "%02X", MAKEPTR(inst->vib_delay), 2);
+	update_rect(&frame, &r);
 	inst_text(event, &r, P_PWMSPEED,   "PWM.S", "%02X", MAKEPTR(inst->pwm_speed), 2);
 	update_rect(&frame, &r);
 	inst_text(event, &r, P_PWMDEPTH,   "PWM.D", "%02X", MAKEPTR(inst->pwm_depth), 2);
+	update_rect(&frame, &r);
+	inst_text(event, &r, P_PWMSHAPE,   "PWM.SH", "%01X", MAKEPTR(inst->pwm_shape), 1);
 	update_rect(&frame, &r);
 	inst_text(event, &r, P_FXBUS,   "FXBUS", "%02X", MAKEPTR(inst->fx_bus), 2);
 	update_rect(&frame, &r);
