@@ -1,0 +1,22 @@
+#summary Download klystrack
+
+= Stable builds =
+
+|| Windows || [http://code.google.com/p/klystrack/downloads/list?can=2&q=label%3AOpSys-Windows Windows+label%3AType-Installer Installer] ||
+|| Windows || [http://code.google.com/p/klystrack/downloads/list?can=2&q=label%3AOpSys-Windows Windows+label%3AType-Archive .zip archive] ||
+|| Linux || [http://code.google.com/p/klystrack/downloads/list?can=2&q=label%3AOpSys-
+Linux+label%3AType-Package .deb package] ||
+
+Or, checkout the source tagged e.g. 1.4.0 and roll your own. 
+
+{{{
+svn checkout http://klystrack.googlecode.com/svn/tags/1.4.0/ klystrack-read-only  
+}}}
+
+More help on [HowToCompile compiling klystrack].
+
+= Nightly builds =
+
+||[http://code.google.com/p/klystrack/downloads/list?q=label:Nightly List nightly builds]||
+
+The nightly builds are simply the work in progress version of klystrack. They contain features not in the stable builds. Do not expect to a song from a nightly build to load in other builds.
