@@ -278,7 +278,7 @@ int main(int argc, char **argv)
 						
 					// key events should go only to the edited text field
 									
-					if (mused.mode != EDITBUFFER) 
+					if (mused.focus != EDITBUFFER) 
 					{
 						cyd_lock(&mused.cyd, 1);
 						do_shortcuts(&e.key, shortcuts);
