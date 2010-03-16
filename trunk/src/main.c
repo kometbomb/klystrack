@@ -322,13 +322,14 @@ int main(int argc, char **argv)
 				break;
 			}
 			
-			if (mused.mode == EDITBUFFER) e.type = SDL_USEREVENT;
+			//if (mused.mode == EDITBUFFER) e.type = SDL_USEREVENT;
 			
 			if (e.type != SDL_MOUSEMOTION || (e.motion.state)) ++got_event;
 			
 			// ensure the last event is a mouse click so it gets passed to the draw/event code
 			
-			if (e.type == SDL_MOUSEBUTTONDOWN || (e.type == SDL_MOUSEMOTION && e.motion.state)) break; 
+			if (e.type == SDL_MOUSEBUTTONDOWN || (e.type == SDL_MOUSEMOTION && e.motion.state)) 
+				break; 
 		}
 		
 		if (active && (got_event || gfx_domain_is_next_frame(domain)))

@@ -1168,13 +1168,19 @@ static void inst_field(const SDL_Event *e, const SDL_Rect *area, int p, int leng
 	
 	console_set_clip(mused.console, &field);
 	
+	int got_pos = 0;
+	
 	if (mused.edit_buffer == text && mused.mode == EDITBUFFER && mused.selected_param == p)
 	{
 		int i = my_max(0, mused.editpos - field.w / mused.console->font.w + 1), c = 0;
 		for ( ; text[i] && c < my_min(length, field.w / mused.console->font.w) ; ++i, ++c)
 		{
-			if (check_event(e, console_write_args(mused.console, "%c", mused.editpos == i ? '§' : text[i]), NULL, NULL, NULL, NULL))
+			const SDL_Rect *r = console_write_args(mused.console, "%c", mused.editpos == i ? '§' : text[i]);
+			if (check_event(e, r, NULL, NULL, NULL, NULL))
+			{
 				mused.editpos = i;
+				got_pos = 1;
+			}
 		}
 		
 		if (mused.editpos == i && c <= length) 
@@ -1186,8 +1192,15 @@ static void inst_field(const SDL_Event *e, const SDL_Rect *area, int p, int leng
 		strncpy(temp, text, my_min(sizeof(temp), length));
 		
 		temp[my_max(0, my_min(sizeof(temp), field.w / mused.console->font.w))] = '\0';
+		
+		console_write_args(mused.console, "%s", temp);
+	}
 	
-		if (check_event(e, console_write_args(mused.console, "%*s", -length, temp), select_instrument_param, MAKEPTR(p), 0, 0))
+	if (!got_pos && check_event(e, &field, select_instrument_param, MAKEPTR(p), 0, 0))
+	{
+		if (mused.edit_buffer == text)
+			mused.editpos = strlen(text);
+		else
 			set_edit_buffer(text, length);
 	}
 }
