@@ -322,7 +322,7 @@ int main(int argc, char **argv)
 				break;
 			}
 			
-			//if (mused.mode == EDITBUFFER) e.type = SDL_USEREVENT;
+			if (mused.focus == EDITBUFFER && e.type == SDL_KEYDOWN) e.type = SDL_USEREVENT;
 			
 			if (e.type != SDL_MOUSEMOTION || (e.motion.state)) ++got_event;
 			

@@ -52,6 +52,8 @@ void select_sequence_position(void *channel, void *position, void* unused)
 	if (CASTPTR(int,position) < mused.song.song_length)
 		mused.current_sequencepos = CASTPTR(int,position);
 		
+	mused.focus = EDITSEQUENCE;
+		
 	if (mused.mode == EDITCLASSIC) update_ghost_patterns();
 }
 
@@ -60,6 +62,8 @@ void select_pattern_param(void *id, void *position, void *pattern)
 {
 	if ((mused.flags & SONG_PLAYING) && (mused.flags & FOLLOW_PLAY_POSITION))
 		return;
+	
+	mused.focus = EDITPATTERN;
 	
 	mused.current_patternx = CASTPTR(int,id);
 	mused.current_pattern = CASTPTR(int,pattern);

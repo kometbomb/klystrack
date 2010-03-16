@@ -1170,7 +1170,7 @@ static void inst_field(const SDL_Event *e, const SDL_Rect *area, int p, int leng
 	
 	int got_pos = 0;
 	
-	if (mused.edit_buffer == text && mused.mode == EDITBUFFER && mused.selected_param == p)
+	if (mused.edit_buffer == text && mused.focus == EDITBUFFER && mused.selected_param == p)
 	{
 		int i = my_max(0, mused.editpos - field.w / mused.console->font.w + 1), c = 0;
 		for ( ; text[i] && c < my_min(length, field.w / mused.console->font.w) ; ++i, ++c)
@@ -1233,7 +1233,7 @@ void instrument_name_view(SDL_Surface *dest_surface, const SDL_Rect *dest, const
 	inst_text(event, &farea, P_INSTRUMENT, "", "%02X", MAKEPTR(mused.current_instrument), 2);
 	inst_field(event, &tarea, P_NAME, sizeof(mused.song.instrument[mused.current_instrument].name), mused.song.instrument[mused.current_instrument].name);
 	
-	if (mused.selected_param == P_NAME && (mused.edit_buffer == mused.song.instrument[mused.current_instrument].name && mused.mode == EDITBUFFER))
+	if (mused.selected_param == P_NAME && (mused.edit_buffer == mused.song.instrument[mused.current_instrument].name && mused.focus == EDITBUFFER))
 	{
 		SDL_Rect r;
 		copy_rect(&r, &tarea);
