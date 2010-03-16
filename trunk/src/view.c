@@ -1198,7 +1198,7 @@ static void inst_field(const SDL_Event *e, const SDL_Rect *area, int p, int leng
 	
 	if (!got_pos && check_event(e, &field, select_instrument_param, MAKEPTR(p), 0, 0))
 	{
-		if (mused.edit_buffer == text)
+		if (mused.focus == EDITBUFFER && mused.edit_buffer == text)
 			mused.editpos = strlen(text);
 		else
 			set_edit_buffer(text, length);
