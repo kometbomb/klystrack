@@ -515,7 +515,7 @@ int import_ahx(FILE *f)
 	
 	char *ptr = txt;
 	
-	strncpy(mused.song.title, ptr, MUS_TITLE_LEN);
+	strncpy(mused.song.title, ptr, sizeof(mused.song.title));
 	
 	ptr += strlen(ptr) + 1;
 	

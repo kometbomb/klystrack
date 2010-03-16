@@ -1213,7 +1213,7 @@ void instrument_name_view(SDL_Surface *dest_surface, const SDL_Rect *dest, const
 	tarea.x = farea.x + farea.w;
 	
 	inst_text(event, &farea, P_INSTRUMENT, "", "%02X", MAKEPTR(mused.current_instrument), 2);
-	inst_field(event, &tarea, P_NAME, 16, mused.song.instrument[mused.current_instrument].name);
+	inst_field(event, &tarea, P_NAME, sizeof(mused.song.instrument[mused.current_instrument].name), mused.song.instrument[mused.current_instrument].name);
 	
 	if (mused.selected_param == P_NAME && (mused.edit_buffer == mused.song.instrument[mused.current_instrument].name && mused.mode == EDITBUFFER))
 	{
@@ -1412,7 +1412,11 @@ void instrument_list(SDL_Surface *dest_surface, const SDL_Rect *dest, const SDL_
 			console_set_color(mused.console, colors[COLOR_INSTRUMENT_NORMAL], CON_CHARACTER);
 		}
 			
-		check_event(event, console_write_args(mused.console, "%02X %-16s\n", i, mused.song.instrument[i].name), select_instrument, MAKEPTR(i), 0, 0);
+		char temp[sizeof(mused.song.instrument[i].name)];
+		
+		strncpy(temp, mused.song.instrument[i].name, area.w / mused.console->font.w - 3);
+			
+		check_event(event, console_write_args(mused.console, "%02X %-16s\n", i, temp), select_instrument, MAKEPTR(i), 0, 0);
 		
 		slider_set_params(&mused.instrument_list_slider_param, 0, NUM_INSTRUMENTS - 1, start, i, &mused.instrument_list_position, 1, SLIDER_VERTICAL, mused.slider_bevel);
 	}
@@ -1732,7 +1736,7 @@ void song_name_view(SDL_Surface *dest_surface, const SDL_Rect *dest, const SDL_E
 	farea.x += larea.w;
 	label("SONG", &larea);
 	
-	inst_field(event, &farea, 0, MUS_TITLE_LEN, mused.song.title);
+	inst_field(event, &farea, 0, MUS_SONG_TITLE_LEN, mused.song.title);
 }
 
 
