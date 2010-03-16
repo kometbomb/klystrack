@@ -1170,19 +1170,24 @@ static void inst_field(const SDL_Event *e, const SDL_Rect *area, int p, int leng
 	
 	if (mused.edit_buffer == text && mused.mode == EDITBUFFER && mused.selected_param == p)
 	{
-		int i = 0;
-		for ( ; text[i] && i < length ; ++i)
+		int i = my_max(0, mused.editpos - field.w / mused.console->font.w + 1), c = 0;
+		for ( ; text[i] && c < my_min(length, field.w / mused.console->font.w) ; ++i, ++c)
 		{
 			if (check_event(e, console_write_args(mused.console, "%c", mused.editpos == i ? '§' : text[i]), NULL, NULL, NULL, NULL))
 				mused.editpos = i;
 		}
 		
-		if (mused.editpos == i && i <= length) 
+		if (mused.editpos == i && c <= length) 
 			console_write(mused.console, "§"); 
 	}
 	else
 	{
-		if (check_event(e, console_write_args(mused.console, "%*s", -length, text), select_instrument_param, MAKEPTR(p), 0, 0))
+		char temp[1000];
+		strncpy(temp, text, my_min(sizeof(temp), length));
+		
+		temp[my_max(0, my_min(sizeof(temp), field.w / mused.console->font.w))] = '\0';
+	
+		if (check_event(e, console_write_args(mused.console, "%*s", -length, temp), select_instrument_param, MAKEPTR(p), 0, 0))
 			set_edit_buffer(text, length);
 	}
 }
@@ -1414,7 +1419,8 @@ void instrument_list(SDL_Surface *dest_surface, const SDL_Rect *dest, const SDL_
 			
 		char temp[sizeof(mused.song.instrument[i].name)];
 		
-		strncpy(temp, mused.song.instrument[i].name, area.w / mused.console->font.w - 3);
+		strcpy(temp, mused.song.instrument[i].name);
+		temp[my_max(0, area.w / mused.console->font.w - 3)] = '\0';
 			
 		check_event(event, console_write_args(mused.console, "%02X %-16s\n", i, temp), select_instrument, MAKEPTR(i), 0, 0);
 		
