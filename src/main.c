@@ -41,7 +41,7 @@ OTHER DEALINGS IN THE SOFTWARE.
 #include "version.h"
 #include "mused.h"
 #include "config.h"
-#include "gui/bevdefs.h"
+#include "mybevdefs.h"
 #include <time.h>
 #include "util/rnd.h"
 

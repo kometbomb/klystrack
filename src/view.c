@@ -31,6 +31,7 @@ OTHER DEALINGS IN THE SOFTWARE.
 #include "gui/dialog.h"
 #include "gui/bevel.h"
 #include "theme.h"
+#include "mybevdefs.h"
 
 #define swap(a,b) { a ^= b; b ^= a; a ^= b; }
 
