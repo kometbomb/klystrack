@@ -1,7 +1,9 @@
 #include "pianoroll.h"
 #include "../mused.h"
 #include "gui/view.h"
+#include "gui/bevel.h"
 #include "snd/freqs.h"
+#include "../mybevdefs.h"
 
 extern Mused mused;
 
@@ -50,6 +52,17 @@ void pianoroll_view(SDL_Surface *screen, const SDL_Rect *area, const SDL_Event *
 		
 		if (note.area.w > 0)
 			SDL_FillRect(screen, &note.area, pal[note.inst % 6]);
+	}
+	
+	if (mused.flags & SONG_PLAYING)
+	{
+		int x = (mused.stat_song_position - mused.pianoroll_x_position) * 2;
+		
+		if (x > 0 && x < area->w)
+		{
+			SDL_Rect pos = {x, 0, 2, area->h};
+			bevel(mused.screen, &pos, mused.slider_bevel, BEV_SEQUENCE_PLAY_POS_HORIZ);
+		}
 	}
 	
 	slider_set_params(&mused.pianoroll_x_param, 0, my_max(0, (int)mused.song.song_length - 1), mused.pianoroll_x_position, mused.pianoroll_x_position + area->w / 2 - 1, &mused.pianoroll_x_position, 1, SLIDER_HORIZONTAL, mused.slider_bevel);
