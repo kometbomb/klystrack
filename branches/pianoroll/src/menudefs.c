@@ -43,6 +43,7 @@ Menu editormenu[] =
 	{ 0, showmenu, "Sequence",  NULL, change_mode_action, (void*)EDITSEQUENCE, 0, 0 },
 	{ 0, showmenu, "Classic",  NULL, change_mode_action, (void*)EDITCLASSIC, 0, 0 },
 	{ 0, showmenu, "Effects",  NULL, change_mode_action, (void*)EDITFX, 0, 0 },
+	{ 0, showmenu, "Piano roll",  NULL, change_mode_action, (void*)EDITPIANOROLL, 0, 0 },
 	{ 0, NULL, NULL }
 };
 

@@ -44,6 +44,7 @@ OTHER DEALINGS IN THE SOFTWARE.
 #include "gui/bevdefs.h"
 #include <time.h>
 #include "util/rnd.h"
+#include "view/pianoroll.h"
 
 //#define DUMPKEYS
 
@@ -124,13 +125,20 @@ static const View fx_view_tab[] =
 	{{0, 0, 0, 0}, NULL}
 };
 
+static const View pianoroll_view_tab[] =
+{
+	{{0, 0, 0, 0}, pianoroll_view, NULL, -1},
+	{{0, 0, 0, 0}, NULL}
+};
+
 const View *tab[] = 
 { 
 	instrument_view_tab,
 	pattern_view_tab,
 	sequence_view_tab,
 	fx_view_tab,
-	classic_view_tab
+	classic_view_tab,
+	pianoroll_view_tab
 };
 
 
