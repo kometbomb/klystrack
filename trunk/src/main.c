@@ -156,7 +156,7 @@ int main(int argc, char **argv)
 
 	SDL_putenv("SDL_VIDEO_CENTERED=1");
 
-	SDL_Init(SDL_INIT_AUDIO|SDL_INIT_NOPARACHUTE|SDL_INIT_TIMER);
+	SDL_Init(SDL_INIT_VIDEO|SDL_INIT_AUDIO|SDL_INIT_NOPARACHUTE|SDL_INIT_TIMER);
 	atexit(SDL_Quit);
 	
 	domain = gfx_create_domain();
@@ -182,7 +182,12 @@ int main(int argc, char **argv)
 	
 	init_scrollbars();
 	
-	if (Mix_OpenAudio(mused.mix_rate, AUDIO_S16SYS, 2, mused.mix_buffer)) warning("Mix_OpenAudio failed: %s", Mix_GetError());
+	if (Mix_OpenAudio(mused.mix_rate, AUDIO_S16SYS, 2, mused.mix_buffer))
+	{	
+		fatal("Mix_OpenAudio failed: %s", Mix_GetError());
+		return 1;
+	}
+	
 	Mix_AllocateChannels(1);
 	
 	cyd_init(&mused.cyd, mused.mix_rate, MUS_MAX_CHANNELS);
