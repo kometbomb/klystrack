@@ -32,8 +32,8 @@ void pianoroll_view(SDL_Surface *screen, const SDL_Rect *area, const SDL_Event *
 					if (note.area.w > 0)
 						SDL_FillRect(screen, &note.area, pal[note.inst % 6]);
 						
-					note.area.x = (mused.song.sequence[c][s].position + ps) * 2 - mused.pianoroll_x_position * 2;
-					note.area.y = (mused.song.sequence[c][s].note_offset + pat->step[ps].note + mused.song.instrument[inst].base_note) * 2 - mused.pianoroll_y_position * 2;
+					note.area.x = (area->x + mused.song.sequence[c][s].position + ps) * 2 - mused.pianoroll_x_position * 2;
+					note.area.y = (area->y + (FREQ_TAB_SIZE - 1 - (mused.song.sequence[c][s].note_offset + pat->step[ps].note + mused.song.instrument[inst].base_note - MIDDLE_C))) * 2 - mused.pianoroll_y_position * 2;
 					note.area.w = 2;
 					note.area.h = 2;
 					note.inst = inst;
@@ -66,6 +66,6 @@ void pianoroll_view(SDL_Surface *screen, const SDL_Rect *area, const SDL_Event *
 	}
 	
 	slider_set_params(&mused.pianoroll_x_param, 0, my_max(0, (int)mused.song.song_length - 1), mused.pianoroll_x_position, mused.pianoroll_x_position + area->w / 2 - 1, &mused.pianoroll_x_position, 1, SLIDER_HORIZONTAL, mused.slider_bevel);
-	slider_set_params(&mused.pianoroll_y_param, 0, area->h / 2, mused.pianoroll_y_position, mused.pianoroll_y_position + area->h / 2 - 1, &mused.pianoroll_y_position, 1, SLIDER_VERTICAL, mused.slider_bevel);
+	slider_set_params(&mused.pianoroll_y_param, 0, FREQ_TAB_SIZE - 1, mused.pianoroll_y_position, mused.pianoroll_y_position + area->h / 2 - 1, &mused.pianoroll_y_position, 1, SLIDER_VERTICAL, mused.slider_bevel);
 	
 }
