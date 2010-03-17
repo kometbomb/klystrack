@@ -87,6 +87,7 @@ typedef struct
 	char * edit_buffer;
 	int edit_buffer_size;
 	SliderParam sequence_slider_param, pattern_slider_param, program_slider_param, instrument_list_slider_param, pattern_horiz_slider_param, sequence_horiz_slider_param;
+	SliderParam pianoroll_x_param, pianoroll_y_param;
 	/*---*/
 	char * edit_backup_buffer;
 	int stat_song_position;
@@ -103,6 +104,7 @@ typedef struct
 	int mix_rate, mix_buffer;
 	int window_w, window_h;
 	int fx_bus, fx_room_size, fx_room_vol, fx_room_dec;
+	int pianoroll_x_position, pianoroll_y_position;
 } Mused;
 
 #define NUM_PATTERNS 256

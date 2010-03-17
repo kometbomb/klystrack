@@ -41,7 +41,7 @@ OTHER DEALINGS IN THE SOFTWARE.
 #include "version.h"
 #include "mused.h"
 #include "config.h"
-#include "gui/bevdefs.h"
+#include "mybevdefs.h"
 #include <time.h>
 #include "util/rnd.h"
 #include "view/pianoroll.h"
@@ -127,7 +127,9 @@ static const View fx_view_tab[] =
 
 static const View pianoroll_view_tab[] =
 {
-	{{0, 0, 0, 0}, pianoroll_view, NULL, -1},
+	{{0, 0, -SCROLLBAR, -SCROLLBAR}, pianoroll_view, NULL, -1},
+	{{0, -SCROLLBAR, -SCROLLBAR, SCROLLBAR}, slider, &mused.pianoroll_x_param, -1},
+	{{0-SCROLLBAR, 0, SCROLLBAR, 0}, slider, &mused.pianoroll_y_param, -1},
 	{{0, 0, 0, 0}, NULL}
 };
 

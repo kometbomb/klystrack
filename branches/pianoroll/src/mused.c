@@ -291,6 +291,8 @@ void init_scrollbars()
 	slider_set_params(&mused.pattern_horiz_slider_param, 0, 0, 0, 0, &mused.sequence_position, 1, SLIDER_HORIZONTAL, mused.slider_bevel);
 	slider_set_params(&mused.sequence_horiz_slider_param, 0, 0, 0, 0, &mused.sequence_position, 1, SLIDER_HORIZONTAL, mused.slider_bevel);
 	slider_set_params(&mused.program_slider_param, 0, 0, 0, 0, &mused.sequence_position, 1, SLIDER_VERTICAL, mused.slider_bevel);
+	slider_set_params(&mused.pianoroll_x_param, 0, 0, 0, 0, &mused.pianoroll_x_position, 1, SLIDER_HORIZONTAL, mused.slider_bevel);
+	slider_set_params(&mused.pianoroll_y_param, 0, 0, 0, 0, &mused.pianoroll_y_position, 1, SLIDER_VERTICAL, mused.slider_bevel);
 }
 
 
