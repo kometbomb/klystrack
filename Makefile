@@ -20,9 +20,9 @@ MIXERVER := 1.2.11
 SDLVER := 1.2.14
 
 ifdef COMSPEC
-	TARGET := klystrack.exe
+	TARGET := $(TARGET).exe
 	SDLFLAGS := -I /mingw/include/sdl
-	SDLLIBS :=  -lmingw32 -lSDLmain -lSDL -lSDL_mixer 
+	SDLLIBS :=  -lSDLmain -lSDL -lSDL_mixer 
 	CFLAGS += -mthreads 
 else
 	DLLS = 
@@ -81,7 +81,7 @@ define directory_defs
 objs.$(CFG)/$(2)%.o: src/$(1)%$(EXT)
 	@$(ECHO) "Compiling $$(notdir $$<)..."
 	@mkdir -p objs.$(CFG)
-	@$(CC) -static $(INCLUDEFLAGS) -c $(CFLAGS) -o $$@ $$<
+	@$(CC) $(INCLUDEFLAGS) -c $(CFLAGS) -o $$@ $$<
 
 deps/$(CFG)_$(2)%.d: src/$(1)%$(EXT)
 	@mkdir -p deps
@@ -123,7 +123,7 @@ endif
 
 all: bin.$(CFG)/$(TARGET) res/Default
 	
-zip: doc/* res/Default $(DLLS) examples/* linux/Makefile
+zip: doc/* res/Default $(DLLS) examples/instruments/* examples/songs/*  linux/Makefile
 	@make -C ../klystron CFG=release EXTFLAGS="$(EXTFLAGS)"
 	@make build CFG=release
 	@mkdir -p zip/data/res
