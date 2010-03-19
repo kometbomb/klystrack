@@ -338,7 +338,7 @@ void sequence_view(SDL_Surface *dest_surface, const SDL_Rect *dest, const SDL_Ev
 		
 		if (vert_scrollbar) slider_set_params(&mused.sequence_horiz_slider_param, 0, mused.song.num_channels-1, first, last, &mused.sequence_horiz_position, 1, SLIDER_HORIZONTAL, mused.slider_bevel);
 		
-		if (i < mused.song.song_length)
+		if ((mused.song.song_length > i) && (y + mused.console->font.h <= content.h))
 			slider_set_params(&mused.sequence_slider_param, 0, mused.song.song_length - mused.sequenceview_steps, start, i, &mused.sequence_position, mused.sequenceview_steps, SLIDER_VERTICAL, mused.slider_bevel);
 	}
 	
