@@ -240,6 +240,10 @@ void instrument_add_param(int a)
 			
 		break;
 		
+		case P_1_4TH:
+		flipbit(i->flags, MUS_INST_QUARTER_FREQ);
+		break;
+		
 		case P_VOLUME:
 		
 		clamp(i->volume, a, 0, MAX_VOLUME);

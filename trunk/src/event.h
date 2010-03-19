@@ -78,6 +78,7 @@ enum
 	P_TRIANGLE,
 	P_NOISE,
 	P_METAL,
+	P_1_4TH,
 	P_VOLUME,
 	P_RELVOL,
 	P_ATTACK,
