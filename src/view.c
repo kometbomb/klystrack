@@ -1307,6 +1307,8 @@ void instrument_view(SDL_Surface *dest_surface, const SDL_Rect *dest, const SDL_
 		update_rect(&frame, &r);
 		inst_flags(event, &r, P_METAL, "METAL", &inst->cydflags, CYD_CHN_ENABLE_METAL);
 		update_rect(&frame, &r);
+		inst_flags(event, &r, P_1_4TH, "1/4TH", &inst->flags, MUS_INST_QUARTER_FREQ);
+		update_rect(&frame, &r);
 		
 		r.w = tmp;
 	}

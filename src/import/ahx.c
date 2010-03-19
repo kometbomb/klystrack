@@ -309,7 +309,15 @@ int import_ahx(FILE *f)
 		
 		fread(&byte, 1, 1, f);
 		
-		int wavelen_semitones = my_min(5, byte & 0x7) * 12;
+		int s = my_min(5, byte & 0x7);
+		
+		if (s >= 4)
+		{
+			s -= 2;
+			i->flags |= MUS_INST_QUARTER_FREQ;
+		}
+		
+		int wavelen_semitones = s * 12;
 		
 		i->base_note = (MIDDLE_C + 48) - wavelen_semitones;
 		
