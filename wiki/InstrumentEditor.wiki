@@ -52,6 +52,8 @@ Triangle wave is an approximation of a sine wave. It's useful for soft sounds.
 
 The noise waveform can be controlled with the METAL flag which makes the noise values loop, in effect producing audible ringing when the played frequency is high enough. Refer to the cowbell example instrument.
 
+Using the 1/4th switch, it is possible to make the pitch two octaves lower (original frequency divided by four). This is so that there is more low range, in effect this makes the lowest pitch {{{C--2}}} ({{{C-0}}} minus two octaves.)
+
 ==Volume envelope==
 
 The volume envelope is a standard attack-decay-sustain-release type envelope. When the note is triggered, the attack (ATK) parameter controls the speed at which the volume rises to the level specified by the volume (VOL) parameter. The volume then decays (DEC) to the sustain (SUS) level (which is relative to the overall volume). When a note-off is triggered, the played sound then decays at the rate controlled by the DEC parameter.
