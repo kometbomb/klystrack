@@ -3,6 +3,10 @@
 
 _*Note:* Only significant changes and new features are listed here._ 
 
+=1.4.2=
+
+  * There was a potentially crashing bug in 1.4.1 file selector
+
 =1.4.0=
 
   * File extensions are now {{{.kt}}} for songs and {{{.ki}}} for instruments
