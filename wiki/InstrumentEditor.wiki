@@ -96,7 +96,7 @@ Program period controls how many ticks one program tick takes to execute. E.g. i
 
 ===Vibrato===
 
-PWM modulates the pulse width parameter at the set speed (VIB.S) and depth (VIB.D) if the vibrato bit is set in the track data or if the VIB flag is set for the instrument (which inverses the bit). V.DEL sets the delay time it takes for the vibrato depth to rise to the full depth (useful for "auto" vibrato). VIB.SH sets the vibrato shape, available waveforms are sine wave, ramp up, ramp down and pulse.
+PWM modulates the pulse width parameter at the set speed (VIB.S) and depth (VIB.D) if the vibrato bit is set in the track data or if the VIB flag is set for the instrument (which inverses the bit). V.DEL sets the delay time it takes for the vibrato depth to rise to the full depth (useful for "auto" vibrato). VIB.SH sets the vibrato shape, available waveforms are sine wave, ramp up, ramp down, pulse and cyclic random values.
 
 Vibrato can also be achieved with a little program that uses the portamento commands (01xx and 02xx) to modulate the played note.
 
