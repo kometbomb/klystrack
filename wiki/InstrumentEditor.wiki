@@ -16,7 +16,7 @@ This parameter is what note is played when C-4 is triggered. In other words, if 
 
 ===Lock note===
 
-Use this flag to make the instrument always trigger at the base note. Useful for drums and sound effects.
+Use this flag to make the instrument always trigger at the base note. Useful for drums and sound effects. This is doubly useful when using pattern transposing on combined drum and bassline patterns, only the bassline being transposed.
 
 ===Drum===
 
