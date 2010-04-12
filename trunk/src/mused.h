@@ -94,7 +94,7 @@ typedef struct
 	MusPattern *stat_pattern[MUS_MAX_CHANNELS];
 	MusChannel *channel;
 	int stat_pattern_number[MUS_MAX_CHANNELS];
-	SDL_Surface *slider_bevel;
+	GfxSurface *slider_bevel;
 	Font smallfont, largefont;
 	SDL_Surface *screen;
 	char themename[100];

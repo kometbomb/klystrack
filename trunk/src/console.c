@@ -33,7 +33,7 @@ extern Mused mused;
 void console_set_background(Console * c, int enabled)
 {
 	c->background = enabled;
-	c->font.surface = c->fontsurface[enabled];
+	c->font.surface->surface = c->fontsurface[enabled];
 	
 	int l = strlen(c->font.charmap);
 			
@@ -96,7 +96,7 @@ Console * console_create(const char * theme)
 	
 	for (int i = 0 ; i < 2 ; ++i)
 	{
-		SDL_Surface * paletted = SDL_CreateRGBSurface(SDL_HWSURFACE, c->font.surface->w, c->font.surface->h, 8, 0, 0, 0, 0);
+		SDL_Surface * paletted = SDL_CreateRGBSurface(SDL_HWSURFACE, c->font.surface->surface->w, c->font.surface->surface->h, 8, 0, 0, 0, 0);
 		
 		if (paletted)
 		{
@@ -105,7 +105,7 @@ Console * console_create(const char * theme)
 				SDL_SetColors(paletted, palette, 0, 2);
 			}
 		
-			SDL_BlitSurface(c->font.surface, NULL, paletted, NULL);
+			SDL_BlitSurface(c->font.surface->surface, NULL, paletted, NULL);
 			
 			if (i == 0) SDL_SetColorKey(paletted, SDL_SRCCOLORKEY|SDL_RLEACCEL, SDL_MapRGB(paletted->format, 0, 0, 0));
 			
@@ -117,7 +117,7 @@ Console * console_create(const char * theme)
 		}
 	}
 	
-	SDL_FreeSurface(c->font.surface);
+	SDL_FreeSurface(c->font.surface->surface);
 	
 	console_set_background(c, 0);
 	
@@ -132,7 +132,7 @@ Console * console_create(const char * theme)
 
 void console_destroy(Console *c)
 {
-	c->font.surface = c->fontsurface[0];
+	c->font.surface->surface = c->fontsurface[0];
 	font_destroy(&c->font);
 	SDL_FreeSurface(c->fontsurface[1]);
 	free(c);
