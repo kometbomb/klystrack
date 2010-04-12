@@ -137,7 +137,7 @@ int save_data()
 		case EDITPROG:
 		case EDITINSTRUMENT:
 		{
-			FILE * f = open_dialog("wb", "Save instrument", "ki", domain, mused.slider_bevel, &mused.largefont, &mused.smallfont);
+			FILE * f = open_dialog("wb", "Save instrument", "ki", domain, mused.slider_bevel->surface, &mused.largefont, &mused.smallfont);
 			
 			if (f)
 			{
@@ -158,12 +158,12 @@ int save_data()
 		
 		default:
 		{
-			FILE * f = open_dialog("wb", "Save song", "kt", domain, mused.slider_bevel, &mused.largefont, &mused.smallfont);
+			FILE * f = open_dialog("wb", "Save song", "kt", domain, mused.slider_bevel->surface, &mused.largefont, &mused.smallfont);
 			
 			if (f)
 			{
 				Uint8 n_inst = mused.song.num_instruments;
-				if (!confirm(domain, mused.slider_bevel, &mused.largefont, "Save unused patterns\nand instruments?"))
+				if (!confirm(domain, mused.slider_bevel->surface, &mused.largefont, "Save unused patterns\nand instruments?"))
 				{
 					int maxpat = -1;
 					for (int c = 0 ; c < mused.song.num_channels ; ++c)
@@ -288,11 +288,11 @@ void open_data()
 	{
 		case EDITINSTRUMENT:
 		{
-			FILE * f = open_dialog("rb", "Load instrument", "ki", domain, mused.slider_bevel, &mused.largefont, &mused.smallfont);
+			FILE * f = open_dialog("rb", "Load instrument", "ki", domain, mused.slider_bevel->surface, &mused.largefont, &mused.smallfont);
 			
 			if (f)
 			{
-				if (!mus_load_instrument_file2(f, &mused.song.instrument[mused.current_instrument])) msgbox(domain,  mused.slider_bevel, &mused.largefont, "Could not load instrument", MB_OK);
+				if (!mus_load_instrument_file2(f, &mused.song.instrument[mused.current_instrument])) msgbox(domain,  mused.slider_bevel->surface, &mused.largefont, "Could not load instrument", MB_OK);
 				
 				fclose(f);
 			}
@@ -301,13 +301,13 @@ void open_data()
 		
 		default:
 		{
-			FILE * f = open_dialog("rb", "Load song", "kt", domain, mused.slider_bevel, &mused.largefont, &mused.smallfont);
+			FILE * f = open_dialog("rb", "Load song", "kt", domain, mused.slider_bevel->surface, &mused.largefont, &mused.smallfont);
 			
 			if (f)
 			{
 				new_song();
 			
-				if (!mus_load_song_file(f, &mused.song)) msgbox(domain,  mused.slider_bevel, &mused.largefont, "Could not load song", MB_OK);
+				if (!mus_load_song_file(f, &mused.song)) msgbox(domain,  mused.slider_bevel->surface, &mused.largefont, "Could not load song", MB_OK);
 				
 				fclose(f);
 				
