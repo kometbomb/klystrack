@@ -252,7 +252,7 @@ int main(int argc, char **argv)
 					if (e.button.button == SDL_BUTTON_RIGHT)
 					{
 						change_mode(MENU);
-						open_menu(mainmenu, menu_close_hook, shortcuts, &mused.largefont, &mused.smallfont, mused.slider_bevel);
+						open_menu(mainmenu, menu_close_hook, shortcuts, &mused.largefont, &mused.smallfont, mused.slider_bevel->surface);
 					}
 				break;
 				
@@ -387,7 +387,7 @@ int main(int argc, char **argv)
 		
 		if (mused.done) 
 		{
-			int r = confirm_ync(domain, mused.slider_bevel, &mused.largefont, "Save song?");
+			int r = confirm_ync(domain, mused.slider_bevel->surface, &mused.largefont, "Save song?");
 			
 			if (r == 0) mused.done = 0;
 			if (r == -1) break;

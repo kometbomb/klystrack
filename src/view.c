@@ -43,7 +43,7 @@ extern int event_hit;
 
 static void my_separator(const SDL_Rect *parent, SDL_Rect *rect)
 {
-	separator(mused.screen, parent, rect, mused.slider_bevel, BEV_SEPARATOR);
+	separator(mused.screen, parent, rect, mused.slider_bevel->surface, BEV_SEPARATOR);
 }
 
 // note: since we need to handle the focus this piece of code is duplicated from gui/view.c
@@ -125,13 +125,13 @@ static int generic_field(const SDL_Event *e, const SDL_Rect *area, int param, co
 	field.x -= spinner_area.w;
 	spinner_area.x -= spinner_area.w;
 	
-	bevel(mused.screen,&field, mused.slider_bevel, BEV_FIELD);
+	bevel(mused.screen,&field, mused.slider_bevel->surface, BEV_FIELD);
 	
 	adjust_rect(&field, 1);
 	
 	font_write_args(&mused.largefont, mused.screen, &field, format, value);
 
-	return spinner(mused.screen, e, &spinner_area, mused.slider_bevel, (Uint32)area->x << 16 | area->y);
+	return spinner(mused.screen, e, &spinner_area, mused.slider_bevel->surface, (Uint32)area->x << 16 | area->y);
 }
 
 
@@ -155,11 +155,11 @@ void sequence_view(SDL_Surface *dest_surface, const SDL_Rect *dest, const SDL_Ev
 		SDL_Rect tmp;
 		copy_rect(&tmp, dest);
 		tmp.w = POS_WIDTH;
-		bevel(mused.screen, &tmp, mused.slider_bevel, BEV_SEQUENCE_BORDER);
+		bevel(mused.screen, &tmp, mused.slider_bevel->surface, BEV_SEQUENCE_BORDER);
 		copy_rect(&tmp, dest);
 		tmp.x += POS_WIDTH;
 		tmp.w -= POS_WIDTH;
-		bevel(mused.screen, &tmp, mused.slider_bevel, BEV_SEQUENCE_BORDER);
+		bevel(mused.screen, &tmp, mused.slider_bevel->surface, BEV_SEQUENCE_BORDER);
 	}
 	
 	SDL_Rect content;
@@ -188,7 +188,7 @@ void sequence_view(SDL_Surface *dest_surface, const SDL_Rect *dest, const SDL_Ev
 	clip.y = content.y;
 	SDL_SetClipRect(mused.screen, &clip);
 	
-	slider_set_params(&mused.sequence_horiz_slider_param, 0, 0, 0, mused.song.num_channels - 1, &mused.sequence_horiz_position, 1, SLIDER_HORIZONTAL, mused.slider_bevel);
+	slider_set_params(&mused.sequence_horiz_slider_param, 0, 0, 0, mused.song.num_channels - 1, &mused.sequence_horiz_position, 1, SLIDER_HORIZONTAL, mused.slider_bevel->surface);
 		
 	for (int i = start, s = 0, y = 0 ; y < content.h ; i += mused.sequenceview_steps, ++s, y += mused.console->font.h + 1)
 	{
@@ -215,7 +215,7 @@ void sequence_view(SDL_Surface *dest_surface, const SDL_Rect *dest, const SDL_Ev
 		console_set_background(mused.console, 0);
 		
 		if (mused.current_sequencepos == i)
-			bevel(mused.screen,&pos, mused.slider_bevel, BEV_SELECTED_SEQUENCE_ROW);
+			bevel(mused.screen,&pos, mused.slider_bevel->surface, BEV_SELECTED_SEQUENCE_ROW);
 			
 		if ((mused.flags & SONG_PLAYING) && mused.stat_song_position >= i && mused.stat_song_position < i + mused.sequenceview_steps)
 		{
@@ -223,7 +223,7 @@ void sequence_view(SDL_Surface *dest_surface, const SDL_Rect *dest, const SDL_Ev
 			copy_rect(&play, &pos);
 			play.y += (mused.console->font.h * (mused.stat_song_position % mused.sequenceview_steps) / mused.sequenceview_steps) + 1;
 			play.h = 2;
-			bevel(mused.screen,&play, mused.slider_bevel, BEV_SEQUENCE_PLAY_POS);
+			bevel(mused.screen,&play, mused.slider_bevel->surface, BEV_SEQUENCE_PLAY_POS);
 		}
 			
 		++pos.y;
@@ -313,7 +313,7 @@ void sequence_view(SDL_Surface *dest_surface, const SDL_Rect *dest, const SDL_Ev
 			if (mused.current_sequencepos == i && mused.current_sequencetrack == c && mused.focus == EDITSEQUENCE)
 			{
 				adjust_rect(&r, -2);
-				bevel(mused.screen,&r, mused.slider_bevel, BEV_CURSOR);
+				bevel(mused.screen,&r, mused.slider_bevel->surface, BEV_CURSOR);
 			}
 			
 			if (mused.focus == EDITSEQUENCE && c == mused.current_sequencetrack)
@@ -336,10 +336,10 @@ void sequence_view(SDL_Surface *dest_surface, const SDL_Rect *dest, const SDL_Ev
 			pos.x += CHANNEL_WIDTH;
 		}
 		
-		if (vert_scrollbar) slider_set_params(&mused.sequence_horiz_slider_param, 0, mused.song.num_channels-1, first, last, &mused.sequence_horiz_position, 1, SLIDER_HORIZONTAL, mused.slider_bevel);
+		if (vert_scrollbar) slider_set_params(&mused.sequence_horiz_slider_param, 0, mused.song.num_channels-1, first, last, &mused.sequence_horiz_position, 1, SLIDER_HORIZONTAL, mused.slider_bevel->surface);
 		
 		if ((mused.song.song_length > i) && (y + mused.console->font.h <= content.h))
-			slider_set_params(&mused.sequence_slider_param, 0, mused.song.song_length - mused.sequenceview_steps, start, i, &mused.sequence_position, mused.sequenceview_steps, SLIDER_VERTICAL, mused.slider_bevel);
+			slider_set_params(&mused.sequence_slider_param, 0, mused.song.song_length - mused.sequenceview_steps, start, i, &mused.sequence_position, mused.sequenceview_steps, SLIDER_VERTICAL, mused.slider_bevel->surface);
 	}
 	
 	if (loop_begin == -1) loop_begin = content.y - (mused.console->font.h + 1);
@@ -353,12 +353,12 @@ void sequence_view(SDL_Surface *dest_surface, const SDL_Rect *dest, const SDL_Ev
 		
 		SDL_Rect selection = { selection_begin.x, selection_begin.y, selection_end.x - selection_begin.x, selection_end.y - selection_begin.y - 1 };
 		adjust_rect(&selection, -4);
-		bevel(mused.screen,&selection, mused.slider_bevel, BEV_SELECTION);
+		bevel(mused.screen,&selection, mused.slider_bevel->surface, BEV_SELECTION);
 	}
 	
 	SDL_Rect loop = { content.x, loop_begin, content.w, loop_end - loop_begin };
 	
-	bevel(mused.screen,&loop, mused.slider_bevel, BEV_SEQUENCE_LOOP);
+	bevel(mused.screen,&loop, mused.slider_bevel->surface, BEV_SEQUENCE_LOOP);
 		
 	SDL_SetClipRect(mused.screen, NULL);
 	
@@ -413,7 +413,7 @@ void pattern_view_inner(SDL_Surface *dest_surface, const SDL_Rect *dest, const S
 	
 		if (mused.current_patternstep == i)
 		{
-			bevel(mused.screen,&row, mused.slider_bevel, BEV_SELECTED_PATTERN_ROW);
+			bevel(mused.screen,&row, mused.slider_bevel->surface, BEV_SELECTED_PATTERN_ROW);
 			console_set_color(mused.console, colors[COLOR_PATTERN_SELECTED], CON_CHARACTER);
 		}
 		else
@@ -508,14 +508,14 @@ void pattern_view_inner(SDL_Surface *dest_surface, const SDL_Rect *dest, const S
 		{
 			if (i == mused.stat_pattern_position[channel] && mused.mus.song_track[channel].pattern == &mused.song.pattern[current_pattern])
 			{
-				bevel(mused.screen,&row, mused.slider_bevel, BEV_SEQUENCE_PLAY_POS);
+				bevel(mused.screen,&row, mused.slider_bevel->surface, BEV_SEQUENCE_PLAY_POS);
 			}
 		}
 		
 		console_write(mused.console,"\n");
 		
 		if (current_pattern == mused.current_pattern && row.y + row.h < content.y + content.h)
-			slider_set_params(&mused.pattern_slider_param, 0, mused.song.pattern[current_pattern].num_steps - 1, start, i, &mused.pattern_position, 1, SLIDER_VERTICAL, mused.slider_bevel);
+			slider_set_params(&mused.pattern_slider_param, 0, mused.song.pattern[current_pattern].num_steps - 1, start, i, &mused.pattern_position, 1, SLIDER_VERTICAL, mused.slider_bevel->surface);
 	}
 	
 	if (current_pattern == mused.current_pattern && mused.focus == EDITPATTERN && mused.selection.start != mused.selection.end 
@@ -528,17 +528,17 @@ void pattern_view_inner(SDL_Surface *dest_surface, const SDL_Rect *dest, const S
 		
 		SDL_Rect selection = { clipped.x+2, selection_begin + 1, clipped.w-4, selection_end - selection_begin };
 		adjust_rect(&selection, -4);
-		bevel(mused.screen,&selection, mused.slider_bevel, BEV_SELECTION);
+		bevel(mused.screen,&selection, mused.slider_bevel->surface, BEV_SELECTION);
 	}
 	
 	SDL_SetClipRect(mused.screen, NULL);
 	
 	if (selected_rect.w && mused.focus == EDITPATTERN)
 	{
-		bevel(mused.screen,&selected_rect, mused.slider_bevel, BEV_CURSOR);
+		bevel(mused.screen,&selected_rect, mused.slider_bevel->surface, BEV_CURSOR);
 	}
 	
-	bevel(mused.screen,dest, mused.slider_bevel, BEV_THIN_FRAME);
+	bevel(mused.screen,dest, mused.slider_bevel->surface, BEV_THIN_FRAME);
 	
 	
 }
@@ -563,7 +563,7 @@ void pattern_view_stepcounter(SDL_Surface *dest_surface, const SDL_Rect *dest, c
 		if (mused.current_patternstep == row)
 		{
 			SDL_Rect row = { content.x - 2, content.y + y - 1, content.w + 4, mused.console->font.h + 1};
-			bevel(mused.screen,&row, mused.slider_bevel, BEV_SELECTED_PATTERN_ROW);
+			bevel(mused.screen,&row, mused.slider_bevel->surface, BEV_SELECTED_PATTERN_ROW);
 			console_set_color(mused.console, colors[COLOR_PATTERN_SELECTED], CON_CHARACTER);
 		}
 		else
@@ -574,7 +574,7 @@ void pattern_view_stepcounter(SDL_Surface *dest_surface, const SDL_Rect *dest, c
 		console_write_args(mused.console, "%03X\n", row);
 	}
 	
-	bevel(mused.screen,dest, mused.slider_bevel, BEV_THIN_FRAME);
+	bevel(mused.screen,dest, mused.slider_bevel->surface, BEV_THIN_FRAME);
 }
 
 
@@ -584,7 +584,7 @@ static void pattern_header(SDL_Surface *dest_surface, const SDL_Event *event, in
 	copy_rect(&area, topleft);
 	area.x = x;
 	area.w = pattern_width;
-	bevel(mused.screen,&area, mused.slider_bevel, BEV_BACKGROUND);
+	bevel(mused.screen,&area, mused.slider_bevel->surface, BEV_BACKGROUND);
 	copy_rect(&button, topleft);
 	copy_rect(&pattern, topleft);
 			
@@ -624,7 +624,7 @@ static void pattern_header(SDL_Surface *dest_surface, const SDL_Event *event, in
 	button.x = x + pattern_width - button.w - 2;
 	
 	if (channel != -1)
-		button_event(dest_surface, event, &button, mused.slider_bevel, 
+		button_event(dest_surface, event, &button, mused.slider_bevel->surface, 
 			(mused.mus.channel[channel].flags & MUS_CHN_DISABLED) ? BEV_BUTTON : BEV_BUTTON_ACTIVE, 
 			(mused.mus.channel[channel].flags & MUS_CHN_DISABLED) ? BEV_BUTTON : BEV_BUTTON_ACTIVE, 
 			(mused.mus.channel[channel].flags & MUS_CHN_DISABLED) ? DECAL_AUDIO_DISABLED : DECAL_AUDIO_ENABLED, enable_channel, MAKEPTR(channel), 0, 0);
@@ -662,11 +662,11 @@ void pattern_view(SDL_Surface *dest_surface, const SDL_Rect *dest, const SDL_Eve
 	compact.h = track_header_size;
 	compact.w = pos.w - 2;
 	
-	bevel(mused.screen,&compact, mused.slider_bevel, BEV_BACKGROUND);
+	bevel(mused.screen,&compact, mused.slider_bevel->surface, BEV_BACKGROUND);
 	
 	adjust_rect(&compact, 2);
 	
-	checkbox(mused.screen, event, &compact, mused.slider_bevel, &mused.smallfont, BEV_BUTTON, BEV_BUTTON_ACTIVE, DECAL_TICK, "S", &mused.flags, COMPACT_VIEW);
+	checkbox(mused.screen, event, &compact, mused.slider_bevel->surface, &mused.smallfont, BEV_BUTTON, BEV_BUTTON_ACTIVE, DECAL_TICK, "S", &mused.flags, COMPACT_VIEW);
 	
 	const int pattern_width = mused.flags & COMPACT_VIEW ? mused.console->font.w * 16 - 4 - 4 - 4 - 4 - mused.console->font.w * 3 - 4 - 4 : mused.console->font.w * 16 - 4 - 4 - 4;
 		
@@ -714,9 +714,9 @@ void pattern_view(SDL_Surface *dest_surface, const SDL_Rect *dest, const SDL_Eve
 	}
 	
 	if (vert_scrollbar) 
-		slider_set_params(&mused.pattern_horiz_slider_param, 0, top_i, first, last, &mused.pattern_horiz_position, 1, SLIDER_HORIZONTAL, mused.slider_bevel);
+		slider_set_params(&mused.pattern_horiz_slider_param, 0, top_i, first, last, &mused.pattern_horiz_position, 1, SLIDER_HORIZONTAL, mused.slider_bevel->surface);
 	else
-		slider_set_params(&mused.pattern_horiz_slider_param, 0, top_i, mused.pattern_horiz_position, top_i, &mused.pattern_horiz_position, 1, SLIDER_HORIZONTAL, mused.slider_bevel);
+		slider_set_params(&mused.pattern_horiz_slider_param, 0, top_i, mused.pattern_horiz_position, top_i, &mused.pattern_horiz_position, 1, SLIDER_HORIZONTAL, mused.slider_bevel->surface);
 	
 	SDL_SetClipRect(mused.screen, NULL);
 	
@@ -745,7 +745,7 @@ void info_view(SDL_Surface *dest_surface, const SDL_Rect *dest, const SDL_Event 
 	copy_rect(&area, dest);
 	console_set_clip(mused.console, &area);
 	console_clear(mused.console);
-	bevel(mused.screen,&area, mused.slider_bevel, BEV_BACKGROUND);
+	bevel(mused.screen,&area, mused.slider_bevel->surface, BEV_BACKGROUND);
 	
 	area.w = my_min(320, area.w);
 	
@@ -891,7 +891,7 @@ void info_line(SDL_Surface *dest_surface, const SDL_Rect *dest, const SDL_Event 
 	copy_rect(&area, dest);
 	console_set_clip(mused.console, &area);
 	console_clear(mused.console);
-	bevel(mused.screen,&area, mused.slider_bevel, BEV_THIN_FRAME);
+	bevel(mused.screen,&area, mused.slider_bevel->surface, BEV_THIN_FRAME);
 	adjust_rect(&area, 3);
 	console_set_clip(mused.console, &area);
 	console_set_color(mused.console,colors[COLOR_NORMAL],CON_CHARACTER);
@@ -995,7 +995,7 @@ static void write_command(const SDL_Event *event, const char *text, int cmd_idx,
 		}
 	}
 	
-	bevel(mused.screen,&cur, mused.slider_bevel, BEV_CURSOR);	
+	bevel(mused.screen,&cur, mused.slider_bevel->surface, BEV_CURSOR);	
 }
 
 
@@ -1005,7 +1005,7 @@ void program_view(SDL_Surface *dest_surface, const SDL_Rect *dest, const SDL_Eve
 	copy_rect(&area, dest);
 	console_set_clip(mused.console, &area);
 	console_clear(mused.console);
-	bevel(mused.screen,&area, mused.slider_bevel, BEV_THIN_FRAME);
+	bevel(mused.screen,&area, mused.slider_bevel->surface, BEV_THIN_FRAME);
 	adjust_rect(&area, 2);
 	copy_rect(&clip, &area);
 	adjust_rect(&area, 1);
@@ -1034,7 +1034,7 @@ void program_view(SDL_Surface *dest_surface, const SDL_Rect *dest, const SDL_Eve
 	
 		if (mused.current_program_step == i && mused.focus == EDITPROG)
 		{
-			bevel(mused.screen,&row, mused.slider_bevel, BEV_SELECTED_PATTERN_ROW);
+			bevel(mused.screen,&row, mused.slider_bevel->surface, BEV_SELECTED_PATTERN_ROW);
 			console_set_color(mused.console, colors[COLOR_PROGRAM_SELECTED], CON_CHARACTER);
 		}
 		else
@@ -1092,7 +1092,7 @@ void program_view(SDL_Surface *dest_surface, const SDL_Rect *dest, const SDL_Eve
 			console_write_args(mused.console, "\n");
 			
 		if (row.y + row.h < area.y + area.h)
-			slider_set_params(&mused.program_slider_param, 0, MUS_PROG_LEN - 1, start, i, &mused.program_position, 1, SLIDER_VERTICAL, mused.slider_bevel);
+			slider_set_params(&mused.program_slider_param, 0, MUS_PROG_LEN - 1, start, i, &mused.program_position, 1, SLIDER_VERTICAL, mused.slider_bevel->surface);
 		
 		prev_pos = pos;
 		
@@ -1109,7 +1109,7 @@ void program_view(SDL_Surface *dest_surface, const SDL_Rect *dest, const SDL_Eve
 		
 		SDL_Rect selection = { area.x, selection_begin - 1, area.w, selection_end - selection_begin + 1 };
 		adjust_rect(&selection, -4);
-		bevel(mused.screen,&selection, mused.slider_bevel, BEV_SELECTION);
+		bevel(mused.screen,&selection, mused.slider_bevel->surface, BEV_SELECTION);
 	}
 	
 	SDL_SetClipRect(mused.screen, NULL);
@@ -1123,7 +1123,7 @@ static void inst_flags(const SDL_Event *e, const SDL_Rect *_area, int p, const c
 	SDL_Rect area;
 	copy_rect(&area, _area);
 	area.y += 1;
-	if (checkbox(mused.screen, e, &area, mused.slider_bevel, &mused.smallfont, BEV_BUTTON, BEV_BUTTON_ACTIVE, DECAL_TICK,label, flags, mask)) mused.selected_param = p;
+	if (checkbox(mused.screen, e, &area, mused.slider_bevel->surface, &mused.smallfont, BEV_BUTTON, BEV_BUTTON_ACTIVE, DECAL_TICK,label, flags, mask)) mused.selected_param = p;
 	if (p == mused.selected_param && mused.focus == EDITINSTRUMENT)
 	{
 		SDL_Rect r;
@@ -1131,7 +1131,7 @@ static void inst_flags(const SDL_Event *e, const SDL_Rect *_area, int p, const c
 		adjust_rect(&r, -2);
 		r.h -= 2;
 		r.w -= 2;
-		bevel(mused.screen,&r, mused.slider_bevel, BEV_CURSOR);
+		bevel(mused.screen,&r, mused.slider_bevel->surface, BEV_CURSOR);
 	}
 }
 
@@ -1150,7 +1150,7 @@ static void inst_text(const SDL_Event *e, const SDL_Rect *area, int p, const cha
 		SDL_Rect r;
 		copy_rect(&r, area);
 		adjust_rect(&r, -1);
-		bevel(mused.screen,&r, mused.slider_bevel, BEV_CURSOR);
+		bevel(mused.screen,&r, mused.slider_bevel->surface, BEV_CURSOR);
 	}
 }
 
@@ -1161,7 +1161,7 @@ static void inst_field(const SDL_Event *e, const SDL_Rect *area, int p, int leng
 	console_set_clip(mused.console, area);
 	console_clear(mused.console);
 	
-	bevel(mused.screen,area, mused.slider_bevel, BEV_FIELD);
+	bevel(mused.screen,area, mused.slider_bevel->surface, BEV_FIELD);
 	
 	SDL_Rect field;
 	copy_rect(&field, area);
@@ -1243,7 +1243,7 @@ void instrument_name_view(SDL_Surface *dest_surface, const SDL_Rect *dest, const
 		SDL_Rect r;
 		copy_rect(&r, &tarea);
 		adjust_rect(&r, -1);
-		bevel(mused.screen,&r, mused.slider_bevel, BEV_CURSOR);
+		bevel(mused.screen,&r, mused.slider_bevel->surface, BEV_CURSOR);
 	}
 }
 
@@ -1254,7 +1254,7 @@ void instrument_view(SDL_Surface *dest_surface, const SDL_Rect *dest, const SDL_
 	
 	SDL_Rect r, frame;
 	copy_rect(&frame, dest);
-	bevel(mused.screen,&frame, mused.slider_bevel, BEV_BACKGROUND);
+	bevel(mused.screen,&frame, mused.slider_bevel->surface, BEV_BACKGROUND);
 	adjust_rect(&frame, 4);
 	copy_rect(&r, &frame);
 	r.w = r.w / 2 - 2;
@@ -1375,7 +1375,7 @@ void instrument_view2(SDL_Surface *dest_surface, const SDL_Rect *dest, const SDL
 	
 	SDL_Rect r, frame;
 	copy_rect(&frame, dest);
-	bevel(mused.screen,&frame, mused.slider_bevel, BEV_BACKGROUND);
+	bevel(mused.screen,&frame, mused.slider_bevel->surface, BEV_BACKGROUND);
 	adjust_rect(&frame, 4);
 	copy_rect(&r, &frame);
 	r.w = r.w / 2 - 2;
@@ -1411,7 +1411,7 @@ void instrument_list(SDL_Surface *dest_surface, const SDL_Rect *dest, const SDL_
 	copy_rect(&area, dest);
 	console_set_clip(mused.console, &area);
 	console_clear(mused.console);
-	bevel(mused.screen,&area, mused.slider_bevel, BEV_THIN_FRAME);
+	bevel(mused.screen,&area, mused.slider_bevel->surface, BEV_THIN_FRAME);
 	adjust_rect(&area, 3);
 	console_set_clip(mused.console, &area);
 	
@@ -1429,7 +1429,7 @@ void instrument_list(SDL_Surface *dest_surface, const SDL_Rect *dest, const SDL_
 		if (i == mused.current_instrument)
 		{
 			SDL_Rect row = { area.x - 1, y - 1, area.w + 2, mused.console->font.h + 1};
-			bevel(mused.screen,&row, mused.slider_bevel, BEV_SELECTED_PATTERN_ROW);
+			bevel(mused.screen,&row, mused.slider_bevel->surface, BEV_SELECTED_PATTERN_ROW);
 			console_set_color(mused.console, colors[COLOR_INSTRUMENT_SELECTED], CON_CHARACTER);
 		}
 		else
@@ -1444,7 +1444,7 @@ void instrument_list(SDL_Surface *dest_surface, const SDL_Rect *dest, const SDL_
 			
 		check_event(event, console_write_args(mused.console, "%02X %-16s\n", i, temp), select_instrument, MAKEPTR(i), 0, 0);
 		
-		slider_set_params(&mused.instrument_list_slider_param, 0, NUM_INSTRUMENTS - 1, start, i, &mused.instrument_list_position, 1, SLIDER_VERTICAL, mused.slider_bevel);
+		slider_set_params(&mused.instrument_list_slider_param, 0, NUM_INSTRUMENTS - 1, start, i, &mused.instrument_list_position, 1, SLIDER_VERTICAL, mused.slider_bevel->surface);
 	}
 	
 	check_mouse_wheel_event(event, dest, &mused.instrument_list_slider_param);
@@ -1457,7 +1457,7 @@ void fx_view(SDL_Surface *dest_surface, const SDL_Rect *dest, const SDL_Event *e
 	copy_rect(&area, dest);
 	console_set_clip(mused.console, &area);
 	console_clear(mused.console);
-	bevel(mused.screen,&area, mused.slider_bevel, BEV_BACKGROUND);
+	bevel(mused.screen,&area, mused.slider_bevel->surface, BEV_BACKGROUND);
 	adjust_rect(&area, 4);
 	console_set_clip(mused.console, &area);
 	SDL_Rect r;
@@ -1467,7 +1467,7 @@ void fx_view(SDL_Surface *dest_surface, const SDL_Rect *dest, const SDL_Event *e
 	
 	r.w = 112;
 	
-	if (checkbox(dest_surface, event, &r, mused.slider_bevel, &mused.smallfont, BEV_BUTTON, BEV_BUTTON_ACTIVE, DECAL_TICK, "MULTIPLEX", &mused.song.flags, MUS_ENABLE_MULTIPLEX)) mused.edit_reverb_param = R_MULTIPLEX;
+	if (checkbox(dest_surface, event, &r, mused.slider_bevel->surface, &mused.smallfont, BEV_BUTTON, BEV_BUTTON_ACTIVE, DECAL_TICK, "MULTIPLEX", &mused.song.flags, MUS_ENABLE_MULTIPLEX)) mused.edit_reverb_param = R_MULTIPLEX;
 	update_rect(&area, &r);
 		
 	int d;
@@ -1490,7 +1490,7 @@ void fx_view(SDL_Surface *dest_surface, const SDL_Rect *dest, const SDL_Event *e
 	{
 		char txt[10];
 		sprintf(txt, "FX%d", i);
-		if (button_text_event(dest_surface, event, &r, mused.slider_bevel, &mused.smallfont, i == mused.fx_bus ? BEV_BUTTON_ACTIVE : BEV_BUTTON, BEV_BUTTON_ACTIVE, txt, NULL, MAKEPTR(R_FX_BUS), MAKEPTR(i), NULL) & 1)
+		if (button_text_event(dest_surface, event, &r, mused.slider_bevel->surface, &mused.smallfont, i == mused.fx_bus ? BEV_BUTTON_ACTIVE : BEV_BUTTON, BEV_BUTTON_ACTIVE, txt, NULL, MAKEPTR(R_FX_BUS), MAKEPTR(i), NULL) & 1)
 		{
 			mused.edit_reverb_param = R_FX_BUS;
 			mused.fx_bus = i;
@@ -1502,7 +1502,7 @@ void fx_view(SDL_Surface *dest_surface, const SDL_Rect *dest, const SDL_Event *e
 	
 	my_separator(&area, &r);
 	
-	if (checkbox(dest_surface, event, &r, mused.slider_bevel, &mused.smallfont, BEV_BUTTON, BEV_BUTTON_ACTIVE, DECAL_TICK, "CRUSH", &mused.song.fx[mused.fx_bus].flags, CYDFX_ENABLE_CRUSH)) mused.edit_reverb_param = R_CRUSH;
+	if (checkbox(dest_surface, event, &r, mused.slider_bevel->surface, &mused.smallfont, BEV_BUTTON, BEV_BUTTON_ACTIVE, DECAL_TICK, "CRUSH", &mused.song.fx[mused.fx_bus].flags, CYDFX_ENABLE_CRUSH)) mused.edit_reverb_param = R_CRUSH;
 	update_rect(&area, &r);
 	
 	r.x = 100;
@@ -1520,7 +1520,7 @@ void fx_view(SDL_Surface *dest_surface, const SDL_Rect *dest, const SDL_Event *e
 	
 	r.w = 60;
 	
-	if (checkbox(dest_surface, event, &r, mused.slider_bevel, &mused.smallfont, BEV_BUTTON, BEV_BUTTON_ACTIVE, DECAL_TICK, "STEREO", &mused.song.fx[mused.fx_bus].flags, CYDFX_ENABLE_CHORUS)) mused.edit_reverb_param = R_CHORUS;
+	if (checkbox(dest_surface, event, &r, mused.slider_bevel->surface, &mused.smallfont, BEV_BUTTON, BEV_BUTTON_ACTIVE, DECAL_TICK, "STEREO", &mused.song.fx[mused.fx_bus].flags, CYDFX_ENABLE_CHORUS)) mused.edit_reverb_param = R_CHORUS;
 	
 	update_rect(&area, &r);
 	
@@ -1579,7 +1579,7 @@ void fx_view(SDL_Surface *dest_surface, const SDL_Rect *dest, const SDL_Event *e
 	
 	my_separator(&area, &r);
 	
-	if (checkbox(dest_surface, event, &r, mused.slider_bevel, &mused.smallfont, BEV_BUTTON, BEV_BUTTON_ACTIVE, DECAL_TICK, "REVERB", &mused.song.fx[mused.fx_bus].flags, CYDFX_ENABLE_REVERB)) 
+	if (checkbox(dest_surface, event, &r, mused.slider_bevel->surface, &mused.smallfont, BEV_BUTTON, BEV_BUTTON_ACTIVE, DECAL_TICK, "REVERB", &mused.song.fx[mused.fx_bus].flags, CYDFX_ENABLE_REVERB)) 
 		mused.edit_reverb_param = R_ENABLE;
 	
 	update_rect(&area, &r);
@@ -1635,7 +1635,7 @@ void fx_view(SDL_Surface *dest_surface, const SDL_Rect *dest, const SDL_Event *e
 		
 		r.w = 32;
 		
-		if (button_text_event(dest_surface, event, &r, mused.slider_bevel, &mused.smallfont, BEV_BUTTON, BEV_BUTTON_ACTIVE, "SET", NULL, NULL, NULL, NULL) & 1)
+		if (button_text_event(dest_surface, event, &r, mused.slider_bevel->surface, &mused.smallfont, BEV_BUTTON, BEV_BUTTON_ACTIVE, "SET", NULL, NULL, NULL, NULL) & 1)
 		{
 			set_room_size(mused.fx_bus, mused.fx_room_size, mused.fx_room_vol, mused.fx_room_dec);
 		}
@@ -1674,7 +1674,7 @@ void fx_view(SDL_Surface *dest_surface, const SDL_Rect *dest, const SDL_Event *e
 		char tmp[10];
 		snprintf(tmp, sizeof(tmp), "%d", (int)((float)(mused.song.fx[mused.fx_bus].rvb.tap[i].delay / (int)spd * (int)spd) / spd));
 		
-		if (button_text_event(dest_surface, event, &r, mused.slider_bevel, &mused.smallfont, BEV_BUTTON, BEV_BUTTON_ACTIVE, tmp, NULL, NULL, NULL, NULL) & 1)
+		if (button_text_event(dest_surface, event, &r, mused.slider_bevel->surface, &mused.smallfont, BEV_BUTTON, BEV_BUTTON_ACTIVE, tmp, NULL, NULL, NULL, NULL) & 1)
 		{
 			mused.song.fx[mused.fx_bus].rvb.tap[i].delay = (mused.song.fx[mused.fx_bus].rvb.tap[i].delay) / (int)spd * (int)spd;
 			mused.edit_reverb_param = p;
@@ -1704,7 +1704,7 @@ void fx_view(SDL_Surface *dest_surface, const SDL_Rect *dest, const SDL_Event *e
 		
 		r.w = 32;
 		
-		if (button_text_event(dest_surface, event, &r, mused.slider_bevel, &mused.smallfont, BEV_BUTTON, BEV_BUTTON_ACTIVE, "-INF", NULL, NULL, NULL, NULL) & 1)
+		if (button_text_event(dest_surface, event, &r, mused.slider_bevel->surface, &mused.smallfont, BEV_BUTTON, BEV_BUTTON_ACTIVE, "-INF", NULL, NULL, NULL, NULL) & 1)
 		{
 			mused.song.fx[mused.fx_bus].rvb.tap[i].gain = CYDRVB_LOW_LIMIT;
 			mused.edit_reverb_param = p;
@@ -1713,7 +1713,7 @@ void fx_view(SDL_Surface *dest_surface, const SDL_Rect *dest, const SDL_Event *e
 		
 		update_rect(&area, &r);
 		
-		if (button_text_event(dest_surface, event, &r, mused.slider_bevel, &mused.smallfont, BEV_BUTTON, BEV_BUTTON_ACTIVE, "0", NULL, NULL, NULL, NULL) & 1)
+		if (button_text_event(dest_surface, event, &r, mused.slider_bevel->surface, &mused.smallfont, BEV_BUTTON, BEV_BUTTON_ACTIVE, "0", NULL, NULL, NULL, NULL) & 1)
 		{
 			mused.song.fx[mused.fx_bus].rvb.tap[i].gain = 0;
 			mused.edit_reverb_param = p;
@@ -1737,14 +1737,14 @@ void instrument_disk_view(SDL_Surface *dest_surface, const SDL_Rect *dest, const
 	copy_rect(&area, dest);
 	console_set_clip(mused.console, &area);
 	console_clear(mused.console);
-	bevel(mused.screen,&area, mused.slider_bevel, BEV_BACKGROUND);
+	bevel(mused.screen,&area, mused.slider_bevel->surface, BEV_BACKGROUND);
 	adjust_rect(&area, 2);
 	
 	SDL_Rect button = { area.x + 2, area.y, area.w / 2 - 4, area.h };
 	
-	int open = button_text_event(dest_surface, event, &button, mused.slider_bevel, &mused.smallfont, BEV_BUTTON, BEV_BUTTON_ACTIVE, "LOAD", NULL, MAKEPTR(1), NULL, NULL);
+	int open = button_text_event(dest_surface, event, &button, mused.slider_bevel->surface, &mused.smallfont, BEV_BUTTON, BEV_BUTTON_ACTIVE, "LOAD", NULL, MAKEPTR(1), NULL, NULL);
 	update_rect(&area, &button);
-	int save = button_text_event(dest_surface, event, &button, mused.slider_bevel, &mused.smallfont, BEV_BUTTON, BEV_BUTTON_ACTIVE, "SAVE", NULL, MAKEPTR(2), NULL, NULL);
+	int save = button_text_event(dest_surface, event, &button, mused.slider_bevel->surface, &mused.smallfont, BEV_BUTTON, BEV_BUTTON_ACTIVE, "SAVE", NULL, MAKEPTR(2), NULL, NULL);
 	update_rect(&area, &button);
 	
 	if (open & 1) open_song_action(0,0,0);
@@ -1768,6 +1768,6 @@ void song_name_view(SDL_Surface *dest_surface, const SDL_Rect *dest, const SDL_E
 
 void bevel_view(SDL_Surface *dest_surface, const SDL_Rect *dest, const SDL_Event *event, void *param)
 {
-	bevel(mused.screen,dest, mused.slider_bevel, CASTPTR(int,param));
+	bevel(mused.screen,dest, mused.slider_bevel->surface, CASTPTR(int,param));
 }
 
