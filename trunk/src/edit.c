@@ -46,7 +46,7 @@ static int find_unused_pattern()
 			return empty;
 	}
 	
-	msgbox(domain, mused.slider_bevel, &mused.largefont, "Max patterns exceeded!", MB_OK);
+	msgbox(domain, mused.slider_bevel->surface, &mused.largefont, "Max patterns exceeded!", MB_OK);
 	
 	return -1;
 }

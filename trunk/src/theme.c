@@ -114,7 +114,7 @@ void load_theme(const char *name)
 		
 		if (rw)
 		{
-			if (mused.slider_bevel) SDL_FreeSurface(mused.slider_bevel);
+			if (mused.slider_bevel) gfx_free_surface(mused.slider_bevel);
 			mused.slider_bevel = gfx_load_surface_RW(rw, GFX_KEYED);
 		}
 	
