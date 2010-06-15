@@ -28,6 +28,7 @@ OTHER DEALINGS IN THE SOFTWARE.
 #include "mused.h"
 #include "event.h"
 #include "SDL_endian.h"
+#include "snd/freqs.h"
 
 extern Mused mused;
 

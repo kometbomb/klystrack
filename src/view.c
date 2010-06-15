@@ -1313,6 +1313,21 @@ void instrument_view(SDL_Surface *dest_surface, const SDL_Rect *dest, const SDL_
 		r.w = tmp;
 	}
 	
+	{
+		my_separator(&frame, &r);
+		int tmp = r.w;
+		r.w = frame.w / 3 - 2;
+
+		inst_flags(event, &r, P_WAVE, "WAVE", &inst->cydflags, CYD_CHN_ENABLE_WAVE);
+		update_rect(&frame, &r);
+		inst_text(event, &r, P_WAVE_ENTRY, "", "%02X", MAKEPTR(inst->wavetable_entry), 2);
+		update_rect(&frame, &r);
+		inst_flags(event, &r, P_WAVE_OVERRIDE_ENV, "O.ENV", &inst->cydflags, CYD_CHN_WAVE_OVERRIDE_ENV);
+		update_rect(&frame, &r);
+		
+		r.w = tmp;
+	}
+	
 	my_separator(&frame, &r);
 	inst_text(event, &r, P_VOLUME, "VOL", "%02X", MAKEPTR(inst->volume), 2);
 	update_rect(&frame, &r);

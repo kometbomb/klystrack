@@ -81,6 +81,7 @@ void save_instrument(FILE *f, MusInstrument *inst)
 	_VER_WRITE(&inst->vib_shape, 0);
 	_VER_WRITE(&inst->vib_delay, 0);
 	_VER_WRITE(&inst->pwm_shape, 0);
+	_VER_WRITE(&inst->wavetable_entry, 0);
 }
 
 
