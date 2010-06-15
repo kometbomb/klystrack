@@ -35,7 +35,7 @@ extern Mused mused;
 static Uint16 find_command_pt(Uint16 command)
 {
 	if ((command & 0xff00) == 0x0c00)
-		command = MUS_FX_SET_SPEED | ((command & 0xff) * 2);
+		command = MUS_FX_SET_VOLUME | ((command & 0xff) * 2);
 	else if ((command & 0xff00) == 0x0a00)
 		command = MUS_FX_FADE_VOLUME | (my_min(0xf, (command & 0x0f) * 2)) | (my_min(0xf, ((command & 0xf0) >> 4) * 2) << 4);
 	else if ((command & 0xfff0) == 0x0ea0 || (command & 0xfff0) == 0x0eb0)
@@ -49,6 +49,7 @@ static Uint16 find_command_pt(Uint16 command)
 	
 	return command;
 }
+
 
 static Uint8 find_note(Uint16 period)
 {
@@ -105,17 +106,34 @@ int import_mod(FILE *f)
 	fseek(f, 0, SEEK_SET);
 	fread(mused.song.title, 20, sizeof(char), f);
 	
+	Uint16 sample_length[32], loop_begin[32], loop_len[32];
+	Sint8 fine[32];
+	
 	for (int i = 0 ; i < instruments ; ++i)
 	{
+		mused.song.instrument[i].flags = 0;
+	
 		char name[23] = { 0 };
 		fread(name, 1, 22, f);
 		name[15] = '\0';
 		strcpy(mused.song.instrument[i].name, name);
 		
-		fseek(f, 3, SEEK_CUR); // skip sample length + finetune
+		fread(&sample_length[i], 2, 1, f);
+		fread(&fine[i], 1, 1, f);
+		
+		sample_length[i] = SDL_SwapBE16(sample_length[i]) * 2;
+		
+		if (sample_length[i] != 0)
+		{
+			mused.song.instrument[i].cydflags = CYD_CHN_ENABLE_WAVE | CYD_CHN_WAVE_OVERRIDE_ENV;
+			mused.song.instrument[i].wavetable_entry = i;
+		}
+		
 		fread(&mused.song.instrument[i].volume, 1, 1, f);
 		mused.song.instrument[i].volume *= 2;
-		fseek(f, 4, SEEK_CUR); // skip loop length (use for setting base note?)	
+		
+		fread(&loop_begin[i], 2, 1, f);
+		fread(&loop_len[i], 2, 1, f);
 	}
 	
 	Uint8 temp;
@@ -170,6 +188,39 @@ int import_mod(FILE *f)
 		
 		}
 	}
+	
+	Sint8 *sample_data = malloc(65536 * sizeof(sample_data[0]));
+	
+	for (int i = 0 ; i < instruments ; ++i)
+	{
+		if (sample_length[i] > 1)
+		{
+			debug("Reading sample %d (%d bytes)", i, sample_length[i]);
+			fread(sample_data, sample_length[i], 1, f);
+			
+			sample_data[0] = sample_data[1] = 0;
+			
+			cyd_wave_entry_init(&mused.mus.cyd->wavetable_entries[i], sample_data, sample_length[i], CYD_WAVE_TYPE_SINT8, 1);
+			
+			mused.mus.cyd->wavetable_entries[i].loop_begin = SDL_SwapBE16(loop_begin[i]) * 2;
+			mused.mus.cyd->wavetable_entries[i].loop_end = (SDL_SwapBE16(loop_begin[i]) + SDL_SwapBE16(loop_len[i])) * 2;
+			
+			mused.mus.cyd->wavetable_entries[i].loop_begin = my_min(mused.mus.cyd->wavetable_entries[i].loop_begin, mused.mus.cyd->wavetable_entries[i].samples - 1);
+			mused.mus.cyd->wavetable_entries[i].loop_end = my_min(mused.mus.cyd->wavetable_entries[i].loop_end, mused.mus.cyd->wavetable_entries[i].samples);
+			
+			if (SDL_SwapBE16(loop_len[i]) > 1)
+			{
+				mused.mus.cyd->wavetable_entries[i].flags |= CYD_WAVE_LOOP;
+				debug("Loop %d-%d", mused.mus.cyd->wavetable_entries[i].loop_begin, mused.mus.cyd->wavetable_entries[i].loop_end);
+			}
+			
+			/* assuming PAL timing i.e. C-2 = 8287 Hz */
+			mused.mus.cyd->wavetable_entries[i].base_note = (MIDDLE_C) << 8;
+			mused.mus.cyd->wavetable_entries[i].sample_rate = 7093789.2/856;
+		}
+	}
+	
+	free(sample_data);
 	
 	mused.sequenceview_steps = 64;
 	
