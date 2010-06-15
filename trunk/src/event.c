@@ -30,7 +30,7 @@ OTHER DEALINGS IN THE SOFTWARE.
 #include "edit.h"
 #include "util/rnd.h"
 #include <string.h>
-
+#include "snd/cydwave.h"
 
 extern Mused mused;
 
@@ -145,6 +145,24 @@ void instrument_add_param(int a)
 		if (i->sync_source == 0xff && a < 0) break;
 		if ((Uint8)(i->sync_source+a) >= MUS_MAX_CHANNELS && a > 0) break;
 		i->sync_source+=a;
+		
+		break;
+		
+		case P_WAVE:
+		
+		flipbit(i->cydflags, CYD_CHN_ENABLE_WAVE);
+		
+		break;
+		
+		case P_WAVE_ENTRY:
+		
+		clamp(i->wavetable_entry, a, 0, CYD_WAVE_MAX_ENTRIES - 1);
+		
+		break;
+		
+		case P_WAVE_OVERRIDE_ENV:
+		
+		flipbit(i->cydflags, CYD_CHN_WAVE_OVERRIDE_ENV);
 		
 		break;
 		
