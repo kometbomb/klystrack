@@ -77,7 +77,7 @@ int import_mod(FILE *f)
 	fseek(f, 1080, SEEK_SET);
 	fread(ver, 1, sizeof(ver), f);
 	
-	int channels = 0, instruments = 0;
+	int channels = 4, instruments = 15;
 	
 	static const struct { int chn, inst; char *sig; } specs[] =
 	{
@@ -154,7 +154,7 @@ int import_mod(FILE *f)
 	Uint8 sequence[128];
 	fread(sequence, 1, 128, f);
 	
-	fseek(f, 4, SEEK_CUR); // skip id sig
+	if (instruments > 15) fseek(f, 4, SEEK_CUR); // skip id sig if not a soundtracker module
 	
 	int pat = 0;
 	int patterns = 0;
@@ -208,7 +208,7 @@ int import_mod(FILE *f)
 			
 			sample_data[0] = sample_data[1] = 0;
 			
-			cyd_wave_entry_init(&mused.mus.cyd->wavetable_entries[i], sample_data, sample_length[i], CYD_WAVE_TYPE_SINT8, 1);
+			cyd_wave_entry_init(&mused.mus.cyd->wavetable_entries[i], sample_data, sample_length[i], CYD_WAVE_TYPE_SINT8, 1, 1, 16);
 			
 			mused.mus.cyd->wavetable_entries[i].loop_begin = SDL_SwapBE16(loop_begin[i]) * 2;
 			mused.mus.cyd->wavetable_entries[i].loop_end = (SDL_SwapBE16(loop_begin[i]) + SDL_SwapBE16(loop_len[i])) * 2;
