@@ -166,6 +166,12 @@ void instrument_add_param(int a)
 		
 		break;
 		
+		case P_WAVE_LOCK_NOTE:
+		
+		flipbit(i->flags, MUS_INST_WAVE_LOCK_NOTE);
+		
+		break;
+		
 		case P_PULSE:
 		
 		flipbit(i->cydflags, CYD_CHN_ENABLE_PULSE);
