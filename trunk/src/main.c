@@ -92,29 +92,32 @@ static const View pattern_view_tab[] =
 
 #define CLASSIC_PAT (0 / 2 + 20 - 2 - 7)
 #define CLASSIC_SONG_INFO (94)
+#define CLASSIC_SONG_INFO_H (96+10)
 
 static const View classic_view_tab[] =
 {
-	{{0,0,CLASSIC_SONG_INFO,96}, info_view, NULL, -1},
-	{{CLASSIC_SONG_INFO, 0, 0-SCROLLBAR, 96 - 25}, sequence_view, NULL, EDITSEQUENCE},
-	{{0-SCROLLBAR, 0, SCROLLBAR, 96 - 25}, slider, &mused.sequence_slider_param, EDITSEQUENCE},
-	{{CLASSIC_SONG_INFO, 96-25, 0, 25}, bevel_view, (void*)BEV_BACKGROUND, -1},
-	{{CLASSIC_SONG_INFO + 2, 96 - 25 + 2, -2, 10}, song_name_view, NULL, -1},
-	{{CLASSIC_SONG_INFO + 2, 96 - 25 + 2 + 10 + 1, -2, 10}, instrument_name_view, (void*)1, -1},
-	{{0, 96, 0-SCROLLBAR, -INFO}, pattern_view, NULL, EDITPATTERN},
-	{{0 - SCROLLBAR, 96, SCROLLBAR, -INFO}, slider, &mused.pattern_slider_param, EDITPATTERN},
+	{{0,0,CLASSIC_SONG_INFO,CLASSIC_SONG_INFO_H}, info_view, NULL, -1},
+	{{CLASSIC_SONG_INFO, 0, 0-SCROLLBAR, CLASSIC_SONG_INFO_H - 25}, sequence_view, NULL, EDITSEQUENCE},
+	{{0-SCROLLBAR, 0, SCROLLBAR, CLASSIC_SONG_INFO_H - 25}, slider, &mused.sequence_slider_param, EDITSEQUENCE},
+	{{CLASSIC_SONG_INFO, CLASSIC_SONG_INFO_H-25, 0, 25}, bevel_view, (void*)BEV_BACKGROUND, -1},
+	{{CLASSIC_SONG_INFO + 2, CLASSIC_SONG_INFO_H - 25 + 2, -2, 10}, song_name_view, NULL, -1},
+	{{CLASSIC_SONG_INFO + 2, CLASSIC_SONG_INFO_H - 25 + 2 + 10 + 1, -2, 10}, instrument_name_view, (void*)1, -1},
+	{{0, CLASSIC_SONG_INFO_H, 0-SCROLLBAR, -INFO}, pattern_view, NULL, EDITPATTERN},
+	{{0 - SCROLLBAR, CLASSIC_SONG_INFO_H, SCROLLBAR, -INFO}, slider, &mused.pattern_slider_param, EDITPATTERN},
 	{{0, 0 - INFO, 0, INFO }, info_line, NULL, -1},
 	{{0, 0, 0, 0}, NULL}
 };
 
+#define SEQ_VIEW_INFO_H (33+4+10)
+
 static const View sequence_view_tab[] =
 {
-	{{0,0,0,33+4}, info_view, NULL, -1},
-	{{0, 33+4, -130, 14}, bevel_view, (void*)BEV_BACKGROUND, -1},
-	{{2, 33+4+2, -130-2, 10}, song_name_view, NULL, -1},
-	{{-130, 33+4, 130, 14}, instrument_disk_view, NULL, -1},
-	{{0, 33+4+14, 0-SCROLLBAR, 0}, sequence_view, NULL, -1},
-	{{0-SCROLLBAR, 33+4+14, SCROLLBAR, 0}, slider, &mused.sequence_slider_param, -1},
+	{{0,0,0,SEQ_VIEW_INFO_H}, info_view, NULL, -1},
+	{{0, SEQ_VIEW_INFO_H, -130, 14}, bevel_view, (void*)BEV_BACKGROUND, -1},
+	{{2, SEQ_VIEW_INFO_H+2, -130-2, 10}, song_name_view, NULL, -1},
+	{{-130, SEQ_VIEW_INFO_H, 130, 14}, instrument_disk_view, NULL, -1},
+	{{0, SEQ_VIEW_INFO_H+14, 0-SCROLLBAR, 0}, sequence_view, NULL, -1},
+	{{0-SCROLLBAR, SEQ_VIEW_INFO_H+14, SCROLLBAR, 0}, slider, &mused.sequence_slider_param, -1},
 	{{0, 0, 0, 0}, NULL}
 };
 

@@ -35,6 +35,7 @@ void export_wav(MusSong *song, CydWavetableEntry * entry, FILE *f)
 	cyd_init(&cyd, 44100, MUS_MAX_CHANNELS);
 	cyd.flags |= CYD_SINGLE_THREAD;
 	mus_init_engine(&mus, &cyd);
+	mus.volume = song->master_volume;
 	mus_set_fx(&mus, song);
 	CydWavetableEntry * prev_entry = cyd.wavetable_entries; // save entries so they can be free'd
 	cyd.wavetable_entries = entry;

@@ -53,6 +53,7 @@ void change_seq_steps(void *delta, void *, void *);
 void change_timesig(void *delta, void *, void *);
 void show_about_box(void *unused1, void *unused2, void *unused3);
 void change_channels(void *delta, void *unused1, void *unused2);
+void change_master_volume(void *delta, void *unused1, void *unused2);
 void begin_selection_action(void *unused1, void *unused2, void *unused3);
 void end_selection_action(void *unused1, void *unused2, void *unused3);
 void toggle_pixel_scale(void *, void*, void*);

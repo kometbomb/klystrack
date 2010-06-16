@@ -249,6 +249,7 @@ int save_data()
 				temp16 = mused.song.loop_point;
 				FIX_ENDIAN(temp16);
 				fwrite(&temp16, 1, sizeof(mused.song.loop_point), f);
+				fwrite(&mused.song.master_volume, 1, 1, f);
 				fwrite(&mused.song.song_speed, 1, sizeof(mused.song.song_speed), f);
 				fwrite(&mused.song.song_speed2, 1, sizeof(mused.song.song_speed2), f);
 				fwrite(&mused.song.song_rate, 1, sizeof(mused.song.song_rate), f);
