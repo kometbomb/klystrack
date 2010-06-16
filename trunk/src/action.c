@@ -454,6 +454,6 @@ void change_timesig(void *delta, void *b, void *c)
 void export_wav_action(void *a, void*b, void*c)
 {
 	FILE * f = open_dialog("wb", "Export .WAV", "wav", domain, mused.slider_bevel->surface, &mused.largefont, &mused.smallfont);
-	export_wav(&mused.song, f);
+	export_wav(&mused.song, mused.mus.cyd->wavetable_entries, f);
 	fclose(f);
 }

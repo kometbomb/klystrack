@@ -121,11 +121,19 @@ int import_mod(FILE *f)
 		fread(&sample_length[i], 2, 1, f);
 		fread(&fine[i], 1, 1, f);
 		
+		debug("Fine %x", fine[i]);
+		
+		fine[i] <<= 4;
+		fine[i] >>= 1;
+		
+		debug("Fine %d", fine[i]);
+		
 		sample_length[i] = SDL_SwapBE16(sample_length[i]) * 2;
 		
 		if (sample_length[i] != 0)
 		{
-			mused.song.instrument[i].cydflags = CYD_CHN_ENABLE_WAVE | CYD_CHN_WAVE_OVERRIDE_ENV;
+			mused.song.instrument[i].cydflags = CYD_CHN_ENABLE_WAVE | CYD_CHN_WAVE_OVERRIDE_ENV | CYD_CHN_ENABLE_KEY_SYNC;
+			mused.song.instrument[i].flags = MUS_INST_SET_PW | MUS_INST_SET_CUTOFF;
 			mused.song.instrument[i].wavetable_entry = i;
 		}
 		
@@ -215,7 +223,7 @@ int import_mod(FILE *f)
 			}
 			
 			/* assuming PAL timing i.e. C-2 = 8287 Hz */
-			mused.mus.cyd->wavetable_entries[i].base_note = (MIDDLE_C) << 8;
+			mused.mus.cyd->wavetable_entries[i].base_note = (MIDDLE_C << 8) + (Sint16)fine[i];
 			mused.mus.cyd->wavetable_entries[i].sample_rate = 7093789.2/856;
 		}
 	}

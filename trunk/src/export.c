@@ -27,7 +27,7 @@ OTHER DEALINGS IN THE SOFTWARE.
 #include "snd/cyd.h"
 #include "macros.h"
 
-void export_wav(MusSong *song, FILE *f)
+void export_wav(MusSong *song, CydWavetableEntry * entry, FILE *f)
 {
 	MusEngine mus;
 	CydEngine cyd;
@@ -36,6 +36,8 @@ void export_wav(MusSong *song, FILE *f)
 	cyd.flags |= CYD_SINGLE_THREAD;
 	mus_init_engine(&mus, &cyd);
 	mus_set_fx(&mus, song);
+	CydWavetableEntry * prev_entry = cyd.wavetable_entries; // save entries so they can be free'd
+	cyd.wavetable_entries = entry;
 	cyd_set_callback(&cyd, mus_advance_tick, &mus, song->song_rate);
 	mus_set_song(&mus, song, 0);
 	song->flags |= MUS_NO_REPEAT;
@@ -129,6 +131,8 @@ void export_wav(MusSong *song, FILE *f)
 	FIX_ENDIAN(sz);
 	
 	fwrite(&sz, sizeof(sz), 1, f);
+	
+	cyd.wavetable_entries = prev_entry;
 	
 	cyd_deinit(&cyd);
 	
