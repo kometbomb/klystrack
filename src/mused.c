@@ -197,6 +197,8 @@ void new_song()
 	
 	memset(mused.ghost_pattern, 0, sizeof(mused.ghost_pattern));
 	
+	if (mused.mus.cyd) cyd_reset_wavetable(mused.mus.cyd);
+	
 	mirror_flags();
 }
 
