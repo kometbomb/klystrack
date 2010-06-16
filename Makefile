@@ -97,6 +97,10 @@ $(eval $(call directory_defs,,))
 # subdirs (src/*/*.c)
 $(foreach dir,$(DIRS),$(eval $(call directory_defs,$(dir)/,$(dir)_)))
 
+ifdef COMSPEC
+  OBJS += objs.$(CFG)/windres.o
+endif
+  
 .PHONY: zip all build nightly installer
 
 build: Makefile src/version
@@ -199,3 +203,7 @@ zip/data/SDL_mixer.dll:
 	@cd temp ; $(WGET) http://www.libsdl.org/projects/SDL_mixer/release/SDL_mixer-$(MIXERVER)-win32.zip ; $(ZIPEXT) SDL_mixer-$(MIXERVER)-win32.zip SDL_mixer.dll ; rm SDL_mixer-$(MIXERVER)-win32.zip
 	@mkdir -p zip/data
 	@mv temp/SDL_mixer.dll zip/data/SDL_mixer.dll
+
+objs.$(CFG)/windres.o: windres/* icon/*
+	windres -i windres/resource.rc -o $@
+	
