@@ -28,11 +28,39 @@ OTHER DEALINGS IN THE SOFTWARE.
 #include "mused.h"
 #include "macros.h"
 #include "gui/msgbox.h"
+#include <stdbool.h>
 
 extern Mused mused;
 extern GfxDomain *domain;
+
+
+static void write_wavetable_entry(FILE *f, const CydWavetableEntry *write_wave)
+{
+	Uint32 flags = write_wave->flags;
+	Uint32 sample_rate = write_wave->sample_rate;
+	Uint32 samples = write_wave->samples, loop_begin = write_wave->loop_begin, loop_end = write_wave->loop_end;
+	Uint16 base_note = write_wave->base_note;
 	
-void save_instrument(FILE *f, MusInstrument *inst)
+	FIX_ENDIAN(flags);
+	FIX_ENDIAN(sample_rate);
+	FIX_ENDIAN(samples);
+	FIX_ENDIAN(loop_begin);
+	FIX_ENDIAN(loop_end);
+	FIX_ENDIAN(base_note);
+	
+	_VER_WRITE(&flags, 0);
+	_VER_WRITE(&sample_rate, 0);
+	_VER_WRITE(&samples, 0);
+	_VER_WRITE(&loop_begin, 0);
+	_VER_WRITE(&loop_end, 0);
+	_VER_WRITE(&base_note, 0);
+	
+	if (write_wave->samples > 0)
+		fwrite(write_wave->data, sizeof(write_wave->data[0]), write_wave->samples, f);
+}
+
+	
+static void save_instrument(FILE *f, MusInstrument *inst, const CydWavetableEntry *write_wave)
 {
 	Uint32 temp32 = inst->flags;
 	FIX_ENDIAN(temp32);
@@ -81,7 +109,17 @@ void save_instrument(FILE *f, MusInstrument *inst)
 	_VER_WRITE(&inst->vib_shape, 0);
 	_VER_WRITE(&inst->vib_delay, 0);
 	_VER_WRITE(&inst->pwm_shape, 0);
-	_VER_WRITE(&inst->wavetable_entry, 0);
+		
+	if (write_wave)
+	{
+		Uint8 temp = 0xff;
+		_VER_WRITE(&temp, 0);
+		write_wavetable_entry(f, write_wave);
+	}
+	else
+	{
+		_VER_WRITE(&inst->wavetable_entry, 0);
+	}
 }
 
 
@@ -148,7 +186,7 @@ int save_data()
 				
 				fwrite(&version, 1, sizeof(version), f);
 				
-				save_instrument(f, &mused.song.instrument[mused.current_instrument]);
+				save_instrument(f, &mused.song.instrument[mused.current_instrument], &mused.mus.cyd->wavetable_entries[mused.song.instrument[mused.current_instrument].wavetable_entry]);
 			
 				fclose(f);
 			}
@@ -246,9 +284,14 @@ int save_data()
 					fwrite(&temp, 1, sizeof(temp), f);
 				}
 				
+				int max_wt = 0;
+				
 				for (int i = 0 ; i < n_inst ; ++i)
 				{
-					save_instrument(f, &mused.song.instrument[i]);
+					save_instrument(f, &mused.song.instrument[i], NULL);
+					
+					if (mused.song.instrument[i].cydflags & CYD_CHN_ENABLE_WAVE)
+						max_wt = my_max(max_wt, mused.song.instrument[i].wavetable_entry + 1);
 				}
 				
 				for (int i = 0 ; i < mused.song.num_channels; ++i)
@@ -268,6 +311,13 @@ int save_data()
 				for (int i = 0 ; i < mused.song.num_patterns; ++i)
 				{
 					write_packed_pattern(f, &mused.song.pattern[i]);
+				}
+				
+				fwrite(&max_wt, 1, sizeof(Uint8), f);
+				
+				for (int i = 0 ; i < max_wt ; ++i)
+				{
+					write_wavetable_entry(f, &mused.mus.cyd->wavetable_entries[i]);
 				}
 				
 				fclose(f);
@@ -293,7 +343,7 @@ void open_data()
 			
 			if (f)
 			{
-				if (!mus_load_instrument_file2(f, &mused.song.instrument[mused.current_instrument])) msgbox(domain,  mused.slider_bevel->surface, &mused.largefont, "Could not load instrument", MB_OK);
+				if (!mus_load_instrument_file2(f, &mused.song.instrument[mused.current_instrument], mused.mus.cyd->wavetable_entries)) msgbox(domain,  mused.slider_bevel->surface, &mused.largefont, "Could not load instrument", MB_OK);
 				
 				fclose(f);
 			}
@@ -308,7 +358,7 @@ void open_data()
 			{
 				new_song();
 			
-				if (!mus_load_song_file(f, &mused.song)) msgbox(domain,  mused.slider_bevel->surface, &mused.largefont, "Could not load song", MB_OK);
+				if (!mus_load_song_file(f, &mused.song, mused.mus.cyd->wavetable_entries)) msgbox(domain,  mused.slider_bevel->surface, &mused.largefont, "Could not load song", MB_OK);
 				
 				fclose(f);
 				
