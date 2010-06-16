@@ -346,6 +346,19 @@ void change_channels(void *delta, void *unused1, void *unused2)
 }
 
 
+void change_master_volume(void *delta, void *unused1, void *unused2)
+{
+	if (CASTPTR(int,delta) < 0 && mused.song.master_volume > 0)
+	{
+		mused.mus.volume = --mused.song.master_volume;
+	}
+	else if (CASTPTR(int,delta) > 0 && mused.song.master_volume < MAX_VOLUME)
+	{
+		mused.mus.volume = ++mused.song.master_volume;
+	}
+}
+
+
 void begin_selection_action(void *unused1, void *unused2, void *unused3)
 {
 	switch (mused.mode)

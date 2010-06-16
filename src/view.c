@@ -778,6 +778,13 @@ void info_view(SDL_Surface *dest_surface, const SDL_Rect *dest, const SDL_Event 
 	
 	int d;
 	
+	if (mused.mus.cyd->flags & CYD_CLIPPING)
+		d = generic_field(event, &r, 0, "\2VOL","%02X", MAKEPTR(mused.song.master_volume), 2);
+	else
+		d = generic_field(event, &r, 0, "\1VOL","%02X", MAKEPTR(mused.song.master_volume), 2);
+	if (d) change_master_volume(MAKEPTR(d), 0, 0);
+	update_rect(&area, &r);
+	
 	d = generic_field(event, &r, 0, "LEN", "%04X", MAKEPTR(mused.song.song_length), 4);
 	if (d) change_song_length(MAKEPTR(d * mused.sequenceview_steps), 0, 0);
 	update_rect(&area, &r);

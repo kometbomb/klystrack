@@ -153,6 +153,7 @@ void new_song()
 		default_instrument(inst);
 	}
 	
+	mused.song.master_volume = MAX_VOLUME;
 	mused.song.num_channels = 4;
 	mused.song.num_instruments = NUM_INSTRUMENTS;
 	mused.song.num_patterns = NUM_PATTERNS;
@@ -195,6 +196,8 @@ void new_song()
 	}
 	
 	memset(mused.ghost_pattern, 0, sizeof(mused.ghost_pattern));
+	
+	mirror_flags();
 }
 
 
@@ -311,4 +314,6 @@ void mirror_flags()
 	{
 		mused.cyd.fx[0].flags = mused.song.fx[0].flags;
 	}
+	
+	mused.mus.volume = mused.song.master_volume;
 }
