@@ -34,12 +34,20 @@ extern Mused mused;
 extern GfxDomain *domain;
 
 
-static void write_wavetable_entry(FILE *f, const CydWavetableEntry *write_wave)
+static void write_wavetable_entry(FILE *f, const CydWavetableEntry *write_wave, bool write_wave_data)
 {
 	Uint32 flags = write_wave->flags;
 	Uint32 sample_rate = write_wave->sample_rate;
 	Uint32 samples = write_wave->samples, loop_begin = write_wave->loop_begin, loop_end = write_wave->loop_end;
 	Uint16 base_note = write_wave->base_note;
+	
+	if (!write_wave_data)
+	{
+		// if the wave is not used and the data is not written, set these to zero too
+		loop_begin = 0;
+		loop_end = 0;
+		samples = 0;
+	}
 	
 	FIX_ENDIAN(flags);
 	FIX_ENDIAN(sample_rate);
@@ -55,7 +63,7 @@ static void write_wavetable_entry(FILE *f, const CydWavetableEntry *write_wave)
 	_VER_WRITE(&loop_end, 0);
 	_VER_WRITE(&base_note, 0);
 	
-	if (write_wave->samples > 0)
+	if (write_wave->samples > 0 && write_wave_data)
 		fwrite(write_wave->data, sizeof(write_wave->data[0]), write_wave->samples, f);
 }
 
@@ -114,7 +122,7 @@ static void save_instrument(FILE *f, MusInstrument *inst, const CydWavetableEntr
 	{
 		Uint8 temp = 0xff;
 		_VER_WRITE(&temp, 0);
-		write_wavetable_entry(f, write_wave);
+		write_wavetable_entry(f, write_wave, true);
 	}
 	else
 	{
@@ -201,8 +209,10 @@ int save_data()
 			
 			if (f)
 			{
+				bool kill_unused_things = false;
+			
 				Uint8 n_inst = mused.song.num_instruments;
-				if (!confirm(domain, mused.slider_bevel->surface, &mused.largefont, "Save unused patterns\nand instruments?"))
+				if (!confirm(domain, mused.slider_bevel->surface, &mused.largefont, "Save unused song elements?"))
 				{
 					int maxpat = -1;
 					for (int c = 0 ; c < mused.song.num_channels ; ++c)
@@ -220,6 +230,8 @@ int save_data()
 								n_inst = my_max(n_inst, mused.song.pattern[i].step[s].instrument + 1);
 					
 					mused.song.num_patterns = maxpat + 1;
+					
+					kill_unused_things = true;
 				}
 			
 				fwrite(MUS_SONG_SIG, strlen(MUS_SONG_SIG), sizeof(MUS_SONG_SIG[0]), f);
@@ -263,10 +275,13 @@ int save_data()
 				if (len)
 					fwrite(mused.song.title, 1, len, f);
 				
-				Uint8 n_fx = 0;
+				Uint8 n_fx = CYD_MAX_FX_CHANNELS;
 				
-				for (int i = 0 ; i < n_inst ; ++i)
-					if (mused.song.instrument[i].cydflags & CYD_CHN_ENABLE_FX) n_fx = my_max(n_fx, mused.song.instrument[i].fx_bus + 1);
+				if (kill_unused_things)
+				{
+					for (int i = 0 ; i < n_inst ; ++i)
+						if (mused.song.instrument[i].cydflags & CYD_CHN_ENABLE_FX) n_fx = my_max(n_fx, mused.song.instrument[i].fx_bus + 1);
+				}	
 				
 				fwrite(&n_fx, 1, sizeof(n_fx), f);
 				
@@ -285,14 +300,17 @@ int save_data()
 					fwrite(&temp, 1, sizeof(temp), f);
 				}
 				
-				int max_wt = 0;
+				int max_wt = CYD_WAVE_MAX_ENTRIES;
 				
 				for (int i = 0 ; i < n_inst ; ++i)
 				{
 					save_instrument(f, &mused.song.instrument[i], NULL);
 					
-					if (mused.song.instrument[i].cydflags & CYD_CHN_ENABLE_WAVE)
-						max_wt = my_max(max_wt, mused.song.instrument[i].wavetable_entry + 1);
+					if (kill_unused_things)
+					{
+						if (mused.song.instrument[i].cydflags & CYD_CHN_ENABLE_WAVE)
+							max_wt = my_max(max_wt, mused.song.instrument[i].wavetable_entry + 1);
+					}
 				}
 				
 				for (int i = 0 ; i < mused.song.num_channels; ++i)
@@ -318,7 +336,13 @@ int save_data()
 				
 				for (int i = 0 ; i < max_wt ; ++i)
 				{
-					write_wavetable_entry(f, &mused.mus.cyd->wavetable_entries[i]);
+					bool used = false;
+					
+					for (int ins = 0 ; ins < n_inst ; ++ins)
+						if (mused.song.instrument[ins].wavetable_entry == i)
+							used = true;
+					
+					write_wavetable_entry(f, &mused.mus.cyd->wavetable_entries[i], used);
 				}
 				
 				fclose(f);
