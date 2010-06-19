@@ -1248,6 +1248,13 @@ void fx_add_param(int d)
 		}
 		break;
 		
+		case R_CRUSHDOWNSAMPLE:
+		{
+			clamp(mused.song.fx[mused.fx_bus].crushex.downsample, d, 0, 64);
+			mus_set_fx(&mused.mus, &mused.song);
+		}
+		break;
+		
 		case R_CHORUS:
 		{
 			flipbit(mused.song.fx[mused.fx_bus].flags, CYDFX_ENABLE_CHORUS);

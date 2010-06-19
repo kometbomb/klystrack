@@ -1535,11 +1535,19 @@ void fx_view(SDL_Surface *dest_surface, const SDL_Rect *dest, const SDL_Event *e
 	update_rect(&area, &r);
 	
 	r.x = 100;
-	r.w = 60;
+	r.w = 64;
 	
-	if ((d = generic_field(event, &r, R_ROOMSIZE, "BITS", "%01X", MAKEPTR(mused.song.fx[mused.fx_bus].crush.bit_drop), 1)))
+	if ((d = generic_field(event, &r, R_CRUSHBITS, "BITS", "%01X", MAKEPTR(mused.song.fx[mused.fx_bus].crush.bit_drop), 1)))
 	{
 		mused.edit_reverb_param = R_CRUSHBITS;
+		fx_add_param(d);
+	}
+	
+	update_rect(&area, &r);
+	
+	if ((d = generic_field(event, &r, R_CRUSHDOWNSAMPLE, "DSMP", "%02d", MAKEPTR(mused.song.fx[mused.fx_bus].crushex.downsample), 2)))
+	{
+		mused.edit_reverb_param = R_CRUSHDOWNSAMPLE;
 		fx_add_param(d);
 	}
 	
