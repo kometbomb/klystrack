@@ -12,8 +12,8 @@ pattern_beat = 0xffc0c0
 pattern_normal = 0xd0a0d0
 
 program_selected = 0xffffff
-program_even = 0xd0d0d0
-program_odd = 0xc0c0c0
+program_even = 0xd0d0e0
+program_odd = 0xb0a0b0
 
 instrument_selected = 0xffffff
 instrument_normal = 0xc0c0c0

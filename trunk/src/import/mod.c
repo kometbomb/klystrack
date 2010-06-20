@@ -103,7 +103,10 @@ int import_mod(FILE *f)
 		}
 	}
 	
-	if (channels == 0) return 0;
+	if (channels == 0) 
+	{
+		warning("No file signature found: assuming Soundtracker format");
+	}
 	
 	fseek(f, 0, SEEK_SET);
 	fread(mused.song.title, 20, sizeof(char), f);
