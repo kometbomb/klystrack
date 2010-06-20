@@ -214,14 +214,11 @@ int import_mod(FILE *f)
 			if (SDL_SwapBE16(loop_len[i]) > 1)
 			{
 				mused.mus.cyd->wavetable_entries[i].flags |= CYD_WAVE_LOOP;
-				debug("Loop %d-%d", mused.mus.cyd->wavetable_entries[i].loop_begin, mused.mus.cyd->wavetable_entries[i].loop_end);
 			}
 			
 			/* assuming PAL timing i.e. C-2 = 8287 Hz */
 			mused.mus.cyd->wavetable_entries[i].base_note = (MIDDLE_C << 8) - ((Sint16)fine[i] << 1);
 			mused.mus.cyd->wavetable_entries[i].sample_rate = 7093789.2/856;
-			
-			debug("%d: %x", i + 1, mused.mus.cyd->wavetable_entries[i].base_note);
 		}
 	}
 	
