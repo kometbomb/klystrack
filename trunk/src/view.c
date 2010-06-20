@@ -853,6 +853,7 @@ void get_command_desc(char *text, Uint16 inst)
 		{MUS_FX_EXT_PORTA_DN, "Fine portamento down"},
 		{MUS_FX_EXT_NOTE_CUT, "Note cut"},
 		{MUS_FX_EXT_RETRIGGER, "Retrigger"},
+		{MUS_FX_WAVETABLE_OFFSET, "Wavetable offset"},
 		{MUS_FX_SET_PANNING, "Set panning"},
 		{MUS_FX_PAN_LEFT, "Pan left"},
 		{MUS_FX_PAN_RIGHT, "Pan right"},
@@ -870,7 +871,7 @@ void get_command_desc(char *text, Uint16 inst)
 	for (int i = 0 ; instructions[i].name != NULL ; ++i)
 	{
 		if (instructions[i].opcode == (inst) ||instructions[i].opcode == (inst & 0xff00) || instructions[i].opcode == (inst & 0x7f00) || instructions[i].opcode == (inst & 0x7ff0) 
-			|| ((instructions[i].opcode == MUS_FX_CUTOFF_FINE_SET) && instructions[i].opcode == (inst & 0x7000)))
+			|| (((instructions[i].opcode == MUS_FX_CUTOFF_FINE_SET) || (instructions[i].opcode == MUS_FX_WAVETABLE_OFFSET)) && instructions[i].opcode == (inst & 0x7000)))
 		{
 			name = instructions[i].name;
 			fi = instructions[i].opcode;
