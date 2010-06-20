@@ -79,7 +79,7 @@ int import_mod(FILE *f)
 	fseek(f, 1080, SEEK_SET);
 	fread(ver, 1, sizeof(ver), f);
 	
-	int channels = 4, instruments = 15;
+	int channels = 0, instruments = 15;
 	
 	static const struct { int chn, inst; char *sig; } specs[] =
 	{
@@ -106,6 +106,7 @@ int import_mod(FILE *f)
 	if (channels == 0) 
 	{
 		warning("No file signature found: assuming Soundtracker format");
+		channels = 4;
 	}
 	
 	fseek(f, 0, SEEK_SET);
