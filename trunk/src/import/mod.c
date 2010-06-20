@@ -121,12 +121,7 @@ int import_mod(FILE *f)
 		fread(&sample_length[i], 2, 1, f);
 		fread(&fine[i], 1, 1, f);
 		
-		debug("Fine %x", fine[i]);
-		
-		fine[i] <<= 4;
-		fine[i] >>= 1;
-		
-		debug("Fine %d", fine[i]);
+		fine[i] = ((fine[i] & 0xf) << 4);
 		
 		sample_length[i] = SDL_SwapBE16(sample_length[i]) * 2;
 		
@@ -223,8 +218,10 @@ int import_mod(FILE *f)
 			}
 			
 			/* assuming PAL timing i.e. C-2 = 8287 Hz */
-			mused.mus.cyd->wavetable_entries[i].base_note = (MIDDLE_C << 8) + (Sint16)fine[i];
+			mused.mus.cyd->wavetable_entries[i].base_note = (MIDDLE_C << 8) - ((Sint16)fine[i] << 1);
 			mused.mus.cyd->wavetable_entries[i].sample_rate = 7093789.2/856;
+			
+			debug("%d: %x", i + 1, mused.mus.cyd->wavetable_entries[i].base_note);
 		}
 	}
 	
