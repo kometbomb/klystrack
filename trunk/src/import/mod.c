@@ -115,9 +115,9 @@ int import_mod(FILE *f)
 	{
 		mused.song.instrument[i].flags = 0;
 	
-		char name[23] = { 0 };
+		char name[MUS_INSTRUMENT_NAME_LEN + 1] = { 0 };
 		fread(name, 1, 22, f);
-		name[15] = '\0';
+		name[22] = '\0';
 		strcpy(mused.song.instrument[i].name, name);
 		
 		fread(&sample_length[i], 2, 1, f);
