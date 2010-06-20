@@ -43,6 +43,7 @@ const KeyShortcut shortcuts[] =
 	{ KMOD_SHIFT, SDLK_F3, change_mode_action, (void*)EDITFX, 0, 0},
 	{ 0, SDLK_F4, change_mode_action, (void*)EDITSEQUENCE, 0, 0},
 	{ KMOD_SHIFT, SDLK_F4, change_mode_action, (void*)EDITCLASSIC, 0, 0},
+	{ KMOD_SHIFT, SDLK_F9, change_mode_action, (void*)EDITWAVETABLE, 0, 0},
 	{ 0, SDLK_F5, play, 0, 0, 0 },
 	{ 0, SDLK_F6, play, (void*)1, 0, 0 },
 	{ 0, SDLK_F8, stop, 0, 0, 0 },
