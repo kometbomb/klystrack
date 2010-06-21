@@ -103,10 +103,10 @@ void my_draw_view(const View* views, const SDL_Event *_event, const SDL_Surface 
 		while (event_hit && iter <= 1);
 	}
 	
-	mused.cursor.w = (mused.cursor_target.w + mused.cursor.w) / 2;
-	mused.cursor.h = (mused.cursor_target.h + mused.cursor.h) / 2;
-	mused.cursor.x = (mused.cursor_target.x + mused.cursor.x) / 2;
-	mused.cursor.y = (mused.cursor_target.y + mused.cursor.y) / 2;
+	mused.cursor.w = (mused.cursor_target.w + mused.cursor.w * 2) / 3;
+	mused.cursor.h = (mused.cursor_target.h + mused.cursor.h * 2) / 3;
+	mused.cursor.x = (mused.cursor_target.x + mused.cursor.x * 2) / 3;
+	mused.cursor.y = (mused.cursor_target.y + mused.cursor.y * 2) / 3;
 	
 	if (mused.cursor.w < mused.cursor_target.w) ++mused.cursor.w;
 	if (mused.cursor.w > mused.cursor_target.w) --mused.cursor.w;

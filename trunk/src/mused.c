@@ -86,6 +86,8 @@ void change_mode(int newmode)
 		for (int i = 0 ; editormenu[i].parent ; ++i)
 			editormenu[i].flags = (editormenu[i].flags & ~MENU_BULLET) | (mused.mode == CASTPTR(int, editormenu[i].p1) ? MENU_BULLET : 0);
 		mused.prev_mode = mused.mode;
+		
+		mused.cursor.w = mused.cursor.h = mused.cursor_target.w = mused.cursor_target.h = 0;
 	}
 	
 	switch (newmode)
@@ -124,8 +126,6 @@ void change_mode(int newmode)
 	mused.focus = newmode;
 	if (mused.focus == EDITCLASSIC)
 		mused.focus = EDITPATTERN;
-		
-	mused.cursor.w = mused.cursor.h = mused.cursor_target.w = mused.cursor_target.h = 0;
 }
 
 
