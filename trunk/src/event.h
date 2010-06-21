@@ -118,6 +118,7 @@ enum
 
 enum
 {
+	W_WAVE,
 	W_RATE,
 	W_BASE,
 	W_BASEFINE,
