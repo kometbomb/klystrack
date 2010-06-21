@@ -29,6 +29,7 @@ OTHER DEALINGS IN THE SOFTWARE.
 #include "event.h"
 #include "SDL_endian.h"
 #include "snd/freqs.h"
+#include <assert.h>
 
 extern Mused mused;
 
@@ -45,7 +46,7 @@ static Uint16 find_command_pt(Uint16 command, int sample_length)
 	else if ((command & 0xff00) == 0x0100 || (command & 0xff00) == 0x0200 || (command & 0xff00) == 0x0300) 
 		command = (command & 0xff00) | my_min(0xff, (command & 0xff) * 8);
 	else if ((command & 0xff00) == 0x0900 && sample_length) 
-		command = MUS_FX_WAVETABLE_OFFSET | ((Uint64)(command & 0xff) * 65536 * (Uint64)sample_length / 256);
+		command = MUS_FX_WAVETABLE_OFFSET | ((Uint64)(command & 0xff) * 256 * 0x1000 / (Uint64)sample_length);
 	else if ((command & 0xff00) != 0x0400 && (command & 0xff00) != 0x0000) 
 		command = 0;	
 	
@@ -167,6 +168,10 @@ int import_mod(FILE *f)
 			add_sequence(c, i * 64, sequence[i] * channels + c, 0);
 	}
 	
+	int sl[32] = { 0 };
+	
+	assert(32 >= channels);
+	
 	for (Uint8 i = 0 ; i <= patterns ; ++i)
 	{
 		for (int c = 0 ; c < channels ; ++c)
@@ -191,12 +196,10 @@ int import_mod(FILE *f)
 				mused.song.pattern[pat].step[s].note = find_note(SDL_SwapBE16(period) & 0xfff);
 				mused.song.pattern[pat].step[s].instrument = ((inst >> 4) | ((SDL_SwapBE16(period) & 0xf000) >> 8)) - 1;
 				
-				int sl = 0;
+				if (mused.song.pattern[pat].step[s].instrument != MUS_NOTE_NO_INSTRUMENT && mused.song.pattern[pat].step[s].instrument != 0)
+					sl[c] = sample_length[mused.song.pattern[pat].step[s].instrument];
 				
-				if (mused.song.pattern[pat].step[s].instrument != 0)
-					sl = sample_length[mused.song.pattern[pat].step[s].instrument];
-				
-				mused.song.pattern[pat].step[s].command = find_command_pt(param | ((inst & 0xf) << 8), sl);
+				mused.song.pattern[pat].step[s].command = find_command_pt(param | ((inst & 0xf) << 8), sl[c]);
 				++pat;
 			}
 		
