@@ -377,6 +377,10 @@ int main(int argc, char **argv)
 							case EDITFX:
 							fx_event(&e);
 							break;
+							
+							case EDITWAVETABLE:
+							wave_event(&e);
+							break;
 						}
 						
 						cyd_lock(&mused.cyd, 0);

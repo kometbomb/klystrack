@@ -31,6 +31,7 @@ OTHER DEALINGS IN THE SOFTWARE.
 #include "util/rnd.h"
 #include <string.h>
 #include "snd/cydwave.h"
+#include "snd/freqs.h"
 
 extern Mused mused;
 
@@ -1227,6 +1228,9 @@ void set_room_size(int fx, int size, int vol, int dec)
 
 void fx_add_param(int d)
 {
+	if (SDL_GetModState() & KMOD_SHIFT)
+		d *= 10;
+
 	switch (mused.edit_reverb_param)
 	{
 		case R_FX_BUS:
@@ -1375,13 +1379,13 @@ void fx_event(SDL_Event *e)
 		
 			case SDLK_RIGHT:
 			{
-				fx_add_param(e->key.keysym.mod & KMOD_SHIFT ? +10 : +1);
+				fx_add_param(+1);
 			}
 			break;
 			
 			case SDLK_LEFT:
 			{
-				fx_add_param(e->key.keysym.mod & KMOD_SHIFT ? -10 : -1);
+				fx_add_param(-1);
 			}
 			break;
 		
@@ -1393,3 +1397,99 @@ void fx_event(SDL_Event *e)
 		break;
 	}
 }
+
+
+void wave_add_param(int d)
+{
+	CydWavetableEntry *w = &mused.mus.cyd->wavetable_entries[mused.selected_wavetable];
+	
+	if (SDL_GetModState() & KMOD_SHIFT)
+		d *= 256;
+
+	switch (mused.wavetable_param)
+	{
+		case W_RATE:
+		{
+			clamp(w->sample_rate, d, 1, 192000);
+		}
+		break;
+	
+		case W_BASE:
+		{
+			clamp(w->base_note, d * 256, 0, (FREQ_TAB_SIZE - 1) * 256);
+		}
+		break;
+		
+		case W_BASEFINE:
+		{
+			clamp(w->base_note, d, 0, (FREQ_TAB_SIZE - 1) * 256);
+		}
+		break;
+		
+		case W_LOOP:
+		{
+			flipbit(w->flags, CYD_WAVE_LOOP);
+		}
+		break;
+		
+		case W_LOOPBEGIN:
+		{
+			clamp(w->loop_begin, d, 0, my_min(w->samples, w->loop_end));
+			clamp(w->loop_end, 0, w->loop_begin, w->samples);
+		}
+		break;
+		
+		case W_LOOPEND:
+		{
+			clamp(w->loop_end, d, w->loop_begin, w->samples);
+			clamp(w->loop_begin, 0, 0, my_min(w->samples, w->loop_end));
+		}
+		break;
+	}
+	
+}
+
+
+void wave_event(SDL_Event *e)
+{
+	switch (e->type)
+	{
+		case SDL_KEYDOWN:
+		
+		switch (e->key.keysym.sym)
+		{
+			case SDLK_DOWN:
+			{
+				++mused.wavetable_param;
+				if (mused.wavetable_param >= W_N_PARAMS) mused.wavetable_param = W_N_PARAMS - 1;
+			}
+			break;
+			
+			case SDLK_UP:
+			{
+				--mused.wavetable_param;
+				if (mused.wavetable_param < 0) mused.wavetable_param = 0;
+			}
+			break;
+		
+			case SDLK_RIGHT:
+			{
+				wave_add_param(+1);
+			}
+			break;
+			
+			case SDLK_LEFT:
+			{
+				wave_add_param(-1);
+			}
+			break;
+		
+			default: 
+				play_the_jams(e->key.keysym.sym);
+			break;
+		}
+		
+		break;
+	}
+}
+
