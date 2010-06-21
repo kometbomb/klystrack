@@ -80,22 +80,18 @@ void wavetable_view(SDL_Surface *dest_surface, const SDL_Rect *dest, const SDL_E
 		update_rect(&frame, &r);
 	}
 	
+	my_separator(&frame, &r);
+	
 	{
 		r.w = 48;
 		
-		if (checkbox(dest_surface, event, &r, mused.slider_bevel->surface, &mused.smallfont, BEV_BUTTON, BEV_BUTTON_ACTIVE, DECAL_TICK, "LOOP", &w->flags, CYD_WAVE_LOOP)) 
-		{
-			mused.wavetable_param = W_LOOP;
-		}
+		generic_flags(event, &r, W_LOOP, "LOOP", &w->flags, CYD_WAVE_LOOP);
 		
 		update_rect(&frame, &r);
 		
-		r.w = 64;
+		r.w = 76;
 		
-		if (checkbox(dest_surface, event, &r, mused.slider_bevel->surface, &mused.smallfont, BEV_BUTTON, BEV_BUTTON_ACTIVE, DECAL_TICK, "PINGPONG", &w->flags, CYD_WAVE_PINGPONG)) 
-		{
-			mused.wavetable_param = W_LOOPPINGPONG;
-		}
+		generic_flags(event, &r, W_LOOPPINGPONG, "PINGPONG", &w->flags, CYD_WAVE_PINGPONG);
 		
 		update_rect(&frame, &r);
 		
