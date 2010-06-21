@@ -125,7 +125,7 @@ void change_mode(int newmode)
 	if (mused.focus == EDITCLASSIC)
 		mused.focus = EDITPATTERN;
 		
-	mused.cursor.w = mused.cursor.h = 0;
+	mused.cursor.w = mused.cursor.h = mused.cursor_target.w = mused.cursor_target.h = 0;
 }
 
 
