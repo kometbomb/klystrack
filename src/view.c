@@ -132,7 +132,7 @@ char * notename(int note)
 	{
 		"C-", "C#", "D-", "D#", "E-", "F-", "F#", "G-", "G#", "A-", "A#", "B-"
 	};
-	sprintf(buffer, "%s%d", notename[note % 12], (note - note % 12) / 12);
+	sprintf(buffer, "%s%d", notename[note % 12], note / 12);
 	return buffer;
 }
 

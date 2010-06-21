@@ -1408,6 +1408,12 @@ void wave_add_param(int d)
 
 	switch (mused.wavetable_param)
 	{
+		case W_WAVE:
+		{
+			clamp(mused.selected_wavetable, d, 0, CYD_WAVE_MAX_ENTRIES - 1);
+		}
+		break;
+	
 		case W_RATE:
 		{
 			clamp(w->sample_rate, d, 1, 192000);

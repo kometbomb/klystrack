@@ -46,10 +46,19 @@ void wavetable_view(SDL_Surface *dest_surface, const SDL_Rect *dest, const SDL_E
 	CydWavetableEntry *w = &mused.mus.cyd->wavetable_entries[mused.selected_wavetable];
 	
 	{
-		r.w = 128;
+		r.w = 64;
 		r.h = 10;
 		
 		int d;
+				
+		if ((d = generic_field(event, &r, W_WAVE, "WAVE", "%02X", MAKEPTR(mused.selected_wavetable), 2)) != 0)
+		{
+			wave_add_param(d);
+		}
+		
+		update_rect(&frame, &r);
+		
+		r.w = 128;
 		
 		if ((d = generic_field(event, &r, W_RATE, "RATE", "%6d Hz", MAKEPTR(w->sample_rate), 9)) != 0)
 		{
@@ -62,7 +71,7 @@ void wavetable_view(SDL_Surface *dest_surface, const SDL_Rect *dest, const SDL_E
 		r.w = 72;
 		r.h = 10;
 		
-		if ((d = generic_field(event, &r, W_BASE, "BASE", "%s", notename((w->base_note - 0x80) >> 8), 3)) != 0)
+		if ((d = generic_field(event, &r, W_BASE, "BASE", "%s", notename((w->base_note + 0x80) >> 8), 3)) != 0)
 		{
 			mused.wavetable_param = W_BASE;
 			wave_add_param(d);

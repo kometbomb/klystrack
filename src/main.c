@@ -220,7 +220,7 @@ int main(int argc, char **argv)
 	domain = gfx_create_domain();
 	domain->screen_w = SCREEN_WIDTH;
 	domain->screen_h = SCREEN_HEIGHT;
-	domain->fps = 20;
+	domain->fps = 30;
 	domain->scale = 1;
 	domain->flags = SDL_RESIZABLE;
 	gfx_domain_update(domain);
