@@ -37,6 +37,8 @@ void edit_text(SDL_Event *e);
 int generic_edit_text(SDL_Event *e, char *edit_buffer, size_t edit_buffer_size, int *editpos);
 void fx_event(SDL_Event *e);
 void fx_add_param(int d);
+void wave_event(SDL_Event *e);
+void wave_add_param(int d);
 void instrument_add_param(int a);
 void del_sequence(int first,int last,int track);
 void add_sequence(int channel, int position, int pattern, int offset);
@@ -112,6 +114,19 @@ enum
 	P_PWMSHAPE,
 	P_FXBUS,
 	P_PARAMS
+};
+
+enum
+{
+	W_RATE,
+	W_BASE,
+	W_BASEFINE,
+	W_LOOP,
+	W_LOOPPINGPONG,
+	W_LOOPBEGIN,
+	W_LOOPEND,
+	/* ----- */
+	W_N_PARAMS
 };
 
 enum

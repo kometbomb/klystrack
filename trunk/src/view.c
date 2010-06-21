@@ -32,6 +32,7 @@ OTHER DEALINGS IN THE SOFTWARE.
 #include "gui/bevel.h"
 #include "theme.h"
 #include "mybevdefs.h"
+#include "snd/freqs.h"
 
 #define swap(a,b) { a ^= b; b ^= a; a ^= b; }
 
@@ -83,8 +84,9 @@ void my_draw_view(const View* views, const SDL_Event *_event, const SDL_Surface 
 }
 
 
-char * notename(Uint8 note)
+char * notename(int note)
 {	
+	note = my_min(my_max(0, note), FREQ_TAB_SIZE - 1);
 	static char buffer[4];
 	static const char * notename[] =
 	{
@@ -108,7 +110,7 @@ static void label(const char *_label, const SDL_Rect *area)
 
 
 
-static int generic_field(const SDL_Event *e, const SDL_Rect *area, int param, const char *_label, const char *format, void *value, int width)
+int generic_field(const SDL_Event *e, const SDL_Rect *area, int param, const char *_label, const char *format, void *value, int width)
 {
 	label(_label, area);
 	

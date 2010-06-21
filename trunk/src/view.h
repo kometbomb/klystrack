@@ -29,6 +29,8 @@ OTHER DEALINGS IN THE SOFTWARE.
 #include "gui/view.h"
 
 void my_draw_view(const View* views, const SDL_Event *_event, const SDL_Surface *screen);
+int generic_field(const SDL_Event *e, const SDL_Rect *area, int param, const char *_label, const char *format, void *value, int width);
+char * notename(int note);
 
 /* 
 "Controls"
