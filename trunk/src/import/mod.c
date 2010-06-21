@@ -168,7 +168,9 @@ int import_mod(FILE *f)
 			add_sequence(c, i * 64, sequence[i] * channels + c, 0);
 	}
 	
-	int sl[32] = { 0 };
+	int sl[32] = { 0 }, lp[32][16];
+	
+	memset(lp, 0, sizeof(lp));
 	
 	assert(32 >= channels);
 	
@@ -198,8 +200,25 @@ int import_mod(FILE *f)
 				
 				if (mused.song.pattern[pat].step[s].instrument != MUS_NOTE_NO_INSTRUMENT && mused.song.pattern[pat].step[s].instrument != 0)
 					sl[c] = sample_length[mused.song.pattern[pat].step[s].instrument];
+					
+				Uint8 command = inst & 0xf;
 				
-				mused.song.pattern[pat].step[s].command = find_command_pt(param | ((inst & 0xf) << 8), sl[c]);
+				if (command == 5)
+				{
+					command = 0xa;
+					mused.song.pattern[pat].step[s].ctrl |= MUS_CTRL_SLIDE | MUS_CTRL_LEGATO;
+				}
+					
+				if (command == 6)
+				{
+					command = 0xa;
+					mused.song.pattern[pat].step[s].ctrl |= MUS_CTRL_VIB;
+				}
+					
+				if (command != 0 && param != 0)
+					lp[c][command] = param;
+				
+				mused.song.pattern[pat].step[s].command = find_command_pt(lp[c][command] | ((Uint16)command << 8), sl[c]);
 				++pat;
 			}
 		
