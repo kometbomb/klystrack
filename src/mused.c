@@ -234,7 +234,7 @@ void init(MusInstrument *instrument, MusPattern *pattern, MusSeqPattern sequence
 	
 	memset(&mused, 0, sizeof(mused));
 	
-	mused.flags = MULTICHANNEL_PREVIEW;
+	mused.flags = MULTICHANNEL_PREVIEW|ANIMATE_CURSOR;
 	mused.screen = screen;
 	mused.done = 0;
 	mused.octave = 4;
