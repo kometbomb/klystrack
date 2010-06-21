@@ -158,6 +158,29 @@ void set_cursor(const SDL_Rect *location)
 }
 
 
+void check_mouse_hit(const SDL_Event *e, const SDL_Rect *area, int param)
+{
+	if (param < 0) return;
+	if (check_event(e, area, NULL, NULL, NULL, NULL))
+	{
+		switch (mused.focus)
+		{
+			case EDITINSTRUMENT:
+				mused.selected_param = param;
+				break;
+		
+			case EDITFX:
+				mused.edit_reverb_param = param;
+				break;
+				
+			case EDITWAVETABLE:	
+				mused.wavetable_param = param;
+				break;
+		}
+	}
+}
+
+
 int generic_field(const SDL_Event *e, const SDL_Rect *area, int param, const char *_label, const char *format, void *value, int width)
 {
 	label(_label, area);
@@ -183,6 +206,8 @@ int generic_field(const SDL_Event *e, const SDL_Rect *area, int param, const cha
 
 	int r =  spinner(mused.screen, e, &spinner_area, mused.slider_bevel->surface, (Uint32)area->x << 16 | area->y);
 	
+	check_mouse_hit(e, area, param);
+	
 	if (is_selected_param(param))
 	{
 		SDL_Rect r;
@@ -204,22 +229,10 @@ void generic_flags(const SDL_Event *e, const SDL_Rect *_area, int p, const char 
 	
 	if (checkbox(mused.screen, e, &area, mused.slider_bevel->surface, &mused.smallfont, BEV_BUTTON, BEV_BUTTON_ACTIVE, DECAL_TICK,label, flags, mask)) 
 	{
-		switch (mused.focus)
-		{
-			case EDITINSTRUMENT:
-				mused.selected_param = p;
-				break;
-				
-			case EDITFX:
-				mused.edit_reverb_param = p;
-				break;
-				
-			case EDITWAVETABLE:
-				mused.wavetable_param = p;
-				break;
-		}
 		
 	}
+	
+	check_mouse_hit(e, _area, p);
 	
 	if (is_selected_param(p))
 	{
@@ -1337,7 +1350,7 @@ void instrument_name_view(SDL_Surface *dest_surface, const SDL_Rect *dest, const
 	inst_text(event, &farea, P_INSTRUMENT, "", "%02X", MAKEPTR(mused.current_instrument), 2);
 	inst_field(event, &tarea, P_NAME, sizeof(mused.song.instrument[mused.current_instrument].name), mused.song.instrument[mused.current_instrument].name);
 	
-	if (mused.selected_param == P_NAME || (mused.edit_buffer == mused.song.instrument[mused.current_instrument].name && mused.focus == EDITBUFFER))
+	if (is_selected_param(P_NAME) || (mused.selected_param == P_NAME && mused.mode == EDITINSTRUMENT && (mused.edit_buffer == mused.song.instrument[mused.current_instrument].name && mused.focus == EDITBUFFER)))
 	{
 		SDL_Rect r;
 		copy_rect(&r, &tarea);
@@ -1584,7 +1597,7 @@ void fx_view(SDL_Surface *dest_surface, const SDL_Rect *dest, const SDL_Event *e
 	
 	r.h = 10;
 	
-	r.w = 112;
+	r.w = 96;
 	
 	generic_flags(event, &r, R_MULTIPLEX, "MULTIPLEX", &mused.song.flags, MUS_ENABLE_MULTIPLEX);
 	update_rect(&area, &r);
