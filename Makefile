@@ -18,6 +18,7 @@ ARCHIVE := klystrack.zip
 INSTALLER := klystrack.exe
 MIXERVER := 1.2.11
 SDLVER := 1.2.14
+THEMES :=
 
 ifdef COMSPEC
 	TARGET := $(TARGET).exe
@@ -48,6 +49,7 @@ ifdef COMSPEC
 endif
 
 DIRS := $(notdir $(wildcard src/*)) 
+THEMEDIRS := $(notdir $(wildcard themes/*)) 
 
 ifeq ($(CFG),debug)
  CFLAGS += -O3 -g -Wall -DDEBUG -fno-inline 
@@ -92,16 +94,23 @@ deps/$(CFG)_$(2)%.d: src/$(1)%$(EXT)
 	rm -f $$@.$$$$$$$$
 endef
 
-# root (i.e. src/*.c)
-$(eval $(call directory_defs,,))
-# subdirs (src/*/*.c)
-$(foreach dir,$(DIRS),$(eval $(call directory_defs,$(dir)/,$(dir)_)))
+define theme_defs	
 
-ifdef COMSPEC
-  OBJS += objs.$(CFG)/windres.o
-endif
-  
-.PHONY: zip all build nightly installer
+ THEMES := $$(THEMES) res/$(1)
+
+res/$(1): themes/$(1)/* temp/8x8.fnt temp/7x6.fnt
+	@$(ECHO) "Building theme $(1)..."
+	@mkdir -p res
+	@mkdir -p themetemp
+	@cp -f themes/$(1)/colors.txt themetemp
+	@cp -f themes/$(1)/bevel.bmp themetemp
+	@cp -f temp/8x8.fnt themetemp
+	@cp -f temp/7x6.fnt themetemp
+	@$(MAKEBUNDLE) $$@ themetemp
+	@rm -rf themetemp
+	
+endef
+
 
 build: Makefile src/version
 	@echo '#ifndef VERSION_NUMBER' > src/version_number.h
@@ -125,7 +134,21 @@ endif
 	@make -C ../klystron CFG=$(CFG) EXTFLAGS="$(EXTFLAGS)"
 	@make all CFG=$(CFG) EXTFLAGS="$(EXTFLAGS)"
 
-all: bin.$(CFG)/$(TARGET) res/Default
+
+# root (i.e. src/*.c)
+$(eval $(call directory_defs,,))
+# subdirs (src/*/*.c)
+$(foreach dir,$(DIRS),$(eval $(call directory_defs,$(dir)/,$(dir)_)))
+# themes
+$(foreach dir,$(THEMEDIRS),$(eval $(call theme_defs,$(dir))))
+
+ifdef COMSPEC
+  OBJS += objs.$(CFG)/windres.o
+endif
+  
+.PHONY: zip all build nightly installer
+
+all: bin.$(CFG)/$(TARGET) $(THEMES)
 	
 zip: doc/* res/Default $(DLLS) examples/instruments/* examples/songs/*  linux/Makefile
 	@make -C ../klystron CFG=release EXTFLAGS="$(EXTFLAGS)"
@@ -177,20 +200,13 @@ ifneq ($(MAKECMDGOALS),clean)
 -include $(DEPS)
 endif
 	
-res/Default: data/bevel.bmp temp/8x8.fnt temp/7x6.fnt data/colors.txt
-	@mkdir -p res
+temp/8x8.fnt: themes/Default/font/*
 	@mkdir -p temp
-	@cp -f data/colors.txt temp
-	@cp -f data/bevel.bmp temp
-	@$(MAKEBUNDLE) $@ temp
+	@$(MAKEBUNDLE) $@ themes/Default/font
 
-temp/8x8.fnt: data/font/*
+temp/7x6.fnt: themes/Default/font7x6/*
 	@mkdir -p temp
-	@$(MAKEBUNDLE) $@ data/font
-
-temp/7x6.fnt: data/font7x6/*
-	@mkdir -p temp
-	@$(MAKEBUNDLE) $@ data/font7x6
+	@$(MAKEBUNDLE) $@ themes/Default/font7x6
 
 zip/data/SDL.dll:
 	@$(ECHO) "Downloading SDL.dll..."
