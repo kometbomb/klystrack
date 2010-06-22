@@ -431,7 +431,11 @@ int main(int argc, char **argv)
 					SDL_Event foo = {0};
 					my_draw_view(tab[m], &foo, mused.screen);
 					draw_menu(mused.screen, &e);
-					if (menu_closed) close_menu();
+				
+					if (menu_closed) 
+					{
+						close_menu();
+					}
 				}
 				else
 				{
