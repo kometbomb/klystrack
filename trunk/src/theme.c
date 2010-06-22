@@ -106,11 +106,10 @@ void load_theme(const char *name)
 	
 	snprintf(fullpath, sizeof(fullpath) - 1, TOSTRING(RES_PATH) "/res/%s", name);
 	
-	debug("Opening theme %s", fullpath);
+	debug("Loading theme theme %s", fullpath);
 	
 	if (bnd_open(&res, fullpath))
 	{
-		debug("Theme opened ok");
 		SDL_RWops *rw = SDL_RWFromBundle(&res, "bevel.bmp");
 		
 		if (rw)
@@ -139,6 +138,8 @@ void load_theme(const char *name)
 		bnd_free(&res);
 		strcpy(mused.themename, name);
 		update_theme_menu();
+		
+		debug("Theme opened ok");
 	}
 	else
 	{
@@ -211,5 +212,6 @@ void free_themes()
 	{
 		if (thememenu[i].text != NULL) free((void*)thememenu[i].text);
 	}
+	
 	memset(thememenu, 0, sizeof(thememenu));
 }

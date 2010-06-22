@@ -471,6 +471,8 @@ int main(int argc, char **argv)
 #ifdef WIN32
 	deinit_icon();
 #endif
+
+	debug("klystrack has left the building.");
 	
 	return 0;
 }
