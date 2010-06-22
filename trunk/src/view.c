@@ -43,6 +43,105 @@ extern Mused mused;
 
 extern int event_hit;
 
+typedef struct { Uint16 opcode; char* name; } InstructionDesc;
+
+static const InstructionDesc instruction_desc[] =
+{
+	{MUS_FX_ARPEGGIO, "Arpeggio"},
+	{MUS_FX_ARPEGGIO_ABS, "Absolute arpeggio"},
+	{MUS_FX_SET_EXT_ARP, "Set external arpeggio notes"},
+	{MUS_FX_PORTA_UP, "Portamento up"},
+	{MUS_FX_PORTA_DN, "Portamento down"},
+	{MUS_FX_VIBRATO, "Vibrato"},
+	{MUS_FX_SLIDE, "Slide"},
+	{MUS_FX_PORTA_UP_SEMI, "Portamento up (semitones)"},
+	{MUS_FX_PORTA_DN_SEMI, "Portamento down (semitones)"},
+	{MUS_FX_CUTOFF_UP, "Filter cutoff up"},
+	{MUS_FX_CUTOFF_DN, "Filter cutoff down"},
+	{MUS_FX_CUTOFF_SET, "Set filter cutoff"},
+	{MUS_FX_FILTER_TYPE, "Set filter type"},
+	{MUS_FX_PW_DN, "PW down"},
+	{MUS_FX_PW_UP, "PW up"},
+	{MUS_FX_PW_SET, "Set PW"},
+	{MUS_FX_SET_VOLUME, "Set volume"},
+	{MUS_FX_SET_WAVEFORM, "Set waveform"},
+	{MUS_FX_SET_SPEED, "Set speed"},
+	{MUS_FX_SET_RATE, "Set rate"},
+	{MUS_FX_END, "Program end"},
+	{MUS_FX_NOP, "No operation"},
+	{MUS_FX_JUMP, "Goto"},
+	{MUS_FX_LABEL, "Loop begin"},
+	{MUS_FX_LOOP, "Loop end"},
+	{MUS_FX_TRIGGER_RELEASE, "Trigger release"},
+	{MUS_FX_FADE_VOLUME, "Fade volume"},
+	{MUS_FX_EXT_FADE_VOLUME_UP, "Fine fade volume in"},
+	{MUS_FX_EXT_FADE_VOLUME_DN, "Fine fade volume out"},
+	{MUS_FX_EXT_PORTA_UP, "Fine portamento up"},
+	{MUS_FX_EXT_PORTA_DN, "Fine portamento down"},
+	{MUS_FX_EXT_NOTE_CUT, "Note cut"},
+	{MUS_FX_EXT_RETRIGGER, "Retrigger"},
+	{MUS_FX_WAVETABLE_OFFSET, "Wavetable offset"},
+	{MUS_FX_SET_PANNING, "Set panning"},
+	{MUS_FX_PAN_LEFT, "Pan left"},
+	{MUS_FX_PAN_RIGHT, "Pan right"},
+	{MUS_FX_BUZZ_UP, "Tune buzz up"},
+	{MUS_FX_BUZZ_DN, "Tune buzz down" },
+	{MUS_FX_BUZZ_SHAPE, "Set buzz shape" },
+	{MUS_FX_BUZZ_SET, "Set buzz finetune" },
+	{MUS_FX_CUTOFF_FINE_SET, "Set filter cutoff (fine)"},
+	{MUS_FX_BUZZ_SET_SEMI, "Set buzz semitone" },
+	{0, NULL}
+};
+
+
+static const InstructionDesc * get_instruction_desc(Uint16 command)
+{
+	for (int i = 0 ; instruction_desc[i].name != NULL ; ++i)
+	{
+		if (instruction_desc[i].opcode == (command) || instruction_desc[i].opcode == (command & 0xff00) || instruction_desc[i].opcode == (command & 0x7f00) || instruction_desc[i].opcode == (command & 0x7ff0) 
+			|| (((instruction_desc[i].opcode == MUS_FX_CUTOFF_FINE_SET) || (instruction_desc[i].opcode == MUS_FX_WAVETABLE_OFFSET)) && instruction_desc[i].opcode == (command & 0x7000)))
+		{
+			return &instruction_desc[i];
+		}
+	}
+	
+	return false;
+}
+
+
+static bool is_valid_command(Uint16 command)
+{
+	return get_instruction_desc(command) != NULL;
+}
+
+	
+void get_command_desc(char *text, Uint16 inst)
+{
+	const InstructionDesc *i = get_instruction_desc(inst);
+
+	if (i == NULL) 
+	{
+		strcpy(text, "Unknown\n");
+		return;
+	}
+
+	const char *name = i->name;
+	const Uint16 fi = i->opcode;
+	
+	if ((fi & 0x7f00) == MUS_FX_SET_WAVEFORM)
+	{
+		sprintf(text, "%s (%s%s%s%s)\n", name, (inst & CYD_CHN_ENABLE_NOISE) ? "N" : "", (inst & CYD_CHN_ENABLE_SAW) ? "S" : "", (inst & CYD_CHN_ENABLE_TRIANGLE) ? "T" : "", (inst & CYD_CHN_ENABLE_PULSE) ? "P" : "");
+	}
+	else if ((fi & 0x7f00) == MUS_FX_FILTER_TYPE)
+	{
+		static const char *fn[FLT_TYPES] = {"LP", "HP", "BP"};
+		sprintf(text, "%s (%s)\n", name, fn[(fi & 0xf) % FLT_TYPES]);
+	}
+	else sprintf(text, "%s\n", name);
+}
+
+	
+
 bool is_selected_param(int p)
 {
 	switch (mused.focus)
@@ -935,83 +1034,6 @@ void info_view(SDL_Surface *dest_surface, const SDL_Rect *dest, const SDL_Event 
 }
 
 
-void get_command_desc(char *text, Uint16 inst)
-{
-	static const struct { Uint16 opcode; char* name; }  instructions[] =
-	{
-		{MUS_FX_ARPEGGIO, "Arpeggio"},
-		{MUS_FX_ARPEGGIO_ABS, "Absolute arpeggio"},
-		{MUS_FX_SET_EXT_ARP, "Set external arpeggio notes"},
-		{MUS_FX_PORTA_UP, "Portamento up"},
-		{MUS_FX_PORTA_DN, "Portamento down"},
-		{MUS_FX_VIBRATO, "Vibrato"},
-		{MUS_FX_SLIDE, "Slide"},
-		{MUS_FX_PORTA_UP_SEMI, "Portamento up (semitones)"},
-		{MUS_FX_PORTA_DN_SEMI, "Portamento down (semitones)"},
-		{MUS_FX_CUTOFF_UP, "Filter cutoff up"},
-		{MUS_FX_CUTOFF_DN, "Filter cutoff down"},
-		{MUS_FX_CUTOFF_SET, "Set filter cutoff"},
-		{MUS_FX_FILTER_TYPE, "Set filter type"},
-		{MUS_FX_PW_DN, "PW down"},
-		{MUS_FX_PW_UP, "PW up"},
-		{MUS_FX_PW_SET, "Set PW"},
-		{MUS_FX_SET_VOLUME, "Set volume"},
-		{MUS_FX_SET_WAVEFORM, "Set waveform"},
-		{MUS_FX_SET_SPEED, "Set speed"},
-		{MUS_FX_SET_RATE, "Set rate"},
-		{MUS_FX_END, "Program end"},
-		{MUS_FX_NOP, "No operation"},
-		{MUS_FX_JUMP, "Goto"},
-		{MUS_FX_LABEL, "Loop begin"},
-		{MUS_FX_LOOP, "Loop end"},
-		{MUS_FX_TRIGGER_RELEASE, "Trigger release"},
-		{MUS_FX_FADE_VOLUME, "Fade volume"},
-		{MUS_FX_EXT_FADE_VOLUME_UP, "Fine fade volume in"},
-		{MUS_FX_EXT_FADE_VOLUME_DN, "Fine fade volume out"},
-		{MUS_FX_EXT_PORTA_UP, "Fine portamento up"},
-		{MUS_FX_EXT_PORTA_DN, "Fine portamento down"},
-		{MUS_FX_EXT_NOTE_CUT, "Note cut"},
-		{MUS_FX_EXT_RETRIGGER, "Retrigger"},
-		{MUS_FX_WAVETABLE_OFFSET, "Wavetable offset"},
-		{MUS_FX_SET_PANNING, "Set panning"},
-		{MUS_FX_PAN_LEFT, "Pan left"},
-		{MUS_FX_PAN_RIGHT, "Pan right"},
-		{MUS_FX_BUZZ_UP, "Tune buzz up"},
-		{MUS_FX_BUZZ_DN, "Tune buzz down" },
-		{MUS_FX_BUZZ_SHAPE, "Set buzz shape" },
-		{MUS_FX_BUZZ_SET, "Set buzz finetune" },
-		{MUS_FX_CUTOFF_FINE_SET, "Set filter cutoff (fine)"},
-		{MUS_FX_BUZZ_SET_SEMI, "Set buzz semitone" },
-		{0, NULL}
-	};
-	
-	char *name = NULL;
-	Uint16 fi = 0;
-	for (int i = 0 ; instructions[i].name != NULL ; ++i)
-	{
-		if (instructions[i].opcode == (inst) ||instructions[i].opcode == (inst & 0xff00) || instructions[i].opcode == (inst & 0x7f00) || instructions[i].opcode == (inst & 0x7ff0) 
-			|| (((instructions[i].opcode == MUS_FX_CUTOFF_FINE_SET) || (instructions[i].opcode == MUS_FX_WAVETABLE_OFFSET)) && instructions[i].opcode == (inst & 0x7000)))
-		{
-			name = instructions[i].name;
-			fi = instructions[i].opcode;
-			break;
-		}
-	}
-
-	if ((fi & 0x7f00) == MUS_FX_SET_WAVEFORM)
-	{
-		sprintf(text, "%s (%s%s%s%s)\n", name, (inst & CYD_CHN_ENABLE_NOISE) ? "N" : "", (inst & CYD_CHN_ENABLE_SAW) ? "S" : "", (inst & CYD_CHN_ENABLE_TRIANGLE) ? "T" : "", (inst & CYD_CHN_ENABLE_PULSE) ? "P" : "");
-	}
-	else if ((fi & 0x7f00) == MUS_FX_FILTER_TYPE)
-	{
-		static const char *fn[FLT_TYPES] = {"LP", "HP", "BP"};
-		sprintf(text, "%s (%s)\n", name, fn[(fi & 0xf) % FLT_TYPES]);
-	}
-	else if (name == NULL) sprintf(text, "Unknown\n");
-	else sprintf(text, "%s\n", name);
-}
-
-
 void info_line(SDL_Surface *dest_surface, const SDL_Rect *dest, const SDL_Event *event, void *param)
 {
 	SDL_Rect area;
@@ -1213,15 +1235,17 @@ void program_view(SDL_Surface *dest_surface, const SDL_Rect *dest, const SDL_Eve
 				select_program_step, MAKEPTR(i), 0, 0);
 		}
 		
-		if ((inst->program[i] & 0x7f00) == MUS_FX_ARPEGGIO || (inst->program[i] & 0x7f00) == MUS_FX_ARPEGGIO_ABS)
+		if (!is_valid_command(inst->program[i]))
+			console_write_args(mused.console, "???");
+		else if ((inst->program[i] & 0x7f00) == MUS_FX_ARPEGGIO || (inst->program[i] & 0x7f00) == MUS_FX_ARPEGGIO_ABS)
 		{
 			if ((inst->program[i] & 0xff) != 0xf0 && (inst->program[i] & 0xff) != 0xf1)
-				console_write_args(mused.console, "%s\n", notename(((inst->program[i] & 0x7f00) == MUS_FX_ARPEGGIO_ABS ? 0 : inst->base_note) + (inst->program[i] & 0xff)));
+				console_write_args(mused.console, "%s", notename(((inst->program[i] & 0x7f00) == MUS_FX_ARPEGGIO_ABS ? 0 : inst->base_note) + (inst->program[i] & 0xff)));
 			else
-				console_write_args(mused.console, "EXT%x\n", inst->program[i] & 0x0f);
+				console_write_args(mused.console, "EXT%x", inst->program[i] & 0x0f);
 		}
-		else
-			console_write_args(mused.console, "\n");
+			
+		console_write_args(mused.console, "\n");
 			
 		if (row.y + row.h < area.y + area.h)
 			slider_set_params(&mused.program_slider_param, 0, MUS_PROG_LEN - 1, start, i, &mused.program_position, 1, SLIDER_VERTICAL, mused.slider_bevel->surface);
