@@ -8,6 +8,8 @@ _*Note:* Only significant changes and new features are listed here._
   * Wavetable for low-quality sample action (and for better Protracker module import)
   * Master volume control and clipping warning
   * Improved bitcrush effect for authentic low quality speech and stuff
+  * Program icon (for Windows)
+  * Important bugfixes, some critical, some not so much
 
 =1.4.2=
 
