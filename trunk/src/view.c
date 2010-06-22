@@ -265,9 +265,9 @@ void set_cursor(const SDL_Rect *location)
 }
 
 
-void check_mouse_hit(const SDL_Event *e, const SDL_Rect *area, int param)
+bool check_mouse_hit(const SDL_Event *e, const SDL_Rect *area, int param)
 {
-	if (param < 0) return;
+	if (param < 0) return false;
 	if (check_event(e, area, NULL, NULL, NULL, NULL))
 	{
 		switch (mused.focus)
@@ -284,7 +284,11 @@ void check_mouse_hit(const SDL_Event *e, const SDL_Rect *area, int param)
 				mused.wavetable_param = param;
 				break;
 		}
+		
+		return true;
 	}
+	
+	return false;
 }
 
 
@@ -334,12 +338,17 @@ void generic_flags(const SDL_Event *e, const SDL_Rect *_area, int p, const char 
 	copy_rect(&area, _area);
 	area.y += 1;
 	
+	int hit = check_mouse_hit(e, _area, p);
+	
 	if (checkbox(mused.screen, e, &area, mused.slider_bevel->surface, &mused.smallfont, BEV_BUTTON, BEV_BUTTON_ACTIVE, DECAL_TICK,label, flags, mask)) 
 	{
 		
 	}
-	
-	check_mouse_hit(e, _area, p);
+	else if (hit)
+	{
+		// so that the gap between the box and label works too
+		*flags ^= mask;
+	}	
 	
 	if (is_selected_param(p))
 	{
