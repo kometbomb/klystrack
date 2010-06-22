@@ -641,11 +641,22 @@ void pattern_view_inner(SDL_Surface *dest_surface, const SDL_Rect *dest, const S
 		if (mused.current_patternstep == i)
 		{
 			bevel(mused.screen,&row, mused.slider_bevel->surface, BEV_SELECTED_PATTERN_ROW);
-			console_set_color(mused.console, colors[COLOR_PATTERN_SELECTED], CON_CHARACTER);
+		}
+		
+		if (!(mused.mus.channel[channel].flags & MUS_CHN_DISABLED))
+		{
+			if (mused.current_patternstep == i)
+			{		
+				console_set_color(mused.console, colors[COLOR_PATTERN_SELECTED], CON_CHARACTER);
+			}
+			else
+			{
+				console_set_color(mused.console, timesig(i, colors[COLOR_PATTERN_BAR], colors[COLOR_PATTERN_BEAT], colors[COLOR_PATTERN_NORMAL]), CON_CHARACTER);
+			}
 		}
 		else
 		{
-			console_set_color(mused.console, timesig(i, colors[COLOR_PATTERN_BAR], colors[COLOR_PATTERN_BEAT], colors[COLOR_PATTERN_NORMAL]), CON_CHARACTER);
+			console_set_color(mused.console, colors[COLOR_PATTERN_DISABLED], CON_CHARACTER);
 		}
 		
 		if (current_pattern == mused.current_pattern && mused.focus == EDITPATTERN)

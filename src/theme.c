@@ -71,6 +71,7 @@ static void load_colors(const char *cfg)
 				"pattern_bar",
 				"pattern_beat",
 				"pattern_normal",
+				"pattern_disabled",
 				"program_selected",
 				"program_even",
 				"program_odd",
