@@ -29,20 +29,23 @@ OTHER DEALINGS IN THE SOFTWARE.
 #include "SDL.h"
 #include "gfx/font.h"
 
+enum 
+{
+	CON_BACKGROUND,
+	CON_CHARACTER,
+	/* ------------------- */
+	CON_N_COLORS,
+};
+
 typedef struct
 {
-	SDL_Surface *fontsurface[2];
+	Uint32 current_color[CON_N_COLORS];
+	SDL_Surface *fontsurface[CON_N_COLORS];
 	Uint16 cursor;
 	Font font;
 	SDL_Rect clip;
 	int background;
 } Console;
-
-enum 
-{
-	CON_BACKGROUND,
-	CON_CHARACTER
-};
 
 void console_set_background(Console * c, int enabled);
 void console_reset_cursor(Console * c);

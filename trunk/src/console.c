@@ -44,9 +44,14 @@ void console_set_background(Console * c, int enabled)
 
 void console_set_color(Console* console, Uint32 color, int idx)
 {
+	if (console->current_color[idx] == color) return;
+
 	SDL_Color rgb = { color, color >> 8, color >> 16 };
-	SDL_SetColors(console->fontsurface[0], &rgb, idx, 1);
-	SDL_SetColors(console->fontsurface[1], &rgb, idx, 1);
+	
+	for (int i = 0 ; i < CON_N_COLORS ; ++i)
+		SDL_SetColors(console->fontsurface[i], &rgb, idx, 1);
+	
+	console->current_color[idx] = color;
 }
 
 
@@ -94,9 +99,9 @@ Console * console_create(const char * theme)
 	
 	// let's use a 8-bit surface so we can change the text color using the per surface palette
 	
-	for (int i = 0 ; i < 2 ; ++i)
+	for (int i = 0 ; i < CON_N_COLORS ; ++i)
 	{
-		SDL_Surface * paletted = SDL_CreateRGBSurface(SDL_HWSURFACE, c->font.surface->surface->w, c->font.surface->surface->h, 8, 0, 0, 0, 0);
+		SDL_Surface * paletted = SDL_CreateRGBSurface(SDL_SWSURFACE, c->font.surface->surface->w, c->font.surface->surface->h, 8, 0, 0, 0, 0);
 		
 		if (paletted)
 		{
@@ -107,12 +112,13 @@ Console * console_create(const char * theme)
 		
 			SDL_BlitSurface(c->font.surface->surface, NULL, paletted, NULL);
 			
-			if (i == 0) SDL_SetColorKey(paletted, SDL_SRCCOLORKEY|SDL_RLEACCEL, SDL_MapRGB(paletted->format, 0, 0, 0));
+			if (i == 0) SDL_SetColorKey(paletted, SDL_SRCCOLORKEY, SDL_MapRGB(paletted->format, 0, 0, 0));
 			
 			c->fontsurface[i] = paletted;
 		}
 		else
 		{
+			fatal("Could not create console surface %d", i);
 			exit(1);
 		}
 	}
@@ -134,7 +140,10 @@ void console_destroy(Console *c)
 {
 	c->font.surface->surface = c->fontsurface[0];
 	font_destroy(&c->font);
-	SDL_FreeSurface(c->fontsurface[1]);
+	
+	for (int i = 1 ; i < CON_N_COLORS ; ++i)
+		SDL_FreeSurface(c->fontsurface[1]);
+		
 	free(c);
 }
 
