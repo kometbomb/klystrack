@@ -48,6 +48,7 @@ static const struct { int type; const char *name; void *param; int mask; } confi
 	{ C_BOOL, "show_position_offset", &mused.flags, SHOW_PATTERN_POS_OFFSET },
 	{ C_BOOL, "follow_play_position", &mused.flags, FOLLOW_PLAY_POSITION },
 	{ C_BOOL, "animate_cursor", &mused.flags, ANIMATE_CURSOR },
+	{ C_BOOL, "hide_zeros", &mused.flags, HIDE_ZEROS },
 	{ C_END }
 };
 
