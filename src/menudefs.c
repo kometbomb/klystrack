@@ -81,6 +81,7 @@ const Menu prefsmenu[] =
 	{ 0, mainmenu, "Keyjazz", NULL, MENU_CHECK, &mused.flags, (void*)MULTICHANNEL_PREVIEW, 0 },
 	{ 0, mainmenu, "Follow song position", NULL, MENU_CHECK, &mused.flags, (void*)FOLLOW_PLAY_POSITION, 0 },
 	{ 0, mainmenu, "Animate cursor", NULL, MENU_CHECK, &mused.flags, (void*)ANIMATE_CURSOR, 0 },
+	{ 0, mainmenu, "Hide zeros", NULL, MENU_CHECK, &mused.flags, (void*)HIDE_ZEROS, 0 },
 	{ 0, NULL, NULL }
 };
 

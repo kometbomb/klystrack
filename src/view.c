@@ -734,7 +734,10 @@ void pattern_view_inner(SDL_Surface *dest_surface, const SDL_Rect *dest, const S
 		
 		for (int p = 0 ; p < 4 ; ++p)
 		{
-			r = console_write_args(mused.console, "%X", (mused.song.pattern[current_pattern].step[i].command >> ((3-p)*4)) & 0xf);
+			if (mused.song.pattern[current_pattern].step[i].command == 0 && (mused.flags & HIDE_ZEROS))
+				r = console_write_args(mused.console, ".");
+			else
+				r = console_write_args(mused.console, "%X", (mused.song.pattern[current_pattern].step[i].command >> ((3-p)*4)) & 0xf);
 			copy_rect(&clipped, r);
 			clip_rect(&clipped, &content);
 			
