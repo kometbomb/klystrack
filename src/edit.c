@@ -167,7 +167,8 @@ void interpolate(void *unused1, void *unused2, void *unused3)
 	Uint16 command = pat->step[mused.selection.start].command;
 	Uint16 mask = 0xff00;
 	
-	if ((command & 0xf000) == MUS_FX_CUTOFF_FINE_SET) mask = 0xf000;
+	if ((command & 0xf000) == MUS_FX_CUTOFF_FINE_SET 
+		|| (command & 0xf000) == MUS_FX_WAVETABLE_OFFSET) mask = 0xf000;
 	
 	command &= mask;
 	
