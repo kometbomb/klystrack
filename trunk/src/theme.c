@@ -106,7 +106,7 @@ void load_theme(const char *name)
 	
 	snprintf(fullpath, sizeof(fullpath) - 1, TOSTRING(RES_PATH) "/res/%s", name);
 	
-	debug("Loading theme theme %s", fullpath);
+	debug("Loading theme '%s'", fullpath);
 	
 	if (bnd_open(&res, fullpath))
 	{

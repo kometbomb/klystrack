@@ -29,6 +29,8 @@ OTHER DEALINGS IN THE SOFTWARE.
 #include "macros.h"
 #include "gui/msgbox.h"
 #include <stdbool.h>
+#include "wave.h"
+#include "snd/freqs.h"
 
 extern Mused mused;
 extern GfxDomain *domain;
@@ -181,6 +183,12 @@ int save_data()
 {
 	switch (mused.mode)
 	{
+		case EDITWAVETABLE:
+			msgbox(domain,  mused.slider_bevel->surface, &mused.largefont, "Saving not supported, yet", MB_OK);
+			
+			return 0;
+		break;
+	
 		case EDITPROG:
 		case EDITINSTRUMENT:
 		{
@@ -362,6 +370,30 @@ void open_data()
 {
 	switch (mused.mode)
 	{
+		case EDITWAVETABLE:
+		{
+			FILE * f = open_dialog("rb", "Load wave", "wav", domain, mused.slider_bevel->surface, &mused.largefont, &mused.smallfont);
+			
+			if (f)
+			{
+				Wave *w = wave_load(f);
+				
+				if (w)
+				{
+					cyd_wave_entry_init(&mused.mus.cyd->wavetable_entries[mused.selected_wavetable], w->data, w->length, w->bits_per_sample == 16 ? CYD_WAVE_TYPE_SINT16 : CYD_WAVE_TYPE_SINT8, w->channels, 1, 1);
+					
+					mused.mus.cyd->wavetable_entries[mused.selected_wavetable].flags = 0;
+					mused.mus.cyd->wavetable_entries[mused.selected_wavetable].sample_rate = w->sample_rate;
+					mused.mus.cyd->wavetable_entries[mused.selected_wavetable].base_note = MIDDLE_C << 8;
+					
+					wave_destroy(w);
+				}
+			
+				fclose(f);
+			}
+		}
+		break;
+	
 		case EDITINSTRUMENT:
 		{
 			FILE * f = open_dialog("rb", "Load instrument", "ki", domain, mused.slider_bevel->surface, &mused.largefont, &mused.smallfont);
