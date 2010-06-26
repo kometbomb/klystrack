@@ -42,7 +42,9 @@ static Uint16 find_command_pt(Uint16 command, int sample_length)
 	else if ((command & 0xfff0) == 0x0ea0 || (command & 0xfff0) == 0x0eb0)
 		command = ((command & 0xfff0) == 0x0ea0 ? 0x0eb0 : 0x0ea0) | (my_min(0xf, (command & 0x0f) * 2));
 	else if ((command & 0xff00) == 0x0f00 && (command & 0xff) < 32)
-		command = MUS_FX_SET_SPEED | (command & 0xff);
+		command = MUS_FX_SET_SPEED | my_min(0xf, (command & 0xff));
+	else if ((command & 0xff00) == 0x0f00 && (command & 0xff) >= 32)
+		command = MUS_FX_SET_RATE | (((command & 0xff)) * 50 / 125);
 	else if ((command & 0xff00) == 0x0100 || (command & 0xff00) == 0x0200 || (command & 0xff00) == 0x0300) 
 		command = (command & 0xff00) | my_min(0xff, (command & 0xff) * 8);
 	else if ((command & 0xff00) == 0x0900 && sample_length) 
