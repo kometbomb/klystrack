@@ -862,12 +862,46 @@ void pattern_event(SDL_Event *e)
 					break;
 				}
 			
-				for (int i = mused.current_patternstep  ; i < mused.song.pattern[mused.current_pattern].num_steps ; ++i)
-					memcpy(&mused.song.pattern[mused.current_pattern].step[i], &mused.song.pattern[mused.current_pattern].step[i+1], sizeof(mused.song.pattern[mused.current_pattern].step[0]));
+				if (!(mused.flags & DELETE_EMPTIES) || e->key.keysym.sym == SDLK_BACKSPACE)
+				{
+					for (int i = mused.current_patternstep  ; i < mused.song.pattern[mused.current_pattern].num_steps ; ++i)
+						memcpy(&mused.song.pattern[mused.current_pattern].step[i], &mused.song.pattern[mused.current_pattern].step[i+1], sizeof(mused.song.pattern[mused.current_pattern].step[0]));
+						
+					zero_step(&mused.song.pattern[mused.current_pattern].step[mused.song.pattern[mused.current_pattern].num_steps - 1]);				
+					
+					if (mused.current_patternstep >= mused.song.pattern[mused.current_pattern].num_steps) --mused.current_patternstep;
+				}
+				else
+				{
+					switch (mused.current_patternx)
+					{
+						case PED_NOTE:
+							mused.song.pattern[mused.current_pattern].step[mused.current_patternstep].note = MUS_NOTE_NONE;	
+							break;
+							
+						case PED_INSTRUMENT1:
+						case PED_INSTRUMENT2:
+							mused.song.pattern[mused.current_pattern].step[mused.current_patternstep].instrument = MUS_NOTE_NO_INSTRUMENT;	
+							break;
+							
+						case PED_LEGATO:
+						case PED_SLIDE:
+						case PED_VIB:
+							mused.song.pattern[mused.current_pattern].step[mused.current_patternstep].ctrl = 0;	
+							break;
+						
+						case PED_COMMAND1:
+						case PED_COMMAND2:
+						case PED_COMMAND3:
+						case PED_COMMAND4:
+							mused.song.pattern[mused.current_pattern].step[mused.current_patternstep].command = 0;	
+							break;
+					}
 				
-				zero_step(&mused.song.pattern[mused.current_pattern].step[mused.song.pattern[mused.current_pattern].num_steps - 1]);				
-				
-				if (mused.current_patternstep >= mused.song.pattern[mused.current_pattern].num_steps) --mused.current_patternstep;
+					//zero_step(&mused.song.pattern[mused.current_pattern].step[mused.current_patternstep]);				
+					
+					if (mused.current_patternstep + 1 < mused.song.pattern[mused.current_pattern].num_steps) ++mused.current_patternstep;
+				}
 			}
 			break;
 		
