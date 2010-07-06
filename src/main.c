@@ -262,6 +262,18 @@ int main(int argc, char **argv)
 	cyd_register(&mused.cyd);
 	cyd_set_callback(&mused.cyd, mus_advance_tick, &mused.mus, mused.song.song_rate);
 	
+	if (argc > 1)
+	{
+		cyd_lock(&mused.cyd, 1);
+		FILE *f = fopen(argv[1], "rb");
+		if (f)
+		{
+			open_song(f);
+			fclose(f);
+		}
+		cyd_lock(&mused.cyd, 0);
+	}
+	
 	int active = 1;
 	
 	while (1)

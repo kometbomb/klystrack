@@ -366,6 +366,43 @@ int save_data()
 }
 
 
+void open_song(FILE *f)
+{
+	if (f)
+	{
+		new_song();
+	
+		if (!mus_load_song_file(f, &mused.song, mused.mus.cyd->wavetable_entries)) msgbox(domain,  mused.slider_bevel->surface, &mused.largefont, "Could not load song", MB_OK);
+		
+		fclose(f);
+		
+		mused.song.num_patterns = NUM_PATTERNS;
+		mused.song.num_instruments = NUM_INSTRUMENTS;
+		
+		// Use kewlkool heuristics to determine sequence spacing
+		
+		mused.sequenceview_steps = 1000;
+		
+		for (int c = 0 ; c < MUS_MAX_CHANNELS ; ++c)
+			for (int s = 1 ; s < mused.song.num_sequences[c] ; ++s)
+				if (mused.sequenceview_steps > mused.song.sequence[c][s].position - mused.song.sequence[c][s-1].position)
+				{
+					mused.sequenceview_steps = mused.song.sequence[c][s].position - mused.song.sequence[c][s-1].position;
+				}
+		
+		if (mused.sequenceview_steps == 1000) mused.sequenceview_steps = 16;
+		
+		mus_set_fx(&mused.mus, &mused.song);
+		cyd_set_callback(&mused.cyd, mus_advance_tick, &mused.mus, mused.song.song_rate);
+		mirror_flags();
+		
+		if (!mused.song.time_signature) mused.song.time_signature = 0x404;
+		
+		mused.time_signature = mused.song.time_signature;
+	}
+}
+
+
 void open_data()
 {
 	switch (mused.mode)
@@ -413,36 +450,9 @@ void open_data()
 			
 			if (f)
 			{
-				new_song();
-			
-				if (!mus_load_song_file(f, &mused.song, mused.mus.cyd->wavetable_entries)) msgbox(domain,  mused.slider_bevel->surface, &mused.largefont, "Could not load song", MB_OK);
-				
+				open_song(f);		
 				fclose(f);
-				
-				mused.song.num_patterns = NUM_PATTERNS;
-				mused.song.num_instruments = NUM_INSTRUMENTS;
-				
-				// Use kewlkool heuristics to determine sequence spacing
-				
-				mused.sequenceview_steps = 1000;
-				
-				for (int c = 0 ; c < MUS_MAX_CHANNELS ; ++c)
-					for (int s = 1 ; s < mused.song.num_sequences[c] ; ++s)
-						if (mused.sequenceview_steps > mused.song.sequence[c][s].position - mused.song.sequence[c][s-1].position)
-						{
-							mused.sequenceview_steps = mused.song.sequence[c][s].position - mused.song.sequence[c][s-1].position;
-						}
-				
-				if (mused.sequenceview_steps == 1000) mused.sequenceview_steps = 16;
-				
-				mus_set_fx(&mused.mus, &mused.song);
-				cyd_set_callback(&mused.cyd, mus_advance_tick, &mused.mus, mused.song.song_rate);
-				mirror_flags();
-				
-				if (!mused.song.time_signature) mused.song.time_signature = 0x404;
-				
-				mused.time_signature = mused.song.time_signature;
-			}		
+			}
 		}
 		break;
 	}
