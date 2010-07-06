@@ -14,7 +14,7 @@ DESTDIR ?= /usr
 EXT := .c
 CC := gcc
 CDEP := gcc -E -MM
-ARCHIVE := klystrack.zip
+ARCHIVE := klystrack
 INSTALLER := klystrack.exe
 MIXERVER := 1.2.11
 SDLVER := 1.2.14
@@ -22,11 +22,13 @@ THEMES :=
 
 ifdef COMSPEC
 	TARGET := $(TARGET).exe
+	ARCHIVE := $(ARCHIVE).zip
 	SDLFLAGS := -I /mingw/include/sdl
 	SDLLIBS :=  -lSDLmain -lSDL -lSDL_mixer 
 	CFLAGS += -mthreads 
 else
 	DLLS = 
+	ARCHIVE := $(ARCHIVE).tar.gz
 	SDLFLAGS := `sdl-config --cflags` -U_FORTIFY_SOURCE
 	SDLLIBS := `sdl-config --libs` -lSDL_mixer
 	REV := cp -f
@@ -40,9 +42,10 @@ else
 	CONFIG_PATH := ~/.klystrack
 endif
 
+EXTFLAGS := -DUSESDLMUTEXES -DENABLEAUDIODUMP -DSTEREOOUTPUT
 CFLAGS := $(MACHINE) -ftree-vectorize -std=gnu99 --no-strict-aliasing
 LDFLAGS :=  -L ../klystron/bin.$(CFG) -lengine_gfx -lengine_util -lengine_snd -lengine_gui $(SDLLIBS)
-INCLUDEFLAGS := -I src $(SDLFLAGS) -I ../klystron/src -L../klystron/bin.$(CFG) -DRES_PATH="$(RES_PATH)" -DCONFIG_PATH="$(CONFIG_PATH)" $(EXTFLAGS) -DUSESDLMUTEXES -DENABLEAUDIODUMP -DSTEREOOUTPUT
+INCLUDEFLAGS := -I src $(SDLFLAGS) -I ../klystron/src -L../klystron/bin.$(CFG) -DRES_PATH="$(RES_PATH)" -DCONFIG_PATH="$(CONFIG_PATH)" $(EXTFLAGS)
 
 ifdef COMSPEC
 	LDFLAGS := -lmingw32 $(LDFLAGS)
@@ -52,7 +55,7 @@ DIRS := $(notdir $(wildcard src/*))
 THEMEDIRS := $(notdir $(wildcard themes/*)) 
 
 ifeq ($(CFG),debug)
- CFLAGS += -O3 -g -Wall -DDEBUG -fno-inline 
+ CFLAGS += -g -Wall -DDEBUG -fno-inline 
 else
  ifeq ($(CFG),profile)
   CFLAGS += -O3 -pg -Wall 
