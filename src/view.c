@@ -144,7 +144,7 @@ void get_command_desc(char *text, Uint16 inst)
 
 bool is_selected_param(int p)
 {
-	switch (mused.focus)
+	switch (mused.mode)
 	{
 		case EDITINSTRUMENT:
 			return p == mused.selected_param;
@@ -270,17 +270,21 @@ bool check_mouse_hit(const SDL_Event *e, const SDL_Rect *area, int param)
 	if (param < 0) return false;
 	if (check_event(e, area, NULL, NULL, NULL, NULL))
 	{
-		switch (mused.focus)
+		debug("check_mouse_hit %d param %d mode %d focus", param, mused.mode, mused.focus);
+		switch (mused.mode)
 		{
 			case EDITINSTRUMENT:
+				mused.focus = EDITINSTRUMENT;
 				mused.selected_param = param;
 				break;
 		
 			case EDITFX:
+				mused.focus = EDITFX;
 				mused.edit_reverb_param = param;
 				break;
 				
 			case EDITWAVETABLE:	
+				mused.focus = EDITWAVETABLE;
 				mused.wavetable_param = param;
 				break;
 		}
