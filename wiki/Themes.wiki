@@ -6,7 +6,9 @@
 
 *This is Windows-only but if you compile makebundle and follow the steps in {{{pack.bat}}}, you can do this on any platform*
 
-Download [http://code.google.com/p/klystrack/downloads/detail?name=klystrack-DIY-theme-kit.zip&can=2&q= this ZIP archive] and unzip to e.g. {{{C:\temp}}}. Then edit the files in {{{C:\temp\Default\*}}} and run {{{pack.bat}}} to pack the theme as {{{C:\temp\my_theme}}}. 
+   1. Download [http://code.google.com/p/klystrack/downloads/detail?name=klystrack-DIY-theme-kit.zip&can=2&q= this ZIP archive] and unzip to e.g. {{{C:\temp}}}. 
+   2. Edit the files in {{{C:\temp\Default\*}}} as you see fit
+   3. After editing, run {{{pack.bat}}} to pack the theme as {{{C:\temp\my_theme}}}. 
 
 You can then drop {{{my_theme}}} in the klystrack {{{res}}} directory and load it from the menu.
 
