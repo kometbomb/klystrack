@@ -1,4 +1,5 @@
 !include "MUI.nsh"
+!include "installer\FileAssociation.nsh"
 
 Name "klystrack ${VERSION}"
 OutFile "zip\klystrack-${VERSION}.exe"
@@ -80,9 +81,15 @@ Section "" ;No components page, name is not important
   
 SectionEnd ; end the section
 
+Section "Register file types"
+  ${registerExtension} "$INSTDIR\klystrack.exe" ".kt" "klystracker song"
+SectionEnd
+
 ;;;;;;;;
 
 Section Uninstall
+  ${unregisterExtension} ".kt" "klystracker song"
+
   Delete /REBOOTOK "$PROFILE\.klystrack"
   DeleteRegKey /ifempty HKCU "Software\klystrack"
  
