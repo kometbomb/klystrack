@@ -67,6 +67,7 @@ static const InstructionDesc instruction_desc[] =
 	{MUS_FX_SET_WAVEFORM, "Set waveform"},
 	{MUS_FX_SET_SPEED, "Set speed"},
 	{MUS_FX_SET_RATE, "Set rate"},
+	{MUS_FX_LOOP_PATTERN, "Loop pattern"},
 	{MUS_FX_END, "Program end"},
 	{MUS_FX_NOP, "No operation"},
 	{MUS_FX_JUMP, "Goto"},
