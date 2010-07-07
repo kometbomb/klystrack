@@ -2,6 +2,14 @@
 
 {{{res/data}}} contains several data files that can be changed to make klystrack look different. To create new data files, you need to use makebundle from the klystron tools.
 
+==DIY kit==
+
+*This is Windows-only but if you compile makebundle and follow the steps in {{{pack.bat}}}, you can do this on any platform*
+
+Download [http://code.google.com/p/klystrack/downloads/detail?name=klystrack-DIY-theme-kit.zip&can=2&q= this ZIP archive] and unzip to e.g. {{{C:\temp}}}. Then edit the files in {{{C:\temp\Default\*}}} and run {{{pack.bat}}} to pack the theme as {{{C:\temp\my_theme}}}. 
+
+You can then drop {{{my_theme}}} in the klystrack {{{res}}} directory and load it from the menu.
+
 =colors.txt=
 
 This file contains the text color definitions. The while should contain definitions in the following format, each on its own line:
