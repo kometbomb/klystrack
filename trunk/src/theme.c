@@ -37,6 +37,12 @@ OTHER DEALINGS IN THE SOFTWARE.
 #include "action.h"
 #include "console.h"
 
+#ifdef WIN32
+
+#include "windows.h"
+
+#endif
+
 extern Mused mused;
 
 #define MAX_THEMES 10
@@ -99,12 +105,32 @@ static void load_colors(const char *cfg)
 }
 
 
+
+
+
 void load_theme(const char *name)
 {
 	Bundle res;
 	char fullpath[1000];
 	
+#ifdef WIN32
+	// RES_PATH is relative to klystrack.exe
+	char path[1000] = "";
+	
+	if (GetModuleFileName(NULL, path, sizeof(path)))
+	{
+		// Get the path component
+		
+		for (int i = strlen(path) - 1 ; i >= 0 && path[i] != '\\' && path[i] != '/' ; --i)
+		{
+			path[i] = '\0';
+		}
+	}
+	
+	snprintf(fullpath, sizeof(fullpath) - 1, "%s" TOSTRING(RES_PATH) "/res/%s", path, name);
+#else
 	snprintf(fullpath, sizeof(fullpath) - 1, TOSTRING(RES_PATH) "/res/%s", name);
+#endif
 	
 	debug("Loading theme '%s'", fullpath);
 	
@@ -163,7 +189,27 @@ void enum_themes()
 {
 	memset(thememenu, 0, sizeof(thememenu));
 	
+#ifdef WIN32
+// RES_PATH is relative to klystrack.exe
+	char path[1000] = "", fullpath[1000];
+	
+	if (GetModuleFileName(NULL, path, sizeof(path)))
+	{
+		// Get the path component (this should be functionized and used by load_theme() and enum_theme()
+		
+		for (int i = strlen(path) - 1 ; i >= 0 && path[i] != '\\' && path[i] != '/' ; --i)
+		{
+			path[i] = '\0';
+		}
+	}
+	
+	snprintf(fullpath, sizeof(fullpath) - 1, "%s" TOSTRING(RES_PATH) "/res", path);
+	DIR *dir = opendir(fullpath);
+	debug("Enumerating themes at " "%s" TOSTRING(RES_PATH) "/res", path);
+#else
 	DIR *dir = opendir(TOSTRING(RES_PATH) "/res");
+	debug("Enumerating themes at " TOSTRING(RES_PATH) "/res");
+#endif
 	
 	if (!dir)
 	{
@@ -178,7 +224,11 @@ void enum_themes()
 	{
 		char fullpath[1000];
 	
+#ifdef WIN32
+		snprintf(fullpath, sizeof(fullpath) - 1, "%s" TOSTRING(RES_PATH) "/res/%s", path, de->d_name);
+#else
 		snprintf(fullpath, sizeof(fullpath) - 1, TOSTRING(RES_PATH) "/res/%s", de->d_name);
+#endif
 		struct stat attribute;
 		
 		if (stat(fullpath, &attribute) != -1 && !(attribute.st_mode & S_IFDIR))
@@ -196,6 +246,8 @@ void enum_themes()
 			++themes;
 		}
 	}
+	
+	debug("Got %d themes", themes);
 	
 	closedir(dir);
 }
