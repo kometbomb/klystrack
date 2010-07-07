@@ -1,6 +1,6 @@
 #summary How to customize klystrack
 
-{{{res/data}}} contains several data files that can be changed to make klystrack look different. To create new data files, you need to use makebundle from the klystron tools.
+In the trunk, the {{{theme/Default}}} directory contains the basic files needed for a theme. The two font directories need to be bundled into font files and all the files need to be bundled into one theme file. This can be automatized with the DIY kit (see below.)
 
 ==DIY kit==
 
