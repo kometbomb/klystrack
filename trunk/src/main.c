@@ -71,7 +71,7 @@ static const View instrument_view_tab[] =
 {
 	{{0, 0, -130, 14}, bevel_view, (void*)BEV_BACKGROUND, EDITINSTRUMENT },
 	{{2, 2, -130-2, 10}, instrument_name_view, (void*)1, -1 },
-	{{-130, 0, 130, 14}, instrument_disk_view, NULL, -1},
+	{{-130, 0, 130, 14}, instrument_disk_view, MAKEPTR(OD_T_INSTRUMENT), -1},
 	{{0, 14, 154, -INFO }, instrument_view, NULL, EDITINSTRUMENT },
 	{{154, 14 + INST_LIST, 0, INST_VIEW2 }, instrument_view2, NULL, EDITINSTRUMENT },
 	{{154, 14, - SCROLLBAR, INST_LIST }, instrument_list, NULL, -1},
@@ -117,7 +117,7 @@ static const View sequence_view_tab[] =
 	{{0,0,0,SEQ_VIEW_INFO_H}, info_view, NULL, -1},
 	{{0, SEQ_VIEW_INFO_H, -130, 14}, bevel_view, (void*)BEV_BACKGROUND, -1},
 	{{2, SEQ_VIEW_INFO_H+2, -130-2, 10}, song_name_view, NULL, -1},
-	{{-130, SEQ_VIEW_INFO_H, 130, 14}, instrument_disk_view, NULL, -1},
+	{{-130, SEQ_VIEW_INFO_H, 130, 14}, instrument_disk_view, MAKEPTR(OD_T_SONG), -1},
 	{{0, SEQ_VIEW_INFO_H+14, 0-SCROLLBAR, 0}, sequence_view, NULL, -1},
 	{{0-SCROLLBAR, SEQ_VIEW_INFO_H+14, SCROLLBAR, 0}, slider, &mused.sequence_slider_param, -1},
 	{{0, 0, 0, 0}, NULL}
@@ -469,7 +469,14 @@ int main(int argc, char **argv)
 			
 			if (r == 0) mused.done = 0;
 			if (r == -1) break;
-			if (r == 1) { change_mode(EDITSEQUENCE); if (!save_data()) mused.done = 0; else break; }
+			if (r == 1) 
+			{ 
+				int r;
+				
+				open_data(MAKEPTR(OD_T_SONG), MAKEPTR(OD_A_SAVE), &r);
+				
+				if (r) mused.done = 0; else break; 
+			}
 		}
 	}
 	

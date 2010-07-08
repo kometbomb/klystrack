@@ -25,7 +25,6 @@ OTHER DEALINGS IN THE SOFTWARE.
 
 #include "action.h"
 #include "mused.h"
-#include "diskop.h"
 #include "gui/toolutil.h"
 #include "view.h"
 #include "event.h"
@@ -168,28 +167,10 @@ void new_song_action(void *unused1, void *unused2, void *unused3)
 }
 
 
-void save_song_action(void *unused1, void *unused2, void *unused3)
+void kill_instrument(void *unused1, void *unused2, void *unused3)
 {
 	cyd_lock(&mused.cyd, 1);
-	save_data();
-	cyd_lock(&mused.cyd, 0);
-}
-
-
-void open_song_action(void *unused1, void *unused2, void *unused3)
-{
-	if (mused.mode != EDITINSTRUMENT && mused.mode != EDITPROG && mused.mode != EDITWAVETABLE)
-	{
-		int r = confirm_ync(domain, mused.slider_bevel->surface, &mused.largefont, "Save song?");
-				
-		if (r == 0) return;
-		if (r == 1) { change_mode(EDITSEQUENCE); if (!save_data()) return; }
-		
-		stop(0,0,0);
-	}
-	
-	cyd_lock(&mused.cyd, 1);
-	open_data();
+	mus_get_default_instrument(&mused.song.instrument[mused.current_instrument]);
 	cyd_lock(&mused.cyd, 0);
 }
 

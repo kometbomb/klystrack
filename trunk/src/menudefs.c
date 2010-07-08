@@ -25,6 +25,7 @@ OTHER DEALINGS IN THE SOFTWARE.
 
 #include "gui/menu.h"
 #include "action.h"
+#include "diskop.h"
 #include "edit.h"
 #include "mused.h"
 #include "import/import.h"
@@ -33,6 +34,7 @@ extern Mused mused;
 
 const Menu mainmenu[];
 static const Menu showmenu[];
+static const Menu filemenu[];
 
 extern Menu thememenu[];
 
@@ -87,15 +89,40 @@ const Menu prefsmenu[] =
 };
 
 
+static const Menu importmenu[] =
+{
+	{ 0, filemenu, "Import .MOD", NULL, import_module, MAKEPTR(IMPORT_MOD) },
+	{ 0, filemenu, "Import .AHX", NULL, import_module, MAKEPTR(IMPORT_AHX) },
+	{ 0, NULL, NULL }
+};
+
+
+static const Menu instmenu[] =
+{
+	{ 0, filemenu, "Kill instrument", NULL, kill_instrument },
+	{ 0, filemenu, "Open instrument", NULL, open_data, MAKEPTR(OD_T_INSTRUMENT), MAKEPTR(OD_A_OPEN) },
+	{ 0, filemenu, "Save instrument", NULL, open_data, MAKEPTR(OD_T_INSTRUMENT), MAKEPTR(OD_A_SAVE) },
+	{ 0, NULL, NULL }
+};
+
+
+static const Menu wavetablemenu[] =
+{
+	{ 0, filemenu, "Open .WAV", NULL, open_data, MAKEPTR(OD_T_WAVETABLE), MAKEPTR(OD_A_OPEN) },
+	{ 0, NULL, NULL }
+};
+
+
 static const Menu filemenu[] =
 {
-	{ 0, mainmenu, "New", NULL, new_song_action },
-	{ 0, mainmenu, "Open", NULL, open_song_action },
-	{ 0, mainmenu, "Save", NULL, save_song_action },
-	{ 0, mainmenu, "", NULL, NULL },
-	{ 0, mainmenu, "Import .MOD", NULL, import_module, MAKEPTR(IMPORT_MOD) },
-	{ 0, mainmenu, "Import .AHX", NULL, import_module, MAKEPTR(IMPORT_AHX) },
+	{ 0, mainmenu, "New song", NULL, new_song_action },
+	{ 0, mainmenu, "Open song", NULL, open_data, MAKEPTR(OD_T_SONG), MAKEPTR(OD_A_OPEN) },
+	{ 0, mainmenu, "Save song", NULL, open_data, MAKEPTR(OD_T_SONG), MAKEPTR(OD_A_SAVE) },
 	{ 0, mainmenu, "Export .WAV", NULL, export_wav_action },
+	{ 0, mainmenu, "Import", importmenu },
+	{ 0, mainmenu, "", NULL, NULL },
+	{ 0, mainmenu, "Instrument", instmenu },
+	{ 0, mainmenu, "Wavetable", wavetablemenu },
 	{ 0, mainmenu, "", NULL, NULL },
 	{ 0, mainmenu, "Exit", NULL, quit_action },
 	{ 0, NULL, NULL }

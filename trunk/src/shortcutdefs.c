@@ -26,6 +26,7 @@ OTHER DEALINGS IN THE SOFTWARE.
 #include "shortcutdefs.h"
 #include "SDL.h"
 #include "action.h"
+#include "diskop.h"
 #include "edit.h"
 #include "mused.h"
 #include "view.h"
@@ -60,8 +61,8 @@ const KeyShortcut shortcuts[] =
 	{ KMOD_CTRL, SDLK_KP_MINUS, change_song_speed, 0, (void*)-1, 0 },
 	{ KMOD_ALT, SDLK_KP_MINUS, change_song_speed, (void*)1, (void*)-1, 0 },
 	{ KMOD_CTRL, SDLK_n, new_song_action, 0, 0, 0 },
-	{ KMOD_CTRL, SDLK_s, save_song_action, 0, 0, 0 },
-	{ KMOD_CTRL,  SDLK_o, open_song_action, 0, 0, 0 },
+	{ KMOD_CTRL, SDLK_s, open_data, MAKEPTR(OD_T_SONG), MAKEPTR(OD_A_SAVE), 0 },
+	{ KMOD_CTRL,  SDLK_o, open_data, MAKEPTR(OD_T_SONG), MAKEPTR(OD_A_OPEN), 0 },
 	{ KMOD_CTRL,  SDLK_c, generic_action, copy, 0, 0 },
 	{ KMOD_CTRL, SDLK_v, generic_action, paste, 0, 0 },
 	{ KMOD_CTRL, SDLK_x, generic_action, cut, 0, 0 },

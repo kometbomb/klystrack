@@ -38,8 +38,7 @@ void play(void *from_cursor, void*,void*);
 void stop(void*,void*,void*);
 void change_song_speed(void *speed, void *delta, void *);
 void new_song_action(void *, void *, void *);
-void save_song_action(void *, void *, void *);
-void open_song_action(void *, void *, void *);
+void kill_instrument(void *, void *, void *);
 void generic_action(void *func, void *, void *);
 void quit_action(void *, void *, void *);
 void change_mode_action(void *mode, void *, void *);
@@ -63,5 +62,6 @@ void change_fullscreen(void *a, void*b, void*c);
 void load_theme_action(void *a, void*b, void*c);
 void unmute_all_action(void*, void*, void*);
 void export_wav_action(void *a, void*b, void*c);
+void open_data(void *type, void*b, void*c);
 
 #endif

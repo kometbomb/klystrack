@@ -27,6 +27,7 @@ OTHER DEALINGS IN THE SOFTWARE.
 #include "event.h"
 #include "mused.h"
 #include "action.h"
+#include "diskop.h"
 #include "gui/mouse.h"
 #include "gui/dialog.h"
 #include "gui/bevel.h"
@@ -1949,8 +1950,8 @@ void instrument_disk_view(SDL_Surface *dest_surface, const SDL_Rect *dest, const
 	int save = button_text_event(dest_surface, event, &button, mused.slider_bevel->surface, &mused.smallfont, BEV_BUTTON, BEV_BUTTON_ACTIVE, "SAVE", NULL, MAKEPTR(2), NULL, NULL);
 	update_rect(&area, &button);
 	
-	if (open & 1) open_song_action(0,0,0);
-	else if (save & 1) save_song_action(0,0,0);
+	if (open & 1) open_data(param, MAKEPTR(OD_A_OPEN), 0);
+	else if (save & 1) open_data(param, MAKEPTR(OD_A_SAVE), 0);
 }
 
 

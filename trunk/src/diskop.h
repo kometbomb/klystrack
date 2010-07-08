@@ -28,9 +28,27 @@ OTHER DEALINGS IN THE SOFTWARE.
 
 #include <stdio.h>
 
-int save_data();
-void open_data();
+enum
+{
+	OD_T_SONG,
+	OD_T_INSTRUMENT,
+	OD_T_WAVETABLE
+};
 
-void open_song(FILE *f);
+enum
+{
+	OD_A_OPEN,
+	OD_A_SAVE
+};
+
+int open_song(FILE *f);
+int save_song(FILE *f);
+int open_wavetable(FILE *f);
+int open_instrument(FILE *f);
+int save_instrument(FILE *f);
+
+/* action */
+void open_data(void *type, void *action, void*c);
+
 
 #endif
