@@ -694,6 +694,8 @@ void pattern_view_inner(SDL_Surface *dest_surface, const SDL_Rect *dest, const S
 		
 		if (!(mused.flags & COMPACT_VIEW)) mused.console->clip.x += 4;
 		
+		console_set_color(mused.console, timesig(i, colors[COLOR_PATTERN_INSTRUMENT_BAR], colors[COLOR_PATTERN_INSTRUMENT_BEAT], colors[COLOR_PATTERN_INSTRUMENT]), CON_CHARACTER);
+		
 		if (mused.song.pattern[current_pattern].step[i].instrument != MUS_NOTE_NO_INSTRUMENT)
 			r = console_write_args(mused.console, "%X", mused.song.pattern[current_pattern].step[i].instrument >> 4);
 		else
@@ -710,6 +712,8 @@ void pattern_view_inner(SDL_Surface *dest_surface, const SDL_Rect *dest, const S
 			r = console_write_args(mused.console, "%X", mused.song.pattern[current_pattern].step[i].instrument & 0xf);
 		else
 			r = console_write(mused.console, ".");
+			
+		console_set_color(mused.console, colors[COLOR_PATTERN_NORMAL], CON_CHARACTER);
 			
 		copy_rect(&clipped, r);
 		clip_rect(&clipped, &content);
