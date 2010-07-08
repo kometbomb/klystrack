@@ -678,7 +678,7 @@ void pattern_view_inner(SDL_Surface *dest_surface, const SDL_Rect *dest, const S
 		}
 		else
 		{
-			console_set_color(mused.console, colors[COLOR_PATTERN_DISABLED], CON_CHARACTER);
+			console_set_color(mused.console, base = colors[COLOR_PATTERN_DISABLED], CON_CHARACTER);
 		}
 		
 		if (current_pattern == mused.current_pattern && mused.focus == EDITPATTERN)
