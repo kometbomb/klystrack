@@ -96,6 +96,9 @@ int find_note(int sym, int oct)
 void instrument_add_param(int a)
 {
 	MusInstrument *i = &mused.song.instrument[mused.current_instrument];
+	
+	if (SDL_GetModState() & KMOD_SHIFT)
+		a *= 16;
 
 	switch (mused.selected_param)
 	{

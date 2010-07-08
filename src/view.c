@@ -332,7 +332,7 @@ int generic_field(const SDL_Event *e, const SDL_Rect *area, int param, const cha
 		set_cursor(&r);
 	}
 	
-	return r;
+	return r * (SDL_GetModState() & KMOD_SHIFT ? 16 : 1);
 }
 
 
