@@ -66,7 +66,8 @@ enum
 	ANIMATE_CURSOR = 64,
 	HIDE_ZEROS = 128,
 	DELETE_EMPTIES = 256,
-	EDIT_MODE = 512
+	EDIT_MODE = 512,
+	CENTER_PATTERN_EDITOR = 1024
 };
 
 typedef struct
@@ -107,6 +108,12 @@ typedef struct
 	int mix_rate, mix_buffer;
 	int window_w, window_h;
 	int fx_bus, fx_room_size, fx_room_vol, fx_room_dec;
+	/*---vis---*/
+	struct 
+	{
+		int cyd_env[MUS_MAX_CHANNELS];
+	} vis;
+	
 	/*---*/
 	SDL_Rect cursor_target, cursor;
 } Mused;
