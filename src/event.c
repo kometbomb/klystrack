@@ -97,6 +97,8 @@ void instrument_add_param(int a)
 {
 	MusInstrument *i = &mused.song.instrument[mused.current_instrument];
 	
+	if (a < 0) a = -1; else if (a > 0) a = 1;
+	
 	if (SDL_GetModState() & KMOD_SHIFT)
 		a *= 16;
 
@@ -1273,6 +1275,8 @@ void set_room_size(int fx, int size, int vol, int dec)
 
 void fx_add_param(int d)
 {
+	if (d < 0) d = -1; else if (d > 0) d = 1;
+
 	if (SDL_GetModState() & KMOD_SHIFT)
 		d *= 10;
 
@@ -1447,6 +1451,8 @@ void fx_event(SDL_Event *e)
 void wave_add_param(int d)
 {
 	CydWavetableEntry *w = &mused.mus.cyd->wavetable_entries[mused.selected_wavetable];
+	
+	if (d < 0) d = -1; else if (d > 0) d = 1;
 	
 	if (SDL_GetModState() & KMOD_SHIFT)
 		d *= 256;
