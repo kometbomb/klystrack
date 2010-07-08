@@ -42,7 +42,14 @@ void import_module(void *type, void* unused1, void* unused2)
 	int r = confirm_ync(domain, mused.slider_bevel->surface, &mused.largefont, "Save song?");
 				
 	if (r == 0) return;
-	if (r == 1) { change_mode(EDITSEQUENCE); if (!save_data()) return; }
+	if (r == 1) 
+	{ 
+		int r;
+				
+		open_data(MAKEPTR(OD_T_SONG), MAKEPTR(OD_A_SAVE), &r);
+				
+		if (!r) return;
+	}
 	
 	static const char *mod_name[] = {"a Protracker", "an AHX"};
 	static const char *mod_ext[] = {"mod", "ahx"};

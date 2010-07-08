@@ -24,6 +24,7 @@ OTHER DEALINGS IN THE SOFTWARE.
 */
 
 #include "diskop.h"
+#include "action.h"
 #include "gui/toolutil.h"
 #include "mused.h"
 #include "macros.h"
@@ -70,7 +71,7 @@ static void write_wavetable_entry(FILE *f, const CydWavetableEntry *write_wave, 
 }
 
 	
-static void save_instrument(FILE *f, MusInstrument *inst, const CydWavetableEntry *write_wave)
+static void save_instrument_inner(FILE *f, MusInstrument *inst, const CydWavetableEntry *write_wave)
 {
 	Uint32 temp32 = inst->flags;
 	FIX_ENDIAN(temp32);
@@ -179,281 +180,297 @@ static void write_packed_pattern(FILE *f, const MusPattern *pattern)
 }
 
 
-int save_data()
+int open_song(FILE *f)
 {
-	switch (mused.mode)
-	{
-		case EDITWAVETABLE:
-			msgbox(domain,  mused.slider_bevel->surface, &mused.largefont, "Saving not supported, yet", MB_OK);
-			
-			return 0;
-		break;
+	new_song();
+
+	if (!mus_load_song_file(f, &mused.song, mused.mus.cyd->wavetable_entries)) return 0;
 	
-		case EDITPROG:
-		case EDITINSTRUMENT:
-		{
-			FILE * f = open_dialog("wb", "Save instrument", "ki", domain, mused.slider_bevel->surface, &mused.largefont, &mused.smallfont);
-			
-			if (f)
+	mused.song.num_patterns = NUM_PATTERNS;
+	mused.song.num_instruments = NUM_INSTRUMENTS;
+	
+	// Use kewlkool heuristics to determine sequence spacing
+	
+	mused.sequenceview_steps = 1000;
+	
+	for (int c = 0 ; c < MUS_MAX_CHANNELS ; ++c)
+		for (int s = 1 ; s < mused.song.num_sequences[c] ; ++s)
+			if (mused.sequenceview_steps > mused.song.sequence[c][s].position - mused.song.sequence[c][s-1].position)
 			{
-				const Uint8 version = MUS_VERSION;
-				
-				fwrite(MUS_INST_SIG, strlen(MUS_INST_SIG), sizeof(MUS_INST_SIG[0]), f);
-				
-				fwrite(&version, 1, sizeof(version), f);
-				
-				save_instrument(f, &mused.song.instrument[mused.current_instrument], &mused.mus.cyd->wavetable_entries[mused.song.instrument[mused.current_instrument].wavetable_entry]);
-			
-				fclose(f);
+				mused.sequenceview_steps = mused.song.sequence[c][s].position - mused.song.sequence[c][s-1].position;
 			}
-			
-			return f != NULL;
-		}
-		break;
-		
-		default:
-		{
-			FILE * f = open_dialog("wb", "Save song", "kt", domain, mused.slider_bevel->surface, &mused.largefont, &mused.smallfont);
-			
-			if (f)
-			{
-				bool kill_unused_things = false;
-			
-				Uint8 n_inst = mused.song.num_instruments;
-				if (!confirm(domain, mused.slider_bevel->surface, &mused.largefont, "Save unused song elements?"))
-				{
-					int maxpat = -1;
-					for (int c = 0 ; c < mused.song.num_channels ; ++c)
-					{
-						for (int i = 0 ; i < mused.song.num_sequences[c] ; ++i)
-							 if (maxpat < mused.song.sequence[c][i].pattern)
-								maxpat = mused.song.sequence[c][i].pattern;
-					}
-					
-					n_inst = 0;
-					
-					for (int i = 0 ; i < maxpat ; ++i)
-						for (int s = 0 ; s < mused.song.pattern[i].num_steps ; ++s)
-							if (mused.song.pattern[i].step[s].instrument != MUS_NOTE_NO_INSTRUMENT)
-								n_inst = my_max(n_inst, mused.song.pattern[i].step[s].instrument + 1);
-					
-					mused.song.num_patterns = maxpat + 1;
-					
-					kill_unused_things = true;
-				}
-			
-				fwrite(MUS_SONG_SIG, strlen(MUS_SONG_SIG), sizeof(MUS_SONG_SIG[0]), f);
-				
-				const Uint8 version = MUS_VERSION;
-				
-				mused.song.time_signature = mused.time_signature;
-				
-				fwrite(&version, 1, sizeof(version), f);
-				
-				fwrite(&mused.song.num_channels, 1, sizeof(mused.song.num_channels), f);
-				Uint16 temp16 = mused.song.time_signature;
-				fwrite(&temp16, 1, sizeof(mused.song.time_signature), f);
-				fwrite(&n_inst, 1, sizeof(mused.song.num_instruments), f);
-				temp16 = mused.song.num_patterns;
-				FIX_ENDIAN(temp16);
-				fwrite(&temp16, 1, sizeof(mused.song.num_patterns), f);
-				for (int i = 0 ; i < mused.song.num_channels ; ++i)
-				{
-					temp16 = mused.song.num_sequences[i];
-					FIX_ENDIAN(temp16);
-					fwrite(&temp16, 1, sizeof(mused.song.num_sequences[i]), f);
-				}
-				temp16 = mused.song.song_length;
-				FIX_ENDIAN(temp16);
-				fwrite(&temp16, 1, sizeof(mused.song.song_length), f);
-				temp16 = mused.song.loop_point;
-				FIX_ENDIAN(temp16);
-				fwrite(&temp16, 1, sizeof(mused.song.loop_point), f);
-				fwrite(&mused.song.master_volume, 1, 1, f);
-				fwrite(&mused.song.song_speed, 1, sizeof(mused.song.song_speed), f);
-				fwrite(&mused.song.song_speed2, 1, sizeof(mused.song.song_speed2), f);
-				fwrite(&mused.song.song_rate, 1, sizeof(mused.song.song_rate), f);
-				Uint32 temp32 = mused.song.flags;
-				FIX_ENDIAN(temp32);
-				fwrite(&temp32, 1, sizeof(mused.song.flags), f);
-				fwrite(&mused.song.multiplex_period, 1, sizeof(mused.song.multiplex_period), f);
-				
-				Uint8 len = strlen(mused.song.title);
-				fwrite(&len, 1, 1, f);
-				if (len)
-					fwrite(mused.song.title, 1, len, f);
-				
-				Uint8 n_fx = CYD_MAX_FX_CHANNELS;
-				
-				if (kill_unused_things)
-				{
-					for (int i = 0 ; i < n_inst ; ++i)
-						if (mused.song.instrument[i].cydflags & CYD_CHN_ENABLE_FX) n_fx = my_max(n_fx, mused.song.instrument[i].fx_bus + 1);
-				}	
-				
-				fwrite(&n_fx, 1, sizeof(n_fx), f);
-				
-				for (int fx = 0 ; fx < n_fx ; ++fx)
-				{
-					CydFxSerialized temp;
-					memcpy(&temp, &mused.song.fx[fx], sizeof(temp));
-					
-					FIX_ENDIAN(temp.flags);
-					for (int i = 0 ; i < CYDRVB_TAPS ; ++i)	
-					{
-						FIX_ENDIAN(temp.rvb.tap[i].gain);
-						FIX_ENDIAN(temp.rvb.tap[i].delay);
-					}
-					
-					fwrite(&temp, 1, sizeof(temp), f);
-				}
-				
-				int max_wt = CYD_WAVE_MAX_ENTRIES;
-				
-				for (int i = 0 ; i < n_inst ; ++i)
-				{
-					save_instrument(f, &mused.song.instrument[i], NULL);
-					
-					if (kill_unused_things)
-					{
-						if (mused.song.instrument[i].cydflags & CYD_CHN_ENABLE_WAVE)
-							max_wt = my_max(max_wt, mused.song.instrument[i].wavetable_entry + 1);
-					}
-				}
-				
-				for (int i = 0 ; i < mused.song.num_channels; ++i)
-				{
-					for (int s= 0 ; s < mused.song.num_sequences[i] ; ++s)
-					{
-						temp16 = mused.song.sequence[i][s].position;
-						FIX_ENDIAN(temp16);
-						fwrite(&temp16, 1, sizeof(temp16), f);
-						temp16 = mused.song.sequence[i][s].pattern;
-						FIX_ENDIAN(temp16);
-						fwrite(&temp16, 1, sizeof(temp16), f);
-						fwrite(&mused.song.sequence[i][s].note_offset, 1, sizeof(mused.song.sequence[i][s].note_offset), f);
-					}
-				}
-				
-				for (int i = 0 ; i < mused.song.num_patterns; ++i)
-				{
-					write_packed_pattern(f, &mused.song.pattern[i]);
-				}
-				
-				fwrite(&max_wt, 1, sizeof(Uint8), f);
-				
-				for (int i = 0 ; i < max_wt ; ++i)
-				{
-					bool used = false;
-					
-					for (int ins = 0 ; ins < n_inst ; ++ins)
-						if (mused.song.instrument[ins].wavetable_entry == i)
-							used = true;
-					
-					write_wavetable_entry(f, &mused.mus.cyd->wavetable_entries[i], used);
-				}
-				
-				fclose(f);
-				
-				mused.song.num_patterns = NUM_PATTERNS;
-				mused.song.num_instruments = NUM_INSTRUMENTS;
-			}		
-			
-			return f != NULL;
-		}
-		break;
-	}
+	
+	if (mused.sequenceview_steps == 1000) mused.sequenceview_steps = 16;
+	
+	mus_set_fx(&mused.mus, &mused.song);
+	cyd_set_callback(&mused.cyd, mus_advance_tick, &mused.mus, mused.song.song_rate);
+	mirror_flags();
+	
+	if (!mused.song.time_signature) mused.song.time_signature = 0x404;
+	
+	mused.time_signature = mused.song.time_signature;
+	
+	return 1;
 }
 
 
-void open_song(FILE *f)
+int save_instrument(FILE *f)
 {
+	const Uint8 version = MUS_VERSION;
+				
+	fwrite(MUS_INST_SIG, strlen(MUS_INST_SIG), sizeof(MUS_INST_SIG[0]), f);
+	
+	fwrite(&version, 1, sizeof(version), f);
+	
+	save_instrument_inner(f, &mused.song.instrument[mused.current_instrument], &mused.mus.cyd->wavetable_entries[mused.song.instrument[mused.current_instrument].wavetable_entry]);
+	
+	return 1;
+}
+
+
+int save_song(FILE *f)
+{
+	bool kill_unused_things = false;
+
+	Uint8 n_inst = mused.song.num_instruments;
+	if (!confirm(domain, mused.slider_bevel->surface, &mused.largefont, "Save unused song elements?"))
+	{
+		int maxpat = -1;
+		for (int c = 0 ; c < mused.song.num_channels ; ++c)
+		{
+			for (int i = 0 ; i < mused.song.num_sequences[c] ; ++i)
+				 if (maxpat < mused.song.sequence[c][i].pattern)
+					maxpat = mused.song.sequence[c][i].pattern;
+		}
+		
+		n_inst = 0;
+		
+		for (int i = 0 ; i < maxpat ; ++i)
+			for (int s = 0 ; s < mused.song.pattern[i].num_steps ; ++s)
+				if (mused.song.pattern[i].step[s].instrument != MUS_NOTE_NO_INSTRUMENT)
+					n_inst = my_max(n_inst, mused.song.pattern[i].step[s].instrument + 1);
+		
+		mused.song.num_patterns = maxpat + 1;
+		
+		kill_unused_things = true;
+	}
+
+	fwrite(MUS_SONG_SIG, strlen(MUS_SONG_SIG), sizeof(MUS_SONG_SIG[0]), f);
+	
+	const Uint8 version = MUS_VERSION;
+	
+	mused.song.time_signature = mused.time_signature;
+	
+	fwrite(&version, 1, sizeof(version), f);
+	
+	fwrite(&mused.song.num_channels, 1, sizeof(mused.song.num_channels), f);
+	Uint16 temp16 = mused.song.time_signature;
+	fwrite(&temp16, 1, sizeof(mused.song.time_signature), f);
+	fwrite(&n_inst, 1, sizeof(mused.song.num_instruments), f);
+	temp16 = mused.song.num_patterns;
+	FIX_ENDIAN(temp16);
+	fwrite(&temp16, 1, sizeof(mused.song.num_patterns), f);
+	for (int i = 0 ; i < mused.song.num_channels ; ++i)
+	{
+		temp16 = mused.song.num_sequences[i];
+		FIX_ENDIAN(temp16);
+		fwrite(&temp16, 1, sizeof(mused.song.num_sequences[i]), f);
+	}
+	temp16 = mused.song.song_length;
+	FIX_ENDIAN(temp16);
+	fwrite(&temp16, 1, sizeof(mused.song.song_length), f);
+	temp16 = mused.song.loop_point;
+	FIX_ENDIAN(temp16);
+	fwrite(&temp16, 1, sizeof(mused.song.loop_point), f);
+	fwrite(&mused.song.master_volume, 1, 1, f);
+	fwrite(&mused.song.song_speed, 1, sizeof(mused.song.song_speed), f);
+	fwrite(&mused.song.song_speed2, 1, sizeof(mused.song.song_speed2), f);
+	fwrite(&mused.song.song_rate, 1, sizeof(mused.song.song_rate), f);
+	Uint32 temp32 = mused.song.flags;
+	FIX_ENDIAN(temp32);
+	fwrite(&temp32, 1, sizeof(mused.song.flags), f);
+	fwrite(&mused.song.multiplex_period, 1, sizeof(mused.song.multiplex_period), f);
+	
+	Uint8 len = strlen(mused.song.title);
+	fwrite(&len, 1, 1, f);
+	if (len)
+		fwrite(mused.song.title, 1, len, f);
+	
+	Uint8 n_fx = CYD_MAX_FX_CHANNELS;
+	
+	if (kill_unused_things)
+	{
+		for (int i = 0 ; i < n_inst ; ++i)
+			if (mused.song.instrument[i].cydflags & CYD_CHN_ENABLE_FX) n_fx = my_max(n_fx, mused.song.instrument[i].fx_bus + 1);
+	}	
+	
+	fwrite(&n_fx, 1, sizeof(n_fx), f);
+	
+	for (int fx = 0 ; fx < n_fx ; ++fx)
+	{
+		CydFxSerialized temp;
+		memcpy(&temp, &mused.song.fx[fx], sizeof(temp));
+		
+		FIX_ENDIAN(temp.flags);
+		for (int i = 0 ; i < CYDRVB_TAPS ; ++i)	
+		{
+			FIX_ENDIAN(temp.rvb.tap[i].gain);
+			FIX_ENDIAN(temp.rvb.tap[i].delay);
+		}
+		
+		fwrite(&temp, 1, sizeof(temp), f);
+	}
+	
+	int max_wt = CYD_WAVE_MAX_ENTRIES;
+	
+	for (int i = 0 ; i < n_inst ; ++i)
+	{
+		save_instrument_inner(f, &mused.song.instrument[i], NULL);
+		
+		if (kill_unused_things)
+		{
+			if (mused.song.instrument[i].cydflags & CYD_CHN_ENABLE_WAVE)
+				max_wt = my_max(max_wt, mused.song.instrument[i].wavetable_entry + 1);
+		}
+	}
+	
+	for (int i = 0 ; i < mused.song.num_channels; ++i)
+	{
+		for (int s= 0 ; s < mused.song.num_sequences[i] ; ++s)
+		{
+			temp16 = mused.song.sequence[i][s].position;
+			FIX_ENDIAN(temp16);
+			fwrite(&temp16, 1, sizeof(temp16), f);
+			temp16 = mused.song.sequence[i][s].pattern;
+			FIX_ENDIAN(temp16);
+			fwrite(&temp16, 1, sizeof(temp16), f);
+			fwrite(&mused.song.sequence[i][s].note_offset, 1, sizeof(mused.song.sequence[i][s].note_offset), f);
+		}
+	}
+	
+	for (int i = 0 ; i < mused.song.num_patterns; ++i)
+	{
+		write_packed_pattern(f, &mused.song.pattern[i]);
+	}
+	
+	fwrite(&max_wt, 1, sizeof(Uint8), f);
+	
+	for (int i = 0 ; i < max_wt ; ++i)
+	{
+		bool used = false;
+		
+		for (int ins = 0 ; ins < n_inst ; ++ins)
+			if (mused.song.instrument[ins].wavetable_entry == i)
+				used = true;
+		
+		write_wavetable_entry(f, &mused.mus.cyd->wavetable_entries[i], used);
+	}
+	
+	mused.song.num_patterns = NUM_PATTERNS;
+	mused.song.num_instruments = NUM_INSTRUMENTS;
+	
+	return 1;
+}
+
+
+int open_wavetable(FILE *f)
+{
+	Wave *w = wave_load(f);
+				
+	if (w)
+	{
+		cyd_wave_entry_init(&mused.mus.cyd->wavetable_entries[mused.selected_wavetable], w->data, w->length, w->bits_per_sample == 16 ? CYD_WAVE_TYPE_SINT16 : CYD_WAVE_TYPE_SINT8, w->channels, 1, 1);
+		
+		mused.mus.cyd->wavetable_entries[mused.selected_wavetable].flags = 0;
+		mused.mus.cyd->wavetable_entries[mused.selected_wavetable].sample_rate = w->sample_rate;
+		mused.mus.cyd->wavetable_entries[mused.selected_wavetable].base_note = MIDDLE_C << 8;
+		
+		wave_destroy(w);
+		
+		return 1;
+	}
+	
+	return 0;
+}
+
+
+int open_instrument(FILE *f)
+{
+	if (!mus_load_instrument_file2(f, &mused.song.instrument[mused.current_instrument], mused.mus.cyd->wavetable_entries)) return 0;
+	
+	return 1;
+}
+
+
+void open_data(void *type, void *action, void *_ret)
+{
+	int t = CASTPTR(int, type);
+	int a = CASTPTR(int, action);
+	int *ret = _ret;
+	
+	if (a == OD_A_OPEN && t == OD_T_SONG)
+	{
+		int r = confirm_ync(domain, mused.slider_bevel->surface, &mused.largefont, "Save song?");
+		int ret_val;
+				
+		if (r == 0) 
+		{
+			if (ret) *ret = 0;
+			return;
+		}
+		if (r == 1) 
+		{ 
+			open_data(MAKEPTR(OD_T_SONG), MAKEPTR(OD_A_SAVE), &ret_val); 
+			if (!ret_val) 
+			{
+				if (ret) *ret = 0;
+				return;
+			}
+		}
+		
+		stop(0,0,0);
+	}
+	
+	const struct 
+	{
+		const char *name, *ext;
+		int (*open[2])(FILE *);
+	} open_stuff[] = {
+		{ "song", "kt", { open_song, save_song } },
+		{ "instrument", "ki", { open_instrument, save_instrument } },
+		{ "wave", "wav", {open_wavetable, NULL } }
+	};
+	
+	const char *mode[] = { "rb", "wb" };
+	const char *modename[] = { "Open", "Save" };
+	char str[1000];
+	snprintf(str, sizeof(str), "%s %s", modename[a], open_stuff[t].name);
+	
+	FILE * f = open_dialog(mode[a], str, open_stuff[t].ext, domain, mused.slider_bevel->surface, &mused.largefont, &mused.smallfont);
+	
 	if (f)
 	{
-		new_song();
+		int return_val = 1;
 	
-		if (!mus_load_song_file(f, &mused.song, mused.mus.cyd->wavetable_entries)) msgbox(domain,  mused.slider_bevel->surface, &mused.largefont, "Could not load song", MB_OK);
-		
+		if (open_stuff[t].open[a])
+		{
+			cyd_lock(&mused.cyd, 1);
+			int r = open_stuff[t].open[a](f);
+			cyd_lock(&mused.cyd, 0);
+			
+			if (!r)
+			{
+				snprintf(str, sizeof(str), "Could not open %s!", open_stuff[t].name);
+				msgbox(domain, mused.slider_bevel->surface, &mused.largefont, str, MB_OK);
+				
+				return_val = 0;
+			}
+		}	
 		fclose(f);
 		
-		mused.song.num_patterns = NUM_PATTERNS;
-		mused.song.num_instruments = NUM_INSTRUMENTS;
-		
-		// Use kewlkool heuristics to determine sequence spacing
-		
-		mused.sequenceview_steps = 1000;
-		
-		for (int c = 0 ; c < MUS_MAX_CHANNELS ; ++c)
-			for (int s = 1 ; s < mused.song.num_sequences[c] ; ++s)
-				if (mused.sequenceview_steps > mused.song.sequence[c][s].position - mused.song.sequence[c][s-1].position)
-				{
-					mused.sequenceview_steps = mused.song.sequence[c][s].position - mused.song.sequence[c][s-1].position;
-				}
-		
-		if (mused.sequenceview_steps == 1000) mused.sequenceview_steps = 16;
-		
-		mus_set_fx(&mused.mus, &mused.song);
-		cyd_set_callback(&mused.cyd, mus_advance_tick, &mused.mus, mused.song.song_rate);
-		mirror_flags();
-		
-		if (!mused.song.time_signature) mused.song.time_signature = 0x404;
-		
-		mused.time_signature = mused.song.time_signature;
+		if (ret) *ret = return_val;
 	}
-}
-
-
-void open_data()
-{
-	switch (mused.mode)
-	{
-		case EDITWAVETABLE:
-		{
-			FILE * f = open_dialog("rb", "Load wave", "wav", domain, mused.slider_bevel->surface, &mused.largefont, &mused.smallfont);
-			
-			if (f)
-			{
-				Wave *w = wave_load(f);
-				
-				if (w)
-				{
-					cyd_wave_entry_init(&mused.mus.cyd->wavetable_entries[mused.selected_wavetable], w->data, w->length, w->bits_per_sample == 16 ? CYD_WAVE_TYPE_SINT16 : CYD_WAVE_TYPE_SINT8, w->channels, 1, 1);
-					
-					mused.mus.cyd->wavetable_entries[mused.selected_wavetable].flags = 0;
-					mused.mus.cyd->wavetable_entries[mused.selected_wavetable].sample_rate = w->sample_rate;
-					mused.mus.cyd->wavetable_entries[mused.selected_wavetable].base_note = MIDDLE_C << 8;
-					
-					wave_destroy(w);
-				}
-			
-				fclose(f);
-			}
-		}
-		break;
 	
-		case EDITINSTRUMENT:
-		{
-			FILE * f = open_dialog("rb", "Load instrument", "ki", domain, mused.slider_bevel->surface, &mused.largefont, &mused.smallfont);
-			
-			if (f)
-			{
-				if (!mus_load_instrument_file2(f, &mused.song.instrument[mused.current_instrument], mused.mus.cyd->wavetable_entries)) msgbox(domain,  mused.slider_bevel->surface, &mused.largefont, "Could not load instrument", MB_OK);
-				
-				fclose(f);
-			}
-		}
-		break;
-		
-		default:
-		{
-			FILE * f = open_dialog("rb", "Load song", "kt", domain, mused.slider_bevel->surface, &mused.largefont, &mused.smallfont);
-			
-			if (f)
-			{
-				open_song(f);		
-				fclose(f);
-			}
-		}
-		break;
-	}
+	if (ret) *ret = 0;
 }
+
