@@ -13,6 +13,7 @@ RequestExecutionLevel admin
 
 !insertmacro MUI_PAGE_LICENSE "doc\LICENSE"
 !insertmacro MUI_PAGE_DIRECTORY
+!insertmacro MUI_PAGE_COMPONENTS
 !insertmacro MUI_PAGE_INSTFILES
 
 ; Uninst
@@ -25,7 +26,8 @@ RequestExecutionLevel admin
 !insertmacro MUI_LANGUAGE "English"
 
 ; The stuff to install
-Section "" ;No components page, name is not important
+Section "klystrack files" 
+SectionIn RO
 
   ; Set output path to the installation directory.
   SetOutPath $INSTDIR
