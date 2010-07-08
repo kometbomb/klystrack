@@ -628,6 +628,12 @@ void pattern_view_inner(SDL_Surface *dest_surface, const SDL_Rect *dest, const S
 	
 	int start = mused.pattern_position;
 	
+	if (mused.flags & CENTER_PATTERN_EDITOR) 
+	{
+		start = mused.current_patternstep - dest->h / mused.console->font.h / 2;
+		slider_set_params(&mused.pattern_slider_param, 0, mused.song.pattern[current_pattern].num_steps, mused.current_patternstep, mused.current_patternstep + 1, &mused.current_patternstep, 1, SLIDER_VERTICAL, mused.slider_bevel->surface);
+	}
+	
 	SDL_Rect selected_rect = { 0 };
 	int selection_begin = -1, selection_end = -1;
 	
@@ -639,24 +645,35 @@ void pattern_view_inner(SDL_Surface *dest_surface, const SDL_Rect *dest, const S
 	
 	for (int i = start, y = 0 ; i < mused.song.pattern[current_pattern].num_steps && y < content.h; ++i, y += mused.console->font.h)
 	{
-		console_set_clip(mused.console, &content);
-		
 		SDL_Rect row = { content.x - 2, content.y + y - 1, content.w + 4, mused.console->font.h + 1};
 	
+		if (!(mused.flags & CENTER_PATTERN_EDITOR) && current_pattern == mused.current_pattern && row.y + row.h < content.y + content.h)
+			slider_set_params(&mused.pattern_slider_param, 0, mused.song.pattern[current_pattern].num_steps - 1, start, i, &mused.pattern_position, 1, SLIDER_VERTICAL, mused.slider_bevel->surface);
+	
+		if (i < 0) 
+		{
+			console_write(mused.console,"\n");
+			continue;
+		}
+		
+		console_set_clip(mused.console, &content);
+		
 		if (mused.current_patternstep == i)
 		{
 			bevel(mused.screen,&row, mused.slider_bevel->surface, BEV_SELECTED_PATTERN_ROW);
 		}
 		
+		Uint32 base;
+		
 		if (!(mused.mus.channel[channel].flags & MUS_CHN_DISABLED))
 		{
 			if (mused.current_patternstep == i)
 			{		
-				console_set_color(mused.console, colors[COLOR_PATTERN_SELECTED], CON_CHARACTER);
+				console_set_color(mused.console, base = colors[COLOR_PATTERN_SELECTED], CON_CHARACTER);
 			}
 			else
 			{
-				console_set_color(mused.console, timesig(i, colors[COLOR_PATTERN_BAR], colors[COLOR_PATTERN_BEAT], colors[COLOR_PATTERN_NORMAL]), CON_CHARACTER);
+				console_set_color(mused.console, base = timesig(i, colors[COLOR_PATTERN_BAR], colors[COLOR_PATTERN_BEAT], colors[COLOR_PATTERN_NORMAL]), CON_CHARACTER);
 			}
 		}
 		else
@@ -716,7 +733,7 @@ void pattern_view_inner(SDL_Surface *dest_surface, const SDL_Rect *dest, const S
 			r = console_write(mused.console, ".");
 			
 		if (!(mused.mus.channel[channel].flags & MUS_CHN_DISABLED))
-			console_set_color(mused.console, colors[COLOR_PATTERN_NORMAL], CON_CHARACTER);
+			console_set_color(mused.console, base, CON_CHARACTER);
 			
 		copy_rect(&clipped, r);
 		clip_rect(&clipped, &content);
@@ -765,9 +782,6 @@ void pattern_view_inner(SDL_Surface *dest_surface, const SDL_Rect *dest, const S
 		}
 		
 		console_write(mused.console,"\n");
-		
-		if (current_pattern == mused.current_pattern && row.y + row.h < content.y + content.h)
-			slider_set_params(&mused.pattern_slider_param, 0, mused.song.pattern[current_pattern].num_steps - 1, start, i, &mused.pattern_position, 1, SLIDER_VERTICAL, mused.slider_bevel->surface);
 	}
 	
 	if (current_pattern == mused.current_pattern && mused.focus == EDITPATTERN && mused.selection.start != mused.selection.end 
@@ -792,11 +806,15 @@ void pattern_view_inner(SDL_Surface *dest_surface, const SDL_Rect *dest, const S
 	
 	bevel(mused.screen,dest, mused.slider_bevel->surface, BEV_THIN_FRAME);
 	
-	
+	/*if (mused.flags & SONG_PLAYING) 
+	{
+		SDL_Rect r = { 0 , 16 * channel, mused.vis.cyd_env[channel] * 100 / MAX_VOLUME, 16 };
+		SDL_FillRect(mused.screen, &r, 0xffffff);
+	}*/
 }
 
 
-void pattern_view_stepcounter(SDL_Surface *dest_surface, const SDL_Rect *dest, const SDL_Event *event, void *param)
+static void pattern_view_stepcounter(SDL_Surface *dest_surface, const SDL_Rect *dest, const SDL_Event *event, void *param, int current_pattern)
 {
 	SDL_Rect content;
 	copy_rect(&content, dest);
@@ -809,8 +827,12 @@ void pattern_view_stepcounter(SDL_Surface *dest_surface, const SDL_Rect *dest, c
 	console_set_clip(mused.console, &content);
 	console_set_background(mused.console, 0);
 	
+	int start = mused.pattern_position;
+
+	if (mused.flags & CENTER_PATTERN_EDITOR) start = mused.current_patternstep - dest->h / mused.console->font.h / 2;
+	
 	int y = 0;
-	for (int row = mused.pattern_position ; y < content.h ; ++row, y += mused.console->font.h)
+	for (int row = start ; y < content.h ; ++row, y += mused.console->font.h)
 	{
 		if (mused.current_patternstep == row)
 		{
@@ -818,12 +840,14 @@ void pattern_view_stepcounter(SDL_Surface *dest_surface, const SDL_Rect *dest, c
 			bevel(mused.screen,&row, mused.slider_bevel->surface, BEV_SELECTED_PATTERN_ROW);
 			console_set_color(mused.console, colors[COLOR_PATTERN_SELECTED], CON_CHARACTER);
 		}
+		else if (row < 0 || (current_pattern != -1 && row >= mused.song.pattern[current_pattern].num_steps))
+			console_set_color(mused.console, colors[COLOR_PATTERN_DISABLED], CON_CHARACTER);
 		else
 		{
 			console_set_color(mused.console, timesig(row, colors[COLOR_PATTERN_BAR], colors[COLOR_PATTERN_BEAT], colors[COLOR_PATTERN_NORMAL]), CON_CHARACTER);
 		}
 		
-		console_write_args(mused.console, "%03X\n", row);
+		console_write_args(mused.console, "%03X\n", row & 0xfff);
 	}
 	
 	bevel(mused.screen,dest, mused.slider_bevel->surface, BEV_THIN_FRAME);
@@ -937,7 +961,7 @@ void pattern_view(SDL_Surface *dest_surface, const SDL_Rect *dest, const SDL_Eve
 	
 	SDL_SetClipRect(mused.screen, &pos);
 	
-	pattern_view_stepcounter(dest_surface, &pos, event, param);
+	pattern_view_stepcounter(dest_surface, &pos, event, param, mused.single_pattern_edit ? mused.current_pattern : -1);
 	
 	SDL_SetClipRect(mused.screen, dest);
 	
