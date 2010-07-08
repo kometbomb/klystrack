@@ -830,6 +830,8 @@ void pattern_event(SDL_Event *e)
 		
 			case SDLK_INSERT:
 			{
+				if (!(mused.flags & EDIT_MODE)) break;
+			
 				if ((e->key.keysym.mod & KMOD_ALT)) 
 				{
 					resize_pattern(&mused.song.pattern[mused.current_pattern], mused.song.pattern[mused.current_pattern].num_steps + 1);
@@ -847,6 +849,8 @@ void pattern_event(SDL_Event *e)
 			case SDLK_BACKSPACE:
 			case SDLK_DELETE:
 			{
+				if (!(mused.flags & EDIT_MODE)) break;
+			
 				if (e->key.keysym.sym == SDLK_BACKSPACE)
 				{
 					if (mused.current_patternstep > 0) slider_move_position(&mused.current_patternstep, &mused.pattern_position, &mused.pattern_slider_param, -1, mused.song.pattern[mused.current_pattern].num_steps);
@@ -995,7 +999,11 @@ void pattern_event(SDL_Event *e)
 			
 			default:
 			{
+				if (e->key.keysym.sym == SDLK_SPACE)
+					mused.flags ^= EDIT_MODE;
 			
+				if (!(mused.flags & EDIT_MODE)) break;
+				
 				if (mused.current_patternx == PED_NOTE)
 				{
 					if (e->key.keysym.sym == SDLK_PERIOD)
@@ -1004,7 +1012,7 @@ void pattern_event(SDL_Event *e)
 							
 						slider_move_position(&mused.current_patternstep, &mused.pattern_position, &mused.pattern_slider_param, +1, mused.song.pattern[mused.current_pattern].num_steps);
 					}
-					else if (e->key.keysym.sym == SDLK_SPACE)
+					else if (e->key.keysym.sym == SDLK_1)
 					{
 						mused.song.pattern[mused.current_pattern].step[mused.current_patternstep].note = MUS_NOTE_RELEASE;
 							

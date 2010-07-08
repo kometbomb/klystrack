@@ -82,7 +82,7 @@ const Menu prefsmenu[] =
 	{ 0, mainmenu, "Follow song position", NULL, MENU_CHECK, &mused.flags, (void*)FOLLOW_PLAY_POSITION, 0 },
 	{ 0, mainmenu, "Animate cursor", NULL, MENU_CHECK, &mused.flags, (void*)ANIMATE_CURSOR, 0 },
 	{ 0, mainmenu, "Hide zeros", NULL, MENU_CHECK, &mused.flags, (void*)HIDE_ZEROS, 0 },
-	{ 0, mainmenu, "Protracker style delete ", NULL, MENU_CHECK, &mused.flags, (void*)DELETE_EMPTIES, 0 },
+	{ 0, mainmenu, "Protracker style delete", NULL, MENU_CHECK, &mused.flags, (void*)DELETE_EMPTIES, 0 },
 	{ 0, NULL, NULL }
 };
 
@@ -147,6 +147,8 @@ static const Menu editmenu[] =
 	{ 0, mainmenu, "Pattern", editpatternmenu, NULL },
 	{ 0, mainmenu, "",  NULL },
 	{ 0, mainmenu, "Interpolate", NULL, interpolate, 0, 0, 0 },
+	{ 0, mainmenu, "",  NULL },
+	{ 0, mainmenu, "Edit mode", NULL, MENU_CHECK, &mused.flags, (void*)EDIT_MODE, 0 },
 	{ 0, NULL, NULL }
 };
 
