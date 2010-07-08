@@ -271,7 +271,6 @@ bool check_mouse_hit(const SDL_Event *e, const SDL_Rect *area, int param)
 	if (param < 0) return false;
 	if (check_event(e, area, NULL, NULL, NULL, NULL))
 	{
-		debug("check_mouse_hit %d param %d mode %d focus", param, mused.mode, mused.focus);
 		switch (mused.mode)
 		{
 			case EDITINSTRUMENT:
