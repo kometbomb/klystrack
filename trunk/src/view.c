@@ -966,7 +966,7 @@ void pattern_view(SDL_Surface *dest_surface, const SDL_Rect *dest, const SDL_Eve
 	for (int i = 0 ; i < mused.song.num_channels ; ++i)
 	{
 		if (mused.ghost_pattern[i] != NULL)
-			ml = my_max(ml, mused.song.pattern[i].num_steps);
+			ml = my_max(ml, mused.song.pattern[*mused.ghost_pattern[i]].num_steps);
 	}
 	
 	pattern_view_stepcounter(dest_surface, &pos, event, param, mused.single_pattern_edit ? mused.song.pattern[mused.current_pattern].num_steps : ml);
