@@ -67,4 +67,8 @@ void undo_store_instrument(UndoStack *stack, const MusInstrument *instrument);
 void undo_store_sequence(UndoStack *stack, int channel, const MusSeqPattern *sequence, int n_seq);
 void undo_store_pattern(UndoStack *stack, int idx, const MusPattern *pattern);
 
+#ifdef DEBUG
+void undo_show_stack(UndoStack *stack);
+#endif
+
 #endif

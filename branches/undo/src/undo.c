@@ -44,6 +44,11 @@ static UndoEvent * get_frame(UndoType type, UndoStack *stack)
 	UndoFrame *frame = calloc(sizeof(UndoFrame), 1);
 	undo_add_frame(stack, frame);
 	frame->type = type;
+	
+#ifdef DEBUG
+	undo_show_stack(stack);
+#endif	
+	
 	return &frame->event;
 }
 
@@ -152,3 +157,20 @@ UndoFrame *undo(UndoStack *stack)
 	
 	return frame;
 }
+
+#ifdef DEBUG
+void undo_show_stack(UndoStack *stack)
+{
+	UndoFrame *frame = *stack;
+	
+	printf("%p [", stack);
+	
+	while (frame)
+	{
+		printf(" %d ", frame->type);
+		frame = frame->prev;
+	}
+	
+	printf("]\n");
+}
+#endif

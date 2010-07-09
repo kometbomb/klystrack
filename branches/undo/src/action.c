@@ -463,15 +463,20 @@ void do_undo(void *a, void*b, void*c)
 	if (!frame) return;
 	
 	debug("%s frame %p", a ? "Redo" : "Undo", frame);
-	
-	inside_undo = true;
+
+	if (!a)
+	{
+		UndoStack tmp = mused.redo;
+		mused.redo = mused.undo;
+		mused.undo = tmp;
+	}
 	
 	switch (frame->type)
 	{
 		case UNDO_PATTERN:
+			undo_store_pattern(&mused.undo, mused.current_pattern, &mused.song.pattern[mused.current_pattern]);
 			mused.current_pattern = frame->event.pattern.idx;
 			memcpy(mused.song.pattern[mused.current_pattern].step, frame->event.pattern.step, frame->event.pattern.n_steps * sizeof(frame->event.pattern.step[0]));
-			undo_store_pattern(&mused.undo, mused.current_pattern, &mused.song.pattern[mused.current_pattern]);
 			break;
 			
 		case UNDO_MODE:
@@ -482,9 +487,18 @@ void do_undo(void *a, void*b, void*c)
 		default: warning("Undo type %d not handled", frame->type); break;
 	}
 	
-	inside_undo = false;
+	if (!a)
+	{
+		UndoStack tmp = mused.redo;
+		mused.redo = mused.undo;
+		mused.undo = tmp;
+	}
 	
-	undo_add_frame(a ? &mused.undo : &mused.redo, frame);
 	
-	//undo_destroy_frame(frame);
+#ifdef DEBUG
+	undo_show_stack(&mused.undo);
+	undo_show_stack(&mused.redo);
+#endif
+	
+	undo_destroy_frame(frame);
 }
