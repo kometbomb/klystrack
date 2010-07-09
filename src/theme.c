@@ -94,6 +94,7 @@ static void load_colors(const char *cfg)
 				if (strcasecmp(names[i], name) == 0)
 				{
 					colors[i] = color;
+					FIX_ENDIAN(colors[i]);
 					break;
 				}
 			}

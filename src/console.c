@@ -46,7 +46,7 @@ void console_set_color(Console* console, Uint32 color, int idx)
 {
 	if (console->current_color[idx] == color) return;
 
-	SDL_Color rgb = { color, color >> 8, color >> 16 };
+	SDL_Color rgb = { color >> 16, color >> 8, color };
 	
 	for (int i = 0 ; i < CON_N_COLORS ; ++i)
 		SDL_SetColors(console->fontsurface[i], &rgb, idx, 1);
