@@ -101,14 +101,14 @@ define theme_defs
 
  THEMES := $$(THEMES) res/$(1)
 
-res/$(1): themes/$(1)/* temp/8x8.fnt temp/7x6.fnt
+res/$(1): themes/$(1)/* themes/$(1)/font/* themes/$(1)/font7x6/* 
 	@$(ECHO) "Building theme $(1)..."
 	@mkdir -p res
 	@mkdir -p themetemp
 	@cp -f themes/$(1)/colors.txt themetemp
 	@cp -f themes/$(1)/bevel.bmp themetemp
-	@cp -f temp/8x8.fnt themetemp
-	@cp -f temp/7x6.fnt themetemp
+	@$(MAKEBUNDLE) themetemp/8x8.fnt themes/$(1)/font
+	@$(MAKEBUNDLE) themetemp/7x6.fnt themes/$(1)/font7x6
 	@$(MAKEBUNDLE) $$@ themetemp
 	@rm -rf themetemp
 	
@@ -202,14 +202,6 @@ release: bin.release/$(TARGET)
 ifneq ($(MAKECMDGOALS),clean)
 -include $(DEPS)
 endif
-	
-temp/8x8.fnt: themes/Default/font/*
-	@mkdir -p temp
-	@$(MAKEBUNDLE) $@ themes/Default/font
-
-temp/7x6.fnt: themes/Default/font7x6/*
-	@mkdir -p temp
-	@$(MAKEBUNDLE) $@ themes/Default/font7x6
 
 zip/data/SDL.dll:
 	@$(ECHO) "Downloading SDL.dll..."
