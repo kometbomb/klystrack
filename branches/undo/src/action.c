@@ -35,10 +35,13 @@ OTHER DEALINGS IN THE SOFTWARE.
 #include "theme.h"
 #include "gui/menu.h"
 #include "export.h"
+#include <stdbool.h>
 
 extern Mused mused;
 extern GfxDomain *domain;
 extern Menu pixelmenu[];
+
+bool inside_undo = false;
 
 void select_sequence_position(void *channel, void *position, void* unused)
 {
@@ -450,4 +453,38 @@ void export_wav_action(void *a, void*b, void*c)
 	FILE * f = open_dialog("wb", "Export .WAV", "wav", domain, mused.slider_bevel->surface, &mused.largefont, &mused.smallfont);
 	export_wav(&mused.song, mused.mus.cyd->wavetable_entries, f);
 	fclose(f);
+}
+
+
+void do_undo(void *a, void*b, void*c)
+{
+	UndoFrame *frame = a ? undo(&mused.redo) : undo(&mused.undo);
+	
+	if (!frame) return;
+	
+	debug("%s frame %p", a ? "Redo" : "Undo", frame);
+	
+	inside_undo = true;
+	
+	switch (frame->type)
+	{
+		case UNDO_PATTERN:
+			mused.current_pattern = frame->event.pattern.idx;
+			memcpy(mused.song.pattern[mused.current_pattern].step, frame->event.pattern.step, frame->event.pattern.n_steps * sizeof(frame->event.pattern.step[0]));
+			undo_store_pattern(&mused.undo, mused.current_pattern, &mused.song.pattern[mused.current_pattern]);
+			break;
+			
+		case UNDO_MODE:
+			change_mode(frame->event.mode.old_mode);
+			mused.focus = frame->event.mode.focus;
+			break;
+		
+		default: warning("Undo type %d not handled", frame->type); break;
+	}
+	
+	inside_undo = false;
+	
+	undo_add_frame(a ? &mused.undo : &mused.redo, frame);
+	
+	//undo_destroy_frame(frame);
 }

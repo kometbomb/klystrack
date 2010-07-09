@@ -78,6 +78,8 @@ const KeyShortcut shortcuts[] =
 	{ KMOD_CTRL, SDLK_u, get_unused_pattern, 0, 0, 0 },
 	{ KMOD_CTRL, SDLK_i, interpolate, 0, 0, 0 },
 	{ KMOD_CTRL, SDLK_m, unmute_all_action, 0, 0, 0 },
+	{ KMOD_CTRL, SDLK_z, do_undo, 0, 0, 0 },
+	{ KMOD_CTRL, SDLK_y, do_undo, MAKEPTR(1), 0, 0 },
 	/* Null terminated */
 	{ 0, 0, NULL, 0, 0, 0 }
 };

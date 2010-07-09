@@ -26,12 +26,14 @@ FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 OTHER DEALINGS IN THE SOFTWARE.
 */
 
+#include "snd/music.h"
+
 typedef enum
 {
 	UNDO_PATTERN,
 	UNDO_SEQUENCE,
 	UNDO_INSTRUMENT,
-	UNDO_SONG,
+	UNDO_SONGINFO,
 	UNDO_MODE
 } UndoType;
 
@@ -39,8 +41,9 @@ typedef union
 {	
 	struct { int channel; MusSeqPattern *seq; int n_seq; } sequence;
 	struct { int idx; MusInstrument instrument; } instrument;
-	struct { int idx; MusStep *step; int n_steps; int pattern_length; } pattern;
-	struct { int old_mode; } mode;
+	struct { int idx; MusStep *step; int n_steps; } pattern;
+	struct { int old_mode, focus; } mode;
+	struct { } songinfo;
 } UndoEvent;
 
 typedef struct UndoFrame_t
@@ -50,9 +53,18 @@ typedef struct UndoFrame_t
 	UndoEvent event;
 } UndoFrame;
 
-typedef UndoFrame **UndoStack;
+typedef UndoFrame *UndoStack;
 
-void undo_init(UndoStack stack);
-void undo_store_mode(UndoStack stack, int old_mode);
+void undo_init(UndoStack *stack);
+void undo_deinit(UndoStack *stack);
+void undo_destroy_frame(UndoFrame *frame);
+void undo_add_frame(UndoStack *stack, UndoFrame *frame);
+
+UndoFrame *undo(UndoStack *stack);
+
+void undo_store_mode(UndoStack *stack, int old_mode, int focus);
+void undo_store_instrument(UndoStack *stack, const MusInstrument *instrument);
+void undo_store_sequence(UndoStack *stack, int channel, const MusSeqPattern *sequence, int n_seq);
+void undo_store_pattern(UndoStack *stack, int idx, const MusPattern *pattern);
 
 #endif

@@ -845,6 +845,8 @@ void pattern_event(SDL_Event *e)
 			case SDLK_INSERT:
 			{
 				if (!(mused.flags & EDIT_MODE)) break;
+				
+				undo_store_pattern(&mused.undo, mused.current_pattern, &mused.song.pattern[mused.current_pattern]);
 			
 				if ((e->key.keysym.mod & KMOD_ALT)) 
 				{
@@ -864,6 +866,8 @@ void pattern_event(SDL_Event *e)
 			case SDLK_DELETE:
 			{
 				if (!(mused.flags & EDIT_MODE)) break;
+				
+				undo_store_pattern(&mused.undo, mused.current_pattern, &mused.song.pattern[mused.current_pattern]);
 			
 				if (e->key.keysym.sym == SDLK_BACKSPACE)
 				{
@@ -1022,12 +1026,16 @@ void pattern_event(SDL_Event *e)
 				{
 					if (e->key.keysym.sym == SDLK_PERIOD)
 					{
+						undo_store_pattern(&mused.undo, mused.current_pattern, &mused.song.pattern[mused.current_pattern]);
+					
 						mused.song.pattern[mused.current_pattern].step[mused.current_patternstep].note = MUS_NOTE_NONE;				
 							
 						slider_move_position(&mused.current_patternstep, &mused.pattern_position, &mused.pattern_slider_param, +1, mused.song.pattern[mused.current_pattern].num_steps);
 					}
 					else if (e->key.keysym.sym == SDLK_1)
 					{
+						undo_store_pattern(&mused.undo, mused.current_pattern, &mused.song.pattern[mused.current_pattern]);
+					
 						mused.song.pattern[mused.current_pattern].step[mused.current_patternstep].note = MUS_NOTE_RELEASE;
 							
 						slider_move_position(&mused.current_patternstep, &mused.pattern_position, &mused.pattern_slider_param, +1, mused.song.pattern[mused.current_pattern].num_steps);
@@ -1037,6 +1045,8 @@ void pattern_event(SDL_Event *e)
 						int note = find_note(e->key.keysym.sym, mused.octave);
 						if (note != -1) 
 						{
+							undo_store_pattern(&mused.undo, mused.current_pattern, &mused.song.pattern[mused.current_pattern]);
+						
 							mus_trigger_instrument(&mused.mus, 0, &mused.song.instrument[mused.current_instrument], note);
 							
 							mused.song.pattern[mused.current_pattern].step[mused.current_patternstep].note = note;				
@@ -1050,6 +1060,8 @@ void pattern_event(SDL_Event *e)
 				{
 					if (e->key.keysym.sym == SDLK_PERIOD)
 					{
+						undo_store_pattern(&mused.undo, mused.current_pattern, &mused.song.pattern[mused.current_pattern]);
+					
 						mused.song.pattern[mused.current_pattern].step[mused.current_patternstep].instrument = MUS_NOTE_NO_INSTRUMENT;				
 							
 						slider_move_position(&mused.current_patternstep, &mused.pattern_position, &mused.pattern_slider_param, +1, mused.song.pattern[mused.current_pattern].num_steps);
@@ -1073,6 +1085,8 @@ void pattern_event(SDL_Event *e)
 							}
 							
 							if (inst > (mused.song.num_instruments-1)) inst = (mused.song.num_instruments-1);
+							
+							undo_store_pattern(&mused.undo, mused.current_pattern, &mused.song.pattern[mused.current_pattern]);
 						
 							mused.song.pattern[mused.current_pattern].step[mused.current_patternstep].instrument = inst; 
 							mused.current_instrument = inst % mused.song.num_instruments;
@@ -1106,6 +1120,8 @@ void pattern_event(SDL_Event *e)
 							break;
 						}
 						
+						undo_store_pattern(&mused.undo, mused.current_pattern, &mused.song.pattern[mused.current_pattern]);
+						
 						mused.song.pattern[mused.current_pattern].step[mused.current_patternstep].command = validate_command(inst) & 0x7fff; 
 						
 						slider_move_position(&mused.current_patternstep, &mused.pattern_position, &mused.pattern_slider_param, +1, mused.song.pattern[mused.current_pattern].num_steps);
@@ -1115,12 +1131,16 @@ void pattern_event(SDL_Event *e)
 				{
 					if (e->key.keysym.sym == SDLK_PERIOD || e->key.keysym.sym == SDLK_0)
 					{
+						undo_store_pattern(&mused.undo, mused.current_pattern, &mused.song.pattern[mused.current_pattern]);
+					
 						mused.song.pattern[mused.current_pattern].step[mused.current_patternstep].ctrl &= ~(MUS_CTRL_BIT << (mused.current_patternx - PED_CTRL));				
 							
 						slider_move_position(&mused.current_patternstep, &mused.pattern_position, &mused.pattern_slider_param, +1, mused.song.pattern[mused.current_pattern].num_steps);
 					}
 					if (e->key.keysym.sym == SDLK_1)
 					{
+						undo_store_pattern(&mused.undo, mused.current_pattern, &mused.song.pattern[mused.current_pattern]);
+					
 						mused.song.pattern[mused.current_pattern].step[mused.current_patternstep].ctrl |= (MUS_CTRL_BIT << (mused.current_patternx - PED_CTRL));				
 							
 						slider_move_position(&mused.current_patternstep, &mused.pattern_position, &mused.pattern_slider_param, +1, mused.song.pattern[mused.current_pattern].num_steps);

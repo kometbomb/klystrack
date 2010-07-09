@@ -63,5 +63,6 @@ void load_theme_action(void *a, void*b, void*c);
 void unmute_all_action(void*, void*, void*);
 void export_wav_action(void *a, void*b, void*c);
 void open_data(void *type, void*b, void*c);
+void do_undo(void *stack, void*b, void*c);
 
 #endif
