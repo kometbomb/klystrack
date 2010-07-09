@@ -472,5 +472,7 @@ void open_data(void *type, void *action, void *_ret)
 	}
 	
 	if (ret) *ret = 0;
+	
+	change_mode(mused.mode);
 }
 
