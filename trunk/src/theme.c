@@ -164,14 +164,21 @@ void load_theme(const char *name)
 		font_destroy(&mused.largefont);
 		font_load(&mused.largefont, &res, "8x8.fnt");
 		
-		FILE *colors = bnd_locate(&res, "colors.txt", 0);
+		SDL_RWops *colors = SDL_RWFromBundle(&res, "colors.txt");
 		if (colors)
 		{
-			char temp[1000] = {0};
-			fread(temp, 1, sizeof(temp)-1, colors);
-			fclose(colors);
+			SDL_RWseek(colors, 0, SEEK_END);
+			size_t s = SDL_RWtell(colors);
+			char *temp = calloc(1, s + 2);
+			SDL_RWseek(colors, 0, SEEK_SET);
+			SDL_RWread(colors, temp, 1, s);
+			
+			strcat(temp, "\n");
+			
+			SDL_FreeRW(colors);
 			
 			load_colors(temp);
+			free(temp);
 		}
 		
 		bnd_free(&res);
