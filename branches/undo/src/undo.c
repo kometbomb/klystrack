@@ -127,6 +127,14 @@ void undo_store_songinfo(UndoStack *stack, const MusSong *song)
 }
 
 
+void undo_store_fx(UndoStack *stack, int idx, const CydFxSerialized *fx)
+{
+	UndoEvent *frame = get_frame(UNDO_FX, stack);
+	
+	if (!frame) return;
+}
+
+
 void undo_init(UndoStack *stack)
 {
 	*stack = NULL;
@@ -156,6 +164,11 @@ UndoFrame *undo(UndoStack *stack)
 	*stack = (*stack)->prev;
 	
 	return frame;
+}
+
+void undo_pop(UndoStack *stack)
+{
+	undo_destroy_frame(undo(stack));
 }
 
 #ifdef DEBUG
