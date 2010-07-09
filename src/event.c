@@ -1016,7 +1016,21 @@ void pattern_event(SDL_Event *e)
 				if (e->key.keysym.sym == SDLK_SPACE)
 					mused.flags ^= EDIT_MODE;
 			
-				if (!(mused.flags & EDIT_MODE)) break;
+				if (!(mused.flags & EDIT_MODE)) 
+				{
+					/* still has to play a note */
+				
+					if (mused.current_patternx == PED_NOTE)
+					{
+						int note = find_note(e->key.keysym.sym, mused.octave);
+						if (note != -1) 
+						{
+							mus_trigger_instrument(&mused.mus, 0, &mused.song.instrument[mused.current_instrument], note);
+						}
+					}
+					
+					break;
+				}
 				
 				if (mused.current_patternx == PED_NOTE)
 				{
