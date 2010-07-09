@@ -814,7 +814,7 @@ void pattern_view_inner(SDL_Surface *dest_surface, const SDL_Rect *dest, const S
 }
 
 
-static void pattern_view_stepcounter(SDL_Surface *dest_surface, const SDL_Rect *dest, const SDL_Event *event, void *param, int current_pattern)
+static void pattern_view_stepcounter(SDL_Surface *dest_surface, const SDL_Rect *dest, const SDL_Event *event, void *param, int max_steps)
 {
 	SDL_Rect content;
 	copy_rect(&content, dest);
@@ -840,7 +840,7 @@ static void pattern_view_stepcounter(SDL_Surface *dest_surface, const SDL_Rect *
 			bevel(mused.screen,&row, mused.slider_bevel->surface, BEV_SELECTED_PATTERN_ROW);
 			console_set_color(mused.console, colors[COLOR_PATTERN_SELECTED], CON_CHARACTER);
 		}
-		else if (row < 0 || (current_pattern != -1 && row >= mused.song.pattern[current_pattern].num_steps))
+		else if (row < 0 || (max_steps != -1 && row >= max_steps))
 			console_set_color(mused.console, colors[COLOR_PATTERN_DISABLED], CON_CHARACTER);
 		else
 		{
@@ -961,7 +961,15 @@ void pattern_view(SDL_Surface *dest_surface, const SDL_Rect *dest, const SDL_Eve
 	
 	SDL_SetClipRect(mused.screen, &pos);
 	
-	pattern_view_stepcounter(dest_surface, &pos, event, param, mused.single_pattern_edit ? mused.current_pattern : -1);
+	int ml = 0;
+	
+	for (int i = 0 ; i < mused.song.num_channels ; ++i)
+	{
+		if (mused.ghost_pattern[i] != NULL)
+			ml = my_max(ml, mused.song.pattern[i].num_steps);
+	}
+	
+	pattern_view_stepcounter(dest_surface, &pos, event, param, mused.single_pattern_edit ? mused.song.pattern[mused.current_pattern].num_steps : ml);
 	
 	SDL_SetClipRect(mused.screen, dest);
 	

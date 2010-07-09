@@ -12,7 +12,7 @@ pattern_beat = 0xffc0c0
 pattern_normal = 0xd0a0d0
 pattern_disabled = 0x808080
 
-pattern_instrument = 0xd0a0d0
+pattern_instrument = 0xff0000
 pattern_instrument_bar = 0xffffff
 pattern_instrument_beat = 0xffffff
 
