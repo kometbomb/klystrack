@@ -1,23 +1,23 @@
 normal = 0xffffff
 
 sequence_selected = 0xffffff
-sequence_bar = 0x800000
-sequence_beat = 0x000080
+sequence_bar = 0x000080
+sequence_beat = 0x800000
 sequence_normal = 0x000000
 sequence_disabled = 0xa0a0a0
 
 pattern_selected = 0xffffff
 pattern_bar = 0xffffff
-pattern_beat = 0xffc0c0
+pattern_beat = 0xc0c0ff
 pattern_normal = 0xd0a0d0
 pattern_disabled = 0x808080
 
-pattern_instrument = 0xff0000
+pattern_instrument = 0xd0a0d0
 pattern_instrument_bar = 0xffffff
 pattern_instrument_beat = 0xffffff
 
 program_selected = 0xffffff
-program_even = 0xd0d0e0
+program_even = 0xe0d0d0
 program_odd = 0xb0a0b0
 
 instrument_selected = 0xffffff
