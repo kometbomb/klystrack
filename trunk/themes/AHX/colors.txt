@@ -1,24 +1,24 @@
 normal = 0xffffff
 
 sequence_selected = 0xffffff
-sequence_bar = 0xcdcce0
-sequence_beat = 0xcdcce0
-sequence_normal = 0xcdcce0
+sequence_bar = 0xcee7e7
+sequence_beat = 0xcee7e7
+sequence_normal = 0xcee7e7
 sequence_disabled = 0x000000
 
-pattern_normal = 0xcdcce0
-pattern_beat = 0xcdcce0
-pattern_bar = 0xcdcce0
+pattern_normal = 0xcee7e7
+pattern_beat = 0xcee7e7
+pattern_bar = 0xcee7e7
 pattern_selected = 0xffffff
-pattern_disabled = 0x595465
+pattern_disabled = 0x525a63
 
-pattern_instrument = 0xcdcce0
-pattern_instrument_beat = 0xcdcce0
-pattern_instrument_bar = 0xcdcce0
+pattern_instrument = 0xcee7e7
+pattern_instrument_beat = 0xcee7e7
+pattern_instrument_bar = 0xcee7e7
 
 program_selected = 0xffffff
-program_even = 0xcdcce0
-program_odd = 0xcdcce0
+program_even = 0xcee7e7
+program_odd = 0xcee7e7
 
 instrument_selected = 0xffffff
-instrument_normal = 0xcdcce0
+instrument_normal = 0xcee7e7
