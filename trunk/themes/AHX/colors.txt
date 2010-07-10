@@ -1,9 +1,9 @@
 normal = 0xffffff
 
 sequence_selected = 0xffffff
-sequence_bar = 0xcee7e7
-sequence_beat = 0xcee7e7
-sequence_normal = 0xcee7e7
+sequence_bar = 0xc6c6ce
+sequence_beat = 0xc6c6ce
+sequence_normal = 0xc6c6ce
 sequence_disabled = 0x000000
 
 pattern_normal = 0xcee7e7
