@@ -1573,3 +1573,98 @@ void wave_event(SDL_Event *e)
 	}
 }
 
+
+void songinfo_add_param(int d)
+{
+	if (d < 0) d = -1; else if (d > 0) d = 1;
+
+	if (SDL_GetModState() & KMOD_SHIFT)
+		d *= 16;
+
+	switch (mused.songinfo_param)
+	{
+
+		case SI_MASTERVOL:
+			change_master_volume(MAKEPTR(d), 0, 0);
+			break;
+		
+		case SI_LENGTH:
+			change_song_length(MAKEPTR(d * mused.sequenceview_steps), 0, 0);
+			break;
+			
+		case SI_LOOP:
+			change_loop_point(MAKEPTR(d * mused.sequenceview_steps), 0, 0);
+			break;
+			
+		case SI_STEP:
+			change_seq_steps(MAKEPTR(d), 0, 0);
+			break;
+			
+		case SI_SPEED1:
+			change_song_speed(MAKEPTR(0), MAKEPTR(d), 0);
+			break;
+			
+		case SI_SPEED2:
+			change_song_speed(MAKEPTR(1), MAKEPTR(d), 0);
+			break;
+			
+		case SI_RATE:
+			change_song_rate(MAKEPTR(d), 0, 0);
+			break;
+			
+		case SI_TIME:
+			change_timesig(MAKEPTR(d), 0, 0);
+			break;
+			
+		case SI_OCTAVE:
+			change_octave(MAKEPTR(d), 0, 0);
+			break;
+			
+		case SI_CHANNELS:
+			change_channels(MAKEPTR(d), 0, 0);
+			break;
+	}
+}
+
+
+void songinfo_event(SDL_Event *e)
+{
+	switch (e->type)
+	{
+		case SDL_KEYDOWN:
+		
+		switch (e->key.keysym.sym)
+		{
+			case SDLK_DOWN:
+			{
+				++mused.songinfo_param;
+				if (mused.songinfo_param >= SI_N_PARAMS) mused.songinfo_param = SI_N_PARAMS - 1;
+			}
+			break;
+			
+			case SDLK_UP:
+			{
+				--mused.songinfo_param;
+				if (mused.songinfo_param < 0) mused.songinfo_param = 0;
+			}
+			break;
+		
+			case SDLK_RIGHT:
+			{
+				songinfo_add_param(+1);
+			}
+			break;
+			
+			case SDLK_LEFT:
+			{
+				songinfo_add_param(-1);
+			}
+			break;
+			
+			default: break;
+		}
+		
+		break;
+	}
+}
+

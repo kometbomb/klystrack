@@ -92,10 +92,21 @@ void change_octave(void *delta, void *unused1, void *unused2)
 
 void change_song_rate(void *delta, void *unused1, void *unused2)
 {
-	if (CASTPTR(int,delta) > 0 && (int)mused.song.song_rate + CASTPTR(int,delta) <= 0xff)
-		mused.song.song_rate += CASTPTR(int,delta);
-	else if (CASTPTR(int,delta) < 0 && (int)mused.song.song_rate + CASTPTR(int,delta) >= 0x1)
-		mused.song.song_rate += CASTPTR(int,delta);
+	if (CASTPTR(int,delta) > 0)
+	{
+		if ((int)mused.song.song_rate + CASTPTR(int,delta) <= 0xff)
+			mused.song.song_rate += CASTPTR(int,delta);
+		else
+			mused.song.song_rate = 0xff;
+	}
+	else if (CASTPTR(int,delta) < 0)
+	{
+		if ((int)mused.song.song_rate + CASTPTR(int,delta) >= 0x1)
+			mused.song.song_rate += CASTPTR(int,delta);
+		else
+			mused.song.song_rate = 1;
+	}
+	
 	cyd_set_callback(&mused.cyd, mus_advance_tick, &mused.mus, mused.song.song_rate);
 }
 
@@ -291,20 +302,27 @@ void change_seq_steps(void *delta, void *unused1, void *unused2)
 {
 	if (CASTPTR(int,delta) < 0)
 	{
-		if (mused.sequenceview_steps > 1)
+		if (mused.sequenceview_steps > -CASTPTR(int,delta))
 		{
-			--mused.sequenceview_steps;
-			mused.current_sequencepos = (mused.current_sequencepos/mused.sequenceview_steps) * mused.sequenceview_steps;
+			mused.sequenceview_steps += CASTPTR(int,delta);
 		}
+		else
+			mused.sequenceview_steps = 1;
 	}
 	else if (CASTPTR(int,delta) > 0)
 	{
+		if (mused.sequenceview_steps == 1 && CASTPTR(int,delta) > 1)
+			mused.sequenceview_steps = 0;
+	
 		if (mused.sequenceview_steps < 128)
 		{
-			++mused.sequenceview_steps;
-			mused.current_sequencepos = (mused.current_sequencepos/mused.sequenceview_steps) * mused.sequenceview_steps;
+			mused.sequenceview_steps += CASTPTR(int,delta);
 		}
+		else
+			mused.sequenceview_steps = 128;
 	}
+	
+	mused.current_sequencepos = (mused.current_sequencepos/mused.sequenceview_steps) * mused.sequenceview_steps;
 }
 
 

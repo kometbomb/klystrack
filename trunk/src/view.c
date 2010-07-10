@@ -143,10 +143,10 @@ void get_command_desc(char *text, Uint16 inst)
 }
 
 	
-
-bool is_selected_param(int p)
+bool is_selected_param(int focus, int p)
 {
-	switch (mused.mode)
+	if (focus == mused.focus)
+	switch (focus)
 	{
 		case EDITINSTRUMENT:
 			return p == mused.selected_param;
@@ -159,10 +159,15 @@ bool is_selected_param(int p)
 		case EDITWAVETABLE:	
 			return p == mused.wavetable_param;
 			break;
+		
+		case EDITSONGINFO:	
+			return p == mused.songinfo_param;
+			break;
 	}
 	
 	return false;
 }
+
 
 void my_separator(const SDL_Rect *parent, SDL_Rect *rect)
 {
@@ -267,28 +272,31 @@ void set_cursor(const SDL_Rect *location)
 }
 
 
-bool check_mouse_hit(const SDL_Event *e, const SDL_Rect *area, int param)
+bool check_mouse_hit(const SDL_Event *e, const SDL_Rect *area, int focus, int param)
 {
 	if (param < 0) return false;
 	if (check_event(e, area, NULL, NULL, NULL, NULL))
 	{
-		switch (mused.mode)
+		switch (focus)
 		{
 			case EDITINSTRUMENT:
-				mused.focus = EDITINSTRUMENT;
 				mused.selected_param = param;
 				break;
 		
 			case EDITFX:
-				mused.focus = EDITFX;
 				mused.edit_reverb_param = param;
 				break;
 				
 			case EDITWAVETABLE:	
-				mused.focus = EDITWAVETABLE;
 				mused.wavetable_param = param;
 				break;
+			
+			case EDITSONGINFO:			
+				mused.songinfo_param = param;
+				break;
 		}
+		
+		mused.focus = focus;
 		
 		return true;
 	}
@@ -297,7 +305,7 @@ bool check_mouse_hit(const SDL_Event *e, const SDL_Rect *area, int param)
 }
 
 
-int generic_field(const SDL_Event *e, const SDL_Rect *area, int param, const char *_label, const char *format, void *value, int width)
+int generic_field(const SDL_Event *e, const SDL_Rect *area, int focus, int param, const char *_label, const char *format, void *value, int width)
 {
 	label(_label, area);
 	
@@ -322,9 +330,9 @@ int generic_field(const SDL_Event *e, const SDL_Rect *area, int param, const cha
 
 	int r =  spinner(mused.screen, e, &spinner_area, mused.slider_bevel->surface, (Uint32)area->x << 16 | area->y);
 	
-	check_mouse_hit(e, area, param);
+	check_mouse_hit(e, area, focus, param);
 	
-	if (is_selected_param(param))
+	if (is_selected_param(focus, param))
 	{
 		SDL_Rect r;
 		copy_rect(&r, area);
@@ -337,13 +345,13 @@ int generic_field(const SDL_Event *e, const SDL_Rect *area, int param, const cha
 }
 
 
-void generic_flags(const SDL_Event *e, const SDL_Rect *_area, int p, const char *label, Uint32 *flags, Uint32 mask)
+void generic_flags(const SDL_Event *e, const SDL_Rect *_area, int focus, int p, const char *label, Uint32 *flags, Uint32 mask)
 {
 	SDL_Rect area;
 	copy_rect(&area, _area);
 	area.y += 1;
 	
-	int hit = check_mouse_hit(e, _area, p);
+	int hit = check_mouse_hit(e, _area, focus, p);
 	
 	if (checkbox(mused.screen, e, &area, mused.slider_bevel->surface, &mused.smallfont, BEV_BUTTON, BEV_BUTTON_ACTIVE, DECAL_TICK,label, flags, mask)) 
 	{
@@ -355,7 +363,7 @@ void generic_flags(const SDL_Event *e, const SDL_Rect *_area, int p, const char 
 		*flags ^= mask;
 	}	
 	
-	if (is_selected_param(p))
+	if (is_selected_param(focus, p))
 	{
 		SDL_Rect r;
 		copy_rect(&r, &area);
@@ -879,7 +887,7 @@ static void pattern_header(SDL_Surface *dest_surface, const SDL_Event *event, in
 			sprintf(label, "CHN %X", channel);
 	}
 	
-	int d = generic_field(event, &pattern, channel, label, "%02X", MAKEPTR(*pattern_var), 2);
+	int d = generic_field(event, &pattern, 99, channel, label, "%02X", MAKEPTR(*pattern_var), 2);
 	int old = *pattern_var;
 	
 	if (d < 0)
@@ -1023,7 +1031,7 @@ void pattern_view(SDL_Surface *dest_surface, const SDL_Rect *dest, const SDL_Eve
 }
 
 
-void info_view(SDL_Surface *dest_surface, const SDL_Rect *dest, const SDL_Event *event, void *param)
+void songinfo_view(SDL_Surface *dest_surface, const SDL_Rect *dest, const SDL_Event *event, void *param)
 {
 	SDL_Rect area;
 	copy_rect(&area, dest);
@@ -1063,39 +1071,47 @@ void info_view(SDL_Surface *dest_surface, const SDL_Rect *dest, const SDL_Event 
 	int d;
 	
 	if (mused.mus.cyd->flags & CYD_CLIPPING)
-		d = generic_field(event, &r, 0, "\2VOL","%02X", MAKEPTR(mused.song.master_volume), 2);
+		d = generic_field(event, &r, EDITSONGINFO, SI_MASTERVOL, "\2VOL","%02X", MAKEPTR(mused.song.master_volume), 2);
 	else
-		d = generic_field(event, &r, 0, "\1VOL","%02X", MAKEPTR(mused.song.master_volume), 2);
-	if (d) change_master_volume(MAKEPTR(d), 0, 0);
+		d = generic_field(event, &r, EDITSONGINFO, SI_MASTERVOL, "\1VOL","%02X", MAKEPTR(mused.song.master_volume), 2);
+	songinfo_add_param(d);
 	update_rect(&area, &r);
 	
-	d = generic_field(event, &r, 0, "LEN", "%04X", MAKEPTR(mused.song.song_length), 4);
-	if (d) change_song_length(MAKEPTR(d * mused.sequenceview_steps), 0, 0);
+	d = generic_field(event, &r, EDITSONGINFO, SI_LENGTH, "LEN", "%04X", MAKEPTR(mused.song.song_length), 4);
+	songinfo_add_param(d);
 	update_rect(&area, &r);
-	d = generic_field(event, &r, 0, "LOOP","%04X", MAKEPTR(mused.song.loop_point), 4);
-	if (d) change_loop_point(MAKEPTR(d * mused.sequenceview_steps), 0, 0);
+	
+	d = generic_field(event, &r, EDITSONGINFO, SI_LOOP, "LOOP","%04X", MAKEPTR(mused.song.loop_point), 4);
+	songinfo_add_param(d);
 	update_rect(&area, &r);
-	d = generic_field(event, &r, 0, "STEP","%02X", MAKEPTR(mused.sequenceview_steps), 2);
-	if (d) change_seq_steps(MAKEPTR(d), 0, 0);
+	
+	d = generic_field(event, &r, EDITSONGINFO, SI_STEP, "STEP","%02X", MAKEPTR(mused.sequenceview_steps), 2);
+	songinfo_add_param(d);	
 	update_rect(&area, &r);
-	d = generic_field(event, &r, 0, "SPD1","%02X", MAKEPTR(mused.song.song_speed), 2);
-	if (d) change_song_speed(MAKEPTR(0), MAKEPTR(d), 0);
+	
+	d = generic_field(event, &r, EDITSONGINFO, SI_SPEED1, "SPD1","%02X", MAKEPTR(mused.song.song_speed), 2);
+	songinfo_add_param(d);
 	update_rect(&area, &r);
-	d = generic_field(event, &r, 0, "SPD2","%02X", MAKEPTR(mused.song.song_speed2), 2);
-	if (d) change_song_speed(MAKEPTR(1), MAKEPTR(d), 0);
+	
+	d = generic_field(event, &r, EDITSONGINFO, SI_SPEED2, "SPD2","%02X", MAKEPTR(mused.song.song_speed2), 2);
+	songinfo_add_param(d);
 	update_rect(&area, &r);
-	d = generic_field(event, &r, 0, "RATE","%3d", MAKEPTR(mused.song.song_rate), 3);
-	if (d) change_song_rate(MAKEPTR(d), 0, 0);
+	
+	d = generic_field(event, &r, EDITSONGINFO, SI_RATE, "RATE","%3d", MAKEPTR(mused.song.song_rate), 3);
+	songinfo_add_param(d);
 	update_rect(&area, &r);
+	
 	sprintf(speedtext, "%d/%d", mused.time_signature >> 8, mused.time_signature & 0xff);
-	d = generic_field(event, &r, 0, "TIME","%5s", speedtext, 5);
-	if (d) change_timesig(MAKEPTR(d), 0, 0);
+	d = generic_field(event, &r, EDITSONGINFO, SI_TIME, "TIME","%5s", speedtext, 5);
+	songinfo_add_param(d);
 	update_rect(&area, &r);
-	d = generic_field(event, &r, 0, "OCT","%02X", MAKEPTR(mused.octave), 2);
-	if (d) change_octave(MAKEPTR(d), 0, 0);
+	
+	d = generic_field(event, &r, EDITSONGINFO, SI_OCTAVE, "OCT","%02X", MAKEPTR(mused.octave), 2);
+	songinfo_add_param(d);
 	update_rect(&area, &r);
-	d = generic_field(event, &r, 0, "CHNS","%02X", MAKEPTR(mused.song.num_channels), 2);
-	if (d) change_channels(MAKEPTR(d), 0, 0);
+	
+	d = generic_field(event, &r, EDITSONGINFO, SI_CHANNELS, "CHNS","%02X", MAKEPTR(mused.song.num_channels), 2);
+	songinfo_add_param(d);
 	update_rect(&area, &r);
 }
 
@@ -1342,7 +1358,7 @@ void program_view(SDL_Surface *dest_surface, const SDL_Rect *dest, const SDL_Eve
 
 static void inst_flags(const SDL_Event *e, const SDL_Rect *_area, int p, const char *label, Uint32 *flags, Uint32 mask)
 {
-	generic_flags(e, _area, p, label, flags, mask);
+	generic_flags(e, _area, EDITINSTRUMENT, p, label, flags, mask);
 }
 
 
@@ -1350,7 +1366,7 @@ static void inst_text(const SDL_Event *e, const SDL_Rect *area, int p, const cha
 {
 	//check_event(e, area, select_instrument_param, (void*)p, 0, 0);
 	
-	int d = generic_field(e, area, p, _label, format, value, width);
+	int d = generic_field(e, area, EDITINSTRUMENT, p, _label, format, value, width);
 	if (d) mused.selected_param = p;
 	if (d < 0) instrument_add_param(-1);
 	else if (d >0) instrument_add_param(1);
@@ -1448,7 +1464,7 @@ void instrument_name_view(SDL_Surface *dest_surface, const SDL_Rect *dest, const
 	inst_text(event, &farea, P_INSTRUMENT, "", "%02X", MAKEPTR(mused.current_instrument), 2);
 	inst_field(event, &tarea, P_NAME, sizeof(mused.song.instrument[mused.current_instrument].name), mused.song.instrument[mused.current_instrument].name);
 	
-	if (is_selected_param(P_NAME) || (mused.selected_param == P_NAME && mused.mode == EDITINSTRUMENT && (mused.edit_buffer == mused.song.instrument[mused.current_instrument].name && mused.focus == EDITBUFFER)))
+	if (is_selected_param(EDITINSTRUMENT, P_NAME) || (mused.selected_param == P_NAME && mused.mode == EDITINSTRUMENT && (mused.edit_buffer == mused.song.instrument[mused.current_instrument].name && mused.focus == EDITBUFFER)))
 	{
 		SDL_Rect r;
 		copy_rect(&r, &tarea);
@@ -1697,7 +1713,7 @@ void fx_view(SDL_Surface *dest_surface, const SDL_Rect *dest, const SDL_Event *e
 	
 	r.w = 96;
 	
-	generic_flags(event, &r, R_MULTIPLEX, "MULTIPLEX", &mused.song.flags, MUS_ENABLE_MULTIPLEX);
+	generic_flags(event, &r, EDITFX, R_MULTIPLEX, "MULTIPLEX", &mused.song.flags, MUS_ENABLE_MULTIPLEX);
 	update_rect(&area, &r);
 		
 	int d;
@@ -1705,7 +1721,7 @@ void fx_view(SDL_Surface *dest_surface, const SDL_Rect *dest, const SDL_Event *e
 	r.x = 100;
 	r.w = 80;
 		
-	if ((d = generic_field(event, &r, R_MULTIPLEX_PERIOD, "PERIOD", "%2X", MAKEPTR(mused.song.multiplex_period), 2))) 
+	if ((d = generic_field(event, &r, EDITFX, R_MULTIPLEX_PERIOD, "PERIOD", "%2X", MAKEPTR(mused.song.multiplex_period), 2))) 
 	{
 		mused.edit_reverb_param = R_MULTIPLEX_PERIOD;
 		fx_add_param(d);
@@ -1732,23 +1748,21 @@ void fx_view(SDL_Surface *dest_surface, const SDL_Rect *dest, const SDL_Event *e
 	
 	my_separator(&area, &r);
 	
-	generic_flags(event, &r, R_CRUSH, "CRUSH", &mused.song.fx[mused.fx_bus].flags, CYDFX_ENABLE_CRUSH);
+	generic_flags(event, &r, EDITFX, R_CRUSH, "CRUSH", &mused.song.fx[mused.fx_bus].flags, CYDFX_ENABLE_CRUSH);
 	update_rect(&area, &r);
 	
 	r.x = 100;
 	r.w = 64;
 	
-	if ((d = generic_field(event, &r, R_CRUSHBITS, "BITS", "%01X", MAKEPTR(mused.song.fx[mused.fx_bus].crush.bit_drop), 1)))
+	if ((d = generic_field(event, &r, EDITFX, R_CRUSHBITS, "BITS", "%01X", MAKEPTR(mused.song.fx[mused.fx_bus].crush.bit_drop), 1)))
 	{
-		mused.edit_reverb_param = R_CRUSHBITS;
 		fx_add_param(d);
 	}
 	
 	update_rect(&area, &r);
 	
-	if ((d = generic_field(event, &r, R_CRUSHDOWNSAMPLE, "DSMP", "%02d", MAKEPTR(mused.song.fx[mused.fx_bus].crushex.downsample), 2)))
+	if ((d = generic_field(event, &r, EDITFX, R_CRUSHDOWNSAMPLE, "DSMP", "%02d", MAKEPTR(mused.song.fx[mused.fx_bus].crushex.downsample), 2)))
 	{
-		mused.edit_reverb_param = R_CRUSHDOWNSAMPLE;
 		fx_add_param(d);
 	}
 	
@@ -1758,7 +1772,7 @@ void fx_view(SDL_Surface *dest_surface, const SDL_Rect *dest, const SDL_Event *e
 	
 	r.w = 60;
 	
-	generic_flags(event, &r, R_CHORUS, "STEREO", &mused.song.fx[mused.fx_bus].flags, CYDFX_ENABLE_CHORUS);
+	generic_flags(event, &r, EDITFX, R_CHORUS, "STEREO", &mused.song.fx[mused.fx_bus].flags, CYDFX_ENABLE_CHORUS);
 	
 	update_rect(&area, &r);
 	
@@ -1774,9 +1788,8 @@ void fx_view(SDL_Surface *dest_surface, const SDL_Rect *dest, const SDL_Event *e
 		r.x = 100;
 		r.w = 104;
 		
-		if ((d = generic_field(event, &r, R_MINDELAY, "MIN", temp1, NULL, 7)))
+		if ((d = generic_field(event, &r, EDITFX, R_MINDELAY, "MIN", temp1, NULL, 7)))
 		{
-			mused.edit_reverb_param = R_MINDELAY;
 			fx_add_param(d);
 		}
 		
@@ -1784,18 +1797,16 @@ void fx_view(SDL_Surface *dest_surface, const SDL_Rect *dest, const SDL_Event *e
 		
 		sprintf(temp2, "%4.1f ms", (float)mused.song.fx[mused.fx_bus].chr.max_delay / 10);
 		
-		if ((d = generic_field(event, &r, R_MAXDELAY, "MAX", temp2, NULL, 7)))
+		if ((d = generic_field(event, &r, EDITFX, R_MAXDELAY, "MAX", temp2, NULL, 7)))
 		{
-			mused.edit_reverb_param = R_MAXDELAY;
 			fx_add_param(d);
 		}
 		
 		r.x = 100;
 		r.y += r.h;
 		
-		if ((d = generic_field(event, &r, R_SEPARATION, "PHASE", "%02X", MAKEPTR(mused.song.fx[mused.fx_bus].chr.sep), 2)))
+		if ((d = generic_field(event, &r, EDITFX, R_SEPARATION, "PHASE", "%02X", MAKEPTR(mused.song.fx[mused.fx_bus].chr.sep), 2)))
 		{
-			mused.edit_reverb_param = R_SEPARATION;
 			fx_add_param(d);
 		}
 		
@@ -1806,9 +1817,8 @@ void fx_view(SDL_Surface *dest_surface, const SDL_Rect *dest, const SDL_Event *e
 		else
 			strcpy(temp3, "OFF");
 		
-		if ((d = generic_field(event, &r, R_RATE, "MOD", temp3, NULL, 8)))
+		if ((d = generic_field(event, &r, EDITFX, R_RATE, "MOD", temp3, NULL, 8)))
 		{
-			mused.edit_reverb_param = R_RATE;
 			fx_add_param(d);
 		}
 		
@@ -1817,7 +1827,7 @@ void fx_view(SDL_Surface *dest_surface, const SDL_Rect *dest, const SDL_Event *e
 	
 	my_separator(&area, &r);
 	
-	generic_flags(event, &r, R_ENABLE, "REVERB", &mused.song.fx[mused.fx_bus].flags, CYDFX_ENABLE_REVERB);
+	generic_flags(event, &r, EDITFX, R_ENABLE, "REVERB", &mused.song.fx[mused.fx_bus].flags, CYDFX_ENABLE_REVERB);
 	
 	update_rect(&area, &r);
 	
@@ -1826,9 +1836,8 @@ void fx_view(SDL_Surface *dest_surface, const SDL_Rect *dest, const SDL_Event *e
 	r.x = 4;
 	r.y += r.h;
 	
-	if ((d = generic_field(event, &r, R_SPREAD, "SPREAD", "%02X", MAKEPTR(mused.song.fx[mused.fx_bus].rvb.spread), 2)))
+	if ((d = generic_field(event, &r, EDITFX, R_SPREAD, "SPREAD", "%02X", MAKEPTR(mused.song.fx[mused.fx_bus].rvb.spread), 2)))
 	{
-		mused.edit_reverb_param = R_SPREAD;
 		fx_add_param(d);
 	}	
 	
@@ -1841,9 +1850,8 @@ void fx_view(SDL_Surface *dest_surface, const SDL_Rect *dest, const SDL_Event *e
 		int tmp = r.w;
 		r.w = 60 + 32;
 	
-		if ((d = generic_field(event, &r, R_ROOMSIZE, "ROOMSIZE", "%02X", MAKEPTR(mused.fx_room_size), 2)))
+		if ((d = generic_field(event, &r, EDITFX, R_ROOMSIZE, "ROOMSIZE", "%02X", MAKEPTR(mused.fx_room_size), 2)))
 		{
-			mused.edit_reverb_param = R_ROOMSIZE;
 			fx_add_param(d);
 		}	
 		
@@ -1851,9 +1859,8 @@ void fx_view(SDL_Surface *dest_surface, const SDL_Rect *dest, const SDL_Event *e
 		
 		r.w = 320 - 8 - r.x;
 		
-		if ((d = generic_field(event, &r, R_ROOMVOL, "VOLUME", "%02X", MAKEPTR(mused.fx_room_vol), 2)))
+		if ((d = generic_field(event, &r, EDITFX, R_ROOMVOL, "VOLUME", "%02X", MAKEPTR(mused.fx_room_vol), 2)))
 		{
-			mused.edit_reverb_param = R_ROOMVOL;
 			fx_add_param(d);
 		}	
 		
@@ -1862,9 +1869,8 @@ void fx_view(SDL_Surface *dest_surface, const SDL_Rect *dest, const SDL_Event *e
 		
 		r.w = 60+32;
 		
-		if ((d = generic_field(event, &r, R_ROOMDECAY, "DECAY", "%d", MAKEPTR(mused.fx_room_dec), 1)))
+		if ((d = generic_field(event, &r, EDITFX, R_ROOMDECAY, "DECAY", "%d", MAKEPTR(mused.fx_room_dec), 1)))
 		{
-			mused.edit_reverb_param = R_ROOMDECAY;
 			fx_add_param(d);
 		}	
 		
@@ -1896,9 +1902,8 @@ void fx_view(SDL_Surface *dest_surface, const SDL_Rect *dest, const SDL_Event *e
 		
 		int d;
 		
-		if ((d = generic_field(event, &r, p, label, "%4d ms", MAKEPTR(mused.song.fx[mused.fx_bus].rvb.tap[i].delay), 7))) 
+		if ((d = generic_field(event, &r, EDITFX, p, label, "%4d ms", MAKEPTR(mused.song.fx[mused.fx_bus].rvb.tap[i].delay), 7))) 
 		{
-			mused.edit_reverb_param = p;
 			fx_add_param(d);
 		}
 		
@@ -1929,11 +1934,10 @@ void fx_view(SDL_Surface *dest_surface, const SDL_Rect *dest, const SDL_Event *e
 		else
 			sprintf(value, "%+5.1f", (double)mused.song.fx[mused.fx_bus].rvb.tap[i].gain * 0.1);
 			
-		d = generic_field(event, &r, p, "", "%s dB", value, 8);
+		d = generic_field(event, &r, EDITFX, p, "", "%s dB", value, 8);
 		
-		if ((d = generic_field(event, &r, p, "", "%s dB", value, 8))) 
+		if ((d = generic_field(event, &r, EDITFX, p, "", "%s dB", value, 8))) 
 		{
-			mused.edit_reverb_param = p;
 			fx_add_param(d);
 		}
 				
