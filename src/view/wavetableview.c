@@ -51,7 +51,7 @@ void wavetable_view(SDL_Surface *dest_surface, const SDL_Rect *dest, const SDL_E
 		
 		int d;
 				
-		if ((d = generic_field(event, &r, W_WAVE, "WAVE", "%02X", MAKEPTR(mused.selected_wavetable), 2)) != 0)
+		if ((d = generic_field(event, &r, EDITWAVETABLE, W_WAVE, "WAVE", "%02X", MAKEPTR(mused.selected_wavetable), 2)) != 0)
 		{
 			wave_add_param(d);
 		}
@@ -60,9 +60,8 @@ void wavetable_view(SDL_Surface *dest_surface, const SDL_Rect *dest, const SDL_E
 		
 		r.w = 128;
 		
-		if ((d = generic_field(event, &r, W_RATE, "RATE", "%6d Hz", MAKEPTR(w->sample_rate), 9)) != 0)
+		if ((d = generic_field(event, &r, EDITWAVETABLE, W_RATE, "RATE", "%6d Hz", MAKEPTR(w->sample_rate), 9)) != 0)
 		{
-			mused.wavetable_param = W_RATE;
 			wave_add_param(d);
 		}
 		
@@ -71,18 +70,16 @@ void wavetable_view(SDL_Surface *dest_surface, const SDL_Rect *dest, const SDL_E
 		r.w = 72;
 		r.h = 10;
 		
-		if ((d = generic_field(event, &r, W_BASE, "BASE", "%s", notename((w->base_note + 0x80) >> 8), 3)) != 0)
+		if ((d = generic_field(event, &r, EDITWAVETABLE, W_BASE, "BASE", "%s", notename((w->base_note + 0x80) >> 8), 3)) != 0)
 		{
-			mused.wavetable_param = W_BASE;
 			wave_add_param(d);
 		}
 		
 		update_rect(&frame, &r);
 		r.w = 48;
 		
-		if ((d = generic_field(event, &r, W_BASEFINE, "", "%+4d", MAKEPTR((Sint8)w->base_note), 4)) != 0)
+		if ((d = generic_field(event, &r, EDITWAVETABLE, W_BASEFINE, "", "%+4d", MAKEPTR((Sint8)w->base_note), 4)) != 0)
 		{
-			mused.wavetable_param = W_BASEFINE;
 			wave_add_param(d);
 		}
 		
@@ -94,13 +91,13 @@ void wavetable_view(SDL_Surface *dest_surface, const SDL_Rect *dest, const SDL_E
 	{
 		r.w = 48;
 		
-		generic_flags(event, &r, W_LOOP, "LOOP", &w->flags, CYD_WAVE_LOOP);
+		generic_flags(event, &r, EDITWAVETABLE, W_LOOP, "LOOP", &w->flags, CYD_WAVE_LOOP);
 		
 		update_rect(&frame, &r);
 		
 		r.w = 76;
 		
-		generic_flags(event, &r, W_LOOPPINGPONG, "PINGPONG", &w->flags, CYD_WAVE_PINGPONG);
+		generic_flags(event, &r, EDITWAVETABLE, W_LOOPPINGPONG, "PINGPONG", &w->flags, CYD_WAVE_PINGPONG);
 		
 		update_rect(&frame, &r);
 		
@@ -108,17 +105,15 @@ void wavetable_view(SDL_Surface *dest_surface, const SDL_Rect *dest, const SDL_E
 		
 		int d;
 		
-		if ((d = generic_field(event, &r, W_LOOPBEGIN, "BEGIN", "%7d", MAKEPTR(w->loop_begin), 7)) != 0)
+		if ((d = generic_field(event, &r, EDITWAVETABLE, W_LOOPBEGIN, "BEGIN", "%7d", MAKEPTR(w->loop_begin), 7)) != 0)
 		{
-			mused.wavetable_param = W_LOOPBEGIN;
 			wave_add_param(d);
 		}
 		
 		update_rect(&frame, &r);
 		
-		if ((d = generic_field(event, &r, W_LOOPEND, "END", "%7d", MAKEPTR(w->loop_end), 7)) != 0)
+		if ((d = generic_field(event, &r, EDITWAVETABLE, W_LOOPEND, "END", "%7d", MAKEPTR(w->loop_end), 7)) != 0)
 		{
-			mused.wavetable_param = W_LOOPEND;
 			wave_add_param(d);
 		}
 		

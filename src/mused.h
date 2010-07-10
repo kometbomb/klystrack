@@ -40,6 +40,7 @@ enum
 	EDITCLASSIC,
 	EDITWAVETABLE,
 	EDITPROG,
+	EDITSONGINFO,
 	/* Virtual modes, i.e. what are not modes itself but should be considered happening "inside" prev_mode */
 	EDITBUFFER,
 	MENU
@@ -84,7 +85,7 @@ typedef struct
 		prev_mode, current_sequenceparam, instrument_list_position,
 		pattern_position, sequence_position, pattern_horiz_position, sequence_horiz_position,
 		program_position, current_program_step,
-		edit_reverb_param, selected_wavetable, wavetable_param;
+		edit_reverb_param, selected_wavetable, wavetable_param, songinfo_param;
 	Uint16 *ghost_pattern[MUS_MAX_CHANNELS];
 	int current_sequencetrack;
 	Uint16 time_signature;

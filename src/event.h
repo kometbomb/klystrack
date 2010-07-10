@@ -39,6 +39,8 @@ void fx_event(SDL_Event *e);
 void fx_add_param(int d);
 void wave_event(SDL_Event *e);
 void wave_add_param(int d);
+void songinfo_event(SDL_Event *e);
+void songinfo_add_param(int d);
 void instrument_add_param(int a);
 void del_sequence(int first,int last,int track);
 void add_sequence(int channel, int position, int pattern, int offset);
@@ -113,6 +115,7 @@ enum
 	P_PWMDEPTH,
 	P_PWMSHAPE,
 	P_FXBUS,
+	/*----------*/
 	P_PARAMS
 };
 
@@ -150,6 +153,22 @@ enum
 	R_SPREAD,
 	R_DELAY,
 	R_GAIN
+};
+
+enum
+{
+	SI_MASTERVOL,
+	SI_LENGTH,
+	SI_LOOP,
+	SI_STEP,
+	SI_SPEED1,
+	SI_SPEED2,
+	SI_RATE,
+	SI_TIME,
+	SI_OCTAVE,
+	SI_CHANNELS,
+	/*--------*/
+	SI_N_PARAMS
 };
 
 #endif

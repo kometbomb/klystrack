@@ -98,7 +98,7 @@ static const View pattern_view_tab[] =
 
 static const View classic_view_tab[] =
 {
-	{{0,0,CLASSIC_SONG_INFO,CLASSIC_SONG_INFO_H}, info_view, NULL, -1},
+	{{0,0,CLASSIC_SONG_INFO,CLASSIC_SONG_INFO_H}, songinfo_view, NULL, -1},
 	{{CLASSIC_SONG_INFO, 0, 0-SCROLLBAR, CLASSIC_SONG_INFO_H - 25}, sequence_view, NULL, EDITSEQUENCE},
 	{{0-SCROLLBAR, 0, SCROLLBAR, CLASSIC_SONG_INFO_H - 25}, slider, &mused.sequence_slider_param, EDITSEQUENCE},
 	{{CLASSIC_SONG_INFO, CLASSIC_SONG_INFO_H-25, 0, 25}, bevel_view, (void*)BEV_BACKGROUND, -1},
@@ -114,7 +114,7 @@ static const View classic_view_tab[] =
 
 static const View sequence_view_tab[] =
 {
-	{{0,0,0,SEQ_VIEW_INFO_H}, info_view, NULL, -1},
+	{{0,0,0,SEQ_VIEW_INFO_H}, songinfo_view, NULL, -1},
 	{{0, SEQ_VIEW_INFO_H, -130, 14}, bevel_view, (void*)BEV_BACKGROUND, -1},
 	{{2, SEQ_VIEW_INFO_H+2, -130-2, 10}, song_name_view, NULL, -1},
 	{{-130, SEQ_VIEW_INFO_H, 130, 14}, instrument_disk_view, MAKEPTR(OD_T_SONG), -1},
@@ -392,6 +392,10 @@ int main(int argc, char **argv)
 							
 							case EDITWAVETABLE:
 							wave_event(&e);
+							break;
+							
+							case EDITSONGINFO:
+							songinfo_event(&e);
 							break;
 						}
 						
