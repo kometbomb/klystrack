@@ -1,0 +1,24 @@
+normal = 0xffffff
+
+sequence_selected = 0xffffff
+sequence_bar = 0xcdcce0
+sequence_beat = 0xcdcce0
+sequence_normal = 0xcdcce0
+sequence_disabled = 0x000000
+
+pattern_normal = 0xcdcce0
+pattern_beat = 0xcdcce0
+pattern_bar = 0xcdcce0
+pattern_selected = 0xffffff
+pattern_disabled = 0x595465
+
+pattern_instrument = 0xcdcce0
+pattern_instrument_beat = 0xcdcce0
+pattern_instrument_bar = 0xcdcce0
+
+program_selected = 0xffffff
+program_even = 0xcdcce0
+program_odd = 0xcdcce0
+
+instrument_selected = 0xffffff
+instrument_normal = 0xcdcce0
