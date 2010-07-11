@@ -101,6 +101,7 @@ static void load_colors(const char *cfg)
 				{
 					colors[i] = color;
 					FIX_ENDIAN(colors[i]);
+					
 					break;
 				}
 			}
@@ -128,10 +129,8 @@ int font_load_and_set_color(Font *font, Bundle *b, char *name, Uint32 color)
 		
 		SDL_BlitSurface(font->surface->surface, NULL, temp, NULL);
 		
-		debug("color = %06X", color);
-		
-		/*SDL_Color rgb = { color >> 16, color >> 8, color };
-		SDL_SetColors(temp, &rgb, 1, 1);*/
+		SDL_Color rgb = { color >> 16, color >> 8, color };
+		SDL_SetColors(temp, &rgb, 1, 1);
 		
 		SDL_BlitSurface(temp, NULL, font->surface->surface, NULL);
 		
@@ -217,7 +216,7 @@ void load_theme(const char *name)
 		}
 		
 		font_destroy(&mused.menufont);
-		font_load_and_set_color(&mused.menufont, &res, "8x8.fnt", colors[COLOR_MENU]);
+		font_load_and_set_color(&mused.menufont, &res, "8x8.fnt", colors[COLOR_MENU_NORMAL]);
 		font_destroy(&mused.menufont_selected);
 		font_load_and_set_color(&mused.menufont_selected, &res, "8x8.fnt", colors[COLOR_MENU_SELECTED]);
 		font_destroy(&mused.shortcutfont);
