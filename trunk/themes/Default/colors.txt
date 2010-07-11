@@ -22,3 +22,10 @@ program_odd = 0xb0a0b0
 
 instrument_selected = 0xffffff
 instrument_normal = 0xc0c0c0
+
+menu = 0xffffff
+menu_selected = 0xffffff
+menu_header = 0xffffff
+menu_header_selected = 0xffffff
+menu_shortcut = 0xffffff
+menu_shortcut_selected = 0xffffff

@@ -322,7 +322,7 @@ int main(int argc, char **argv)
 					if (e.button.button == SDL_BUTTON_RIGHT)
 					{
 						change_mode(MENU);
-						open_menu(mainmenu, menu_close_hook, shortcuts, &mused.largefont, &mused.smallfont, mused.slider_bevel->surface);
+						open_menu(mainmenu, menu_close_hook, shortcuts, &mused.headerfont, &mused.headerfont_selected, &mused.menufont, &mused.menufont_selected, &mused.shortcutfont, &mused.shortcutfont_selected, mused.slider_bevel->surface);
 					}
 				break;
 				
@@ -445,9 +445,11 @@ int main(int argc, char **argv)
 				if (mused.mode == MENU) 
 				{
 					SDL_Event foo = {0};
+					
 					my_draw_view(tab[m], &foo, mused.screen);
+					
 					draw_menu(mused.screen, &e);
-				
+					
 					if (menu_closed) 
 					{
 						close_menu();
