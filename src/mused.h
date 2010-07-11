@@ -103,6 +103,10 @@ typedef struct
 	int stat_pattern_number[MUS_MAX_CHANNELS];
 	GfxSurface *slider_bevel;
 	Font smallfont, largefont;
+	
+	/* for menu */
+	Font menufont, menufont_selected, headerfont, headerfont_selected, shortcutfont, shortcutfont_selected;
+	
 	SDL_Surface *screen;
 	char themename[100];
 	int pixel_scale;

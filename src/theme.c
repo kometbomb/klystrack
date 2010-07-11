@@ -85,7 +85,13 @@ static void load_colors(const char *cfg)
 				"program_even",
 				"program_odd",
 				"instrument_selected",
-				"instrument_normal"
+				"instrument_normal",
+				"menu",
+				"menu_selected",
+				"menu_header",
+				"menu_header_selected",
+				"menu_shortcut",
+				"menu_shortcut_selected"
 			};
 			
 			int i;
@@ -108,6 +114,33 @@ static void load_colors(const char *cfg)
 	free(temp);
 }
 
+
+
+int font_load_and_set_color(Font *font, Bundle *b, char *name, Uint32 color)
+{
+	if (font_load(font, b, name))
+	{
+		SDL_Surface *temp = SDL_CreateRGBSurface(SDL_SWSURFACE, font->surface->surface->w, font->surface->surface->h, 8, 0xFF0000, 0x00FF00, 0x0000FF, 0xFF000000);
+		
+		SDL_Color palette[] = {{ 255, 0, 255 }, { 255, 255, 255 }, {0, 0, 0}};
+		SDL_SetColors(temp, palette, 0, 3);
+		SDL_SetColorKey(temp, SDL_SRCCOLORKEY, 0);
+		
+		SDL_BlitSurface(font->surface->surface, NULL, temp, NULL);
+		
+		debug("color = %06X", color);
+		
+		/*SDL_Color rgb = { color >> 16, color >> 8, color };
+		SDL_SetColors(temp, &rgb, 1, 1);*/
+		
+		SDL_BlitSurface(temp, NULL, font->surface->surface, NULL);
+		
+		SDL_FreeSurface(temp);
+		return 1;
+	}
+	else
+		return 0;
+}
 
 
 
@@ -164,23 +197,38 @@ void load_theme(const char *name)
 		font_destroy(&mused.largefont);
 		font_load(&mused.largefont, &res, "8x8.fnt");
 		
-		SDL_RWops *colors = SDL_RWFromBundle(&res, "colors.txt");
-		if (colors)
 		{
-			SDL_RWseek(colors, 0, SEEK_END);
-			size_t s = SDL_RWtell(colors);
-			char *temp = calloc(1, s + 2);
-			SDL_RWseek(colors, 0, SEEK_SET);
-			SDL_RWread(colors, temp, 1, s);
-			
-			strcat(temp, "\n");
-			
-			SDL_FreeRW(colors);
-			
-			load_colors(temp);
-			free(temp);
+			SDL_RWops *colors = SDL_RWFromBundle(&res, "colors.txt");
+			if (colors)
+			{
+				SDL_RWseek(colors, 0, SEEK_END);
+				size_t s = SDL_RWtell(colors);
+				char *temp = calloc(1, s + 2);
+				SDL_RWseek(colors, 0, SEEK_SET);
+				SDL_RWread(colors, temp, 1, s);
+				
+				strcat(temp, "\n");
+				
+				SDL_FreeRW(colors);
+				
+				load_colors(temp);
+				free(temp);
+			}
 		}
 		
+		font_destroy(&mused.menufont);
+		font_load_and_set_color(&mused.menufont, &res, "8x8.fnt", colors[COLOR_MENU]);
+		font_destroy(&mused.menufont_selected);
+		font_load_and_set_color(&mused.menufont_selected, &res, "8x8.fnt", colors[COLOR_MENU_SELECTED]);
+		font_destroy(&mused.shortcutfont);
+		font_load_and_set_color(&mused.shortcutfont, &res, "7x6.fnt", colors[COLOR_MENU_SHORTCUT]);
+		font_destroy(&mused.shortcutfont_selected);
+		font_load_and_set_color(&mused.shortcutfont_selected, &res, "7x6.fnt", colors[COLOR_MENU_SHORTCUT_SELECTED]);
+		font_destroy(&mused.headerfont);
+		font_load_and_set_color(&mused.headerfont, &res, "7x6.fnt", colors[COLOR_MENU_HEADER]);
+		font_destroy(&mused.headerfont_selected);
+		font_load_and_set_color(&mused.headerfont_selected, &res, "7x6.fnt", colors[COLOR_MENU_HEADER_SELECTED]);
+				
 		bnd_free(&res);
 		strcpy(mused.themename, name);
 		update_theme_menu();

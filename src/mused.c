@@ -307,6 +307,12 @@ void deinit()
 	gfx_free_surface(mused.slider_bevel);
 	font_destroy(&mused.smallfont);
 	font_destroy(&mused.largefont);
+	font_destroy(&mused.menufont);
+	font_destroy(&mused.menufont_selected);
+	font_destroy(&mused.shortcutfont);
+	font_destroy(&mused.shortcutfont_selected);
+	font_destroy(&mused.headerfont);
+	font_destroy(&mused.headerfont_selected);
 	free_themes();
 }
 
