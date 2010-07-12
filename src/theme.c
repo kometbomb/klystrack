@@ -178,7 +178,7 @@ void load_theme(const char *name)
 		{
 			if (mused.slider_bevel) gfx_free_surface(mused.slider_bevel);
 			mused.slider_bevel = gfx_load_surface_RW(rw, GFX_KEYED);
-			
+					
 			/* TODO: do we need to store the surface in the params? */
 	
 			mused.sequence_slider_param.gfx = mused.slider_bevel->surface; 
@@ -187,6 +187,13 @@ void load_theme(const char *name)
 			mused.instrument_list_slider_param.gfx = mused.slider_bevel->surface;
 			mused.pattern_horiz_slider_param.gfx = mused.slider_bevel->surface; 
 			mused.sequence_horiz_slider_param.gfx = mused.slider_bevel->surface;
+		}
+		
+		rw = SDL_RWFromBundle(&res, "vu.bmp");
+		if (rw)
+		{
+			if (mused.vu_meter) gfx_free_surface(mused.vu_meter);
+			mused.vu_meter = gfx_load_surface_RW(rw, GFX_KEYED);
 		}
 	
 		if (mused.console) console_destroy(mused.console); 

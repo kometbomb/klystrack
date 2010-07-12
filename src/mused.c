@@ -286,7 +286,7 @@ void init(MusInstrument *instrument, MusPattern *pattern, MusSeqPattern sequence
 	
 	enum_themes();
 	
-	change_mode(EDITSEQUENCE);
+	change_mode(EDITCLASSIC);
 	
 	debug("init done");
 }
@@ -307,6 +307,7 @@ void deinit()
 {
 	console_destroy(mused.console);
 	gfx_free_surface(mused.slider_bevel);
+	gfx_free_surface(mused.vu_meter);
 	font_destroy(&mused.smallfont);
 	font_destroy(&mused.largefont);
 	font_destroy(&mused.menufont);

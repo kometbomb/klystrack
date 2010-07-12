@@ -708,10 +708,12 @@ void pattern_view_inner(SDL_Surface *dest_surface, const SDL_Rect *dest, const S
 		const SDL_Rect *r;
 		SDL_Rect clipped;
 		
+		const char *emptychar = "-", *emptynote = "---";
+		
 		if (mused.song.pattern[current_pattern].step[i].note == MUS_NOTE_RELEASE)
 			r = console_write(mused.console, "\x08\x09\x0b");
 		else if (mused.song.pattern[current_pattern].step[i].note == MUS_NOTE_NONE)
-			r = console_write(mused.console, "...");
+			r = console_write(mused.console, emptynote);
 		else
 			r = console_write(mused.console, notename(mused.song.pattern[current_pattern].step[i].note));
 			
@@ -729,7 +731,7 @@ void pattern_view_inner(SDL_Surface *dest_surface, const SDL_Rect *dest, const S
 		if (mused.song.pattern[current_pattern].step[i].instrument != MUS_NOTE_NO_INSTRUMENT)
 			r = console_write_args(mused.console, "%X", mused.song.pattern[current_pattern].step[i].instrument >> 4);
 		else
-			r = console_write(mused.console, ".");
+			r = console_write(mused.console, emptychar);
 			
 		copy_rect(&clipped, r);
 		clip_rect(&clipped, &content);
@@ -741,7 +743,7 @@ void pattern_view_inner(SDL_Surface *dest_surface, const SDL_Rect *dest, const S
 		if (mused.song.pattern[current_pattern].step[i].instrument != MUS_NOTE_NO_INSTRUMENT)
 			r = console_write_args(mused.console, "%X", mused.song.pattern[current_pattern].step[i].instrument & 0xf);
 		else
-			r = console_write(mused.console, ".");
+			r = console_write(mused.console, emptychar);
 			
 		if (!(mused.mus.channel[channel].flags & MUS_CHN_DISABLED))
 			console_set_color(mused.console, base, CON_CHARACTER);
@@ -760,7 +762,7 @@ void pattern_view_inner(SDL_Surface *dest_surface, const SDL_Rect *dest, const S
 			for (int p = PED_CTRL ; p < PED_COMMAND1 ; ++p)
 			{
 				char *bitname = "LSV";
-				r = console_write_args(mused.console, "%c", mused.song.pattern[current_pattern].step[i].ctrl & (MUS_CTRL_BIT << (p - PED_CTRL)) ? bitname[p - PED_CTRL] : '.');
+				r = console_write_args(mused.console, "%c", mused.song.pattern[current_pattern].step[i].ctrl & (MUS_CTRL_BIT << (p - PED_CTRL)) ? bitname[p - PED_CTRL] : emptychar[0]);
 				copy_rect(&clipped, r);
 				clip_rect(&clipped, &content);
 			
@@ -774,7 +776,7 @@ void pattern_view_inner(SDL_Surface *dest_surface, const SDL_Rect *dest, const S
 		for (int p = 0 ; p < 4 ; ++p)
 		{
 			if (mused.song.pattern[current_pattern].step[i].command == 0 && (mused.flags & HIDE_ZEROS))
-				r = console_write_args(mused.console, ".");
+				r = console_write_args(mused.console, emptychar);
 			else
 				r = console_write_args(mused.console, "%X", (mused.song.pattern[current_pattern].step[i].command >> ((3-p)*4)) & 0xf);
 			copy_rect(&clipped, r);
@@ -788,7 +790,16 @@ void pattern_view_inner(SDL_Surface *dest_surface, const SDL_Rect *dest, const S
 		{
 			if (i == mused.stat_pattern_position[channel] && mused.mus.song_track[channel].pattern == &mused.song.pattern[current_pattern])
 			{
-				bevel(mused.screen,&row, mused.slider_bevel->surface, BEV_SEQUENCE_PLAY_POS);
+				bevel(mused.screen, &row, mused.slider_bevel->surface, BEV_SEQUENCE_PLAY_POS);
+				
+				if ((mused.flags & SONG_PLAYING) && (mused.flags & CENTER_PATTERN_EDITOR)) 
+				{
+					const int w = mused.vu_meter->surface->w;
+					const int h = mused.vis.cyd_env[channel] * my_min(dest->h / 2, mused.vu_meter->surface->h) / MAX_VOLUME ;
+					SDL_Rect r = { row.x + row.w / 2 - w / 2 , row.y - h, w, h };
+					SDL_Rect sr = { 0, mused.vu_meter->surface->h - h, mused.vu_meter->surface->w, h };
+					SDL_BlitSurface(mused.vu_meter->surface, &sr, mused.screen, &r);
+				}
 			}
 		}
 		
@@ -816,12 +827,6 @@ void pattern_view_inner(SDL_Surface *dest_surface, const SDL_Rect *dest, const S
 	}
 	
 	bevel(mused.screen,dest, mused.slider_bevel->surface, BEV_THIN_FRAME);
-	
-	/*if (mused.flags & SONG_PLAYING) 
-	{
-		SDL_Rect r = { 0 , 16 * channel, mused.vis.cyd_env[channel] * 100 / MAX_VOLUME, 16 };
-		SDL_FillRect(mused.screen, &r, 0xffffff);
-	}*/
 }
 
 
@@ -875,19 +880,16 @@ static void pattern_header(SDL_Surface *dest_surface, const SDL_Event *event, in
 	copy_rect(&button, topleft);
 	copy_rect(&pattern, topleft);
 			
-	pattern.w = 8 * 2 + 2 + 16 + ((mused.flags & COMPACT_VIEW) ? 12 : 40) + 6; 
+	pattern.w = 32 + 14 + 3; 
 	pattern.x = x + 4;
-	pattern.y += 1;
 	pattern.h = 10;
+	pattern.y += 1;
 	
 	char label[10] = "";
 	
 	if (channel != -1)
 	{
-		if (mused.flags & COMPACT_VIEW)
-			sprintf(label, "%X", channel);
-		else
-			sprintf(label, "CHN %X", channel);
+		sprintf(label, "%02X", channel);
 	}
 	
 	int d = generic_field(event, &pattern, 99, channel, label, "%02X", MAKEPTR(*pattern_var), 2);
@@ -908,7 +910,23 @@ static void pattern_header(SDL_Surface *dest_surface, const SDL_Event *event, in
 			mused.current_pattern = *pattern_var;
 	}
 			
-	button.x = x + pattern_width - button.w - 2;
+	button.x = x + pattern_width - button.w - 3;
+	
+	if (!(mused.flags & COMPACT_VIEW) && channel != -1)
+	{
+		SDL_Rect vol;
+		copy_rect(&vol, &button);
+	
+		vol.x -= vol.w + 3 + 17;
+		vol.w = 32;
+		vol.h -= 2;
+		vol.y += 1;
+		
+		int d;
+		
+		if ((d = generic_field(event, &vol, 98, channel, "", "%02X", MAKEPTR(mused.song.default_volume[channel]), 2)))
+			mused.song.default_volume[channel] = my_max(0, my_min(MAX_VOLUME, (int)mused.song.default_volume[channel] + d));
+	}
 	
 	if (channel != -1)
 		button_event(dest_surface, event, &button, mused.slider_bevel->surface, 
