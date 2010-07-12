@@ -321,6 +321,9 @@ int save_song(FILE *f)
 		fwrite(&temp, 1, sizeof(temp), f);
 	}
 	
+	fwrite(&mused.song.default_volume[0], sizeof(mused.song.default_volume[0]), mused.song.num_channels, f);
+	fwrite(&mused.song.default_panning[0], sizeof(mused.song.default_panning[0]), mused.song.num_channels, f);
+	
 	int max_wt = CYD_WAVE_MAX_ENTRIES;
 	
 	for (int i = 0 ; i < n_inst ; ++i)

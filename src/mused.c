@@ -195,6 +195,8 @@ void new_song()
 	{
 		memset(mused.song.sequence[i], 0, NUM_SEQUENCES * sizeof(*mused.song.sequence));
 		mused.song.num_sequences[i] = 0;
+		mused.song.default_volume[i] = MAX_VOLUME;
+		mused.song.default_panning[i] = 0;
 	}
 	
 	memset(mused.ghost_pattern, 0, sizeof(mused.ghost_pattern));
