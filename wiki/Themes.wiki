@@ -29,6 +29,8 @@ The hexadecimal number is a RGB value.
 
 This is the main graphics file. The first row has different bevel (patterned rectangle) styles, the bottom row has button decals. The bevels generally have a 4 pixel wide border and a 8x8 center that is repeated. Everything has to be 16x16. 
 
+_RGB 255 0 255_ is the magic color for transparency (because it's a horrible color and should never be used.)
+
 Here are the horizontal offsets for the graphics.
 
 {{{
@@ -67,6 +69,10 @@ Here are the horizontal offsets for the graphics.
 #define DECAL_LEFTARROW 160
 #define DECAL_CLOSE 176
 }}}
+
+=vu.bmp=
+
+This file contains the VU meter graphics. The dimensions can be anything as long as they fit inside the pattern area.
 
 =8x8.fnt, 7x6.fnt=
 
