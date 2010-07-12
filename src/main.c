@@ -415,10 +415,12 @@ int main(int argc, char **argv)
 				break; 
 		}
 		
-		if (active && (got_event || gfx_domain_is_next_frame(domain)))
+		int prev_position = mused.stat_song_position;
+		
+		mus_poll_status(&mused.mus, &mused.stat_song_position, mused.stat_pattern_position, mused.stat_pattern, channel, mused.vis.cyd_env);
+		
+		if (active && (got_event || gfx_domain_is_next_frame(domain) || prev_position != mused.stat_song_position))
 		{
-			mus_poll_status(&mused.mus, &mused.stat_song_position, mused.stat_pattern_position, mused.stat_pattern, channel, mused.vis.cyd_env);
-			
 			if ((mused.flags & FOLLOW_PLAY_POSITION) && (mused.flags & SONG_PLAYING))
 			{
 				mused.current_sequencepos = mused.stat_song_position - mused.stat_song_position % mused.sequenceview_steps;
@@ -467,7 +469,7 @@ int main(int argc, char **argv)
 			gfx_domain_flip(domain);
 		}
 		else
-			SDL_Delay(10);
+			SDL_Delay(4);
 		
 		if (mused.done) 
 		{
