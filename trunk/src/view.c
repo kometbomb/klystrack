@@ -792,7 +792,7 @@ void pattern_view_inner(SDL_Surface *dest_surface, const SDL_Rect *dest, const S
 			{
 				bevel(mused.screen, &row, mused.slider_bevel->surface, BEV_SEQUENCE_PLAY_POS);
 				
-				if ((mused.flags & SONG_PLAYING) && (mused.flags & CENTER_PATTERN_EDITOR)) 
+				if ((mused.flags & SONG_PLAYING) && (mused.flags & CENTER_PATTERN_EDITOR) && (mused.flags & FOLLOW_PLAY_POSITION)) 
 				{
 					const int w = mused.vu_meter->surface->w;
 					const int h = mused.vis.cyd_env[channel] * my_min(dest->h / 2, mused.vu_meter->surface->h) / MAX_VOLUME ;
