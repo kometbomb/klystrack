@@ -39,9 +39,9 @@ extern Mused mused;
 
 static Uint16 validate_command(Uint16 command)
 {
-	if ((command & 0x7f00) == MUS_FX_SET_VOLUME && (command & 0xff) > MAX_VOLUME) command = MUS_FX_SET_VOLUME | MAX_VOLUME;
+	if (((command & 0x7f00) == MUS_FX_SET_VOLUME || (command & 0x7f00) == MUS_FX_SET_GLOBAL_VOLUME || (command & 0x7f00) == MUS_FX_SET_CHANNEL_VOLUME) && (command & 0xff) > MAX_VOLUME) command = (command & 0xff00) | MAX_VOLUME;
 	else if ((command & 0x7f00) == MUS_FX_SET_PANNING && (command & 0xff) > CYD_PAN_RIGHT) command = MUS_FX_SET_PANNING | CYD_PAN_RIGHT;
-	else if ((command & 0x7000) == MUS_FX_CUTOFF_FINE_SET && (command & 0xfff) > 0x7ff) command = MUS_FX_CUTOFF_FINE_SET  | 0x7ff;
+	else if (((command & 0x7000) == MUS_FX_CUTOFF_FINE_SET) && (command & 0xfff) > 0x7ff) command = MUS_FX_CUTOFF_FINE_SET  | 0x7ff;
 	
 	return command;
 }
