@@ -18,6 +18,8 @@ You can then drop {{{my_theme}}} in the klystrack {{{res}}} directory and load i
 
 =Theme file contents=
 
+*RGB 255 0 255 is the magic color for transparency (because it's a horrible color and should never be used.)*
+
 ==colors.txt==
 
 This file contains the text color definitions. The while should contain definitions in the following format, each on its own line:
@@ -32,8 +34,6 @@ The hexadecimal number is a RGB value.
 ==bevel.bmp==
 
 This is the main graphics file. The first row has different bevel (patterned rectangle) styles, the bottom row has button decals. The bevels generally have a 4 pixel wide border and a 8x8 center that is repeated. Everything has to be 16x16. 
-
-_RGB 255 0 255_ is the magic color for transparency (because it's a horrible color and should never be used.)
 
 Here are the horizontal offsets for the graphics.
 
