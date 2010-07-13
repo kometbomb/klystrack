@@ -67,7 +67,6 @@ static void load_colors(const char *cfg)
 		{
 			static const char *names[NUM_COLORS] =
 			{
-				"normal",
 				"sequence_selected",
 				"sequence_bar",
 				"sequence_beat",

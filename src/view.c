@@ -1149,7 +1149,7 @@ void info_line(SDL_Surface *dest_surface, const SDL_Rect *dest, const SDL_Event 
 	bevel(mused.screen,&area, mused.slider_bevel->surface, BEV_THIN_FRAME);
 	adjust_rect(&area, 3);
 	console_set_clip(mused.console, &area);
-	console_set_color(mused.console,colors[COLOR_NORMAL],CON_CHARACTER);
+	console_set_color(mused.console,colors[COLOR_MAIN_TEXT],CON_CHARACTER);
 	
 	console_clear(mused.console);
 	
@@ -1407,7 +1407,7 @@ static void inst_text(const SDL_Event *e, const SDL_Rect *area, int p, const cha
 
 static void inst_field(const SDL_Event *e, const SDL_Rect *area, int p, int length, char *text)
 {
-	console_set_color(mused.console,colors[COLOR_NORMAL],CON_CHARACTER);
+	console_set_color(mused.console,colors[COLOR_MAIN_TEXT],CON_CHARACTER);
 	console_set_clip(mused.console, area);
 	console_clear(mused.console);
 	
