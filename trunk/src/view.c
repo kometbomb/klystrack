@@ -877,8 +877,8 @@ static void pattern_header(SDL_Surface *dest_surface, const SDL_Event *event, in
 {
 	SDL_Rect button, pattern, area;
 	copy_rect(&area, topleft);
-	area.x = x;
-	area.w = pattern_width;
+	area.x = x + 1;
+	area.w = pattern_width - 1;
 	bevel(mused.screen,&area, mused.slider_bevel->surface, BEV_BACKGROUND);
 	copy_rect(&button, topleft);
 	copy_rect(&pattern, topleft);
@@ -913,7 +913,7 @@ static void pattern_header(SDL_Surface *dest_surface, const SDL_Event *event, in
 			mused.current_pattern = *pattern_var;
 	}
 			
-	button.x = x + pattern_width - button.w - 3;
+	button.x = x + pattern_width - button.w - 1;
 	
 	if (!(mused.flags & COMPACT_VIEW) && channel != -1)
 	{
@@ -968,9 +968,9 @@ void pattern_view(SDL_Surface *dest_surface, const SDL_Rect *dest, const SDL_Eve
 	const int track_header_size = 12;
 	
 	compact.h = track_header_size;
-	compact.w = pos.w - 2;
+	compact.w = pos.w - 1;
 	
-	bevel(mused.screen,&compact, mused.slider_bevel->surface, BEV_BACKGROUND);
+	bevel(mused.screen, &compact, mused.slider_bevel->surface, BEV_BACKGROUND);
 	
 	adjust_rect(&compact, 2);
 	

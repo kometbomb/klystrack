@@ -119,6 +119,7 @@ typedef struct
 	struct 
 	{
 		int cyd_env[MUS_MAX_CHANNELS];
+		int spec_peak[96], spec_peak_decay[96];
 	} vis;
 	
 	/*---*/

@@ -91,7 +91,9 @@ static void load_colors(const char *cfg)
 				"menu_header",
 				"menu_header_selected",
 				"menu_shortcut",
-				"menu_shortcut_selected"
+				"menu_shortcut_selected",
+				"main_text",
+				"small_text"
 			};
 			
 			int i;
@@ -198,10 +200,7 @@ void load_theme(const char *name)
 	
 		if (mused.console) console_destroy(mused.console); 
 		mused.console = console_create(fullpath);
-		font_destroy(&mused.smallfont);
-		font_load(&mused.smallfont, &res, "7x6.fnt");
-		font_destroy(&mused.largefont);
-		font_load(&mused.largefont, &res, "8x8.fnt");
+		
 		
 		{
 			SDL_RWops *colors = SDL_RWFromBundle(&res, "colors.txt");
@@ -222,6 +221,10 @@ void load_theme(const char *name)
 			}
 		}
 		
+		font_destroy(&mused.smallfont);
+		font_load_and_set_color(&mused.smallfont, &res, "7x6.fnt", colors[COLOR_SMALL_TEXT]);
+		font_destroy(&mused.largefont);
+		font_load_and_set_color(&mused.largefont, &res, "8x8.fnt", colors[COLOR_MAIN_TEXT]);
 		font_destroy(&mused.menufont);
 		font_load_and_set_color(&mused.menufont, &res, "8x8.fnt", colors[COLOR_MENU_NORMAL]);
 		font_destroy(&mused.menufont_selected);
