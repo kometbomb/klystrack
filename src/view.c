@@ -810,7 +810,7 @@ void pattern_view_inner(SDL_Surface *dest_surface, const SDL_Rect *dest, const S
 	}
 	
 	if (current_pattern == mused.current_pattern && mused.focus == EDITPATTERN && mused.selection.start != mused.selection.end 
-		&& !(mused.selection.start > mused.pattern_slider_param.visible_last || mused.selection.end <= mused.pattern_slider_param.visible_first))
+		/*&& !(mused.selection.start > mused.pattern_slider_param.visible_last || mused.selection.end <= mused.pattern_slider_param.visible_first)*/)
 	{
 		if (selection_begin == -1) selection_begin = content.y - 8;
 		if (selection_end == -1) selection_end = content.y + content.h + 8;

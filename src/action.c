@@ -222,6 +222,28 @@ void unmute_all_action(void *unused1, void *unused2, void *unused3)
 }
 
 
+void select_all(void *unused1, void *unused2, void *unused3)
+{
+	switch (mused.focus)
+	{
+		case EDITPATTERN:
+			mused.selection.start = 0;
+			mused.selection.end = mused.song.pattern[mused.current_pattern].num_steps;
+			break;
+			
+		case EDITPROG:
+			mused.selection.start = 0;
+			mused.selection.end = MUS_PROG_LEN;
+			break;
+			
+		case EDITSEQUENCE:
+			mused.selection.start = 0;
+			mused.selection.end = mused.song.song_length;
+			break;
+	}
+}
+
+
 void clear_selection(void *unused1, void *unused2, void *unused3)
 {
 	mused.selection.start = 0;
