@@ -29,3 +29,5 @@ menu_header = 0xffffff
 menu_header_selected = 0xffffff
 menu_shortcut = 0xffffff
 menu_shortcut_selected = 0xffffff
+
+background = 0x0

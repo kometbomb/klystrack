@@ -181,6 +181,8 @@ void my_separator(const SDL_Rect *parent, SDL_Rect *rect)
 
 void my_draw_view(const View* views, const SDL_Event *_event, const SDL_Surface *screen)
 {
+	SDL_FillRect(mused.screen, NULL, colors[COLOR_BACKGROUND]);
+
 	SDL_Event event;
 	memcpy(&event, _event, sizeof(event));
 	for (int i = 0 ; views[i].handler ; ++i)
