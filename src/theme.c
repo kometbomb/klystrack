@@ -92,7 +92,8 @@ static void load_colors(const char *cfg)
 				"menu_shortcut",
 				"menu_shortcut_selected",
 				"main_text",
-				"small_text"
+				"small_text",
+				"background"
 			};
 			
 			int i;
