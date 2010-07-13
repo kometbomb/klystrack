@@ -95,12 +95,14 @@ typedef struct
 	SliderParam sequence_slider_param, pattern_slider_param, program_slider_param, instrument_list_slider_param, pattern_horiz_slider_param, sequence_horiz_slider_param;
 	/*---*/
 	char * edit_backup_buffer;
-	int stat_song_position;
 	Selection selection;
+	/* -- stat -- */
+	int stat_song_position;
 	int stat_pattern_position[MUS_MAX_CHANNELS];
 	MusPattern *stat_pattern[MUS_MAX_CHANNELS];
 	MusChannel *channel;
-	int stat_pattern_number[MUS_MAX_CHANNELS];
+	int stat_pattern_number[MUS_MAX_CHANNELS], stat_note[MUS_MAX_CHANNELS];
+	/* ---- */
 	GfxSurface *slider_bevel, *vu_meter;
 	Font smallfont, largefont;
 	
@@ -122,6 +124,8 @@ typedef struct
 	/*---*/
 	SDL_Rect cursor_target, cursor;
 } Mused;
+
+extern Mused mused;
 
 #define NUM_PATTERNS 256
 #define NUM_INSTRUMENTS 128

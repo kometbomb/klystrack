@@ -42,6 +42,10 @@ static Uint16 find_command_ahx(Uint8 command, Uint8 data, Uint8 *ctrl)
 		{
 			if (data <= 0x40)
 				return MUS_FX_SET_VOLUME | ((int)data * 2);
+			else if (data >= 0x50 && data <= 0x90)
+				return MUS_FX_SET_GLOBAL_VOLUME | ((int)(data - 0x50) * 2); // not totally correct
+			else if (data >= 0xa0 && data <= 0xe0)
+				return MUS_FX_SET_CHANNEL_VOLUME | ((int)(data - 0xa0) * 2);
 		}
 		break;
 		
@@ -56,7 +60,7 @@ static Uint16 find_command_ahx(Uint8 command, Uint8 data, Uint8 *ctrl)
 		{
 			if (data < 0x20)
 			{
-				return MUS_FX_SLIDE | my_min(0xff, data * 8);
+				return MUS_FX_SLIDE | my_min(0xff, data * 16);
 			}
 			else
 			{
