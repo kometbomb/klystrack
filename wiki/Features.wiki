@@ -11,5 +11,5 @@
   * Envelope, ring modulation, filter and more for each channel
   * Stereo output
   * Reverb for SNES cheese
-  * Protracker module import (no samples)
+  * Protracker module import (with samples)
   * AHX module import (including instruments)
