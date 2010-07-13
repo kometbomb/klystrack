@@ -895,6 +895,7 @@ void pattern_event(SDL_Event *e)
 					{
 						case PED_NOTE:
 							mused.song.pattern[mused.current_pattern].step[mused.current_patternstep].note = MUS_NOTE_NONE;	
+							mused.song.pattern[mused.current_pattern].step[mused.current_patternstep].instrument = MUS_NOTE_NO_INSTRUMENT;	
 							break;
 							
 						case PED_INSTRUMENT1:
