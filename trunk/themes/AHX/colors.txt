@@ -1,4 +1,6 @@
-normal = 0xffffff
+background = 0x0
+main_text = 0xffffff
+small_text = 0xffffff
 
 sequence_selected = 0xffffff
 sequence_bar = 0xc6c6ce
