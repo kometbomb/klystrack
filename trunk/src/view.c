@@ -383,6 +383,8 @@ void sequence_view(SDL_Surface *dest_surface, const SDL_Rect *dest, const SDL_Ev
 {
 	char text[200];
 	
+	SDL_SetClipRect(mused.screen, NULL);
+	
 	console_clear(mused.console);
 	
 	int start = mused.sequence_position;

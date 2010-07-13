@@ -44,6 +44,7 @@ OTHER DEALINGS IN THE SOFTWARE.
 #include "mybevdefs.h"
 #include <time.h>
 #include "util/rnd.h"
+#include "view/visu.h"
 
 #include "view/wavetableview.h"
 
@@ -417,7 +418,7 @@ int main(int argc, char **argv)
 		
 		int prev_position = mused.stat_song_position;
 		
-		mus_poll_status(&mused.mus, &mused.stat_song_position, mused.stat_pattern_position, mused.stat_pattern, channel, mused.vis.cyd_env);
+		mus_poll_status(&mused.mus, &mused.stat_song_position, mused.stat_pattern_position, mused.stat_pattern, channel, mused.vis.cyd_env, mused.stat_note);
 		
 		if (active && (got_event || gfx_domain_is_next_frame(domain) || prev_position != mused.stat_song_position))
 		{
