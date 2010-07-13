@@ -7,7 +7,10 @@ _*Note:* Only significant changes and new features are listed here._
 
   * Wavetable for low-quality sample action (and for better Protracker module import)
   * Master volume control and clipping warning
-  * Improved bitcrush effect for authentic low quality speech and stuff
+  * Improved bitcrush effect for authentic low quality speech samples and stuff
+  * More features to make it act like most trackers
+  * Visualization e.g. VU meters
+  * Original and AHX/Protracker/etc. look-a-like themes from [http://ilkke.blogspot.com/ iLKke]
   * Program icon (for Windows)
   * Important bugfixes, some critical, some not so much
 
