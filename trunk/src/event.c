@@ -622,6 +622,7 @@ void sequence_event(SDL_Event *e)
 						mused.song.sequence[mused.current_sequencetrack][i].position + mused.song.pattern[mused.song.sequence[mused.current_sequencetrack][i].pattern].num_steps > mused.current_sequencepos)
 					{
 						if (mused.mode != EDITCLASSIC) change_mode(EDITPATTERN);
+						else mused.focus = EDITPATTERN;
 						mused.current_pattern = mused.song.sequence[mused.current_sequencetrack][i].pattern;
 						break;
 					}
@@ -821,6 +822,7 @@ void pattern_event(SDL_Event *e)
 			case SDLK_RETURN:
 			{
 				if (mused.mode != EDITCLASSIC) change_mode(EDITSEQUENCE);
+				else mused.focus = EDITSEQUENCE;
 			}
 			break;
 			
