@@ -120,19 +120,22 @@ static const View sequence_view_tab[] =
 	{{2, SEQ_VIEW_INFO_H+2, -130-2, 10}, song_name_view, NULL, -1},
 	{{-130, SEQ_VIEW_INFO_H, 130, 14}, instrument_disk_view, MAKEPTR(OD_T_SONG), -1},
 	{{0, SEQ_VIEW_INFO_H+14, 0-SCROLLBAR, 0}, sequence_view, NULL, EDITSEQUENCE},
-	{{0-SCROLLBAR, SEQ_VIEW_INFO_H+14, SCROLLBAR, 0}, slider, &mused.sequence_slider_param, EDITSEQUENCE},
+	{{0-SCROLLBAR, SEQ_VIEW_INFO_H+14, SCROLLBAR, -INFO}, slider, &mused.sequence_slider_param, EDITSEQUENCE},
+	{{0, 0 - INFO, 0, INFO }, info_line, NULL, -1},
 	{{0, 0, 0, 0}, NULL}
 };
 
 static const View fx_view_tab[] =
 {
-	{{0, 0, 0, 0}, fx_view, NULL, -1},
+	{{0, 0, 0, -INFO}, fx_view, NULL, -1},
+	{{0, 0 - INFO, 0, INFO }, info_line, NULL, -1},
 	{{0, 0, 0, 0}, NULL}
 };
 
 static const View wavetable_view_tab[] =
 {
-	{{0, 0, 0, 0}, wavetable_view, NULL, -1},
+	{{0, 0, 0, -INFO}, wavetable_view, NULL, -1},
+	{{0, 0 - INFO, 0, INFO }, info_line, NULL, -1},
 	{{0, 0, 0, 0}, NULL}
 };
 
