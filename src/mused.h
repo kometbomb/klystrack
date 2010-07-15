@@ -39,6 +39,7 @@ enum
 	EDITFX,
 	EDITCLASSIC,
 	EDITWAVETABLE,
+	/* Focuses */
 	EDITPROG,
 	EDITSONGINFO,
 	/* Virtual modes, i.e. what are not modes itself but should be considered happening "inside" prev_mode */
@@ -46,6 +47,7 @@ enum
 	MENU
 };
 
+#define N_VIEWS EDITPROG
 #define VIRTUAL_MODE EDITBUFFER
 
 #include "clipboard.h"
