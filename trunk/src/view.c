@@ -811,19 +811,20 @@ void pattern_view_inner(SDL_Surface *dest_surface, const SDL_Rect *dest, const S
 			{
 				if (!((mused.flags & CENTER_PATTERN_EDITOR) && (mused.flags & FOLLOW_PLAY_POSITION)))
 					bevel(mused.screen, &row, mused.slider_bevel->surface, BEV_SEQUENCE_PLAY_POS);
-				
-				if ((mused.flags & CENTER_PATTERN_EDITOR) && (mused.flags & FOLLOW_PLAY_POSITION)) 
-				{
-					const int w = mused.vu_meter->surface->w;
-					const int h = mused.vis.cyd_env[channel] * my_min(dest->h / 2, mused.vu_meter->surface->h) / MAX_VOLUME ;
-					SDL_Rect r = { row.x + row.w / 2 - w / 2 , row.y - h, w, h };
-					SDL_Rect sr = { 0, mused.vu_meter->surface->h - h, mused.vu_meter->surface->w, h };
-					SDL_BlitSurface(mused.vu_meter->surface, &sr, mused.screen, &r);
-				}
 			}
 		}
 		
 		console_write(mused.console,"\n");
+	}
+	
+	if (channel != -1 && (mused.flags & CENTER_PATTERN_EDITOR) && (mused.flags & FOLLOW_PLAY_POSITION)) 
+	{
+		const int ah = (dest->h / mused.console->font.h);
+		const int w = mused.vu_meter->surface->w;
+		const int h = mused.vis.cyd_env[channel] * my_min(dest->h / 2, mused.vu_meter->surface->h) / MAX_VOLUME ;
+		SDL_Rect r = { content.x + content.w / 2 - w / 2 , content.y + ah / 2 * mused.console->font.h - h - 1, w, h };
+		SDL_Rect sr = { 0, mused.vu_meter->surface->h - h, mused.vu_meter->surface->w, h };
+		SDL_BlitSurface(mused.vu_meter->surface, &sr, mused.screen, &r);
 	}
 	
 	if (current_pattern == mused.current_pattern && mused.focus == EDITPATTERN && mused.selection.start != mused.selection.end 
