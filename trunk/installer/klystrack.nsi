@@ -59,6 +59,7 @@ SectionIn RO
   File zip\data\examples\instruments\stabmaj.ki
   File zip\data\examples\instruments\stabmin.ki
   File zip\data\examples\instruments\tom.ki
+  File zip\data\examples\instruments\vibbas_flt.ki
   
   SetOutPath $INSTDIR\examples\songs
   
@@ -122,6 +123,7 @@ Section Uninstall
   Delete stabmaj.ki
   Delete stabmin.ki
   Delete tom.ki
+  Delete vibbas_flt.ki
   
   SetOutPath $INSTDIR\examples\songs
   
