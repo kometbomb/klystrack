@@ -6,7 +6,7 @@ Currently, only Protracker and AHX modules can be imported. klystrack can't save
 
 =Protracker=
 
-4-32 channel modules are supported. No attempt is made to emulate the instruments as they are sample-based and deducing base notes etc. from sample loop lengths would still be mostly guesswork. 
+4-32 channel modules are supported. It is assumed a file with no signature bytes (M.K. etc.) are original The Ultimate Soundtracker modules, which may not be the case.
 
 Some effects are converted but because Protracker works on sample periods and not notes when e.g. pitch bending, the actual speeds will be off.
 
