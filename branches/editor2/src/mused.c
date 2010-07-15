@@ -49,9 +49,9 @@ void set_edit_buffer(char *buffer, size_t size)
 
 void update_ghost_patterns()
 {
-	for (int e = 0 ; e < mused.song.num_sequences[mused.current_sequencetrack] ; ++e)
+	/*for (int e = 0 ; e < mused.song.num_sequences[mused.current_sequencetrack] ; ++e)
 			if (mused.song.sequence[mused.current_sequencetrack][e].position == mused.current_sequencepos)
-				mused.current_sequencepos = mused.song.sequence[mused.current_sequencetrack][e].position;
+				mused.current_sequencepos = mused.song.sequence[mused.current_sequencetrack][e].position;*/
 				
 	memset(mused.ghost_pattern, 0, sizeof(mused.ghost_pattern));
 				

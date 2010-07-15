@@ -449,6 +449,8 @@ void open_data(void *type, void *action, void *_ret)
 	char str[1000];
 	snprintf(str, sizeof(str), "%s %s", modename[a], open_stuff[t].name);
 	
+	stop(0,0,0);
+	
 	FILE * f = open_dialog(mode[a], str, open_stuff[t].ext, domain, mused.slider_bevel->surface, &mused.largefont, &mused.smallfont);
 	
 	if (f)
