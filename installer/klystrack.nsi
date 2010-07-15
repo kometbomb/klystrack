@@ -52,14 +52,18 @@ SectionIn RO
   File zip\data\examples\instruments\clap.ki
   File zip\data\examples\instruments\cowbell.ki
   File zip\data\examples\instruments\hardkick.ki
+  File zip\data\examples\instruments\katana.ki
+  File zip\data\examples\instruments\JDsnare.ki
   File zip\data\examples\instruments\kick.ki
   File zip\data\examples\instruments\lead1.ki
   File zip\data\examples\instruments\major.ki
   File zip\data\examples\instruments\ssnare.ki
   File zip\data\examples\instruments\stabmaj.ki
   File zip\data\examples\instruments\stabmin.ki
+  File zip\data\examples\instruments\the_horror.ki
   File zip\data\examples\instruments\tom.ki
   File zip\data\examples\instruments\vibbas_flt.ki
+  File zip\data\examples\instruments\wetkick.ki
   
   SetOutPath $INSTDIR\examples\songs
   
@@ -116,14 +120,18 @@ Section Uninstall
   Delete clap.ki
   Delete cowbell.ki
   Delete hardkick.ki
+  Delete katana.ki
+  Delete JDsnare.ki
   Delete kick.ki
   Delete lead1.ki
   Delete major.ki
   Delete ssnare.ki
   Delete stabmaj.ki
   Delete stabmin.ki
+  Delete the_horror.ki
   Delete tom.ki
   Delete vibbas_flt.ki
+  Delete wetkick.ki
   
   SetOutPath $INSTDIR\examples\songs
   
