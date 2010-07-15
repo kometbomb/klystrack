@@ -186,6 +186,9 @@ void my_draw_view(const View* views, const SDL_Event *_event, const SDL_Surface 
 
 	SDL_Event event;
 	memcpy(&event, _event, sizeof(event));
+	
+	int orig_focus = mused.focus;
+	
 	for (int i = 0 ; views[i].handler ; ++i)
 	{
 		const View *view = &views[i];
@@ -204,7 +207,7 @@ void my_draw_view(const View* views, const SDL_Event *_event, const SDL_Surface 
 			if (event_hit) 
 			{
 				event.type = SDL_USEREVENT + 1;
-				if (view->focus != -1 && mused.focus != view->focus) 
+				if (view->focus != -1 && mused.focus != view->focus && orig_focus != EDITBUFFER && mused.focus != EDITBUFFER) 
 				{
 					mused.focus = view->focus;
 					clear_selection(0,0,0);
@@ -243,7 +246,7 @@ void my_draw_view(const View* views, const SDL_Event *_event, const SDL_Surface 
 	if (mused.cursor.y < mused.cursor_target.y) ++mused.cursor.y;
 	if (mused.cursor.y > mused.cursor_target.y) --mused.cursor.y;
 	
-	if (mused.cursor.w > 0) bevel(mused.screen, &mused.cursor, mused.slider_bevel->surface, BEV_CURSOR);
+	if (mused.cursor.w > 0) bevel(mused.screen, &mused.cursor, mused.slider_bevel->surface, ((mused.flags & EDIT_MODE) || mused.focus != EDITPATTERN) ? BEV_EDIT_CURSOR : BEV_CURSOR);
 }
 
 
