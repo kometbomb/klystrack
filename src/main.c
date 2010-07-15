@@ -141,11 +141,11 @@ static const View wavetable_view_tab[] =
 
 const View *tab[] = 
 { 
-	instrument_view_tab,
 	pattern_view_tab,
 	sequence_view_tab,
-	fx_view_tab,
 	classic_view_tab,
+	instrument_view_tab,
+	fx_view_tab,
 	wavetable_view_tab,
 };
 
