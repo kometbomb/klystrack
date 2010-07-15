@@ -409,7 +409,10 @@ static void play_the_jams(int sym, int chn)
 		int note = find_note(sym, mused.octave);
 		if (note != -1) 
 		{
-			mus_trigger_instrument(&mused.mus, mused.flags & MULTICHANNEL_PREVIEW ? -1 : chn, &mused.song.instrument[mused.current_instrument], note);
+			if (chn == -1 && !(mused.flags & MULTICHANNEL_PREVIEW))
+				chn = 0;
+				
+			mus_trigger_instrument(&mused.mus, chn, &mused.song.instrument[mused.current_instrument], note);
 		}
 	}
 }
@@ -1222,8 +1225,15 @@ void edit_program_event(SDL_Event *e)
 			}
 			break;
 			
+			case SDLK_BACKSPACE:
 			case SDLK_DELETE:
 			{
+				if (e->key.keysym.sym == SDLK_BACKSPACE)
+				{
+					if (mused.current_program_step > 0) slider_move_position(&mused.current_program_step, &mused.program_position, &mused.program_slider_param, -1, MUS_PROG_LEN);
+					else break;
+				}
+			
 				if (!(mused.flags & DELETE_EMPTIES) || e->key.keysym.sym == SDLK_BACKSPACE)
 				{
 					for (int i = mused.current_program_step  ; i < MUS_PROG_LEN-1 ; ++i)
