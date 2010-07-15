@@ -1162,6 +1162,7 @@ void info_line(SDL_Surface *dest_surface, const SDL_Rect *dest, const SDL_Event 
 {
 	SDL_Rect area;
 	copy_rect(&area, dest);
+	area.w -= N_VIEWS * dest->h;
 	console_set_clip(mused.console, &area);
 	console_clear(mused.console);
 	bevel(mused.screen,&area, mused.slider_bevel->surface, BEV_THIN_FRAME);
@@ -1253,6 +1254,19 @@ void info_line(SDL_Surface *dest_surface, const SDL_Rect *dest, const SDL_Event 
 	}
 	
 	console_write(mused.console,text);
+	
+	
+	SDL_Rect button = { dest->x + area.w + 6, dest->y, dest->h, dest->h };
+	
+	for (int i = 0 ; i < N_VIEWS ; ++i)
+	{
+		button_event(dest_surface, event, &button, mused.slider_bevel->surface, 
+			(mused.mode != i) ? BEV_BUTTON : BEV_BUTTON_ACTIVE, 
+			(mused.mode != i) ? BEV_BUTTON : BEV_BUTTON_ACTIVE, 
+			DECAL_AUDIO_ENABLED, (mused.mode != i) ? change_mode_action : NULL, (mused.mode != i) ? MAKEPTR(i) : 0, 0, 0);
+		
+		button.x += button.w;
+	}
 }
 
 
