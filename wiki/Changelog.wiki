@@ -10,6 +10,7 @@ _*Note:* Only significant changes and new features are listed here._
   * Improved bitcrush effect for authentic low quality speech samples and stuff
   * More features to make it act like most trackers
   * Visualization e.g. VU meters
+  * Improved and less hostile GUI
   * Original and AHX/Protracker/etc. look-a-like themes from [http://ilkke.blogspot.com/ iLKke]
   * Program icon (for Windows)
   * Important bugfixes, some critical, some not so much
