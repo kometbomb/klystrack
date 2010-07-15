@@ -397,7 +397,7 @@ void instrument_add_param(int a)
 }
 
 
-static void play_the_jams(int sym)
+static void play_the_jams(int sym, int chn)
 {
 	if (sym == SDLK_SPACE)
 	{
@@ -409,7 +409,7 @@ static void play_the_jams(int sym)
 		int note = find_note(sym, mused.octave);
 		if (note != -1) 
 		{
-			mus_trigger_instrument(&mused.mus, mused.flags & MULTICHANNEL_PREVIEW ? -1 : 0, &mused.song.instrument[mused.current_instrument], note);
+			mus_trigger_instrument(&mused.mus, mused.flags & MULTICHANNEL_PREVIEW ? -1 : chn, &mused.song.instrument[mused.current_instrument], note);
 		}
 	}
 }
@@ -463,7 +463,7 @@ void edit_instrument_event(SDL_Event *e)
 		
 			default:
 			{
-				play_the_jams(e->key.keysym.sym);
+				play_the_jams(e->key.keysym.sym, -1);
 			}
 			break;
 		}
@@ -788,6 +788,27 @@ void sequence_event(SDL_Event *e)
 }
 
 
+static void switch_track(int d)
+{
+	int s = mused.current_sequencetrack;
+							
+	do
+	{
+		mused.current_sequencetrack = (mused.current_sequencetrack + (int)mused.song.num_channels + d) % mused.song.num_channels;
+	}
+	while (mused.ghost_pattern[mused.current_sequencetrack] == NULL && s != mused.current_sequencetrack); 
+	
+	if (s != mused.current_sequencetrack) mused.current_pattern = *mused.ghost_pattern[mused.current_sequencetrack];
+	
+	mused.current_pattern = *mused.ghost_pattern[mused.current_sequencetrack];
+	
+	slider_move_position(&mused.current_sequencetrack, &mused.pattern_horiz_position, &mused.pattern_horiz_slider_param, 0, mused.pattern_horiz_slider_param.last - mused.pattern_horiz_slider_param.first + 1);
+	slider_move_position(&mused.current_patternstep, &mused.pattern_position, &mused.pattern_slider_param, 0, mused.song.pattern[mused.current_pattern].num_steps);
+
+	mused.current_patternstep = my_min(my_max(0, mused.current_patternstep), mused.song.pattern[mused.current_pattern].num_steps - 1);
+}
+
+
 void pattern_event(SDL_Event *e)
 {
 	switch (e->type)
@@ -948,20 +969,8 @@ void pattern_event(SDL_Event *e)
 						else
 						{
 							mused.current_patternx = 0;
-							int s = mused.current_sequencetrack;
-							do
-							{
-								mused.current_sequencetrack = (mused.current_sequencetrack + 1) % mused.song.num_channels;
-							}
-							while (mused.ghost_pattern[mused.current_sequencetrack] == NULL && s != mused.current_sequencetrack) ;
 							
-							if (s != mused.current_sequencetrack) mused.current_pattern = *mused.ghost_pattern[mused.current_sequencetrack];
-							
-							slider_move_position(&mused.current_sequencetrack, &mused.pattern_horiz_position, &mused.pattern_horiz_slider_param, 0, mused.pattern_horiz_slider_param.last - mused.pattern_horiz_slider_param.first + 1);
-							slider_move_position(&mused.current_patternstep, &mused.pattern_position, &mused.pattern_slider_param, 0, mused.song.pattern[mused.current_pattern].num_steps);
-							
-							if (mused.current_patternstep >= mused.song.pattern[mused.current_pattern].num_steps)
-								mused.current_patternstep = mused.song.pattern[mused.current_pattern].num_steps - 1;
+							switch_track(+1);
 						}
 					}
 				}
@@ -992,20 +1001,8 @@ void pattern_event(SDL_Event *e)
 						else
 						{
 							mused.current_patternx = PED_PARAMS - 1;
-							int s = mused.current_sequencetrack;
-							do
-							{
-								mused.current_sequencetrack = (mused.current_sequencetrack + (int)mused.song.num_channels - 1) % mused.song.num_channels;
-							}
-							while (mused.ghost_pattern[mused.current_sequencetrack] == NULL && s != mused.current_sequencetrack); 
 							
-							if (s != mused.current_sequencetrack) mused.current_pattern = *mused.ghost_pattern[mused.current_sequencetrack];
-							
-							slider_move_position(&mused.current_sequencetrack, &mused.pattern_horiz_position, &mused.pattern_horiz_slider_param, 0, mused.pattern_horiz_slider_param.last - mused.pattern_horiz_slider_param.first + 1);
-							slider_move_position(&mused.current_patternstep, &mused.pattern_position, &mused.pattern_slider_param, 0, mused.song.pattern[mused.current_pattern].num_steps);
-							
-							if (mused.current_patternstep >= mused.song.pattern[mused.current_pattern].num_steps)
-								mused.current_patternstep = mused.song.pattern[mused.current_pattern].num_steps - 1;
+							switch_track(-1);
 						}
 					}
 				}
@@ -1023,11 +1020,7 @@ void pattern_event(SDL_Event *e)
 				
 					if (mused.current_patternx == PED_NOTE)
 					{
-						int note = find_note(e->key.keysym.sym, mused.octave);
-						if (note != -1) 
-						{
-							mus_trigger_instrument(&mused.mus, 0, &mused.song.instrument[mused.current_instrument], note);
-						}
+						play_the_jams(e->key.keysym.sym, mused.current_sequencetrack);
 					}
 					
 					break;
@@ -1052,7 +1045,7 @@ void pattern_event(SDL_Event *e)
 						int note = find_note(e->key.keysym.sym, mused.octave);
 						if (note != -1) 
 						{
-							mus_trigger_instrument(&mused.mus, 0, &mused.song.instrument[mused.current_instrument], note);
+							play_the_jams(e->key.keysym.sym, mused.current_sequencetrack);
 							
 							mused.song.pattern[mused.current_pattern].step[mused.current_patternstep].note = note;				
 							mused.song.pattern[mused.current_pattern].step[mused.current_patternstep].instrument = mused.current_instrument;
@@ -1229,9 +1222,19 @@ void edit_program_event(SDL_Event *e)
 			
 			case SDLK_DELETE:
 			{
-				for (int i = mused.current_program_step  ; i < MUS_PROG_LEN-1 ; ++i)
-					mused.song.instrument[mused.current_instrument].program[i] = mused.song.instrument[mused.current_instrument].program[i+1];
-				mused.song.instrument[mused.current_instrument].program[MUS_PROG_LEN-1] = MUS_FX_NOP;
+				if (!(mused.flags & DELETE_EMPTIES) || e->key.keysym.sym == SDLK_BACKSPACE)
+				{
+					for (int i = mused.current_program_step  ; i < MUS_PROG_LEN-1 ; ++i)
+						mused.song.instrument[mused.current_instrument].program[i] = mused.song.instrument[mused.current_instrument].program[i+1];
+					mused.song.instrument[mused.current_instrument].program[MUS_PROG_LEN-1] = MUS_FX_NOP;
+				}
+				else 
+				{
+					mused.song.instrument[mused.current_instrument].program[mused.current_program_step] = MUS_FX_NOP;
+					++mused.current_program_step;
+					if (mused.current_program_step >= MUS_PROG_LEN)
+						mused.current_program_step = MUS_PROG_LEN - 1;
+				}
 			}
 			break;
 						
@@ -1463,7 +1466,7 @@ void fx_event(SDL_Event *e)
 			break;
 		
 			default: 
-				play_the_jams(e->key.keysym.sym);
+				play_the_jams(e->key.keysym.sym, -1);
 			break;
 		}
 		
@@ -1566,7 +1569,7 @@ void wave_event(SDL_Event *e)
 			break;
 		
 			default: 
-				play_the_jams(e->key.keysym.sym);
+				play_the_jams(e->key.keysym.sym, -1);
 			break;
 		}
 		

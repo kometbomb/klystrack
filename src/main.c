@@ -71,11 +71,11 @@ void change_pixel_scale(void *, void*, void*);
 static const View instrument_view_tab[] =
 {
 	{{0, 0, -130, 14}, bevel_view, (void*)BEV_BACKGROUND, EDITINSTRUMENT },
-	{{2, 2, -130-2, 10}, instrument_name_view, (void*)1, -1 },
-	{{-130, 0, 130, 14}, instrument_disk_view, MAKEPTR(OD_T_INSTRUMENT), -1},
+	{{2, 2, -130-2, 10}, instrument_name_view, (void*)1, EDITINSTRUMENT},
+	{{-130, 0, 130, 14}, instrument_disk_view, MAKEPTR(OD_T_INSTRUMENT), EDITINSTRUMENT},
 	{{0, 14, 154, -INFO }, instrument_view, NULL, EDITINSTRUMENT },
 	{{154, 14 + INST_LIST, 0, INST_VIEW2 }, instrument_view2, NULL, EDITINSTRUMENT },
-	{{154, 14, - SCROLLBAR, INST_LIST }, instrument_list, NULL, -1},
+	{{154, 14, - SCROLLBAR, INST_LIST }, instrument_list, NULL, EDITINSTRUMENT},
 	{{154, 14 + INST_LIST + INST_VIEW2, 0 - SCROLLBAR, -INFO }, program_view, NULL, EDITPROG },
 	{{0 - SCROLLBAR, 14 + INST_LIST + INST_VIEW2, SCROLLBAR, -INFO }, slider, &mused.program_slider_param, EDITPROG },
 	{{0 - SCROLLBAR, 14, SCROLLBAR, INST_LIST }, slider, &mused.instrument_list_slider_param, EDITINSTRUMENT },

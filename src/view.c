@@ -60,6 +60,7 @@ static const InstructionDesc instruction_desc[] =
 	{MUS_FX_CUTOFF_UP, "Filter cutoff up"},
 	{MUS_FX_CUTOFF_DN, "Filter cutoff down"},
 	{MUS_FX_CUTOFF_SET, "Set filter cutoff"},
+	{MUS_FX_RESONANCE_SET, "Set filter resonance"},
 	{MUS_FX_FILTER_TYPE, "Set filter type"},
 	{MUS_FX_PW_DN, "PW down"},
 	{MUS_FX_PW_UP, "PW up"},
@@ -212,6 +213,17 @@ void my_draw_view(const View* views, const SDL_Event *_event, const SDL_Surface 
 			}
 		}
 		while (event_hit && iter <= 1);
+		
+		if (!event_hit && event.type == SDL_MOUSEBUTTONDOWN && event.button.button == SDL_BUTTON_LEFT
+			&& event.button.x >= area.x && event.button.x < area.x + area.w 
+			&& event.button.y >= area.y && event.button.y < area.y + area.h)
+		{
+			if (view->focus != -1 && mused.focus != view->focus) 
+			{
+				mused.focus = view->focus;
+				clear_selection(0,0,0);
+			}
+		}
 	}
 	
 	mused.cursor.w = (mused.cursor_target.w + mused.cursor.w * 2) / 3;
@@ -642,7 +654,7 @@ void pattern_view_inner(SDL_Surface *dest_surface, const SDL_Rect *dest, const S
 	console_set_clip(mused.console, &content);
 	
 	int start = mused.pattern_position;
-	
+
 	if (mused.flags & CENTER_PATTERN_EDITOR) 
 	{
 		start = mused.current_patternstep - dest->h / mused.console->font.h / 2;
@@ -662,7 +674,7 @@ void pattern_view_inner(SDL_Surface *dest_surface, const SDL_Rect *dest, const S
 	{
 		SDL_Rect row = { content.x - 2, content.y + y - 1, content.w + 4, mused.console->font.h + 1};
 	
-		if (!(mused.flags & CENTER_PATTERN_EDITOR) && current_pattern == mused.current_pattern && row.y + row.h < content.y + content.h)
+		if (!(mused.flags & CENTER_PATTERN_EDITOR) && current_pattern == mused.current_pattern && row.y + row.h - 2 <= content.y + content.h)
 			slider_set_params(&mused.pattern_slider_param, 0, mused.song.pattern[current_pattern].num_steps - 1, start, i, &mused.pattern_position, 1, SLIDER_VERTICAL, mused.slider_bevel->surface);
 	
 		if (i < 0) 
@@ -680,7 +692,7 @@ void pattern_view_inner(SDL_Surface *dest_surface, const SDL_Rect *dest, const S
 		
 		Uint32 base;
 		
-		if (!(mused.mus.channel[channel].flags & MUS_CHN_DISABLED))
+		if (channel == -1 || !(mused.mus.channel[channel].flags & MUS_CHN_DISABLED))
 		{
 			if (mused.current_patternstep == i)
 			{		
@@ -729,7 +741,7 @@ void pattern_view_inner(SDL_Surface *dest_surface, const SDL_Rect *dest, const S
 		
 		if (!(mused.flags & COMPACT_VIEW)) mused.console->clip.x += 4;
 		
-		if (!(mused.mus.channel[channel].flags & MUS_CHN_DISABLED))
+		if (channel == -1 || !(mused.mus.channel[channel].flags & MUS_CHN_DISABLED))
 			console_set_color(mused.console, timesig(i, colors[COLOR_PATTERN_INSTRUMENT_BAR], colors[COLOR_PATTERN_INSTRUMENT_BEAT], colors[COLOR_PATTERN_INSTRUMENT]), CON_CHARACTER);
 		
 		if (mused.song.pattern[current_pattern].step[i].instrument != MUS_NOTE_NO_INSTRUMENT)
@@ -749,7 +761,7 @@ void pattern_view_inner(SDL_Surface *dest_surface, const SDL_Rect *dest, const S
 		else
 			r = console_write(mused.console, emptychar);
 			
-		if (!(mused.mus.channel[channel].flags & MUS_CHN_DISABLED))
+		if (channel == -1 || !(mused.mus.channel[channel].flags & MUS_CHN_DISABLED))
 			console_set_color(mused.console, base, CON_CHARACTER);
 			
 		copy_rect(&clipped, r);
@@ -985,7 +997,7 @@ void pattern_view(SDL_Surface *dest_surface, const SDL_Rect *dest, const SDL_Eve
 		
 	SDL_Rect button_topleft = { dest->x + pos.w, dest->y, 12, track_header_size };
 	
-	if (pattern_width * pv + pos.w > dest->w)
+	if ((pattern_width - 1) * pv + (pos.w - 2) > dest->w)
 	{
 		pos.h -= SCROLLBAR;
 		SDL_Rect temp = { dest->x, dest->y + dest->h - SCROLLBAR, dest->w, SCROLLBAR };
@@ -1026,7 +1038,7 @@ void pattern_view(SDL_Surface *dest_surface, const SDL_Rect *dest, const SDL_Eve
 				if (pos.x + pos.w < dest->x + dest->w) last = my_max(last, i);
 				
 				pattern_view_inner(dest_surface, &pos, dest, event, *mused.ghost_pattern[i], i);
-				pos.x += pos.w - 2;
+				pos.x += pos.w - 1;
 			}
 		}
 	}
@@ -1248,7 +1260,7 @@ static void write_command(const SDL_Event *event, const char *text, int cmd_idx,
 	{
 		const SDL_Rect *r;
 		check_event(event, r = console_write_args(mused.console, "%c", *c), 
-			select_program_step, MAKEPTR(cmd_idx), 0, 0);
+			select_program_step, MAKEPTR(cmd_idx), MAKEPTR(i), 0);
 			
 		if (mused.focus == EDITPROG && mused.editpos == i && cmd_idx == cur_idx)
 		{
@@ -1634,7 +1646,7 @@ void instrument_view(SDL_Surface *dest_surface, const SDL_Rect *dest, const SDL_
 	update_rect(&frame, &r);
 	inst_text(event, &r, P_FLTTYPE, "TYPE", "%s", (char*)flttype[inst->flttype], 2);
 	update_rect(&frame, &r);
-	inst_text(event, &r, P_CUTOFF, "FRQ", "%03X", MAKEPTR(inst->cutoff), 3);
+	inst_text(event, &r, P_CUTOFF, "CUT", "%03X", MAKEPTR(inst->cutoff), 3);
 	update_rect(&frame, &r);
 	inst_text(event, &r, P_RESONANCE, "RES", "%1X", MAKEPTR(inst->resonance), 1);
 	update_rect(&frame, &r);
