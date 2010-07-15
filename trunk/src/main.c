@@ -86,9 +86,9 @@ static const View instrument_view_tab[] =
 static const View pattern_view_tab[] =
 {
 	{{0, 0, 0, 14}, bevel_view, (void*)BEV_BACKGROUND, -1},
-	{{2, 2, 164 + 32, 10}, instrument_name_view, (void*)1, -1},
-	{{0, 14, 0-SCROLLBAR, 0 - INFO}, pattern_view, NULL, -1},
-	{{0-SCROLLBAR, 14, SCROLLBAR, 0 - INFO}, slider, &mused.pattern_slider_param, -1},
+	{{2, 2, 164 + 32, 10}, instrument_name_view, (void*)1, EDITINSTRUMENT},
+	{{0, 14, 0-SCROLLBAR, 0 - INFO}, pattern_view, NULL, EDITPATTERN},
+	{{0-SCROLLBAR, 14, SCROLLBAR, 0 - INFO}, slider, &mused.pattern_slider_param, EDITPATTERN},
 	{{0, 0 - INFO, 0, INFO }, info_line, NULL, -1},
 	{{0, 0, 0, 0}, NULL}
 };
