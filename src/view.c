@@ -1262,7 +1262,7 @@ void info_line(SDL_Surface *dest_surface, const SDL_Rect *dest, const SDL_Event 
 		button_event(dest_surface, event, &button, mused.slider_bevel->surface, 
 			(mused.mode != i) ? BEV_BUTTON : BEV_BUTTON_ACTIVE, 
 			(mused.mode != i) ? BEV_BUTTON : BEV_BUTTON_ACTIVE, 
-			DECAL_MODE_PATTERN + i, (mused.mode != i) ? change_mode_action : NULL, (mused.mode != i) ? MAKEPTR(i) : 0, 0, 0);
+			DECAL_MODE_PATTERN + i + (mused.mode == i ? DECAL_MODE_PATTERN_SELECTED -  DECAL_MODE_PATTERN : 0), (mused.mode != i) ? change_mode_action : NULL, (mused.mode != i) ? MAKEPTR(i) : 0, 0, 0);
 		
 		button.x += button.w;
 	}
