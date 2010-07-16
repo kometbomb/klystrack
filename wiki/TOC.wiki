@@ -5,6 +5,7 @@
     * [IntroductionToTrackers Introduction to trackers]
     * [Features Features]
     * [Changelog Changelog]
+    * [BugReports How to report a bug]
   * *How to use klystrack*
     * [InstrumentEditor Instrument editor]
     * [PatternEditor Pattern editor]
