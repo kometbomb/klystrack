@@ -6,7 +6,7 @@ You need a Google account for this but from a developers POV it's much better th
 
 = If possible, include the song/instrument files that crashed and also the configuration file =
 
-The configuration file can be found as {{{.klystrack}}} (note the dot) in your user directory. In windows this is usually {{{C:\Users\kometbomb\.klystrack}}} and in `*`nix it's the home directory. The files can be attached in the issue (described above.)
+The configuration file can be found as {{{.klystrack}}} (note the dot) in your user directory. In Windows this is usually {{{C:\Users\kometbomb\.klystrack}}} and in `*`nix it's the home directory. The files can be attached in the issue (described above.)
 
 = Even if it didn't crash, you can still report a defect =
 
