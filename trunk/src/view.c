@@ -454,7 +454,7 @@ void sequence_view(SDL_Surface *dest_surface, const SDL_Rect *dest, const SDL_Ev
 		
 	for (int i = start, s = 0, y = 0 ; y < content.h ; i += mused.sequenceview_steps, ++s, y += mused.console->font.h + 1)
 	{
-		SDL_Rect pos = { content.x, content.y + y - 1, content.w, mused.console->font.h + 2 };
+		SDL_Rect pos = { content.x, content.y + y - 1, content.w, my_max(0, my_min(mused.console->font.h + 2, content.h - (y - 1 +  mused.console->font.h + 2))) };
 		
 		if (i <= mused.song.loop_point)
 		{

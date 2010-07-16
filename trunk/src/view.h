@@ -28,6 +28,8 @@ OTHER DEALINGS IN THE SOFTWARE.
 
 #include "gui/view.h"
 
+#define SCROLLBAR 10
+
 void my_draw_view(const View* views, const SDL_Event *_event, const SDL_Surface *screen);
 int generic_field(const SDL_Event *e, const SDL_Rect *area, int focus, int param, const char *_label, const char *format, void *value, int width);
 void generic_flags(const SDL_Event *e, const SDL_Rect *_area, int focus, int p, const char *label, Uint32 *flags, Uint32 mask);
