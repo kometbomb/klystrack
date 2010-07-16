@@ -954,9 +954,16 @@ void pattern_event(SDL_Event *e)
 			{
 				if (e->key.keysym.mod & KMOD_CTRL)
 				{
-					++mused.current_pattern;
-					if (mused.current_pattern >= NUM_PATTERNS)
-						mused.current_pattern = NUM_PATTERNS - 1;
+					if (mused.single_pattern_edit)
+					{
+						++mused.current_pattern;
+						if (mused.current_pattern >= NUM_PATTERNS)
+							mused.current_pattern = NUM_PATTERNS - 1;
+					}
+					else
+					{
+						switch_track(+1);
+					}
 				}
 				else
 				{
@@ -986,9 +993,16 @@ void pattern_event(SDL_Event *e)
 			{
 				if (e->key.keysym.mod & KMOD_CTRL)
 				{
-					--mused.current_pattern;
-					if (mused.current_pattern < 0)
-						mused.current_pattern = 0;
+					if (mused.single_pattern_edit)
+					{
+						--mused.current_pattern;
+						if (mused.current_pattern < 0)
+							mused.current_pattern = 0;
+					}
+					else
+					{
+						switch_track(-1);
+					}
 				}
 				else
 				{
