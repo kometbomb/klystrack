@@ -1,0 +1,13 @@
+#summary How to report a bug
+
+= Use the Issues feature =
+
+You need a Google account for this but from a developers POV it's much better than emails (also, other people can see the reports and can then give additional info.) Additionally, it gives a nice template with helpful questions regarding to what happened, which will make the whole fixing process much faster.
+
+= If possible, include the song/instrument files that crashed and also the configuration file =
+
+The configuration file can be found as {{{.klystrack}}} (note the dot) in your user directory. In windows this is usually {{{C:\Users\kometbomb\.klystrack}}} and in *nix it's the home directory. The files can be attached in the issue (described above.)
+
+= Even if it didn't crash, you can still report a defect =
+
+Bad software stays bad if the users don't suggest new features.
