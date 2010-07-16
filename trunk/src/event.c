@@ -595,7 +595,11 @@ static void update_pattern_slider(int d)
 {
 	if (mused.flags & CENTER_PATTERN_EDITOR) 
 	{
-		mused.pattern_position = my_max(0, my_min(mused.current_patternstep + d, mused.song.pattern[mused.current_pattern].num_steps - 1));
+		mused.pattern_position += d;
+		
+		if (mused.pattern_position < 0) mused.pattern_position += mused.song.pattern[mused.current_pattern].num_steps;
+		if (mused.pattern_position >= mused.song.pattern[mused.current_pattern].num_steps) mused.pattern_position -= mused.song.pattern[mused.current_pattern].num_steps;
+		
 		mused.current_patternstep = mused.pattern_position;
 	}
 	else slider_move_position(&mused.current_patternstep, &mused.pattern_position, &mused.pattern_slider_param, d, mused.song.pattern[mused.current_pattern].num_steps);
@@ -840,7 +844,7 @@ void pattern_event(SDL_Event *e)
 			{
 				int steps = 1;
 				if (e->key.keysym.sym == SDLK_PAGEDOWN) steps *= 16;
-				if (e->key.keysym.sym == SDLK_END) steps = mused.song.pattern[mused.current_pattern].num_steps - mused.current_patternstep;
+				if (e->key.keysym.sym == SDLK_END) steps = mused.song.pattern[mused.current_pattern].num_steps - mused.current_patternstep - 1;
 				
 				update_pattern_slider(steps);
 				
