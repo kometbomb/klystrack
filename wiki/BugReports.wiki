@@ -2,6 +2,8 @@
 
 = Use the Issues feature =
 
+[http://code.google.com/p/klystrack/issues/entry Add a new issue]
+
 You need a Google account for this but from a developers POV it's much better than emails (also, other people can see the reports and can then give additional info.) Additionally, it gives a nice template with helpful questions regarding to what happened, which will make the whole fixing process much faster.
 
 = If possible, include the song/instrument files that crashed and also the configuration file =
