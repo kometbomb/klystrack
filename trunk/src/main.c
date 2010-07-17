@@ -45,6 +45,7 @@ OTHER DEALINGS IN THE SOFTWARE.
 #include <time.h>
 #include "util/rnd.h"
 #include "view/visu.h"
+#include "view/pattern.h"
 
 #include "view/wavetableview.h"
 
