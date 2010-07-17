@@ -220,6 +220,8 @@ int open_song(FILE *f)
 	
 	mused.time_signature = mused.song.time_signature;
 	
+	mused.flags &= ~EDIT_MODE;
+	
 	return 1;
 }
 
