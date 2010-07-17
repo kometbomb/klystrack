@@ -595,7 +595,7 @@ static void update_pattern_slider(int d)
 {
 	if (mused.flags & CENTER_PATTERN_EDITOR) 
 	{
-		mused.pattern_position += d;
+		mused.pattern_position = mused.current_patternstep + d;
 		
 		if (mused.pattern_position < 0) mused.pattern_position += mused.song.pattern[mused.current_pattern].num_steps;
 		if (mused.pattern_position >= mused.song.pattern[mused.current_pattern].num_steps) mused.pattern_position -= mused.song.pattern[mused.current_pattern].num_steps;
