@@ -804,11 +804,24 @@ void info_line(SDL_Surface *dest_surface, const SDL_Rect *dest, const SDL_Event 
 		
 		case EDITPATTERN:
 		
-		if (mused.current_patternx >= PED_COMMAND1)
-		{
-			Uint16 inst = mused.song.pattern[mused.current_pattern].step[mused.current_patternstep].command;
-			get_command_desc(text, inst);
-		}
+			if (mused.current_patternx >= PED_COMMAND1)
+			{
+				Uint16 inst = mused.song.pattern[mused.current_pattern].step[mused.current_patternstep].command;
+				
+				if (inst != 0)
+					get_command_desc(text, inst);
+				else
+					strcpy(text, "Command");
+			}
+			else
+			{
+				static const char *pattern_txt[] =
+				{
+					"Note", "Instrument", "Instrument", "Legato", "Slide", "Vibrato"
+				};
+				
+				strcpy(text, pattern_txt[mused.current_patternx]);
+			}
 		
 		break;
 	}
