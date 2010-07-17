@@ -933,6 +933,11 @@ void pattern_event(SDL_Event *e)
 							mused.song.pattern[mused.current_pattern].step[mused.current_patternstep].instrument = MUS_NOTE_NO_INSTRUMENT;	
 							break;
 							
+						case PED_VOLUME1:
+						case PED_VOLUME2:
+							mused.song.pattern[mused.current_pattern].step[mused.current_patternstep].volume = MUS_NOTE_NO_VOLUME;	
+							break;
+							
 						case PED_LEGATO:
 						case PED_SLIDE:
 						case PED_VIB:
@@ -1111,6 +1116,35 @@ void pattern_event(SDL_Event *e)
 							mused.song.pattern[mused.current_pattern].step[mused.current_patternstep].instrument = inst; 
 							mused.current_instrument = inst % mused.song.num_instruments;
 						}
+					
+						slider_move_position(&mused.current_patternstep, &mused.pattern_position, &mused.pattern_slider_param, +1, mused.song.pattern[mused.current_pattern].num_steps);
+					}
+				}
+				else if (mused.current_patternx == PED_VOLUME1 || mused.current_patternx == PED_VOLUME2)
+				{
+					if (e->key.keysym.sym == SDLK_PERIOD)
+					{
+						mused.song.pattern[mused.current_pattern].step[mused.current_patternstep].volume = MUS_NOTE_NO_VOLUME;				
+							
+						slider_move_position(&mused.current_patternstep, &mused.pattern_position, &mused.pattern_slider_param, +1, mused.song.pattern[mused.current_pattern].num_steps);
+					}
+					else if (gethex(e->key.keysym.sym) != -1)
+					{
+						Uint8 vol = mused.song.pattern[mused.current_pattern].step[mused.current_patternstep].volume;
+						if ((vol == MUS_NOTE_NO_VOLUME)) vol = 0;
+						
+						switch (mused.current_patternx)
+						{
+							case PED_VOLUME1:
+							vol = (vol & 0x0f) | ((gethex(e->key.keysym.sym) << 4) & 0xf0);
+							break;
+							
+							case PED_VOLUME2:
+							vol = (vol & 0xf0) | gethex(e->key.keysym.sym);
+							break;
+						}
+						
+						mused.song.pattern[mused.current_pattern].step[mused.current_patternstep].volume = my_min(MAX_VOLUME, vol); 
 					
 						slider_move_position(&mused.current_patternstep, &mused.pattern_position, &mused.pattern_slider_param, +1, mused.song.pattern[mused.current_pattern].num_steps);
 					}

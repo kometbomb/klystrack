@@ -817,7 +817,7 @@ void info_line(SDL_Surface *dest_surface, const SDL_Rect *dest, const SDL_Event 
 			{
 				static const char *pattern_txt[] =
 				{
-					"Note", "Instrument", "Instrument", "Legato", "Slide", "Vibrato"
+					"Note", "Instrument", "Instrument", "Volume", "Volume", "Legato", "Slide", "Vibrato"
 				};
 				
 				strcpy(text, pattern_txt[mused.current_patternx]);

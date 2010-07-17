@@ -40,6 +40,7 @@ OTHER DEALINGS IN THE SOFTWARE.
 const int NOTE_CHARS = 3;
 const int SPACER = 4;
 const int INST_CHARS = 2;
+const int VOL_CHARS = 2;
 const int CTRL_BITS = 3;
 const int CMD_CHARS = 4;
 
@@ -187,6 +188,35 @@ void pattern_view_inner(SDL_Surface *dest_surface, const SDL_Rect *dest, const S
 		
 		if (!(mused.flags & COMPACT_VIEW))
 		{
+			mused.console->clip.x += SPACER;
+			
+			if (mused.song.pattern[current_pattern].step[i].volume != MUS_NOTE_NO_VOLUME)
+				r = console_write_args(mused.console, "%X", mused.song.pattern[current_pattern].step[i].volume >> 4);
+			else
+				r = console_write(mused.console, emptychar);
+				
+			copy_rect(&clipped, r);
+			clip_rect(&clipped, &content);
+				
+			check_event(event, &clipped, select_pattern_param, MAKEPTR(PED_VOLUME1), MAKEPTR(i), MAKEPTR(current_pattern));
+			
+			update_pattern_cursor(r, &selected_rect, current_pattern, i, PED_VOLUME1);
+			
+			if (mused.song.pattern[current_pattern].step[i].volume != MUS_NOTE_NO_VOLUME)
+				r = console_write_args(mused.console, "%X", mused.song.pattern[current_pattern].step[i].volume & 0xf);
+			else
+				r = console_write(mused.console, emptychar);
+				
+			if (channel == -1 || !(mused.mus.channel[channel].flags & MUS_CHN_DISABLED))
+				console_set_color(mused.console, base, CON_CHARACTER);
+				
+			copy_rect(&clipped, r);
+			clip_rect(&clipped, &content);
+				
+			check_event(event, &clipped, select_pattern_param, MAKEPTR(PED_VOLUME2), MAKEPTR(i), MAKEPTR(current_pattern));
+			
+			update_pattern_cursor(r, &selected_rect, current_pattern, i, PED_VOLUME2);
+			
 			mused.console->clip.x += SPACER;
 			
 			for (int p = PED_CTRL ; p < PED_COMMAND1 ; ++p)
@@ -407,7 +437,7 @@ void pattern_view(SDL_Surface *dest_surface, const SDL_Rect *dest, const SDL_Eve
 	
 	const int pattern_width = ((mused.flags & COMPACT_VIEW) 
 		? (mused.console->font.w * NOTE_CHARS + mused.console->font.w * INST_CHARS + mused.console->font.w * CMD_CHARS)
-		: (mused.console->font.w * NOTE_CHARS + SPACER + mused.console->font.w * INST_CHARS + SPACER + mused.console->font.w * CTRL_BITS + SPACER + mused.console->font.w * CMD_CHARS)) + 8;
+		: (mused.console->font.w * NOTE_CHARS + SPACER + mused.console->font.w * INST_CHARS + SPACER + mused.console->font.w * VOL_CHARS + SPACER + mused.console->font.w * CTRL_BITS + SPACER + mused.console->font.w * CMD_CHARS)) + 8;
 		
 	pos.y += track_header_size;
 	pos.h -= track_header_size;

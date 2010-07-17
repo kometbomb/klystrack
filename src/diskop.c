@@ -136,6 +136,16 @@ static void save_instrument_inner(FILE *f, MusInstrument *inst, const CydWavetab
 
 static void write_packed_pattern(FILE *f, const MusPattern *pattern)
 {
+	/* 
+	
+	Format: 
+		00 		1 * byte			number of incoming steps
+		01...	n_steps * nibble	incoming data
+		...		n_steps * variable	data described by bits in nibble 
+		
+		If ctrl bit 7 is set, there's also a volume column incoming
+	*/
+
 	fwrite(&pattern->num_steps, 1, sizeof(pattern->num_steps), f);
 	
 	Uint8 buffer = 0;
@@ -147,7 +157,7 @@ static void write_packed_pattern(FILE *f, const MusPattern *pattern)
 		if (pattern->step[i].instrument != MUS_NOTE_NO_INSTRUMENT)
 			buffer |= MUS_PAK_BIT_INST;
 			
-		if (pattern->step[i].ctrl != 0)
+		if (pattern->step[i].ctrl != 0 || pattern->step[i].ctrl != MUS_NOTE_NO_VOLUME)
 			buffer |= MUS_PAK_BIT_CTRL;
 			
 		if (pattern->step[i].command != 0)
@@ -167,8 +177,13 @@ static void write_packed_pattern(FILE *f, const MusPattern *pattern)
 		if (pattern->step[i].instrument != MUS_NOTE_NO_INSTRUMENT)
 			fwrite(&pattern->step[i].instrument, 1, sizeof(pattern->step[i].instrument), f);
 			
-		if (pattern->step[i].ctrl != 0)
-			fwrite(&pattern->step[i].ctrl, 1, sizeof(pattern->step[i].ctrl), f);
+		if (pattern->step[i].ctrl != 0 || pattern->step[i].ctrl != MUS_NOTE_NO_VOLUME)
+		{
+			Uint8 ctrl = pattern->step[i].ctrl;
+			if (pattern->step[i].ctrl != MUS_NOTE_NO_VOLUME) 
+				ctrl |= MUS_PAK_BIT_VOLUME;
+			fwrite(&ctrl, 1, sizeof(pattern->step[i].ctrl), f);
+		}
 			
 		if (pattern->step[i].command != 0)
 		{
@@ -176,6 +191,9 @@ static void write_packed_pattern(FILE *f, const MusPattern *pattern)
 			FIX_ENDIAN(c);
 			fwrite(&c, 1, sizeof(pattern->step[i].command), f);
 		}
+		
+		if (pattern->step[i].ctrl != MUS_NOTE_NO_VOLUME)
+			fwrite(&pattern->step[i].volume, 1, sizeof(pattern->step[i].volume), f);
 	}
 }
 
