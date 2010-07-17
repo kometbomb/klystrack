@@ -154,10 +154,9 @@ endif
 
 all: bin.$(CFG)/$(TARGET) $(THEMES)
 	
-zip: doc/* res/Default $(DLLS) examples/instruments/* examples/songs/*  linux/Makefile
+zip: doc/* res/Default $(DLLS) examples/instruments/* examples/songs/* linux/Makefile zip/data/SDL.dll zip/data/SDL_mixer.dll
 	@make -C ../klystron CFG=release EXTFLAGS="$(EXTFLAGS)"
 	@make build CFG=release
-	@rm -rf zip/data
 	@mkdir -p zip/data/res
 	@mkdir -p zip/data/examples/songs
 	@mkdir -p zip/data/examples/instruments
@@ -188,7 +187,7 @@ endif
 	@rm -f ver.txt
 
 clean:
-	@rm -rf deps objs.$(CFG) bin.$(CFG)
+	@rm -rf deps objs.$(CFG) bin.$(CFG) zip temp
 
 bin.$(CFG)/$(TARGET): $(OBJS)
 	@$(ECHO) "Linking $(TARGET)..."

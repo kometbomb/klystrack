@@ -200,6 +200,16 @@ int open_song(FILE *f)
 				mused.sequenceview_steps = mused.song.sequence[c][s].position - mused.song.sequence[c][s-1].position;
 			}
 	
+	for (int c = 0 ; c < MUS_MAX_CHANNELS ; ++c)	
+		if (mused.song.num_sequences[c] > 0)
+		{
+			if (mused.sequenceview_steps > mused.song.song_length - mused.song.sequence[c][mused.song.num_sequences[c]-1].position)
+			{
+				mused.sequenceview_steps = mused.song.song_length - mused.song.sequence[c][mused.song.num_sequences[c]-1].position;
+			}
+		}
+	
+	if (mused.sequenceview_steps < 1) mused.sequenceview_steps = 1;
 	if (mused.sequenceview_steps == 1000) mused.sequenceview_steps = 16;
 	
 	mus_set_fx(&mused.mus, &mused.song);

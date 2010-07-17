@@ -468,7 +468,7 @@ void sequence_view(SDL_Surface *dest_surface, const SDL_Rect *dest, const SDL_Ev
 		
 		if (i + mused.sequenceview_steps >= mused.song.song_length && loop_end == -1)
 		{
-			loop_end = pos.y + pos.h;
+			loop_end = pos.y + mused.console->font.h + 2;
 		}
 		
 		console_set_color(mused.console,(mused.current_sequencepos == i) ? colors[COLOR_SEQUENCE_SELECTED] : 
@@ -476,8 +476,12 @@ void sequence_view(SDL_Surface *dest_surface, const SDL_Rect *dest, const SDL_Ev
 				colors[COLOR_SEQUENCE_BAR],	colors[COLOR_SEQUENCE_BEAT], colors[COLOR_SEQUENCE_NORMAL]) : colors[COLOR_SEQUENCE_DISABLED], CON_CHARACTER);
 		console_set_background(mused.console, 0);
 		
+		SDL_Rect pp;
+		copy_rect(&pp, &pos);
+		pp.h = mused.console->font.h + 2;
+		
 		if (mused.current_sequencepos == i)
-			bevel(mused.screen,&pos, mused.slider_bevel->surface, BEV_SELECTED_SEQUENCE_ROW);
+			bevel(mused.screen,&pp, mused.slider_bevel->surface, BEV_SELECTED_SEQUENCE_ROW);
 			
 		if ((mused.flags & SONG_PLAYING) && mused.stat_song_position >= i && mused.stat_song_position < i + mused.sequenceview_steps)
 		{

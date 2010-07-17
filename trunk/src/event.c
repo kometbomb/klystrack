@@ -1035,7 +1035,10 @@ void pattern_event(SDL_Event *e)
 			default:
 			{
 				if (e->key.keysym.sym == SDLK_SPACE)
+				{
 					mused.flags ^= EDIT_MODE;
+					play_the_jams(e->key.keysym.sym, -1);
+				}
 			
 				if (!(mused.flags & EDIT_MODE)) 
 				{
