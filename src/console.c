@@ -26,9 +26,10 @@ OTHER DEALINGS IN THE SOFTWARE.
 #include "console.h"
 #include "util/bundle.h"
 #include "mused.h"
+#include "theme.h"
 
 extern Mused mused;
-
+extern Uint32 colors[];
 
 void console_set_background(Console * c, int enabled)
 {
@@ -78,7 +79,7 @@ const SDL_Rect * console_write_args(Console* console, const char *string, ...)
 
 void console_clear(Console *console)
 {
-	SDL_FillRect(mused.screen, &console->clip, 0);
+	SDL_FillRect(mused.screen, &console->clip, colors[COLOR_BACKGROUND]);
 	console->cursor = 0;
 }
 
