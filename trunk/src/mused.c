@@ -99,6 +99,14 @@ void change_mode(int newmode)
 			}
 			
 			break;
+			
+		case EDITWAVETABLE:
+			if (mused.mode == EDITINSTRUMENT)
+			{
+				mused.selected_wavetable = mused.song.instrument[mused.current_instrument].wavetable_entry;
+			}
+			
+			break;
 	
 		case EDITCLASSIC:
 		case EDITPATTERN:
