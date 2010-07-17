@@ -30,11 +30,15 @@ OTHER DEALINGS IN THE SOFTWARE.
 
 #define SCROLLBAR 10
 
+#define timesig(i, bar, beat, normal) ((((i)%((mused.time_signature>>8)*(mused.time_signature&0xff))) == 0)?(bar):((((i)%(mused.time_signature&0xff))==0)?(beat):(normal)))
+#define swap(a,b) { a ^= b; b ^= a; a ^= b; }
+
 void my_draw_view(const View* views, const SDL_Event *_event, const SDL_Surface *screen);
 int generic_field(const SDL_Event *e, const SDL_Rect *area, int focus, int param, const char *_label, const char *format, void *value, int width);
 void generic_flags(const SDL_Event *e, const SDL_Rect *_area, int focus, int p, const char *label, Uint32 *flags, Uint32 mask);
 char * notename(int note);
 void my_separator(const SDL_Rect *parent, SDL_Rect *rect);
+void set_cursor(const SDL_Rect *location);
 
 /* 
 "Controls"
