@@ -978,7 +978,7 @@ void pattern_event(SDL_Event *e)
 				{
 					++mused.current_patternx;
 					
-					if (mused.flags & COMPACT_VIEW && mused.current_patternx >= PED_LEGATO && mused.current_patternx <= PED_VIB)
+					if (mused.flags & COMPACT_VIEW && mused.current_patternx >= PED_VOLUME1 && mused.current_patternx <= PED_VIB)
 						mused.current_patternx = PED_COMMAND1;
 						
 					if (mused.current_patternx >= PED_PARAMS)
@@ -1017,7 +1017,7 @@ void pattern_event(SDL_Event *e)
 				{
 					--mused.current_patternx;
 					
-					if (mused.flags & COMPACT_VIEW && mused.current_patternx >= PED_LEGATO && mused.current_patternx <= PED_VIB)
+					if (mused.flags & COMPACT_VIEW && mused.current_patternx >= PED_VOLUME1 && mused.current_patternx <= PED_VIB)
 						mused.current_patternx = PED_INSTRUMENT2;
 					
 					if (mused.current_patternx < 0)

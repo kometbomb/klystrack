@@ -242,7 +242,7 @@ void my_draw_view(const View* views, const SDL_Event *_event, const SDL_Surface 
 	if (mused.cursor.y < mused.cursor_target.y) ++mused.cursor.y;
 	if (mused.cursor.y > mused.cursor_target.y) --mused.cursor.y;
 	
-	if (mused.cursor.w > 0) bevel(mused.screen, &mused.cursor, mused.slider_bevel->surface, ((mused.flags & EDIT_MODE) || mused.focus != EDITPATTERN) ? BEV_EDIT_CURSOR : BEV_CURSOR);
+	if (mused.cursor.w > 0) bevel(mused.screen, &mused.cursor, mused.slider_bevel->surface, (mused.flags & EDIT_MODE) ? BEV_EDIT_CURSOR : BEV_CURSOR);
 }
 
 
