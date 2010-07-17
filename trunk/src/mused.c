@@ -151,6 +151,7 @@ void clear_pattern_range(MusPattern *pat, int first, int last)
 		pat->step[i].instrument = MUS_NOTE_NO_INSTRUMENT;
 		pat->step[i].ctrl = 0;
 		pat->step[i].command = 0;
+		pat->step[i].volume = MUS_NOTE_NO_VOLUME;
 	}
 }
 
