@@ -212,14 +212,14 @@ int open_song(FILE *f)
 	mused.sequenceview_steps = 1000;
 	
 	for (int c = 0 ; c < MUS_MAX_CHANNELS ; ++c)
-		for (int s = 1 ; s < mused.song.num_sequences[c] ; ++s)
+		for (int s = 1 ; s < mused.song.num_sequences[c] && mused.song.sequence[c][s-1].position < mused.song.song_length ; ++s)
 			if (mused.sequenceview_steps > mused.song.sequence[c][s].position - mused.song.sequence[c][s-1].position)
 			{
 				mused.sequenceview_steps = mused.song.sequence[c][s].position - mused.song.sequence[c][s-1].position;
 			}
 	
 	for (int c = 0 ; c < MUS_MAX_CHANNELS ; ++c)	
-		if (mused.song.num_sequences[c] > 0)
+		if (mused.song.num_sequences[c] > 0 && mused.song.sequence[c][mused.song.num_sequences[c]-1].position < mused.song.song_length)
 		{
 			if (mused.sequenceview_steps > mused.song.song_length - mused.song.sequence[c][mused.song.num_sequences[c]-1].position)
 			{
