@@ -193,6 +193,9 @@ void pattern_view_inner(SDL_Surface *dest_surface, const SDL_Rect *dest, const S
 		{
 			mused.console->clip.x += SPACER;
 			
+			if (channel == -1 || !(mused.mus.channel[channel].flags & MUS_CHN_DISABLED))
+				console_set_color(mused.console, timesig(i, colors[COLOR_PATTERN_VOLUME_BAR], colors[COLOR_PATTERN_VOLUME_BEAT], colors[COLOR_PATTERN_VOLUME]), CON_CHARACTER);
+						
 			if (mused.song.pattern[current_pattern].step[i].volume <= MAX_VOLUME)
 				r = console_write_args(mused.console, "%X", mused.song.pattern[current_pattern].step[i].volume >> 4);
 			else if ((mused.song.pattern[current_pattern].step[i].volume & 0xf0) == MUS_NOTE_VOLUME_FADE_UP)
@@ -229,6 +232,9 @@ void pattern_view_inner(SDL_Surface *dest_surface, const SDL_Rect *dest, const S
 		{
 			mused.console->clip.x += SPACER;
 			
+			if (channel == -1 || !(mused.mus.channel[channel].flags & MUS_CHN_DISABLED))
+				console_set_color(mused.console, timesig(i, colors[COLOR_PATTERN_CTRL_BAR], colors[COLOR_PATTERN_CTRL_BEAT], colors[COLOR_PATTERN_CTRL]), CON_CHARACTER);
+			
 			for (int p = PED_CTRL ; p < PED_COMMAND1 ; ++p)
 			{
 				char *bitname = "LSV";
@@ -244,6 +250,9 @@ void pattern_view_inner(SDL_Surface *dest_surface, const SDL_Rect *dest, const S
 		if (viscol(VC_COMMAND))
 		{
 			mused.console->clip.x += SPACER;
+			
+			if (channel == -1 || !(mused.mus.channel[channel].flags & MUS_CHN_DISABLED))
+				console_set_color(mused.console, timesig(i, colors[COLOR_PATTERN_COMMAND_BAR], colors[COLOR_PATTERN_COMMAND_BEAT], colors[COLOR_PATTERN_COMMAND]), CON_CHARACTER);
 			
 			for (int p = 0 ; p < 4 ; ++p)
 			{
