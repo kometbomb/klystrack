@@ -46,33 +46,42 @@ void spectrum_analyzer_view(SDL_Surface *dest_surface, const SDL_Rect *dest, con
 	{
 		Uint8 note = (mused.stat_note[i] & 0xff00) >> 8;
 		spec[note] = my_max(spec[note], mused.vis.cyd_env[i]);
-		
-		if (spec[note] >= mused.vis.spec_peak[note])
-			mused.vis.spec_peak_decay[note] = 0;
+		if (note > 0) spec[note - 1] = my_max(spec[note] / 3, spec[note - 1]);
+		if (note < 255) spec[note + 1] = my_max(spec[note] / 3, spec[note + 1]);
 	}
 	
 	for (int i = 0 ; i < 96 ; ++i)
 	{
+		if (spec[i] >= mused.vis.spec_peak[i])
+			mused.vis.spec_peak_decay[i] = 0;
 		mused.vis.spec_peak_decay[i] = my_min(64, mused.vis.spec_peak_decay[i] + 1);
-		mused.vis.spec_peak[i] = my_max(0, my_max(mused.vis.spec_peak[i], spec[i]) - my_min(1, my_max(0, mused.vis.spec_peak_decay[i] - 20)) * 4);
+		mused.vis.spec_peak[i] = my_max(0, my_max(mused.vis.spec_peak[i], spec[i]) - my_min(1, my_max(0, /*mused.vis.spec_peak_decay[i] - 20*/ 2)) * 4);
 	}
 	
-	const int w = 3;
+	const int w = 3; // mused.analyzer->surface->w;
 	SDL_Rect bar = {content.x, 0, w, 0};
+	SDL_Rect src = { 0, 0, w, content.h };
 	
 	for (int i = (MIDDLE_C - content.w / w / 2 + 12) ; i < FREQ_TAB_SIZE && bar.x < content.x + content.w ; ++i, bar.x += bar.w)
 	{
 		if (i >= 0)
 		{
+			/*bar.h = mused.vis.spec_peak[i] * content.h / MAX_VOLUME;
+			bar.y = content.y + content.h - bar.h;
+			
+			SDL_FillRect(mused.screen, &bar, 0x404040);*/
+			
 			bar.h = mused.vis.spec_peak[i] * content.h / MAX_VOLUME;
 			bar.y = content.y + content.h - bar.h;
 			
-			SDL_FillRect(mused.screen, &bar, 0x404040);
+			src.h = mused.vis.spec_peak[i] * content.h / MAX_VOLUME;
+			src.y = mused.analyzer->surface->h - bar.h;
+			src.h = bar.h;
 			
-			bar.h = spec[i] * content.h / MAX_VOLUME;
-			bar.y = content.y + content.h - bar.h;
+			SDL_Rect temp;
+			copy_rect(&temp, &bar);
 			
-			SDL_FillRect(mused.screen, &bar, 0xff0000);
+			SDL_BlitSurface(mused.analyzer->surface, &src, mused.screen, &temp);
 		}
 	}
 	
