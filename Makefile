@@ -108,6 +108,7 @@ res/$(1): themes/$(1)/* themes/$(1)/font/* themes/$(1)/font7x6/*
 	@cp -f themes/$(1)/colors.txt themetemp
 	@cp -f themes/$(1)/bevel.bmp themetemp
 	@cp -f themes/$(1)/vu.bmp themetemp
+	@cp -f themes/$(1)/analyzor.bmp themetemp
 	@$(MAKEBUNDLE) themetemp/8x8.fnt themes/$(1)/font
 	@$(MAKEBUNDLE) themetemp/7x6.fnt themes/$(1)/font7x6
 	@$(MAKEBUNDLE) $$@ themetemp

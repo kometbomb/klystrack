@@ -206,6 +206,13 @@ void load_theme(const char *name)
 			if (mused.vu_meter) gfx_free_surface(mused.vu_meter);
 			mused.vu_meter = gfx_load_surface_RW(rw, GFX_KEYED);
 		}
+		
+		rw = SDL_RWFromBundle(&res, "analyzor.bmp");
+		if (rw)
+		{
+			if (mused.analyzer) gfx_free_surface(mused.analyzer);
+			mused.analyzer = gfx_load_surface_RW(rw, GFX_KEYED);
+		}
 	
 		if (mused.console) console_destroy(mused.console); 
 		mused.console = console_create(fullpath);

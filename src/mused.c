@@ -318,6 +318,7 @@ void deinit()
 	console_destroy(mused.console);
 	gfx_free_surface(mused.slider_bevel);
 	gfx_free_surface(mused.vu_meter);
+	gfx_free_surface(mused.analyzer);
 	font_destroy(&mused.smallfont);
 	font_destroy(&mused.largefont);
 	font_destroy(&mused.menufont);
