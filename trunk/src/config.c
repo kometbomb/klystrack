@@ -51,6 +51,7 @@ static const struct { int type; const char *name; void *param; int mask; } confi
 	{ C_BOOL, "hide_zeros", &mused.flags, HIDE_ZEROS },
 	{ C_BOOL, "protracker_delete", &mused.flags, DELETE_EMPTIES },
 	{ C_BOOL, "center_pattern_editor", &mused.flags, CENTER_PATTERN_EDITOR },
+	{ C_INT, "visible_columns", &mused.visible_columns },
 	{ C_END }
 };
 

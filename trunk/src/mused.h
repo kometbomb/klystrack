@@ -73,9 +73,17 @@ enum
 	CENTER_PATTERN_EDITOR = 1024
 };
 
+enum
+{
+	VC_INSTRUMENT = 1,
+	VC_VOLUME = 2,
+	VC_CTRL = 4,
+	VC_COMMAND = 8
+};
+
 typedef struct
 {
-	Uint32 flags;
+	Uint32 flags, visible_columns;
 	int done;
 	Console *console;
 	MusSong song;
@@ -147,5 +155,6 @@ void change_pixel_scale(void *a, void*b, void*c);
 void mirror_flags();
 void resize_pattern(MusPattern * pattern, Uint16 new_size);
 void init_scrollbars();
+int viscol(int col);
 
 #endif

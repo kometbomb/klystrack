@@ -802,6 +802,38 @@ void info_line(SDL_Surface *dest_surface, const SDL_Rect *dest, const SDL_Event 
 		
 		break;
 		
+		case EDITFX:
+		{
+			static const char * param_desc[] = 
+			{
+				"Enable multiplex",
+				"Multiplex period",
+				"FX bus",
+				"Enable bitcrusher",
+				"Drop bits",
+				"Downsample",
+				"Enable stereo chorus",
+				"Min. delay",
+				"Max. delay",
+				"Phase separation",
+				"Modulation frequency",
+				"Enable reverb",
+				"Room size",
+				"Reverb volume",
+				"Decay",
+				"Stereo spread",
+				"Tap delay",
+				"Tap gain"
+			};
+			
+			int i = mused.edit_reverb_param;
+			
+			if (i >= R_DELAY)
+				i = (i - R_DELAY) % 2 + R_DELAY;
+			
+			strcpy(text, param_desc[i]);
+		} break;
+		
 		case EDITPATTERN:
 		
 			if (mused.current_patternx >= PED_COMMAND1)
@@ -1231,7 +1263,7 @@ void instrument_view(SDL_Surface *dest_surface, const SDL_Rect *dest, const SDL_
 		inst_text(event, &r, P_BUZZ_SEMI, "DETUNE", "%+3d", MAKEPTR((inst->buzz_offset + 0x80) >> 8), 3);
 		update_rect(&frame, &r);
 		r.w = frame.w / 2 - 8;
-		inst_text(event, &r, P_BUZZ_SHAPE, "SHAPE", "%01X", MAKEPTR(inst->ym_env_shape), 1);
+		inst_text(event, &r, P_BUZZ_SHAPE, "SHAPE", "%c", MAKEPTR(inst->ym_env_shape + 0xf0), 1);
 		r.x += r.w + 2;
 		r.w = frame.w - r.x + 4;
 		inst_text(event, &r, P_BUZZ_FINE, "FINE", "%+4d", MAKEPTR((Sint8)(inst->buzz_offset & 0xff)), 4);
@@ -1283,7 +1315,7 @@ void instrument_view2(SDL_Surface *dest_surface, const SDL_Rect *dest, const SDL
 	update_rect(&frame, &r);
 	inst_text(event, &r, P_VIBDEPTH,   "VIB.D", "%02X", MAKEPTR(inst->vibrato_depth), 2);
 	update_rect(&frame, &r);
-	inst_text(event, &r, P_VIBSHAPE,   "VIB.SH", "%01X", MAKEPTR(inst->vib_shape), 1);
+	inst_text(event, &r, P_VIBSHAPE,   "VIB.SH", "%c", MAKEPTR(inst->vib_shape + 0xf4), 1);
 	update_rect(&frame, &r);
 	inst_text(event, &r, P_VIBDELAY,   "V.DEL", "%02X", MAKEPTR(inst->vib_delay), 2);
 	update_rect(&frame, &r);
@@ -1291,7 +1323,7 @@ void instrument_view2(SDL_Surface *dest_surface, const SDL_Rect *dest, const SDL
 	update_rect(&frame, &r);
 	inst_text(event, &r, P_PWMDEPTH,   "PWM.D", "%02X", MAKEPTR(inst->pwm_depth), 2);
 	update_rect(&frame, &r);
-	inst_text(event, &r, P_PWMSHAPE,   "PWM.SH", "%01X", MAKEPTR(inst->pwm_shape), 1);
+	inst_text(event, &r, P_PWMSHAPE,   "PWM.SH", "%c", MAKEPTR(inst->pwm_shape + 0xf4), 1);
 	update_rect(&frame, &r);
 	inst_text(event, &r, P_FXBUS,   "FXBUS", "%02X", MAKEPTR(inst->fx_bus), 2);
 	update_rect(&frame, &r);
