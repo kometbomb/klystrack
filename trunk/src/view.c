@@ -34,6 +34,7 @@ OTHER DEALINGS IN THE SOFTWARE.
 #include "theme.h"
 #include "mybevdefs.h"
 #include "snd/freqs.h"
+#include "view/visu.h"
 #include <stdbool.h>
 
 extern Mused mused;
@@ -1692,3 +1693,15 @@ void bevel_view(SDL_Surface *dest_surface, const SDL_Rect *dest, const SDL_Event
 	bevel(mused.screen,dest, mused.slider_bevel->surface, CASTPTR(int,param));
 }
 
+
+void sequence_spectrum_view(SDL_Surface *dest_surface, const SDL_Rect *dest, const SDL_Event *event, void *param)
+{
+	if (mused.flags & SHOW_ANALYZER)
+	{
+		spectrum_analyzer_view(dest_surface, dest, event, param);
+	}
+	else
+	{
+		sequence_view(dest_surface, dest, event, param);
+	}
+}
