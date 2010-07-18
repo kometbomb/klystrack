@@ -50,6 +50,7 @@ void instrument_disk_view(SDL_Surface *dest_surface, const SDL_Rect *dest, const
 void program_view(SDL_Surface *dest_surface, const SDL_Rect *dest, const SDL_Event *event, void *param);
 void info_line(SDL_Surface *dest_surface, const SDL_Rect *dest, const SDL_Event *event, void *param);
 void sequence_view(SDL_Surface *dest_surface, const SDL_Rect *dest, const SDL_Event *event, void *param);
+void sequence_spectrum_view(SDL_Surface *dest_surface, const SDL_Rect *dest, const SDL_Event *event, void *param);
 void pattern_view(SDL_Surface *dest_surface, const SDL_Rect *dest, const SDL_Event *event, void *param);
 void songinfo_view(SDL_Surface *dest_surface, const SDL_Rect *dest, const SDL_Event *event, void *param);
 void instrument_view(SDL_Surface *dest_surface, const SDL_Rect *dest, const SDL_Event *event, void *param);

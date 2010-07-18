@@ -102,7 +102,7 @@ static const View pattern_view_tab[] =
 static const View classic_view_tab[] =
 {
 	{{0,0,CLASSIC_SONG_INFO,CLASSIC_SONG_INFO_H}, songinfo_view, NULL, EDITSONGINFO},
-	{{CLASSIC_SONG_INFO, 0, 0-SCROLLBAR, CLASSIC_SONG_INFO_H - 25}, sequence_view, NULL, EDITSEQUENCE},
+	{{CLASSIC_SONG_INFO, 0, 0-SCROLLBAR, CLASSIC_SONG_INFO_H - 25}, sequence_spectrum_view, NULL, EDITSEQUENCE},
 	{{0-SCROLLBAR, 0, SCROLLBAR, CLASSIC_SONG_INFO_H - 25}, slider, &mused.sequence_slider_param, EDITSEQUENCE},
 	{{CLASSIC_SONG_INFO, CLASSIC_SONG_INFO_H-25, 0, 25}, bevel_view, (void*)BEV_BACKGROUND, -1},
 	{{CLASSIC_SONG_INFO + 2, CLASSIC_SONG_INFO_H - 25 + 2, -2, 10}, song_name_view, NULL, -1},
