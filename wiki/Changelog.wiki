@@ -6,6 +6,7 @@ _*Note:* Only significant changes and new features are listed here._
 =1.5.0=
 
   * Wavetable for low-quality sample action (and for better Protracker module import)
+  * Volume column in patterns
   * Master volume control and clipping warning
   * Improved bitcrush effect for authentic low quality speech samples and stuff
   * More features to make it act like most trackers
