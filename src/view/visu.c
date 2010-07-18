@@ -58,7 +58,7 @@ void spectrum_analyzer_view(SDL_Surface *dest_surface, const SDL_Rect *dest, con
 		mused.vis.spec_peak[i] = my_max(0, my_max(mused.vis.spec_peak[i], spec[i]) - my_min(1, my_max(0, /*mused.vis.spec_peak_decay[i] - 20*/ 2)) * 4);
 	}
 	
-	const int w = 3; // mused.analyzer->surface->w;
+	const int w = mused.analyzer->surface->w / 2;
 	SDL_Rect bar = {content.x, 0, w, 0};
 	SDL_Rect src = { 0, 0, w, content.h };
 	
@@ -71,14 +71,27 @@ void spectrum_analyzer_view(SDL_Surface *dest_surface, const SDL_Rect *dest, con
 			
 			SDL_FillRect(mused.screen, &bar, 0x404040);*/
 			
+			src.x = 0;
+			src.y = 0;
+			src.w = w;
+			src.h = content.h;
+			
+			bar.h = content.h;
+			bar.y = content.y;
+			
+			SDL_Rect temp;
+			copy_rect(&temp, &bar);
+			
+			SDL_BlitSurface(mused.analyzer->surface, &src, mused.screen, &temp);
+			
 			bar.h = mused.vis.spec_peak[i] * content.h / MAX_VOLUME;
 			bar.y = content.y + content.h - bar.h;
 			
 			src.h = mused.vis.spec_peak[i] * content.h / MAX_VOLUME;
 			src.y = mused.analyzer->surface->h - bar.h;
 			src.h = bar.h;
+			src.x = w;
 			
-			SDL_Rect temp;
 			copy_rect(&temp, &bar);
 			
 			SDL_BlitSurface(mused.analyzer->surface, &src, mused.screen, &temp);

@@ -217,7 +217,6 @@ void load_theme(const char *name)
 		if (mused.console) console_destroy(mused.console); 
 		mused.console = console_create(fullpath);
 		
-		
 		{
 			SDL_RWops *colors = SDL_RWFromBundle(&res, "colors.txt");
 			if (colors)
