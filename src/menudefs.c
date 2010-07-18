@@ -50,11 +50,22 @@ Menu editormenu[] =
 };
 
 
+static const Menu columnsmenu[] =
+{
+	{ 0, showmenu, "Instrument", NULL, MENU_CHECK, &mused.visible_columns, (void*)VC_INSTRUMENT, 0 },
+	{ 0, showmenu, "Volume", NULL, MENU_CHECK, &mused.visible_columns, (void*)VC_VOLUME, 0 },
+	{ 0, showmenu, "Control bits", NULL, MENU_CHECK, &mused.visible_columns, (void*)VC_CTRL, 0 },
+	{ 0, showmenu, "Command", NULL, MENU_CHECK, &mused.visible_columns, (void*)VC_COMMAND, 0 },
+	{ 0, NULL, NULL }
+};
+
+
 static const Menu showmenu[] =
 {
 	{ 0, mainmenu, "Editor", editormenu, NULL },
 	{ 0, mainmenu, "", NULL, NULL },
 	{ 0, mainmenu, "Compact", NULL, MENU_CHECK, &mused.flags, (void*)COMPACT_VIEW, 0 },
+	{ 0, mainmenu, "Visible columns", columnsmenu, NULL },
 	{ 0, mainmenu, "Show position offset", NULL, MENU_CHECK, &mused.flags, (void*)SHOW_PATTERN_POS_OFFSET, 0 },
 	{ 0, NULL, NULL }
 };

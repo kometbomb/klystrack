@@ -386,7 +386,7 @@ void instrument_add_param(int a)
 		
 		case P_FLTTYPE:
 		
-		clamp(i->flttype, a, 0, 2);
+		clamp(i->flttype, a, 0, FLT_TYPES - 1);
 		
 		break;
 	
@@ -819,6 +819,12 @@ static void switch_track(int d)
 
 void pattern_event(SDL_Event *e)
 {
+	int last_param = PED_PARAMS - 1;
+	if (!viscol(VC_COMMAND)) last_param = PED_COMMAND1 - 1;
+	if (!viscol(VC_CTRL)) last_param = PED_CTRL - 1;
+	if (!viscol(VC_VOLUME)) last_param = PED_VOLUME1 - 1;
+	if (!viscol(VC_INSTRUMENT)) last_param = PED_INSTRUMENT1 - 1;
+
 	switch (e->type)
 	{
 		case SDL_KEYDOWN:
@@ -843,7 +849,7 @@ void pattern_event(SDL_Event *e)
 			case SDLK_DOWN:
 			{
 				int steps = 1;
-				if (e->key.keysym.sym == SDLK_PAGEDOWN) steps *= 16;
+				if (e->key.keysym.sym == SDLK_PAGEDOWN) steps = my_min(mused.song.pattern[mused.current_pattern].num_steps - mused.current_patternstep - 1, steps * 16);
 				if (e->key.keysym.sym == SDLK_END) steps = mused.song.pattern[mused.current_pattern].num_steps - mused.current_patternstep - 1;
 				
 				update_pattern_slider(steps);
@@ -860,7 +866,7 @@ void pattern_event(SDL_Event *e)
 			case SDLK_UP:
 			{
 				int steps = 1;
-				if (e->key.keysym.sym == SDLK_PAGEUP) steps *= 16;
+				if (e->key.keysym.sym == SDLK_PAGEUP) steps = my_min(mused.current_patternstep , steps * 16);
 				if (e->key.keysym.sym == SDLK_HOME) steps = mused.current_patternstep;
 				
 				update_pattern_slider(-steps);
@@ -978,14 +984,23 @@ void pattern_event(SDL_Event *e)
 				{
 					++mused.current_patternx;
 					
-					if (mused.flags & COMPACT_VIEW && mused.current_patternx >= PED_VOLUME1 && mused.current_patternx <= PED_VIB)
+					if (!viscol(VC_INSTRUMENT) && (mused.current_patternx == PED_INSTRUMENT1 || mused.current_patternx == PED_INSTRUMENT2))
+						mused.current_patternx = PED_VOLUME1;
+						
+					if (!viscol(VC_VOLUME) && (mused.current_patternx == PED_VOLUME1 || mused.current_patternx == PED_VOLUME2))
+						mused.current_patternx = PED_CTRL;
+						
+					if (!viscol(VC_CTRL) && (mused.current_patternx >= PED_CTRL && mused.current_patternx < PED_COMMAND1))
 						mused.current_patternx = PED_COMMAND1;
+						
+					if (!viscol(VC_COMMAND) && (mused.current_patternx >= PED_COMMAND1 && mused.current_patternx <= PED_COMMAND4))
+						mused.current_patternx = PED_PARAMS;
 						
 					if (mused.current_patternx >= PED_PARAMS)
 					{
 						if (mused.single_pattern_edit)
 						{
-							mused.current_patternx = PED_PARAMS-1;
+							mused.current_patternx = last_param;
 						}
 						else
 						{
@@ -1017,9 +1032,6 @@ void pattern_event(SDL_Event *e)
 				{
 					--mused.current_patternx;
 					
-					if (mused.flags & COMPACT_VIEW && mused.current_patternx >= PED_VOLUME1 && mused.current_patternx <= PED_VIB)
-						mused.current_patternx = PED_INSTRUMENT2;
-					
 					if (mused.current_patternx < 0)
 					{
 						if (mused.single_pattern_edit)
@@ -1029,6 +1041,32 @@ void pattern_event(SDL_Event *e)
 						else
 						{
 							mused.current_patternx = PED_PARAMS - 1;
+							
+							switch_track(-1);
+						}
+					}
+					
+					if (!viscol(VC_COMMAND) && (mused.current_patternx >= PED_COMMAND1 && mused.current_patternx <= PED_COMMAND4))
+						mused.current_patternx = PED_VIB;
+					
+					if (!viscol(VC_CTRL) && (mused.current_patternx < PED_COMMAND1 && mused.current_patternx > PED_VOLUME2))
+						mused.current_patternx = PED_VOLUME2;
+										
+					if (!viscol(VC_VOLUME) && (mused.current_patternx == PED_VOLUME1 || mused.current_patternx == PED_VOLUME2))
+						mused.current_patternx = PED_INSTRUMENT2;
+						
+					if (!viscol(VC_INSTRUMENT) && (mused.current_patternx == PED_INSTRUMENT1 || mused.current_patternx == PED_INSTRUMENT2))
+						mused.current_patternx = PED_NOTE;
+					
+					if (mused.current_patternx < 0)
+					{
+						if (mused.single_pattern_edit)
+						{
+							mused.current_patternx = 0;
+						}
+						else
+						{
+							mused.current_patternx = last_param;
 							
 							switch_track(-1);
 						}

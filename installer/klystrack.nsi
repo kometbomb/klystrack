@@ -50,6 +50,7 @@ SectionIn RO
   File zip\data\examples\instruments\bass2.ki
   File zip\data\examples\instruments\bigsnare.ki
   File zip\data\examples\instruments\clap.ki
+  File zip\data\examples\instruments\dang.ki
   File zip\data\examples\instruments\cowbell.ki
   File zip\data\examples\instruments\hardkick.ki
   File zip\data\examples\instruments\katana.ki
@@ -118,6 +119,7 @@ Section Uninstall
   Delete bass2.ki
   Delete bigsnare.ki
   Delete clap.ki
+  Delete dang.ki
   Delete cowbell.ki
   Delete hardkick.ki
   Delete katana.ki

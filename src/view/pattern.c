@@ -154,39 +154,42 @@ void pattern_view_inner(SDL_Surface *dest_surface, const SDL_Rect *dest, const S
 		
 		check_event(event, &clipped, select_pattern_param, MAKEPTR(PED_NOTE), MAKEPTR(i), MAKEPTR(current_pattern));
 		
-		if (!(mused.flags & COMPACT_VIEW)) mused.console->clip.x += SPACER;
+		if (viscol(VC_INSTRUMENT))
+		{
+			mused.console->clip.x += SPACER;
 		
-		if (channel == -1 || !(mused.mus.channel[channel].flags & MUS_CHN_DISABLED))
-			console_set_color(mused.console, timesig(i, colors[COLOR_PATTERN_INSTRUMENT_BAR], colors[COLOR_PATTERN_INSTRUMENT_BEAT], colors[COLOR_PATTERN_INSTRUMENT]), CON_CHARACTER);
-		
-		if (mused.song.pattern[current_pattern].step[i].instrument != MUS_NOTE_NO_INSTRUMENT)
-			r = console_write_args(mused.console, "%X", mused.song.pattern[current_pattern].step[i].instrument >> 4);
-		else
-			r = console_write(mused.console, emptychar);
+			if (channel == -1 || !(mused.mus.channel[channel].flags & MUS_CHN_DISABLED))
+				console_set_color(mused.console, timesig(i, colors[COLOR_PATTERN_INSTRUMENT_BAR], colors[COLOR_PATTERN_INSTRUMENT_BEAT], colors[COLOR_PATTERN_INSTRUMENT]), CON_CHARACTER);
 			
-		copy_rect(&clipped, r);
-		clip_rect(&clipped, &content);
+			if (mused.song.pattern[current_pattern].step[i].instrument != MUS_NOTE_NO_INSTRUMENT)
+				r = console_write_args(mused.console, "%X", mused.song.pattern[current_pattern].step[i].instrument >> 4);
+			else
+				r = console_write(mused.console, emptychar);
+				
+			copy_rect(&clipped, r);
+			clip_rect(&clipped, &content);
+				
+			check_event(event, &clipped, select_pattern_param, MAKEPTR(PED_INSTRUMENT1), MAKEPTR(i), MAKEPTR(current_pattern));
 			
-		check_event(event, &clipped, select_pattern_param, MAKEPTR(PED_INSTRUMENT1), MAKEPTR(i), MAKEPTR(current_pattern));
-		
-		update_pattern_cursor(r, &selected_rect, current_pattern, i, PED_INSTRUMENT1);
-		
-		if (mused.song.pattern[current_pattern].step[i].instrument != MUS_NOTE_NO_INSTRUMENT)
-			r = console_write_args(mused.console, "%X", mused.song.pattern[current_pattern].step[i].instrument & 0xf);
-		else
-			r = console_write(mused.console, emptychar);
+			update_pattern_cursor(r, &selected_rect, current_pattern, i, PED_INSTRUMENT1);
 			
-		if (channel == -1 || !(mused.mus.channel[channel].flags & MUS_CHN_DISABLED))
-			console_set_color(mused.console, base, CON_CHARACTER);
+			if (mused.song.pattern[current_pattern].step[i].instrument != MUS_NOTE_NO_INSTRUMENT)
+				r = console_write_args(mused.console, "%X", mused.song.pattern[current_pattern].step[i].instrument & 0xf);
+			else
+				r = console_write(mused.console, emptychar);
+				
+			if (channel == -1 || !(mused.mus.channel[channel].flags & MUS_CHN_DISABLED))
+				console_set_color(mused.console, base, CON_CHARACTER);
+				
+			copy_rect(&clipped, r);
+			clip_rect(&clipped, &content);
+				
+			check_event(event, &clipped, select_pattern_param, MAKEPTR(PED_INSTRUMENT2), MAKEPTR(i), MAKEPTR(current_pattern));
 			
-		copy_rect(&clipped, r);
-		clip_rect(&clipped, &content);
-			
-		check_event(event, &clipped, select_pattern_param, MAKEPTR(PED_INSTRUMENT2), MAKEPTR(i), MAKEPTR(current_pattern));
+			update_pattern_cursor(r, &selected_rect, current_pattern, i, PED_INSTRUMENT2);
+		}
 		
-		update_pattern_cursor(r, &selected_rect, current_pattern, i, PED_INSTRUMENT2);
-		
-		if (!(mused.flags & COMPACT_VIEW))
+		if (viscol(VC_VOLUME))
 		{
 			mused.console->clip.x += SPACER;
 			
@@ -220,7 +223,10 @@ void pattern_view_inner(SDL_Surface *dest_surface, const SDL_Rect *dest, const S
 			check_event(event, &clipped, select_pattern_param, MAKEPTR(PED_VOLUME2), MAKEPTR(i), MAKEPTR(current_pattern));
 			
 			update_pattern_cursor(r, &selected_rect, current_pattern, i, PED_VOLUME2);
-			
+		}
+
+		if (viscol(VC_CTRL))
+		{
 			mused.console->clip.x += SPACER;
 			
 			for (int p = PED_CTRL ; p < PED_COMMAND1 ; ++p)
@@ -233,21 +239,24 @@ void pattern_view_inner(SDL_Surface *dest_surface, const SDL_Rect *dest, const S
 				check_event(event, &clipped, select_pattern_param, MAKEPTR(p), MAKEPTR(i), MAKEPTR(current_pattern));
 				update_pattern_cursor(r, &selected_rect, current_pattern, i, p);
 			}
-			
-			mused.console->clip.x += SPACER;
 		}
 		
-		for (int p = 0 ; p < 4 ; ++p)
+		if (viscol(VC_COMMAND))
 		{
-			if (mused.song.pattern[current_pattern].step[i].command == 0 && (mused.flags & HIDE_ZEROS))
-				r = console_write_args(mused.console, emptychar);
-			else
-				r = console_write_args(mused.console, "%X", (mused.song.pattern[current_pattern].step[i].command >> ((3-p)*4)) & 0xf);
-			copy_rect(&clipped, r);
-			clip_rect(&clipped, &content);
+			mused.console->clip.x += SPACER;
 			
-			check_event(event, &clipped, select_pattern_param, MAKEPTR(PED_COMMAND1 + p), MAKEPTR(i), MAKEPTR(current_pattern));
-			update_pattern_cursor(r, &selected_rect, current_pattern, i, PED_COMMAND1 + p);
+			for (int p = 0 ; p < 4 ; ++p)
+			{
+				if (mused.song.pattern[current_pattern].step[i].command == 0 && (mused.flags & HIDE_ZEROS))
+					r = console_write_args(mused.console, emptychar);
+				else
+					r = console_write_args(mused.console, "%X", (mused.song.pattern[current_pattern].step[i].command >> ((3-p)*4)) & 0xf);
+				copy_rect(&clipped, r);
+				clip_rect(&clipped, &content);
+				
+				check_event(event, &clipped, select_pattern_param, MAKEPTR(PED_COMMAND1 + p), MAKEPTR(i), MAKEPTR(current_pattern));
+				update_pattern_cursor(r, &selected_rect, current_pattern, i, PED_COMMAND1 + p);
+			}
 		}
 		
 		if (channel != -1)
@@ -358,22 +367,30 @@ static void pattern_header(SDL_Surface *dest_surface, const SDL_Event *event, in
 		sprintf(label, "%02X", channel);
 	}
 	
-	int d = generic_field(event, &pattern, 99, channel, label, "%02X", MAKEPTR(*pattern_var), 2);
-	int old = *pattern_var;
-	
-	if (d < 0)
+	if (!(mused.flags & COMPACT_VIEW)) 
 	{
-		*pattern_var = my_max(0, *pattern_var - 1);
+		int d = generic_field(event, &pattern, 99, channel, label, "%02X", MAKEPTR(*pattern_var), 2);
+		int old = *pattern_var;
+		
+		if (d < 0)
+		{
+			*pattern_var = my_max(0, *pattern_var - 1);
+		}
+		else if (d > 0)
+		{
+			*pattern_var = my_min(NUM_PATTERNS - 1, *pattern_var + 1);
+		}
+		
+		if (d)
+		{
+			if (mused.current_pattern == old)
+				mused.current_pattern = *pattern_var;
+		}
 	}
-	else if (d > 0)
+	else
 	{
-		*pattern_var = my_min(NUM_PATTERNS - 1, *pattern_var + 1);
-	}
-	
-	if (d)
-	{
-		if (mused.current_pattern == old)
-			mused.current_pattern = *pattern_var;
+		pattern.y += 2;
+		font_write(&mused.smallfont, mused.screen, &pattern, label);
 	}
 			
 	button.x = x + pattern_width - button.w - 1;
@@ -439,16 +456,17 @@ void pattern_view(SDL_Surface *dest_surface, const SDL_Rect *dest, const SDL_Eve
 	
 	checkbox(mused.screen, event, &compact, mused.slider_bevel->surface, &mused.smallfont, BEV_BUTTON, BEV_BUTTON_ACTIVE, DECAL_TICK, "S", &mused.flags, COMPACT_VIEW);
 	
-	const int pattern_width = ((mused.flags & COMPACT_VIEW) 
-		? (mused.console->font.w * NOTE_CHARS + mused.console->font.w * INST_CHARS + mused.console->font.w * CMD_CHARS)
-		: (mused.console->font.w * NOTE_CHARS + SPACER + mused.console->font.w * INST_CHARS + SPACER + mused.console->font.w * VOL_CHARS + SPACER + mused.console->font.w * CTRL_BITS + SPACER + mused.console->font.w * CMD_CHARS)) + 8;
+	const int pattern_width = 
+		((mused.console->font.w * NOTE_CHARS) + viscol(VC_INSTRUMENT) * (mused.console->font.w * INST_CHARS + SPACER) + 
+		viscol(VC_VOLUME) * (mused.console->font.w * VOL_CHARS + SPACER) + viscol(VC_CTRL) * (mused.console->font.w * CTRL_BITS + SPACER) + 
+		viscol(VC_COMMAND) * (mused.console->font.w * CMD_CHARS + SPACER)) + 8;
 		
 	pos.y += track_header_size;
 	pos.h -= track_header_size;
 		
 	SDL_Rect button_topleft = { dest->x + pos.w, dest->y, 12, track_header_size };
 	
-	if ((pattern_width - 1) * pv + (pos.w - 2) > dest->w)
+	if ((pattern_width - 2) * pv + (pos.w - 2) > dest->w)
 	{
 		pos.h -= SCROLLBAR;
 		SDL_Rect temp = { dest->x, dest->y + dest->h - SCROLLBAR, dest->w, SCROLLBAR };
@@ -489,7 +507,7 @@ void pattern_view(SDL_Surface *dest_surface, const SDL_Rect *dest, const SDL_Eve
 				if (pos.x + pos.w < dest->x + dest->w) last = my_max(last, i);
 				
 				pattern_view_inner(dest_surface, &pos, dest, event, *mused.ghost_pattern[i], i);
-				pos.x += pos.w - 1;
+				pos.x += pos.w - 2;
 			}
 		}
 	}

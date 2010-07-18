@@ -246,6 +246,7 @@ void init(MusInstrument *instrument, MusPattern *pattern, MusSeqPattern sequence
 	memset(&mused, 0, sizeof(mused));
 	
 	mused.flags = MULTICHANNEL_PREVIEW|ANIMATE_CURSOR|EDIT_MODE;
+	mused.visible_columns = -1;
 	mused.screen = screen;
 	mused.done = 0;
 	mused.octave = 4;
@@ -338,4 +339,10 @@ void mirror_flags()
 	}
 	
 	mused.mus.volume = mused.song.master_volume;
+}
+
+
+int viscol(int col)
+{
+	return !(mused.flags & COMPACT_VIEW) || (mused.visible_columns & col);
 }
