@@ -813,11 +813,31 @@ void info_line(SDL_Surface *dest_surface, const SDL_Rect *dest, const SDL_Event 
 				else
 					strcpy(text, "Command");
 			}
+			else if (mused.current_patternx == PED_VOLUME1 || mused.current_patternx == PED_VOLUME2)
+			{
+				Uint16 vol = mused.song.pattern[mused.current_pattern].step[mused.current_patternstep].volume;
+				
+				if (vol != MUS_NOTE_NO_VOLUME && vol > MAX_VOLUME)
+				{
+					switch (vol & 0xf0)
+					{
+						case MUS_NOTE_VOLUME_FADE_UP:
+							strcpy(text, "Fade volume up");
+							break;
+							
+						case MUS_NOTE_VOLUME_FADE_DN:
+							strcpy(text, "Fade volume down");
+							break;
+					}
+				}
+				else
+					strcpy(text, "Volume");
+			}
 			else
 			{
 				static const char *pattern_txt[] =
 				{
-					"Note", "Instrument", "Instrument", "Volume", "Volume", "Legato", "Slide", "Vibrato"
+					"Note", "Instrument", "Instrument", "", "", "Legato", "Slide", "Vibrato"
 				};
 				
 				strcpy(text, pattern_txt[mused.current_patternx]);

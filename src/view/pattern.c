@@ -190,8 +190,12 @@ void pattern_view_inner(SDL_Surface *dest_surface, const SDL_Rect *dest, const S
 		{
 			mused.console->clip.x += SPACER;
 			
-			if (mused.song.pattern[current_pattern].step[i].volume != MUS_NOTE_NO_VOLUME)
+			if (mused.song.pattern[current_pattern].step[i].volume <= MAX_VOLUME)
 				r = console_write_args(mused.console, "%X", mused.song.pattern[current_pattern].step[i].volume >> 4);
+			else if ((mused.song.pattern[current_pattern].step[i].volume & 0xf0) == MUS_NOTE_VOLUME_FADE_UP)
+				r = console_write(mused.console, "U");
+			else if ((mused.song.pattern[current_pattern].step[i].volume & 0xf0) == MUS_NOTE_VOLUME_FADE_DN)
+				r = console_write(mused.console, "D");
 			else
 				r = console_write(mused.console, emptychar);
 				
