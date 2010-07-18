@@ -107,6 +107,7 @@ void zero_step(MusStep *step)
 {
 	step->note = MUS_NOTE_NONE;				
 	step->instrument = MUS_NOTE_NO_INSTRUMENT;
+	step->volume = 0;
 	step->ctrl = 0;
 	step->command = 0;
 }
