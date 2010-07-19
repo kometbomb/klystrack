@@ -852,6 +852,9 @@ void pattern_event(SDL_Event *e)
 				if (e->key.keysym.sym == SDLK_PAGEDOWN) steps = my_min(mused.song.pattern[mused.current_pattern].num_steps - mused.current_patternstep - 1, steps * 16);
 				if (e->key.keysym.sym == SDLK_END) steps = mused.song.pattern[mused.current_pattern].num_steps - mused.current_patternstep - 1;
 				
+				if (e->key.keysym.mod & KMOD_SHIFT)
+					steps = my_min(steps, mused.song.pattern[mused.current_pattern].num_steps - mused.current_patternstep - 1);
+				
 				update_pattern_slider(steps);
 				
 				if (e->key.keysym.mod & KMOD_SHIFT)
@@ -868,6 +871,9 @@ void pattern_event(SDL_Event *e)
 				int steps = 1;
 				if (e->key.keysym.sym == SDLK_PAGEUP) steps = my_min(mused.current_patternstep , steps * 16);
 				if (e->key.keysym.sym == SDLK_HOME) steps = mused.current_patternstep;
+				
+				if (e->key.keysym.mod & KMOD_SHIFT)
+					steps = my_min(steps, mused.current_patternstep);
 				
 				update_pattern_slider(-steps);
 			

@@ -581,18 +581,18 @@ void sequence_view(SDL_Surface *dest_surface, const SDL_Rect *dest, const SDL_Ev
 			
 			if (mused.focus == EDITSEQUENCE && c == mused.current_sequencetrack)
 			{
-				selection_begin.x = r.x - 2;
+				selection_begin.x = r.x;
 				
 				if (i <= mused.selection.start)
 				{
-					selection_begin.y = pos.y - 1;
+					selection_begin.y = pos.y;
 				}
 				
-				selection_end.x = r.x + r.w + 2;
+				selection_end.x = r.x + r.w;
 				
 				if (i < mused.selection.end)
 				{
-					selection_end.y = pos.y + pos.h;
+					selection_end.y = pos.y + pos.h - 1;
 				}
 			}
 			
