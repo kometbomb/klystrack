@@ -76,6 +76,7 @@ static const InstructionDesc instruction_desc[] =
 	{MUS_FX_LABEL, "Loop begin"},
 	{MUS_FX_LOOP, "Loop end"},
 	{MUS_FX_TRIGGER_RELEASE, "Trigger release"},
+	{MUS_FX_RESTART_PROGRAM, "Restart program"},
 	{MUS_FX_FADE_VOLUME, "Fade volume"},
 	{MUS_FX_EXT_FADE_VOLUME_UP, "Fine fade volume in"},
 	{MUS_FX_EXT_FADE_VOLUME_DN, "Fine fade volume out"},
