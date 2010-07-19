@@ -117,6 +117,7 @@ enum
 	P_PWMDEPTH,
 	P_PWMSHAPE,
 	P_FXBUS,
+	P_NORESTART,
 	/*----------*/
 	P_PARAMS
 };

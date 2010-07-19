@@ -66,7 +66,7 @@ extern const Menu mainmenu[];
 #define SCROLLBAR 10
 #define INST_LIST (6*8 + 3*2)
 #define INFO 13
-#define INST_VIEW2 (38+10+10)
+#define INST_VIEW2 (38+10+10+10)
 
 void change_pixel_scale(void *, void*, void*);
 

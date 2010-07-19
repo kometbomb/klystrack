@@ -797,7 +797,8 @@ void info_line(SDL_Surface *dest_surface, const SDL_Rect *dest, const SDL_Event 
 				"Pulse width modulation speed",
 				"Pulse width modulation depth",
 				"Pulse width modulation shape",
-				"FX bus"
+				"FX bus",
+				"Don't restart program on keydown"
 			};
 			strcpy(text, param_desc[mused.selected_param]);
 		}
@@ -1328,6 +1329,9 @@ void instrument_view2(SDL_Surface *dest_surface, const SDL_Rect *dest, const SDL
 	inst_text(event, &r, P_PWMSHAPE,   "PWM.SH", "%c", MAKEPTR(inst->pwm_shape + 0xf4), 1);
 	update_rect(&frame, &r);
 	inst_text(event, &r, P_FXBUS,   "FXBUS", "%02X", MAKEPTR(inst->fx_bus), 2);
+	update_rect(&frame, &r);
+	r.w = frame.w;
+	inst_flags(event, &r, P_NORESTART, "NO PROG RESTART", &inst->flags, MUS_INST_NO_PROG_RESTART);
 	update_rect(&frame, &r);
 }
 
