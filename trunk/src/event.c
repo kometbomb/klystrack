@@ -389,6 +389,12 @@ void instrument_add_param(int a)
 		clamp(i->flttype, a, 0, FLT_TYPES - 1);
 		
 		break;
+		
+		case P_NORESTART:
+		
+		flipbit(i->flags, MUS_INST_NO_PROG_RESTART);
+		
+		break;
 	
 		default:
 		break;
