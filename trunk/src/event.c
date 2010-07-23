@@ -721,6 +721,8 @@ void sequence_event(SDL_Event *e)
 		
 			case SDLK_INSERT:
 			{
+				snapshot(S_T_SEQUENCE);
+			
 				for (int i = 0; i < mused.song.num_sequences[mused.current_sequencetrack] ; ++i)
 				{
 					if (mused.song.sequence[mused.current_sequencetrack][i].position >= mused.current_sequencepos)
@@ -731,6 +733,8 @@ void sequence_event(SDL_Event *e)
 			
 			case SDLK_PERIOD:
 			{
+				snapshot(S_T_SEQUENCE);
+				
 				del_sequence(mused.current_sequencepos, mused.current_sequencepos+mused.sequenceview_steps, mused.current_sequencetrack);
 				if (mused.song.song_length > mused.current_sequencepos + mused.sequenceview_steps)
 					mused.current_sequencepos += mused.sequenceview_steps;
@@ -739,6 +743,8 @@ void sequence_event(SDL_Event *e)
 			
 			case SDLK_DELETE:
 			{
+				snapshot(S_T_SEQUENCE);
+			
 				del_sequence(mused.current_sequencepos, mused.current_sequencepos+mused.sequenceview_steps, mused.current_sequencetrack);
 				for (int i = 0; i < mused.song.num_sequences[mused.current_sequencetrack] ; ++i)
 				{
@@ -787,6 +793,7 @@ void sequence_event(SDL_Event *e)
 				int p = getalphanum(&e->key.keysym);
 				if (p != -1 && p < NUM_PATTERNS)
 				{
+					snapshot(S_T_SEQUENCE);
 					add_sequence(mused.current_sequencetrack, mused.current_sequencepos, p, 0);
 					if (mused.song.song_length > mused.current_sequencepos + mused.sequenceview_steps)
 						mused.current_sequencepos += mused.sequenceview_steps;
@@ -894,6 +901,8 @@ void pattern_event(SDL_Event *e)
 			{
 				if (!(mused.flags & EDIT_MODE)) break;
 			
+				snapshot(S_T_PATTERN);
+			
 				if ((e->key.keysym.mod & KMOD_ALT)) 
 				{
 					resize_pattern(&mused.song.pattern[mused.current_pattern], mused.song.pattern[mused.current_pattern].num_steps + 1);
@@ -918,6 +927,8 @@ void pattern_event(SDL_Event *e)
 					if (mused.current_patternstep > 0) slider_move_position(&mused.current_patternstep, &mused.pattern_position, &mused.pattern_slider_param, -1, mused.song.pattern[mused.current_pattern].num_steps);
 					else break;
 				}
+				
+				snapshot(S_T_PATTERN);
 				
 				if ((e->key.keysym.mod & KMOD_ALT)) 
 				{
@@ -1112,12 +1123,16 @@ void pattern_event(SDL_Event *e)
 					if (e->key.keysym.sym == SDLK_PERIOD)
 					{
 						mused.song.pattern[mused.current_pattern].step[mused.current_patternstep].note = MUS_NOTE_NONE;				
+						
+						snapshot(S_T_PATTERN);
 							
 						slider_move_position(&mused.current_patternstep, &mused.pattern_position, &mused.pattern_slider_param, +1, mused.song.pattern[mused.current_pattern].num_steps);
 					}
 					else if (e->key.keysym.sym == SDLK_1)
 					{
 						mused.song.pattern[mused.current_pattern].step[mused.current_patternstep].note = MUS_NOTE_RELEASE;
+						
+						snapshot(S_T_PATTERN);
 							
 						slider_move_position(&mused.current_patternstep, &mused.pattern_position, &mused.pattern_slider_param, +1, mused.song.pattern[mused.current_pattern].num_steps);
 					}
@@ -1127,6 +1142,8 @@ void pattern_event(SDL_Event *e)
 						if (note != -1) 
 						{
 							play_the_jams(e->key.keysym.sym, mused.current_sequencetrack);
+							
+							snapshot(S_T_PATTERN);
 							
 							mused.song.pattern[mused.current_pattern].step[mused.current_patternstep].note = note;				
 							mused.song.pattern[mused.current_pattern].step[mused.current_patternstep].instrument = mused.current_instrument;
@@ -1140,6 +1157,8 @@ void pattern_event(SDL_Event *e)
 					if (e->key.keysym.sym == SDLK_PERIOD)
 					{
 						mused.song.pattern[mused.current_pattern].step[mused.current_patternstep].instrument = MUS_NOTE_NO_INSTRUMENT;				
+						
+						snapshot(S_T_PATTERN);
 							
 						slider_move_position(&mused.current_patternstep, &mused.pattern_position, &mused.pattern_slider_param, +1, mused.song.pattern[mused.current_pattern].num_steps);
 					}
@@ -1162,6 +1181,8 @@ void pattern_event(SDL_Event *e)
 							}
 							
 							if (inst > (mused.song.num_instruments-1)) inst = (mused.song.num_instruments-1);
+							
+							snapshot(S_T_PATTERN);
 						
 							mused.song.pattern[mused.current_pattern].step[mused.current_patternstep].instrument = inst; 
 							mused.current_instrument = inst % mused.song.num_instruments;
@@ -1175,6 +1196,8 @@ void pattern_event(SDL_Event *e)
 					switch (e->key.keysym.sym)
 					{
 						case  SDLK_PERIOD:
+							snapshot(S_T_PATTERN);
+							
 							mused.song.pattern[mused.current_pattern].step[mused.current_patternstep].volume = MUS_NOTE_NO_VOLUME;				
 								
 							slider_move_position(&mused.current_patternstep, &mused.pattern_position, &mused.pattern_slider_param, +1, mused.song.pattern[mused.current_pattern].num_steps);
@@ -1191,6 +1214,8 @@ void pattern_event(SDL_Event *e)
 								case SDLK_d: cmd = MUS_NOTE_VOLUME_FADE_DN; break;
 								default: break;
 							}
+							
+							snapshot(S_T_PATTERN);
 							
 							if (mused.song.pattern[mused.current_pattern].step[mused.current_patternstep].volume == MUS_NOTE_NO_VOLUME)
 								mused.song.pattern[mused.current_pattern].step[mused.current_patternstep].volume = 0;
@@ -1220,6 +1245,8 @@ void pattern_event(SDL_Event *e)
 									vol = (vol & 0xf0) | gethex(e->key.keysym.sym);
 									break;
 								}
+								
+								snapshot(S_T_PATTERN);
 								
 								if ((vol & 0xf0) != MUS_NOTE_VOLUME_FADE_UP && (vol & 0xf0) != MUS_NOTE_VOLUME_FADE_DN)
 									mused.song.pattern[mused.current_pattern].step[mused.current_patternstep].volume = my_min(MAX_VOLUME, vol); 
@@ -1255,6 +1282,8 @@ void pattern_event(SDL_Event *e)
 							break;
 						}
 						
+						snapshot(S_T_PATTERN);
+						
 						mused.song.pattern[mused.current_pattern].step[mused.current_patternstep].command = validate_command(inst) & 0x7fff; 
 						
 						slider_move_position(&mused.current_patternstep, &mused.pattern_position, &mused.pattern_slider_param, +1, mused.song.pattern[mused.current_pattern].num_steps);
@@ -1264,12 +1293,16 @@ void pattern_event(SDL_Event *e)
 				{
 					if (e->key.keysym.sym == SDLK_PERIOD || e->key.keysym.sym == SDLK_0)
 					{
+						snapshot(S_T_PATTERN);
+					
 						mused.song.pattern[mused.current_pattern].step[mused.current_patternstep].ctrl &= ~(MUS_CTRL_BIT << (mused.current_patternx - PED_CTRL));				
 							
 						slider_move_position(&mused.current_patternstep, &mused.pattern_position, &mused.pattern_slider_param, +1, mused.song.pattern[mused.current_pattern].num_steps);
 					}
 					if (e->key.keysym.sym == SDLK_1)
 					{
+						snapshot(S_T_PATTERN);
+					
 						mused.song.pattern[mused.current_pattern].step[mused.current_patternstep].ctrl |= (MUS_CTRL_BIT << (mused.current_patternx - PED_CTRL));				
 							
 						slider_move_position(&mused.current_patternstep, &mused.pattern_position, &mused.pattern_slider_param, +1, mused.song.pattern[mused.current_pattern].num_steps);

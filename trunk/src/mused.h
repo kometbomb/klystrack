@@ -53,6 +53,7 @@ enum
 #include "clipboard.h"
 #include "copypaste.h"
 #include "gui/menu.h"
+#include "undo.h"
 
 #define SCREEN_WIDTH 320
 #define SCREEN_HEIGHT 240
@@ -135,6 +136,9 @@ typedef struct
 	
 	/*---*/
 	SDL_Rect cursor_target, cursor;
+	/*----------*/
+	UndoStack undo;
+	UndoStack redo;
 } Mused;
 
 extern Mused mused;

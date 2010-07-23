@@ -30,6 +30,8 @@ OTHER DEALINGS IN THE SOFTWARE.
 #include "action.h"
 #include "event.h"
 #include "theme.h"
+#include "undo.h"
+#include "edit.h"
 
 extern Mused mused;
 extern Menu editormenu[];
@@ -88,6 +90,8 @@ void change_mode(int newmode)
 		mused.prev_mode = mused.mode;
 		
 		mused.cursor.w = mused.cursor.h = mused.cursor_target.w = mused.cursor_target.h = 0;
+		
+		if (newmode != mused.mode) snapshot(S_T_MODE);
 	}
 	
 	switch (newmode)
@@ -298,6 +302,11 @@ void init(MusInstrument *instrument, MusPattern *pattern, MusSeqPattern sequence
 	
 	change_mode(EDITCLASSIC);
 	
+	undo_init(&mused.undo);
+	undo_init(&mused.redo);
+	
+	debug("undo = %p redo = %p", mused.undo, mused.redo);
+	
 	debug("init done");
 }
 
@@ -315,6 +324,9 @@ void init_scrollbars()
 
 void deinit()
 {
+	undo_deinit(&mused.undo);
+	undo_deinit(&mused.redo);
+
 	console_destroy(mused.console);
 	gfx_free_surface(mused.slider_bevel);
 	gfx_free_surface(mused.vu_meter);

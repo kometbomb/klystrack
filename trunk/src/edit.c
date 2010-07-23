@@ -122,6 +122,8 @@ void expand_pattern(void *factor, void *unused2, void *unused3)
 	MusStep *temp = malloc(pattern->num_steps * sizeof(pattern->step[0]));
 	memcpy(temp, pattern->step, pattern->num_steps * sizeof(pattern->step[0]));
 	
+	snapshot(S_T_PATTERN);
+	
 	resize_pattern(pattern, pattern->num_steps * CASTPTR(int,factor));
 	
 	for (int i = 0 ; i < pattern->num_steps ; ++i)
@@ -149,6 +151,8 @@ void shrink_pattern(void *factor, void *unused2, void *unused3)
 	MusPattern *pattern = &mused.song.pattern[mused.current_pattern];
 	
 	if (pattern->num_steps <= CASTPTR(int,factor)) return;
+	
+	snapshot(S_T_PATTERN);
 	
 	resize_pattern(pattern, pattern->num_steps / CASTPTR(int,factor));
 	
@@ -178,6 +182,8 @@ void interpolate(void *unused1, void *unused2, void *unused3)
 	
 	int l = mused.selection.end - mused.selection.start - 1;
 	
+	snapshot(S_T_PATTERN);
+	
 	for (int i = mused.selection.start, p = 0 ; i < mused.selection.end ; ++i, ++p)
 	{
 		if ((pat->step[i].command & mask) == command)
@@ -185,5 +191,26 @@ void interpolate(void *unused1, void *unused2, void *unused3)
 			Uint16 val = begin + (end - begin) * p / l;
 			pat->step[i].command = command | val;
 		}
+	}
+}
+
+
+void snapshot(SHType type)
+{
+	switch (type)
+	{
+		case S_T_PATTERN:
+			undo_store_pattern(&mused.undo, mused.current_pattern, &mused.song.pattern[mused.current_pattern]);
+			break;
+			
+		case S_T_SEQUENCE:
+			undo_store_sequence(&mused.undo, mused.current_sequencetrack, mused.song.sequence[mused.current_sequencetrack], mused.song.num_sequences[mused.current_sequencetrack]);
+			break;
+			
+		case S_T_MODE:
+			undo_store_mode(&mused.undo, mused.mode, mused.focus);
+			break;
+			
+		default: warning("SHType %d not implemented", type); break;
 	}
 }

@@ -32,7 +32,11 @@ typedef enum
 {
 	S_T_PATTERN,
 	S_T_SEQUENCE,
-	S_T_MODE
+	S_T_MODE,
+	S_T_SONGINFO,
+	S_T_FX,
+	S_T_WAVE_PARAM,
+	S_T_WAVE_DATA
 } SHType;
 
 void snapshot(SHType type);
