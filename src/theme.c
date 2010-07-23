@@ -45,7 +45,7 @@ OTHER DEALINGS IN THE SOFTWARE.
 
 extern Mused mused;
 
-#define MAX_THEMES 10
+#define MAX_THEMES 64
 
 Menu thememenu[MAX_THEMES + 1];
 extern const Menu prefsmenu[];
