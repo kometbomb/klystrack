@@ -36,6 +36,7 @@ OTHER DEALINGS IN THE SOFTWARE.
 #include "snd/freqs.h"
 #include "view/visu.h"
 #include <stdbool.h>
+#include "edit.h"
 
 extern Mused mused;
 
@@ -363,23 +364,33 @@ int generic_field(const SDL_Event *e, const SDL_Rect *area, int focus, int param
 }
 
 
-void generic_flags(const SDL_Event *e, const SDL_Rect *_area, int focus, int p, const char *label, Uint32 *flags, Uint32 mask)
+void generic_flags(const SDL_Event *e, const SDL_Rect *_area, int focus, int p, const char *label, Uint32 *_flags, Uint32 mask)
 {
 	SDL_Rect area;
 	copy_rect(&area, _area);
 	area.y += 1;
 	
 	int hit = check_mouse_hit(e, _area, focus, p);
+	Uint32 flags = *_flags;
 	
-	if (checkbox(mused.screen, e, &area, mused.slider_bevel->surface, &mused.smallfont, BEV_BUTTON, BEV_BUTTON_ACTIVE, DECAL_TICK,label, flags, mask)) 
+	if (checkbox(mused.screen, e, &area, mused.slider_bevel->surface, &mused.smallfont, BEV_BUTTON, BEV_BUTTON_ACTIVE, DECAL_TICK,label, &flags, mask)) 
 	{
 		
 	}
 	else if (hit)
 	{
 		// so that the gap between the box and label works too
-		*flags ^= mask;
+		flags ^= mask;
 	}	
+	
+	if (*_flags != flags)
+	{
+		switch (focus)
+		{
+			case EDITINSTRUMENT: snapshot(S_T_INSTRUMENT); break;
+		}
+		*_flags = flags;
+	}
 	
 	if (is_selected_param(focus, p))
 	{
@@ -1050,9 +1061,13 @@ static void inst_text(const SDL_Event *e, const SDL_Rect *area, int p, const cha
 	//check_event(e, area, select_instrument_param, (void*)p, 0, 0);
 	
 	int d = generic_field(e, area, EDITINSTRUMENT, p, _label, format, value, width);
-	if (d) mused.selected_param = p;
-	if (d < 0) instrument_add_param(-1);
-	else if (d >0) instrument_add_param(1);
+	if (d) 
+	{
+		if (p >= 0) mused.selected_param = p;
+		if (p != P_INSTRUMENT) snapshot(S_T_INSTRUMENT);
+		if (d < 0) instrument_add_param(-1);
+		else if (d >0) instrument_add_param(1);
+	}
 	
 	/*if (p == mused.selected_param && mused.focus == EDITINSTRUMENT)
 	{
@@ -1114,6 +1129,11 @@ static void inst_field(const SDL_Event *e, const SDL_Rect *area, int p, int leng
 			mused.editpos = strlen(text);
 		else
 			set_edit_buffer(text, length);
+			
+		if (text == mused.song.title)
+			snapshot(S_T_SONGINFO);
+		else
+			snapshot(S_T_INSTRUMENT);
 	}
 	
 	if (!c && mused.focus == EDITBUFFER && e->type == SDL_MOUSEBUTTONDOWN) change_mode(mused.prev_mode);

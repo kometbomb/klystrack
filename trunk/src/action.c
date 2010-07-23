@@ -542,6 +542,14 @@ void do_undo(void *a, void*b, void*c)
 			mused.focus = frame->event.mode.focus;
 			break;
 		
+		case UNDO_INSTRUMENT:
+			mused.current_instrument = frame->event.instrument.idx;
+			undo_store_instrument(&mused.undo, mused.current_instrument, &mused.song.instrument[mused.current_instrument]);
+			
+			memcpy(&mused.song.instrument[mused.current_instrument], &frame->event.instrument.instrument, sizeof(frame->event.instrument.instrument));
+			
+			break;
+		
 		default: warning("Undo type %d not handled", frame->type); break;
 	}
 	

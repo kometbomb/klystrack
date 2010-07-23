@@ -43,7 +43,7 @@ typedef union
 	struct { int channel; MusSeqPattern *seq; int n_seq; } sequence;
 	struct { int idx; MusInstrument instrument; } instrument;
 	struct { int idx; MusStep *step; int n_steps; } pattern;
-	struct { CydFxSerialized fx; int idx; } fx;
+	struct { CydFxSerialized fx; int idx; Uint8 multiplex_period; } fx;
 	struct { int old_mode, focus; } mode;
 	struct { 
 		Uint16 song_length, loop_point;
@@ -51,9 +51,8 @@ typedef union
 		Uint16 time_signature;
 		Uint32 flags;
 		Uint8 num_channels;
-		Uint8 multiplex_period;
 		char title[MUS_SONG_TITLE_LEN + 1];
-		Uint8 master_volume;
+		Uint8 master_volume, default_volume[MUS_MAX_CHANNELS];
 	} songinfo;
 } UndoEvent;
 
@@ -78,10 +77,10 @@ void undo_pop(UndoStack *stack);
 UndoFrame *undo(UndoStack *stack);
 
 void undo_store_mode(UndoStack *stack, int old_mode, int focus);
-void undo_store_instrument(UndoStack *stack, const MusInstrument *instrument);
+void undo_store_instrument(UndoStack *stack, int idx, const MusInstrument *instrument);
 void undo_store_sequence(UndoStack *stack, int channel, const MusSeqPattern *sequence, int n_seq);
 void undo_store_songinfo(UndoStack *stack, const MusSong *song);
-void undo_store_fx(UndoStack *stack, int idx, const CydFxSerialized *fx);
+void undo_store_fx(UndoStack *stack, int idx, const CydFxSerialized *fx, Uint8 multiplex_period);
 void undo_store_pattern(UndoStack *stack, int idx, const MusPattern *pattern);
 
 #ifdef DEBUG
