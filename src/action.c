@@ -549,6 +549,31 @@ void do_undo(void *a, void*b, void*c)
 			memcpy(&mused.song.instrument[mused.current_instrument], &frame->event.instrument.instrument, sizeof(frame->event.instrument.instrument));
 			
 			break;
+			
+		case UNDO_FX:
+			mused.fx_bus = frame->event.fx.idx;
+			undo_store_fx(&mused.undo, mused.fx_bus, &mused.song.fx[mused.fx_bus], mused.song.multiplex_period);
+			memcpy(&mused.song.fx[mused.fx_bus], &frame->event.fx.fx, sizeof(frame->event.fx.fx));
+			mused.song.multiplex_period = frame->event.fx.multiplex_period;
+			mus_set_fx(&mused.mus, &mused.song);
+			break;
+			
+		case UNDO_SONGINFO:
+		{
+			MusSong *song = &mused.song;
+			song->song_length = frame->event.songinfo.song_length;  
+			song->loop_point = frame->event.songinfo.loop_point;
+			song->song_speed = frame->event.songinfo.song_speed;
+			song->song_speed2 = frame->event.songinfo.song_speed2; 
+			song->song_rate = frame->event.songinfo.song_rate;
+			song->time_signature = frame->event.songinfo.time_signature;
+			song->flags = frame->event.songinfo.flags;
+			song->num_channels = frame->event.songinfo.num_channels;
+			strcpy(song->title, frame->event.songinfo.title);
+			song->master_volume = frame->event.songinfo.master_volume;
+			memcpy(song->default_volume, frame->event.songinfo.default_volume, sizeof(frame->event.songinfo.default_volume));
+		}
+		break;
 		
 		default: warning("Undo type %d not handled", frame->type); break;
 	}
