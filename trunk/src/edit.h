@@ -28,6 +28,15 @@ OTHER DEALINGS IN THE SOFTWARE.
 
 #include "snd/music.h"
 
+typedef enum
+{
+	S_T_PATTERN,
+	S_T_SEQUENCE,
+	S_T_MODE
+} SHType;
+
+void snapshot(SHType type);
+
 void zero_step(MusStep *step);
 void clone_pattern(void *, void *, void *);
 void get_unused_pattern(void*, void*, void*);
