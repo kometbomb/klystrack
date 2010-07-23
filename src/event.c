@@ -1330,11 +1330,15 @@ void edit_program_event(SDL_Event *e)
 			break;
 		
 			case SDLK_PERIOD:
+				snapshot(S_T_INSTRUMENT);
+			
 				mused.song.instrument[mused.current_instrument].program[mused.current_program_step] = MUS_FX_NOP;
 			break;
 			
 			case SDLK_SPACE:
 			{
+				snapshot(S_T_INSTRUMENT);
+				
 				if ((mused.song.instrument[mused.current_instrument].program[mused.current_program_step] & 0xf000) != 0xf000) 
 					mused.song.instrument[mused.current_instrument].program[mused.current_program_step] ^= 0x8000;
 			}
@@ -1388,6 +1392,7 @@ void edit_program_event(SDL_Event *e)
 		
 			case SDLK_INSERT:
 			{
+				snapshot(S_T_INSTRUMENT);
 				for (int i = MUS_PROG_LEN-2; i >= mused.current_program_step ; --i)
 					mused.song.instrument[mused.current_instrument].program[i] = mused.song.instrument[mused.current_instrument].program[i-1];
 				mused.song.instrument[mused.current_instrument].program[mused.current_program_step] = MUS_FX_NOP;
@@ -1397,6 +1402,7 @@ void edit_program_event(SDL_Event *e)
 			case SDLK_BACKSPACE:
 			case SDLK_DELETE:
 			{
+				snapshot(S_T_INSTRUMENT);
 				if (e->key.keysym.sym == SDLK_BACKSPACE)
 				{
 					if (mused.current_program_step > 0) slider_move_position(&mused.current_program_step, &mused.program_position, &mused.program_slider_param, -1, MUS_PROG_LEN);
@@ -1438,6 +1444,7 @@ void edit_program_event(SDL_Event *e)
 				
 				if (v != -1)
 				{
+					snapshot(S_T_INSTRUMENT);
 					editparambox(v);
 				}
 			}
@@ -1487,6 +1494,8 @@ void fx_add_param(int d)
 
 	if (SDL_GetModState() & KMOD_SHIFT)
 		d *= 10;
+		
+	snapshot(S_T_FX);
 
 	switch (mused.edit_reverb_param)
 	{
@@ -1664,6 +1673,8 @@ void wave_add_param(int d)
 	
 	if (SDL_GetModState() & KMOD_SHIFT)
 		d *= 256;
+		
+	snapshot(S_T_WAVE_PARAM);
 
 	switch (mused.wavetable_param)
 	{
@@ -1765,6 +1776,8 @@ void songinfo_add_param(int d)
 
 	if (SDL_GetModState() & KMOD_SHIFT)
 		d *= 16;
+		
+	if (d) snapshot(S_T_SONGINFO);
 
 	switch (mused.songinfo_param)
 	{

@@ -83,12 +83,13 @@ void undo_store_mode(UndoStack *stack, int old_mode, int focus)
 }
 
 
-void undo_store_instrument(UndoStack *stack, const MusInstrument *instrument)
+void undo_store_instrument(UndoStack *stack, int idx, const MusInstrument *instrument)
 {
 	UndoEvent *frame = get_frame(UNDO_INSTRUMENT, stack);
 	
 	if (!frame) return;
 	
+	frame->instrument.idx = idx;
 	memcpy(&frame->instrument.instrument, instrument, sizeof(*instrument));
 }
 
@@ -124,10 +125,22 @@ void undo_store_songinfo(UndoStack *stack, const MusSong *song)
 	UndoEvent *frame = get_frame(UNDO_SONGINFO, stack);
 	
 	if (!frame) return;
+	
+	frame->songinfo.song_length = song->song_length;  
+	frame->songinfo.loop_point = song->loop_point;
+	frame->songinfo.song_speed = song->song_speed;
+	frame->songinfo.song_speed2 = song->song_speed2; 
+	frame->songinfo.song_rate = song->song_rate;
+	frame->songinfo.time_signature = song->time_signature;
+	frame->songinfo.flags = song->flags;
+	frame->songinfo.num_channels = song->num_channels;
+	strcpy(frame->songinfo.title, song->title);
+	frame->songinfo.master_volume = song->master_volume;
+	memcpy(frame->songinfo.default_volume, song->default_volume, sizeof(frame->songinfo.default_volume));
 }
 
 
-void undo_store_fx(UndoStack *stack, int idx, const CydFxSerialized *fx)
+void undo_store_fx(UndoStack *stack, int idx, const CydFxSerialized *fx, Uint8 multiplex_period)
 {
 	UndoEvent *frame = get_frame(UNDO_FX, stack);
 	

@@ -211,6 +211,18 @@ void snapshot(SHType type)
 			undo_store_mode(&mused.undo, mused.mode, mused.focus);
 			break;
 			
+		case S_T_FX:
+			undo_store_fx(&mused.undo, mused.fx_bus, mused.focus, mused.song.multiplex_period);
+			break;
+			
+		case S_T_SONGINFO:
+			undo_store_songinfo(&mused.undo, &mused.song);
+			break;
+		
+		case S_T_INSTRUMENT:
+			undo_store_instrument(&mused.undo, mused.current_instrument, &mused.song.instrument[mused.current_instrument]);
+			break;
+		
 		default: warning("SHType %d not implemented", type); break;
 	}
 }

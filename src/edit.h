@@ -36,7 +36,8 @@ typedef enum
 	S_T_SONGINFO,
 	S_T_FX,
 	S_T_WAVE_PARAM,
-	S_T_WAVE_DATA
+	S_T_WAVE_DATA,
+	S_T_INSTRUMENT
 } SHType;
 
 void snapshot(SHType type);
