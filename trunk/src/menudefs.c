@@ -178,6 +178,9 @@ static const Menu editpatternmenu[] =
 
 static const Menu editmenu[] =
 {
+	{ 0, mainmenu, "Undo", NULL, do_undo, 0, 0, 0 },
+	{ 0, mainmenu, "Redo", NULL, do_undo, MAKEPTR(1), 0, 0 },
+	{ 0, mainmenu, "", NULL, NULL },
 	{ 0, mainmenu, "Copy", NULL, generic_action, copy, 0, 0 },
 	{ 0, mainmenu, "Paste", NULL, generic_action, paste, 0, 0 },
 	{ 0, mainmenu, "Cut", NULL, generic_action, cut, 0, 0 },
