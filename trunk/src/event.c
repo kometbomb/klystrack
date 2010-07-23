@@ -653,6 +653,7 @@ void sequence_event(SDL_Event *e)
 			{
 				if (e->key.keysym.mod & KMOD_ALT)
 				{
+					snapshot(S_T_SEQUENCE);
 					add_note_offset(-1);
 					break;
 				}
@@ -662,6 +663,7 @@ void sequence_event(SDL_Event *e)
 					steps *= 16;
 				if (e->key.keysym.mod & KMOD_CTRL)
 				{
+					snapshot(S_T_SONGINFO);
 					if (e->key.keysym.mod & KMOD_SHIFT)
 					{
 						change_loop_point(MAKEPTR(steps), 0, 0);
@@ -688,6 +690,7 @@ void sequence_event(SDL_Event *e)
 			{
 				if (e->key.keysym.mod & KMOD_ALT)
 				{
+					snapshot(S_T_SEQUENCE);
 					add_note_offset(1);
 					break;
 				}
@@ -698,6 +701,7 @@ void sequence_event(SDL_Event *e)
 				
 				if (e->key.keysym.mod & KMOD_CTRL)
 				{
+					snapshot(S_T_SONGINFO);
 					if (e->key.keysym.mod & KMOD_SHIFT)
 					{
 						change_loop_point(MAKEPTR(-steps), 0,0);

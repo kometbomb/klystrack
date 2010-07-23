@@ -212,7 +212,7 @@ void snapshot(SHType type)
 			break;
 			
 		case S_T_FX:
-			undo_store_fx(&mused.undo, mused.fx_bus, mused.focus, mused.song.multiplex_period);
+			undo_store_fx(&mused.undo, mused.fx_bus, &mused.song.fx[mused.fx_bus], mused.song.multiplex_period);
 			break;
 			
 		case S_T_SONGINFO:
