@@ -91,7 +91,7 @@ void change_mode(int newmode)
 		
 		mused.cursor.w = mused.cursor.h = mused.cursor_target.w = mused.cursor_target.h = 0;
 		
-		if (newmode != mused.mode) snapshot(S_T_MODE);
+		if (newmode != mused.mode && newmode < VIRTUAL_MODE) snapshot(S_T_MODE);
 	}
 	
 	switch (newmode)
@@ -217,6 +217,11 @@ void new_song()
 	if (mused.mus.cyd) cyd_reset_wavetable(mused.mus.cyd);
 	
 	mirror_flags();
+	
+	undo_deinit(&mused.undo);
+	undo_init(&mused.undo);
+	undo_deinit(&mused.redo);
+	undo_init(&mused.redo);
 }
 
 
@@ -296,14 +301,16 @@ void init(MusInstrument *instrument, MusPattern *pattern, MusSeqPattern sequence
 		resize_pattern(&mused.song.pattern[i], 16);
 	}
 	
+	undo_init(&mused.undo);
+	undo_init(&mused.redo);
+	
 	new_song();
 	
 	enum_themes();
 	
-	change_mode(EDITCLASSIC);
-	
-	undo_init(&mused.undo);
-	undo_init(&mused.redo);
+	//change_mode(EDITCLASSIC);
+	mused.mode = EDITCLASSIC;
+	mused.focus = EDITPATTERN;
 	
 	debug("undo = %p redo = %p", mused.undo, mused.redo);
 	
