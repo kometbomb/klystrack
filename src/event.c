@@ -276,7 +276,7 @@ void instrument_add_param(int a)
 		
 		case P_VOLUME:
 		
-		clamp(i->volume, a, 0, MAX_VOLUME);
+		clamp(i->volume, a, 0, 255); // 255 = ~2x boost
 			
 		break;
 		
