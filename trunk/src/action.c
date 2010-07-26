@@ -535,6 +535,7 @@ void do_undo(void *a, void*b, void*c)
 			mused.song.num_sequences[mused.current_sequencetrack] = frame->event.sequence.n_seq;
 			
 			memcpy(mused.song.sequence[mused.current_sequencetrack], frame->event.sequence.seq, frame->event.sequence.n_seq * sizeof(frame->event.sequence.seq[0]));
+			update_ghost_patterns();
 			break;
 			
 		case UNDO_MODE:
