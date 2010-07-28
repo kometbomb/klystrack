@@ -197,32 +197,45 @@ void interpolate(void *unused1, void *unused2, void *unused3)
 
 void snapshot(SHType type)
 {
-	switch (type)
+	snapshot_cascade(type, -1, -1);
+}
+
+
+void snapshot_cascade(SHType type, int a, int b)
+{
+	if (!(a != -1 && mused.last_snapshot == type && mused.last_snapshot_a == a && mused.last_snapshot_b == b))
 	{
-		case S_T_PATTERN:
-			undo_store_pattern(&mused.undo, mused.current_pattern, &mused.song.pattern[mused.current_pattern]);
-			break;
+		switch (type)
+		{
+			case S_T_PATTERN:
+				undo_store_pattern(&mused.undo, mused.current_pattern, &mused.song.pattern[mused.current_pattern]);
+				break;
+				
+			case S_T_SEQUENCE:
+				undo_store_sequence(&mused.undo, mused.current_sequencetrack, mused.song.sequence[mused.current_sequencetrack], mused.song.num_sequences[mused.current_sequencetrack]);
+				break;
+				
+			case S_T_MODE:
+				undo_store_mode(&mused.undo, mused.mode, mused.focus);
+				break;
+				
+			case S_T_FX:
+				undo_store_fx(&mused.undo, mused.fx_bus, &mused.song.fx[mused.fx_bus], mused.song.multiplex_period);
+				break;
+				
+			case S_T_SONGINFO:
+				undo_store_songinfo(&mused.undo, &mused.song);
+				break;
 			
-		case S_T_SEQUENCE:
-			undo_store_sequence(&mused.undo, mused.current_sequencetrack, mused.song.sequence[mused.current_sequencetrack], mused.song.num_sequences[mused.current_sequencetrack]);
-			break;
+			case S_T_INSTRUMENT:
+				undo_store_instrument(&mused.undo, mused.current_instrument, &mused.song.instrument[mused.current_instrument]);
+				break;
 			
-		case S_T_MODE:
-			undo_store_mode(&mused.undo, mused.mode, mused.focus);
-			break;
-			
-		case S_T_FX:
-			undo_store_fx(&mused.undo, mused.fx_bus, &mused.song.fx[mused.fx_bus], mused.song.multiplex_period);
-			break;
-			
-		case S_T_SONGINFO:
-			undo_store_songinfo(&mused.undo, &mused.song);
-			break;
-		
-		case S_T_INSTRUMENT:
-			undo_store_instrument(&mused.undo, mused.current_instrument, &mused.song.instrument[mused.current_instrument]);
-			break;
-		
-		default: warning("SHType %d not implemented", type); break;
+			default: warning("SHType %d not implemented", type); break;
+		}
 	}
+	
+	mused.last_snapshot = type;
+	mused.last_snapshot_a = a;
+	mused.last_snapshot_b = b;
 }

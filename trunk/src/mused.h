@@ -30,6 +30,7 @@ OTHER DEALINGS IN THE SOFTWARE.
 #include "gfx/font.h"
 #include "console.h"
 #include "gui/slider.h"
+#include "edit.h"
 
 enum
 {
@@ -139,6 +140,8 @@ typedef struct
 	/*----------*/
 	UndoStack undo;
 	UndoStack redo;
+	SHType last_snapshot;
+	int last_snapshot_a, last_snapshot_b;
 } Mused;
 
 extern Mused mused;

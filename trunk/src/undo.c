@@ -181,7 +181,9 @@ UndoFrame *undo(UndoStack *stack)
 
 void undo_pop(UndoStack *stack)
 {
-	undo_destroy_frame(undo(stack));
+	UndoFrame *f = undo(stack);
+	if (f)
+		undo_destroy_frame(f);
 }
 
 #ifdef DEBUG
