@@ -40,7 +40,10 @@ typedef enum
 	S_T_INSTRUMENT
 } SHType;
 
+
+/* a, b = id for cascading snapshots */
 void snapshot(SHType type);
+void snapshot_cascade(SHType type, int a, int b);
 
 void zero_step(MusStep *step);
 void clone_pattern(void *, void *, void *);

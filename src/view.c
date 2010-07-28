@@ -1064,7 +1064,7 @@ static void inst_text(const SDL_Event *e, const SDL_Rect *area, int p, const cha
 	if (d) 
 	{
 		if (p >= 0) mused.selected_param = p;
-		if (p != P_INSTRUMENT) snapshot(S_T_INSTRUMENT);
+		if (p != P_INSTRUMENT) snapshot_cascade(S_T_INSTRUMENT, mused.current_instrument, p);
 		if (d < 0) instrument_add_param(-1);
 		else if (d >0) instrument_add_param(1);
 	}

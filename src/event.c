@@ -663,7 +663,7 @@ void sequence_event(SDL_Event *e)
 					steps *= 16;
 				if (e->key.keysym.mod & KMOD_CTRL)
 				{
-					snapshot(S_T_SONGINFO);
+					snapshot_cascade(S_T_SONGINFO, SI_LOOP, -1);
 					if (e->key.keysym.mod & KMOD_SHIFT)
 					{
 						change_loop_point(MAKEPTR(steps), 0, 0);
@@ -701,7 +701,7 @@ void sequence_event(SDL_Event *e)
 				
 				if (e->key.keysym.mod & KMOD_CTRL)
 				{
-					snapshot(S_T_SONGINFO);
+					snapshot_cascade(S_T_SONGINFO, SI_LOOP, -1);
 					if (e->key.keysym.mod & KMOD_SHIFT)
 					{
 						change_loop_point(MAKEPTR(-steps), 0,0);
@@ -1478,6 +1478,8 @@ void edit_text(SDL_Event *e)
 
 void set_room_size(int fx, int size, int vol, int dec)
 {
+	snapshot(S_T_FX);
+	
 	const int min_delay = 5;
 	int ms = (CYDRVB_SIZE - min_delay) * size / 64;
 	
@@ -1499,7 +1501,7 @@ void fx_add_param(int d)
 	if (SDL_GetModState() & KMOD_SHIFT)
 		d *= 10;
 		
-	snapshot(S_T_FX);
+	snapshot_cascade(S_T_FX, mused.fx_bus, mused.edit_reverb_param);
 
 	switch (mused.edit_reverb_param)
 	{
@@ -1678,7 +1680,7 @@ void wave_add_param(int d)
 	if (SDL_GetModState() & KMOD_SHIFT)
 		d *= 256;
 		
-	snapshot(S_T_WAVE_PARAM);
+	snapshot_cascade(S_T_WAVE_PARAM, mused.selected_wavetable, mused.wavetable_param);
 
 	switch (mused.wavetable_param)
 	{
@@ -1781,7 +1783,7 @@ void songinfo_add_param(int d)
 	if (SDL_GetModState() & KMOD_SHIFT)
 		d *= 16;
 		
-	if (d) snapshot(S_T_SONGINFO);
+	if (d) snapshot_cascade(S_T_SONGINFO, mused.songinfo_param, -1);
 
 	switch (mused.songinfo_param)
 	{
