@@ -576,6 +576,29 @@ void do_undo(void *a, void*b, void*c)
 		}
 		break;
 		
+		case UNDO_WAVE_PARAM:
+		{
+			mused.selected_wavetable = frame->event.wave_param.idx;
+			CydWavetableEntry *entry = &mused.mus.cyd->wavetable_entries[mused.selected_wavetable];
+			entry->flags = frame->event.wave_param.flags;
+			entry->sample_rate = frame->event.wave_param.sample_rate;
+			entry->samples = frame->event.wave_param.samples; 
+			entry->loop_begin = frame->event.wave_param.loop_begin;
+			entry->loop_end = frame->event.wave_param.loop_end;
+			entry->base_note = frame->event.wave_param.base_note;
+		}
+		break;
+		
+		case UNDO_WAVE_DATA:
+		{
+			mused.selected_wavetable = frame->event.wave_param.idx;
+			CydWavetableEntry *entry = &mused.mus.cyd->wavetable_entries[mused.selected_wavetable];
+			entry->data = realloc(entry->data, frame->event.wave_data.length * sizeof(entry->data[0]));
+			memcpy(entry->data, frame->event.wave_data.data, frame->event.wave_data.length);
+			entry->samples = frame->event.wave_data.length;
+		}
+		break;
+		
 		default: warning("Undo type %d not handled", frame->type); break;
 	}
 	
