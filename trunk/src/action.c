@@ -594,7 +594,7 @@ void do_undo(void *a, void*b, void*c)
 			mused.selected_wavetable = frame->event.wave_param.idx;
 			CydWavetableEntry *entry = &mused.mus.cyd->wavetable_entries[mused.selected_wavetable];
 			entry->data = realloc(entry->data, frame->event.wave_data.length * sizeof(entry->data[0]));
-			memcpy(entry->data, frame->event.wave_data.data, frame->event.wave_data.length);
+			memcpy(entry->data, frame->event.wave_data.data, frame->event.wave_data.length * sizeof(entry->data[0]));
 			entry->samples = frame->event.wave_data.length;
 		}
 		break;
@@ -621,6 +621,7 @@ void do_undo(void *a, void*b, void*c)
 
 void kill_wavetable_entry(void *a, void*b, void*c)
 {
+	snapshot(S_T_WAVE_DATA);
 	cyd_wave_entry_init(&mused.mus.cyd->wavetable_entries[mused.selected_wavetable], NULL, 0, 0, 0, 0, 0);
 }
 
