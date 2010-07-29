@@ -149,6 +149,7 @@ void clear_pattern(MusPattern *pat)
 
 void clear_pattern_range(MusPattern *pat, int first, int last)
 {
+	snapshot(S_T_PATTERN);
 	for (int i = first ; i < last ; ++i)
 	{
 		pat->step[i].note = MUS_NOTE_NONE;
