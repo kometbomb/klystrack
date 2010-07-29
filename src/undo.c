@@ -65,6 +65,10 @@ void undo_destroy_frame(UndoFrame *frame)
 			free(frame->event.pattern.step);
 			break;
 			
+		case UNDO_WAVE_DATA:
+			free(frame->event.wave_data.data);
+			break;
+			
 		default: break;
 	}
 
@@ -202,3 +206,32 @@ void undo_show_stack(UndoStack *stack)
 	printf("]\n");
 }
 #endif
+
+
+void undo_store_wave_data(UndoStack *stack, int idx, const CydWavetableEntry *entry)
+{
+	UndoEvent *frame = get_frame(UNDO_WAVE_DATA, stack);
+	
+	if (!frame) return;
+	
+	frame->wave_data.idx = idx;
+	frame->wave_data.length = entry->samples;
+	frame->wave_data.data = malloc(entry->samples * sizeof(entry->data[0]));
+	memcpy(frame->wave_data.data, entry->data, entry->samples * sizeof(entry->data[0]));
+}
+
+
+void undo_store_wave_param(UndoStack *stack, int idx, const CydWavetableEntry *entry)
+{
+	UndoEvent *frame = get_frame(UNDO_WAVE_PARAM, stack);
+	
+	if (!frame) return;
+	
+	frame->wave_param.idx = idx;
+	frame->wave_param.flags = entry->flags;
+	frame->wave_param.sample_rate = entry->sample_rate;
+	frame->wave_param.samples = entry->samples; 
+	frame->wave_param.loop_begin = entry->loop_begin;
+	frame->wave_param.loop_end = entry->loop_end;
+	frame->wave_param.base_note = entry->base_note;
+}

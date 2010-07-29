@@ -35,7 +35,9 @@ typedef enum
 	UNDO_INSTRUMENT,
 	UNDO_FX,
 	UNDO_SONGINFO,
-	UNDO_MODE
+	UNDO_MODE,
+	UNDO_WAVE_PARAM,
+	UNDO_WAVE_DATA
 } UndoType;
 
 typedef union
@@ -54,6 +56,18 @@ typedef union
 		char title[MUS_SONG_TITLE_LEN + 1];
 		Uint8 master_volume, default_volume[MUS_MAX_CHANNELS];
 	} songinfo;
+	struct {
+		int idx;
+		Uint32 flags;
+		Uint32 sample_rate;
+		Uint32 samples, loop_begin, loop_end;
+		Uint16 base_note;
+	} wave_param;
+	struct {
+		int idx;
+		void *data;
+		size_t length;
+	} wave_data;
 } UndoEvent;
 
 typedef struct UndoFrame_t
@@ -82,6 +96,8 @@ void undo_store_sequence(UndoStack *stack, int channel, const MusSeqPattern *seq
 void undo_store_songinfo(UndoStack *stack, const MusSong *song);
 void undo_store_fx(UndoStack *stack, int idx, const CydFxSerialized *fx, Uint8 multiplex_period);
 void undo_store_pattern(UndoStack *stack, int idx, const MusPattern *pattern);
+void undo_store_wave_data(UndoStack *stack, int idx, const CydWavetableEntry *entry);
+void undo_store_wave_param(UndoStack *stack, int idx, const CydWavetableEntry *entry);
 
 #ifdef DEBUG
 void undo_show_stack(UndoStack *stack);
