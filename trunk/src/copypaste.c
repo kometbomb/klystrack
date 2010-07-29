@@ -95,10 +95,10 @@ void cut()
 
 void delete()
 {
-	switch (mused.mode)
+	switch (mused.focus)
 	{
 		case EDITPATTERN:
-		
+		snapshot(S_T_PATTERN);
 		if (mused.selection.start == mused.selection.end)
 			clear_pattern(&mused.song.pattern[mused.current_pattern]);
 		else
@@ -107,7 +107,7 @@ void delete()
 		break;
 		
 		case EDITSEQUENCE:
-		
+		snapshot(S_T_SEQUENCE);
 		del_sequence(mused.selection.start, mused.selection.end, mused.current_sequencetrack);
 		
 		break;
@@ -124,6 +124,8 @@ void paste()
 		case EDITSEQUENCE:
 		{
 			if (mused.cp.type != CP_SEQUENCE) break;
+			
+			snapshot(S_T_SEQUENCE);
 			
 			size_t items = cp_get_item_count(&mused.cp, sizeof(mused.song.sequence[0][0]));
 			
@@ -143,14 +145,19 @@ void paste()
 		
 		case EDITPATTERN:
 		{
+			
 			if (mused.cp.type == CP_PATTERN)
 			{
+				snapshot(S_T_PATTERN);
 				resize_pattern(&mused.song.pattern[mused.current_pattern], cp_get_item_count(&mused.cp, sizeof(mused.song.pattern[mused.current_pattern].step[0])));
 				cp_paste_items(&mused.cp, CP_PATTERN, mused.song.pattern[mused.current_pattern].step, cp_get_item_count(&mused.cp, sizeof(mused.song.pattern[mused.current_pattern].step[0])), sizeof(mused.song.pattern[mused.current_pattern].step[0]));
 			}
 			else if (mused.cp.type == CP_PATTERNSEGMENT)
+			{
+				snapshot(S_T_PATTERN);
 				cp_paste_items(&mused.cp, CP_PATTERNSEGMENT, &mused.song.pattern[mused.current_pattern].step[mused.current_patternstep], mused.song.pattern[mused.current_pattern].num_steps-mused.current_patternstep, 
 					sizeof(mused.song.pattern[mused.current_pattern].step[0]));
+			}
 		}
 		break;
 	
@@ -158,6 +165,8 @@ void paste()
 		{
 			if (mused.cp.type == CP_INSTRUMENT)
 			{
+				snapshot(S_T_INSTRUMENT);
+			
 				cp_paste_items(&mused.cp, CP_INSTRUMENT, &mused.song.instrument[mused.current_instrument], 1, sizeof(mused.song.instrument[mused.current_instrument]));
 			}
 		}
@@ -167,6 +176,7 @@ void paste()
 		{
 			if (mused.cp.type == CP_PROGRAM)
 			{
+				snapshot(S_T_INSTRUMENT);
 				cp_paste_items(&mused.cp, CP_PROGRAM, &mused.song.instrument[mused.current_instrument].program[mused.current_program_step], MUS_PROG_LEN - mused.current_program_step, 
 					sizeof(mused.song.instrument[mused.current_instrument].program[0]));
 			}
