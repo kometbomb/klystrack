@@ -143,13 +143,13 @@ void change_mode(int newmode)
 
 void clear_pattern(MusPattern *pat)
 {
+	snapshot(S_T_PATTERN);
 	clear_pattern_range(pat, 0, pat->num_steps);
 }
 
 
 void clear_pattern_range(MusPattern *pat, int first, int last)
 {
-	snapshot(S_T_PATTERN);
 	for (int i = first ; i < last ; ++i)
 	{
 		pat->step[i].note = MUS_NOTE_NONE;
@@ -187,7 +187,7 @@ void new_song()
 	
 	for (int i = 0 ; i < NUM_PATTERNS ; ++i)
 	{
-		clear_pattern(&mused.song.pattern[i]);
+		clear_pattern_range(&mused.song.pattern[i], 0, mused.song.pattern[i].num_steps);
 	}
 	
 	for (int fx = 0 ; fx < CYD_MAX_FX_CHANNELS ; ++fx)
