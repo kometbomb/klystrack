@@ -157,6 +157,9 @@ int font_load_and_set_color(Font *font, Bundle *b, char *name, Uint32 color)
 
 void load_theme(const char *name)
 {
+	if (strcmp(name, "Default") != 0)
+		load_theme("Default"); // for default stuff not in selected theme
+
 	Bundle res;
 	char fullpath[1000];
 	
@@ -236,22 +239,29 @@ void load_theme(const char *name)
 			}
 		}
 		
-		font_destroy(&mused.smallfont);
-		font_load_and_set_color(&mused.smallfont, &res, "7x6.fnt", colors[COLOR_SMALL_TEXT]);
-		font_destroy(&mused.largefont);
-		font_load_and_set_color(&mused.largefont, &res, "8x8.fnt", colors[COLOR_MAIN_TEXT]);
-		font_destroy(&mused.menufont);
-		font_load_and_set_color(&mused.menufont, &res, "8x8.fnt", colors[COLOR_MENU_NORMAL]);
-		font_destroy(&mused.menufont_selected);
-		font_load_and_set_color(&mused.menufont_selected, &res, "8x8.fnt", colors[COLOR_MENU_SELECTED]);
-		font_destroy(&mused.shortcutfont);
-		font_load_and_set_color(&mused.shortcutfont, &res, "7x6.fnt", colors[COLOR_MENU_SHORTCUT]);
-		font_destroy(&mused.shortcutfont_selected);
-		font_load_and_set_color(&mused.shortcutfont_selected, &res, "7x6.fnt", colors[COLOR_MENU_SHORTCUT_SELECTED]);
-		font_destroy(&mused.headerfont);
-		font_load_and_set_color(&mused.headerfont, &res, "7x6.fnt", colors[COLOR_MENU_HEADER]);
-		font_destroy(&mused.headerfont_selected);
-		font_load_and_set_color(&mused.headerfont_selected, &res, "7x6.fnt", colors[COLOR_MENU_HEADER_SELECTED]);
+		if (bnd_exists(&res, "7x6.fnt"))
+		{
+			font_destroy(&mused.smallfont);
+			font_load_and_set_color(&mused.smallfont, &res, "7x6.fnt", colors[COLOR_SMALL_TEXT]);
+			font_destroy(&mused.shortcutfont);
+			font_load_and_set_color(&mused.shortcutfont, &res, "7x6.fnt", colors[COLOR_MENU_SHORTCUT]);
+			font_destroy(&mused.shortcutfont_selected);
+			font_load_and_set_color(&mused.shortcutfont_selected, &res, "7x6.fnt", colors[COLOR_MENU_SHORTCUT_SELECTED]);
+			font_destroy(&mused.headerfont);
+			font_load_and_set_color(&mused.headerfont, &res, "7x6.fnt", colors[COLOR_MENU_HEADER]);
+			font_destroy(&mused.headerfont_selected);
+			font_load_and_set_color(&mused.headerfont_selected, &res, "7x6.fnt", colors[COLOR_MENU_HEADER_SELECTED]);
+		}
+		
+		if (bnd_exists(&res, "8x8.fnt"))
+		{
+			font_destroy(&mused.largefont);
+			font_load_and_set_color(&mused.largefont, &res, "8x8.fnt", colors[COLOR_MAIN_TEXT]);
+			font_destroy(&mused.menufont);
+			font_load_and_set_color(&mused.menufont, &res, "8x8.fnt", colors[COLOR_MENU_NORMAL]);
+			font_destroy(&mused.menufont_selected);
+			font_load_and_set_color(&mused.menufont_selected, &res, "8x8.fnt", colors[COLOR_MENU_SELECTED]);
+		}
 				
 		bnd_free(&res);
 		strcpy(mused.themename, name);

@@ -825,7 +825,7 @@ static void switch_track(int d)
 	
 	if (s != mused.current_sequencetrack) mused.current_pattern = *mused.ghost_pattern[mused.current_sequencetrack];
 	
-	mused.current_pattern = *mused.ghost_pattern[mused.current_sequencetrack];
+	//mused.current_pattern = *mused.ghost_pattern[mused.current_sequencetrack];
 	
 	slider_move_position(&mused.current_sequencetrack, &mused.pattern_horiz_position, &mused.pattern_horiz_slider_param, 0, mused.pattern_horiz_slider_param.last - mused.pattern_horiz_slider_param.first + 1);
 	slider_move_position(&mused.current_patternstep, &mused.pattern_position, &mused.pattern_slider_param, 0, mused.song.pattern[mused.current_pattern].num_steps);
