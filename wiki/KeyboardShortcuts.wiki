@@ -8,6 +8,7 @@
 || cursor keys || move around/change values ||
 || TAB || change focused element (where applicable) ||
 || F2 || pattern editor || 
+|| Shift+F2 || wavetable editor || 
 || F3 || instrument editor || 
 || Shift+F3 || effect editor || 
 || F4 || sequence editor || 
