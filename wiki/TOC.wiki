@@ -17,6 +17,7 @@
     * [Clipboard]
     * [Tweaks]
     * [ModuleImport Importing modules]
+    * [FAQ FAQ]
   * *Developers*
     * [Themes Customizing how klystrack looks like]
     * [HowToCompile How to compile klystrack]
