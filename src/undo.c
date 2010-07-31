@@ -34,7 +34,7 @@ void undo_add_frame(UndoStack *stack, UndoFrame *frame)
 	frame->prev = *stack;
 	*stack = frame;
 	
-	debug("Added undo frame %p to %p", frame, stack);
+	//debug("Added undo frame %p to %p", frame, stack);
 }
 
 static UndoEvent * get_frame(UndoType type, UndoStack *stack)
@@ -45,9 +45,9 @@ static UndoEvent * get_frame(UndoType type, UndoStack *stack)
 	undo_add_frame(stack, frame);
 	frame->type = type;
 	
-#ifdef DEBUG
+/*#ifdef DEBUG
 	undo_show_stack(stack);
-#endif	
+#endif	*/
 	
 	return &frame->event;
 }

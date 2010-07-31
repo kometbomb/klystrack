@@ -610,10 +610,10 @@ void do_undo(void *a, void*b, void*c)
 	}
 	
 	
-#ifdef DEBUG
+/*#ifdef DEBUG
 	undo_show_stack(&mused.undo);
 	undo_show_stack(&mused.redo);
-#endif
+#endif*/
 	
 	undo_destroy_frame(frame);
 }
