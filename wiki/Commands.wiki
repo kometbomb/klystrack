@@ -36,16 +36,23 @@ _{{{xx}}}, {{{yy}}} = parameter to command_
 || {{{17xx}}} || slide panning to left by xx ||
 || {{{18xx}}} || set stereo panning to xx, 0 = left, 64 = center, 128 = right ||
 || {{{19xx}}} || slide panning to right by xx ||
+|| {{{1axx}}} || fade global volume, works similar to 0axx ||
+|| {{{1cxx}}} || set channel volume, works similar to 0cxx ||
+|| {{{1dxx}}} || set global volume, works similar to 0cxx ||
 || {{{1fxx}}} || set play rate to xx ||
 || {{{21xx}}} || filter cutoff up ||
 || {{{22xx}}} || filter cutoff down ||
 || {{{29xx}}} || set cutoff ||
+|| {{{2axx}}} || set resonance ||
+|| {{{2bxx}}} || set filter type ||
 || {{{31xx}}} || slide buzz tuning up ||
 || {{{32xx}}} || slide buzz tuning down ||
 || {{{3f0x}}} || set buzz shape (0-3) ||
 || {{{39xx}}} || set buzz finetune (0x80 = 0, 0x00 = -128, 0xff = 127) ||
 || {{{3axx}}} || set buzz semitune (0x80 = 0, 0x00 = -128, 0xff = 127) ||
+|| {{{5xxx}}} || start wavetable sample at offset xxx (0-fff) ||
 || {{{6xxx}}} || set fine cutoff frequency (0-7ff) ||
+|| {{{7dxx}}} || restart instument program ||
 || {{{fd00}}} || loop begin ||
 || {{{fexx}}} || loop to previous "fd00" xx times ||
 || {{{ffxx}}} || go to step xx ||
