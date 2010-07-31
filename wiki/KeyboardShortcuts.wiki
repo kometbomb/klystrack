@@ -17,7 +17,7 @@
 || F8 || stop || 
 || F9/F10 || octave down/up || 
 || CTRL+n || new song || 
-|| CTRL+s/o || save/open relevant data (song in sequence editor, instrument in instrument editor etc.) || 
+|| CTRL+s/o || save/open song || 
 || CTRL+c/v / CTRL+ins/SHIFT+ins || copy/paste || 
 || CTRL+a || select all ||
 || CTRL+d || select nothing ||
