@@ -10,7 +10,7 @@
     * [InstrumentEditor Instrument editor]
     * [PatternEditor Pattern editor]
     * [SequenceEditor Sequence editor]
-    * [WaveTable Wavetable]
+    * [Wavetable Wavetable]
     * [Commands]
     * [Effects]
     * [KeyboardShortcuts Keyboard shortcuts] 
