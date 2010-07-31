@@ -105,13 +105,13 @@ res/$(1): themes/$(1)/* themes/$(1)/font/* themes/$(1)/font7x6/*
 	@$(ECHO) "Building theme $(1)..."
 	@mkdir -p res
 	@mkdir -p themetemp
-	@cp -f themes/$(1)/colors.txt themetemp
-	@cp -f themes/$(1)/bevel.bmp themetemp
-	@cp -f themes/$(1)/vu.bmp themetemp
-	@cp -f themes/$(1)/analyzor.bmp themetemp
-	@$(MAKEBUNDLE) themetemp/8x8.fnt themes/$(1)/font
-	@$(MAKEBUNDLE) themetemp/7x6.fnt themes/$(1)/font7x6
-	@$(MAKEBUNDLE) $$@ themetemp
+	@-cp -f themes/$(1)/colors.txt themetemp
+	@-cp -f themes/$(1)/bevel.bmp themetemp
+	@-cp -f themes/$(1)/vu.bmp themetemp
+	@-cp -f themes/$(1)/analyzor.bmp themetemp
+	@-$(MAKEBUNDLE) themetemp/8x8.fnt themes/$(1)/font
+	@-$(MAKEBUNDLE) themetemp/7x6.fnt themes/$(1)/font7x6
+	@-$(MAKEBUNDLE) $$@ themetemp
 	@rm -rf themetemp
 	
 endef
@@ -155,7 +155,7 @@ endif
 
 all: bin.$(CFG)/$(TARGET) $(THEMES)
 	
-zip: doc/* res/Default $(DLLS) examples/instruments/* examples/songs/* linux/Makefile zip/data/SDL.dll zip/data/SDL_mixer.dll
+zip: doc/* $(THEMES) $(DLLS) examples/instruments/* examples/songs/* linux/Makefile zip/data/SDL.dll zip/data/SDL_mixer.dll
 	@make -C ../klystron CFG=release EXTFLAGS="$(EXTFLAGS)"
 	@make build CFG=release
 	@mkdir -p zip/data/res
@@ -163,7 +163,7 @@ zip: doc/* res/Default $(DLLS) examples/instruments/* examples/songs/* linux/Mak
 	@mkdir -p zip/data/examples/instruments
 	@cp examples/songs/*.kt zip/data/examples/songs
 	@cp examples/instruments/*.ki zip/data/examples/instruments
-	@cp res/Default zip/data/res/Default
+	@cp res/* zip/data/res
 	@cp doc/LICENSE zip/data/LICENSE
 	@cp doc/SDL.txt zip/data/SDL.txt
 	@cp bin.release/$(TARGET) zip/data/$(TARGET)
