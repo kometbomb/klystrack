@@ -198,6 +198,7 @@ void new_song()
 	for (int fx = 0 ; fx < CYD_MAX_FX_CHANNELS ; ++fx)
 	{	
 		mused.song.fx[fx].flags = 0;
+		mused.song.fx[fx].crushex.downsample = 0;
 		mused.song.fx[fx].crush.bit_drop = 4;
 		mused.song.fx[fx].chr.min_delay = 0;
 		mused.song.fx[fx].chr.rate = 40;
