@@ -54,6 +54,10 @@ The noise waveform can be controlled with the METAL flag which makes the noise v
 
 Using the 1/4th switch, it is possible to make the pitch two octaves lower (original frequency divided by four). This is so that there is more low range, in effect this makes the lowest pitch {{{C--2}}} ({{{C-0}}} minus two octaves.)
 
+==Wavetable==
+
+WAVE is used to associate a [Wavetable wavetable] sample with the instrument. Multiple instruments can share the same sample. OENV overrides the ADSR envelope for the sample, which can be useful when combining samples with the synth. The L flag locks the sample at its base note (set in the wavetable editor), also useful when combining with the synth and using the sample as a attack sound that always plays at the same pitch.
+
 ==Volume envelope==
 
 The volume envelope is a standard attack-decay-sustain-release type envelope. When the note is triggered, the attack (ATK) parameter controls the speed at which the volume rises to the level specified by the volume (VOL) parameter. The volume then decays (DEC) to the sustain (SUS) level (which is relative to the overall volume). When a note-off is triggered, the played sound then decays at the rate controlled by the DEC parameter.
