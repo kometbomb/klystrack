@@ -20,9 +20,9 @@ Use the buttons to quickly mute or enable individual taps or to snap the delay t
 
 *Tip:* It is possible to create a flange effect by setting very short delays and relatively high gain.
 
-==Bitcrush==
+==Crush==
 
-The bitcrush effect simply drops the bit depth of the output signal. This is done by masking out the lowest few bits. This produces ringing artifacts in the sound especially for low volumes.
+The crush effect simply drops the bit depth of the output signal (BITS) and downsamples (DSMP) the sample rate. This produces ringing artifacts in the sound especially for low volumes and high pitches.
 
 ==Stereo chorus==
 
