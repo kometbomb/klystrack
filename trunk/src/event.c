@@ -443,7 +443,14 @@ void edit_instrument_event(SDL_Event *e)
 			{
 				++mused.selected_param;
 				
-				if (mused.selected_param >= P_PARAMS) mused.selected_param = P_PARAMS - 1;
+				if (mused.mode == EDITINSTRUMENT)
+				{
+					if (mused.selected_param >= P_PARAMS) mused.selected_param = P_PARAMS - 1;
+				}
+				else
+				{
+					if (mused.selected_param >= P_NAME) mused.selected_param = P_NAME;
+				}
 			}
 			break;
 			
