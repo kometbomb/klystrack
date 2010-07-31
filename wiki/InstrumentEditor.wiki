@@ -110,6 +110,10 @@ As with vibrato, related commands can be used to create PWM using the instrument
 
 The FXBUS parameter selects the effect chain this instrument will send its output to if FX is checked.
 
+===No prog restart===
+
+This flag disables restarting of the instrument program when a note is triggered. The program will continue executing where it was (in that channel, even if the previous instrument was not the same as the newly triggered instrument.) Use {{{7D00}} to manually restart the program.
+
 =Instrument program=
 
 When an instrument is triggered, the program starts executing from the beginning. The execution speed is independent from the song speed but relative to the routine update frequency. The program period instrument parameter controls how many routine updates it takes to advance the program one step.
