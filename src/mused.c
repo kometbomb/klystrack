@@ -138,6 +138,11 @@ void change_mode(int newmode)
 	mused.focus = newmode;
 	if (mused.focus == EDITCLASSIC)
 		mused.focus = EDITPATTERN;
+		
+	if (mused.mode == EDITCLASSIC || mused.mode == EDITPATTERN)
+	{
+		mused.selected_param = 0;
+	}
 }
 
 
