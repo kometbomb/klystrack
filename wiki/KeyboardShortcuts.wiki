@@ -19,6 +19,7 @@
 || CTRL+n || new song || 
 || CTRL+s/o || save/open relevant data (song in sequence editor, instrument in instrument editor etc.) || 
 || CTRL+c/v / CTRL+ins/SHIFT+ins || copy/paste || 
+|| CTRL+a || select all ||
 || CTRL+d || select nothing ||
 || CTRL+b || begin selection at cursor ||
 || CTRL+e || end selection at cursor ||
@@ -30,6 +31,8 @@
 || CTRL+F9/F10 || change song player rate (i.e. 50 Hz means every second 50 frames are processed, which would translate to 50/6 steps per second for the default speeds) || 
 || SHIFT+CTRL+F9/F10 || change time signature (only has a visual effect, the spacing of the different colored pattern steps changes) || 
 || CTRL+R || Change screen scaling ||
+|| CTRL+Z || Undo ||
+|| CTRL+Y || Redo ||
 
 =Pattern editor=
 
