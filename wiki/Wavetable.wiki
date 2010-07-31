@@ -1,0 +1,5 @@
+#summary Wavetable
+
+= What's this? =
+
+Basically, the wavetable makes it possible for an instrument to play an actual sample. It can be combined with the synth. A very simple use would be just to play a sampled instrument instead of chip sounds and a more complex example is to play a sampled "attack" combined with synth "release", MT-32-style.
