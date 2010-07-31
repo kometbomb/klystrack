@@ -1,0 +1,5 @@
+#summary Frequently asked questions
+
+= Pattern editor doesn't show patterns for all channels =
+
+This is because it only shows patterns that start at the same position in the sequence. You can use equal length patterns to avoid this problem. Or, you can simply use the pattern editor as a single pattern editor as in Buzz (which it actually copies).
