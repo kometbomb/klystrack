@@ -58,6 +58,7 @@ SectionIn RO
   File zip\data\examples\instruments\kick.ki
   File zip\data\examples\instruments\lead1.ki
   File zip\data\examples\instruments\major.ki
+  File zip\data\examples\instruments\snappy.ki
   File zip\data\examples\instruments\ssnare.ki
   File zip\data\examples\instruments\stabmaj.ki
   File zip\data\examples\instruments\stabmin.ki
@@ -127,6 +128,7 @@ Section Uninstall
   Delete kick.ki
   Delete lead1.ki
   Delete major.ki
+  Delete snappy.ki
   Delete ssnare.ki
   Delete stabmaj.ki
   Delete stabmin.ki
