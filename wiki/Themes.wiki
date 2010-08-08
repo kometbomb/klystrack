@@ -20,6 +20,8 @@ You can then drop {{{my_theme}}} in the klystrack {{{res}}} directory and load i
 
 *RGB 255 0 255 is the magic color for transparency (because it's a horrible color and should never be used.)*
 
+Files and colors that do not exist in a theme will be taken from the default theme.
+
 ==colors.txt==
 
 This file contains the text color definitions. The while should contain definitions in the following format, each on its own line:
@@ -77,6 +79,10 @@ Here are the horizontal offsets for the graphics.
 ==vu.bmp==
 
 This file contains the VU meter graphics. The dimensions can be anything as long as they fit inside the pattern area.
+
+==analyzor.bmp==
+
+This is the spectrum analyzer bar. The left side of the image is used as the "enabled" graphic and the right side is the "disabled" graphic. I.e. the right side is what is drawn in any case and the left side is the actual bar that's drawn over the disabled gfx.
 
 ==8x8.fnt, 7x6.fnt==
 
