@@ -211,6 +211,7 @@ int import_mod(FILE *f)
 				
 				mused.song.pattern[pat].step[s].note = find_note(SDL_SwapBE16(period) & 0xfff);
 				mused.song.pattern[pat].step[s].instrument = ((inst >> 4) | ((SDL_SwapBE16(period) & 0xf000) >> 8)) - 1;
+				mused.song.pattern[pat].step[s].volume = MUS_NOTE_NO_VOLUME;
 				
 				if (mused.song.pattern[pat].step[s].instrument != MUS_NOTE_NO_INSTRUMENT && mused.song.pattern[pat].step[s].instrument != 0)
 					sl[c] = sample_length[mused.song.pattern[pat].step[s].instrument];
