@@ -142,6 +142,11 @@ typedef struct
 	UndoStack redo;
 	SHType last_snapshot;
 	int last_snapshot_a, last_snapshot_b;
+	
+#ifdef MIDI
+	Uint32 midi_device;
+	Uint8 midi_channel;
+#endif
 } Mused;
 
 extern Mused mused;
