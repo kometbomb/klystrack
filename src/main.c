@@ -46,8 +46,13 @@ OTHER DEALINGS IN THE SOFTWARE.
 #include "util/rnd.h"
 #include "view/visu.h"
 #include "view/pattern.h"
-
 #include "view/wavetableview.h"
+
+#ifdef MIDI
+
+#include "midi.h"
+
+#endif
 
 //#define DUMPKEYS
 
@@ -280,6 +285,10 @@ int main(int argc, char **argv)
 		cyd_lock(&mused.cyd, 0);
 	}
 	
+#ifdef MIDI
+	midi_init();
+#endif
+	
 	int active = 1;
 	
 	while (1)
@@ -493,6 +502,10 @@ int main(int argc, char **argv)
 			}
 		}
 	}
+	
+#ifdef MIDI
+	midi_deinit();
+#endif
 	
 	Mix_CloseAudio();
 	

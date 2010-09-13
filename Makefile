@@ -20,12 +20,14 @@ MIXERVER := 1.2.11
 SDLVER := 1.2.14
 THEMES :=
 
+CFLAGS := $(MACHINE) -ftree-vectorize -std=gnu99 --no-strict-aliasing
+
 ifdef COMSPEC
 	TARGET := $(TARGET).exe
 	ARCHIVE := $(ARCHIVE).zip
 	SDLFLAGS := -I /mingw/include/sdl
-	SDLLIBS :=  -lSDLmain -lSDL -lSDL_mixer 
-	CFLAGS += -mthreads 
+	SDLLIBS :=  -lSDLmain -lSDL -lSDL_mixer -lwinmm
+	CFLAGS += -mthreads -DMIDI
 else
 	DLLS = 
 	ARCHIVE := $(ARCHIVE).tar.gz
@@ -43,7 +45,6 @@ else
 endif
 
 EXTFLAGS := -DUSESDLMUTEXES -DENABLEAUDIODUMP -DSTEREOOUTPUT
-CFLAGS := $(MACHINE) -ftree-vectorize -std=gnu99 --no-strict-aliasing
 LDFLAGS :=  -L ../klystron/bin.$(CFG) -lengine_gfx -lengine_util -lengine_snd -lengine_gui $(SDLLIBS)
 INCLUDEFLAGS := -I src $(SDLFLAGS) -I ../klystron/src -L../klystron/bin.$(CFG) -DRES_PATH="$(RES_PATH)" -DCONFIG_PATH="$(CONFIG_PATH)" $(EXTFLAGS)
 
