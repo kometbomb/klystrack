@@ -46,6 +46,7 @@ void del_sequence(int first,int last,int track);
 void add_sequence(int channel, int position, int pattern, int offset);
 void set_room_size(int fx, int size, int vol, int dec);
 void update_position_sliders();
+void note_event(SDL_Event *e);
 
 enum
 {

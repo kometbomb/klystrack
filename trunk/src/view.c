@@ -37,6 +37,7 @@ OTHER DEALINGS IN THE SOFTWARE.
 #include "view/visu.h"
 #include <stdbool.h>
 #include "edit.h"
+#include "mymsg.h"
 
 extern Mused mused;
 
@@ -205,7 +206,7 @@ void my_draw_view(const View* views, const SDL_Event *_event, const SDL_Surface 
 			view->handler(mused.screen, &area, &event, view->param);
 			if (event_hit) 
 			{
-				event.type = SDL_USEREVENT + 1;
+				event.type = MSG_EVENTHIT;
 				if (view->focus != -1 && mused.focus != view->focus && orig_focus != EDITBUFFER && mused.focus != EDITBUFFER) 
 				{
 					mused.focus = view->focus;

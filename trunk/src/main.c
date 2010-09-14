@@ -47,6 +47,7 @@ OTHER DEALINGS IN THE SOFTWARE.
 #include "view/visu.h"
 #include "view/pattern.h"
 #include "view/wavetableview.h"
+#include "mymsg.h"
 
 #ifdef MIDI
 
@@ -418,6 +419,11 @@ int main(int argc, char **argv)
 					}
 				}
 				break;
+				
+				case MSG_NOTEON:
+				case MSG_NOTEOFF:
+					note_event(&e);
+					break;
 			}
 			
 			if (mused.focus == EDITBUFFER && e.type == SDL_KEYDOWN) e.type = SDL_USEREVENT;

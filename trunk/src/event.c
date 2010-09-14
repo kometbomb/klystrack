@@ -32,6 +32,7 @@ OTHER DEALINGS IN THE SOFTWARE.
 #include <string.h>
 #include "snd/cydwave.h"
 #include "snd/freqs.h"
+#include "mymsg.h"
 
 extern Mused mused;
 
@@ -1879,3 +1880,45 @@ void songinfo_event(SDL_Event *e)
 	}
 }
 
+
+static int find_playing_note(int n)
+{
+	cyd_lock(&mused.cyd, 1);
+	
+	for (int i = 0 ; i < MUS_MAX_CHANNELS && i < mused.cyd.n_channels ; ++i)
+	{
+		if ((mused.cyd.channel[i].flags & CYD_CHN_ENABLE_GATE) && mused.mus.channel[i].last_note == (n << 8) && mused.mus.channel[i].instrument == &mused.song.instrument[mused.current_instrument])
+		{
+			cyd_lock(&mused.cyd, 0);
+			return i;
+		}
+	}
+	
+	cyd_lock(&mused.cyd, 0);
+	
+	return -1;
+}
+
+
+void note_event(SDL_Event *e)
+{
+	switch (e->type)
+	{
+		case MSG_NOTEON:
+			if (find_playing_note(e->user.code) == -1 && e->user.code < FREQ_TAB_SIZE)
+			{
+				mus_trigger_instrument(&mused.mus, -1, &mused.song.instrument[mused.current_instrument], e->user.code);
+			}
+			break;
+			
+		case MSG_NOTEOFF:
+		{
+			int c;
+			if ((c = find_playing_note(e->user.code)) != -1)
+			{
+				mus_release(&mused.mus, c);
+			}
+		}
+		break;
+	}
+}
