@@ -52,6 +52,10 @@ static const struct { int type; const char *name; void *param; int mask; } confi
 	{ C_BOOL, "protracker_delete", &mused.flags, DELETE_EMPTIES },
 	{ C_BOOL, "center_pattern_editor", &mused.flags, CENTER_PATTERN_EDITOR },
 	{ C_INT, "visible_columns", &mused.visible_columns },
+#ifdef MIDI
+	{ C_INT, "midi_device", &mused.midi_device },
+	{ C_INT, "midi_channel", &mused.midi_channel },
+#endif
 	{ C_END }
 };
 

@@ -171,7 +171,7 @@ void new_song()
 	for (int i = 0 ; i < NUM_INSTRUMENTS ; ++i)
 	{
 		MusInstrument *inst = &mused.song.instrument[i];
-		default_instrument(inst);
+		kt_default_instrument(inst);
 	}
 	
 	mused.song.master_volume = MAX_VOLUME;
@@ -232,7 +232,7 @@ void new_song()
 }
 
 
-void default_instrument(MusInstrument *inst)
+void kt_default_instrument(MusInstrument *inst)
 {
 	mus_get_default_instrument(inst);
 }
