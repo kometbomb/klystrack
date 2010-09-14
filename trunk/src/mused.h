@@ -73,7 +73,10 @@ enum
 	DELETE_EMPTIES = 256,
 	EDIT_MODE = 512,
 	CENTER_PATTERN_EDITOR = 1024,
-	SHOW_ANALYZER = 2048
+	SHOW_ANALYZER = 2048,
+#ifdef MIDI
+	MIDI_SYNC = 4096,
+#endif
 };
 
 enum
@@ -161,7 +164,7 @@ void clear_pattern_range(MusPattern *pat, int first, int last);
 void init(MusInstrument *instrument, MusPattern *pattern, MusSeqPattern sequence[MUS_MAX_CHANNELS][NUM_SEQUENCES], MusChannel *channel, SDL_Surface *screen);
 void deinit();
 void new_song();
-void default_instrument(MusInstrument *instrument);
+void kt_default_instrument(MusInstrument *instrument);
 void set_edit_buffer(char *buffer, size_t size);
 void update_ghost_patterns();
 void change_pixel_scale(void *a, void*b, void*c);
