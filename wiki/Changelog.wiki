@@ -16,6 +16,7 @@ _*Note:* Only significant changes and new features are listed here._
   * Original and AHX/Protracker/etc. look-a-like themes from [http://ilkke.blogspot.com/ iLKke]
   * Program icon (for Windows)
   * Important bugfixes, some critical, some not so much
+  * MIDI sync and basic MIDI controller support (keyboard)
 
 =1.4.2=
 
