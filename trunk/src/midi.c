@@ -79,6 +79,16 @@ static void CALLBACK MidiInProc(HMIDIIN hMidiIn, UINT wMsg, DWORD_PTR dwInstance
 					SDL_PushEvent(&e);
 				}
 				break;
+				
+				case 0xC0:
+				{
+					SDL_Event e;
+					e.type = MSG_PROGRAMCHANGE;
+					e.user.code = (dwParam1 >> 8) & 0xff;
+					e.user.data1 = MAKEPTR((dwParam1 >> 16) & 0xff);
+					SDL_PushEvent(&e);
+				}
+				break;
 			}
 		}
 	}
