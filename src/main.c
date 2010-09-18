@@ -422,6 +422,7 @@ int main(int argc, char **argv)
 				
 				case MSG_NOTEON:
 				case MSG_NOTEOFF:
+				case MSG_PROGRAMCHANGE:
 					note_event(&e);
 					break;
 			}

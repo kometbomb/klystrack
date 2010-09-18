@@ -1920,5 +1920,12 @@ void note_event(SDL_Event *e)
 			}
 		}
 		break;
+		
+		case MSG_PROGRAMCHANGE:
+		{
+			if (e->user.code >= 0 && e->user.code < NUM_INSTRUMENTS)
+				mused.current_instrument = e->user.code;
+		}
+		break;
 	}
 }
