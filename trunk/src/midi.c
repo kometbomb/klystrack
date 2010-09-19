@@ -1,5 +1,7 @@
 #include "midi.h"
 
+#ifdef MIDI
+
 #include "mused.h"
 #include "mymsg.h"
 
@@ -32,15 +34,92 @@ Menu midi_channel_menu[] =
 
 Menu midi_menu[] =
 {
+	{ 0, prefsmenu, "MIDI sync", NULL, MENU_CHECK, &mused.flags, (void*)MIDI_SYNC, 0 },
 	{ 0, prefsmenu, "Device", midi_device_menu, NULL, 0, 0, 0 },
 	{ 0, prefsmenu, "Channel", midi_channel_menu, NULL, 0, 0, 0 },
-	{ 0, prefsmenu, "MIDI sync", NULL, MENU_CHECK, &mused.flags, (void*)MIDI_SYNC, 0 },
 	{ 0, NULL, NULL }
 };
 
 static char midi_device_names[MAX_MIDI_DEVICES][100];
 
-#ifdef MIDI
+
+static void midi_clock(Uint32 ms)
+{
+	if (mused.tick_ctr == 0 && mused.midi_start)
+	{
+		mused.midi_last_clock = ms;
+	}
+	else if (mused.tick_ctr == 12)
+	{
+		mused.tick_ctr = 0;
+		
+		if (ms - mused.midi_last_clock)
+			mused.midi_rate = 1000 / ((ms - mused.midi_last_clock) / 12);
+		mused.midi_last_clock = ms;
+
+		if (mused.midi_rate)
+		{
+			cyd_set_callback(&mused.cyd, mus_advance_tick, &mused.mus, mused.midi_rate);
+			mused.song.song_rate = mused.midi_rate;
+		}
+	}
+
+	if (mused.midi_start)
+	{
+		mused.flags |= SONG_PLAYING;
+	}
+
+	mused.midi_start = false;
+	++mused.tick_ctr;
+}
+
+
+static void midi_start()
+{
+	debug("MIDI start");
+	mused.midi_start = true;
+	mused.tick_ctr = 0;
+	mus_set_song(&mused.mus, &mused.song, 0);
+	if (mused.midi_rate)
+	{
+		cyd_set_callback(&mused.cyd, mus_advance_tick, &mused.mus, mused.midi_rate);
+		mused.song.song_rate = mused.midi_rate;
+	}
+}
+
+
+static void midi_stop()
+{
+	debug("MIDI stop");
+	mused.midi_start = false;
+	mused.flags &= ~SONG_PLAYING;
+	cyd_set_callback(&mused.cyd, NULL, NULL, 1);
+	mus_set_song(&mused.mus, NULL, 0);
+}
+
+
+static void midi_continue()
+{
+	debug("MIDI continue");
+	mused.midi_start = true;
+	/*mused.tick_ctr = 0;
+	mus_set_song(&mused.mus, &mused.song, mused.mus.song_position);*/
+}
+
+
+static void midi_spp(Uint16 position)
+{
+	debug("MIDI SPP (%d)", position);
+	mus_set_song(&mused.mus, &mused.song, position);
+}
+
+
+static Uint16 midi_14bit(Uint8 first, Uint8 second)
+{
+	return ((Uint16)(second & 0x7f) << 7) | ((Uint16)first & 0x7f);
+}
+
+
 #ifdef WIN32
 
 #include <windows.h>
@@ -48,80 +127,88 @@ static char midi_device_names[MAX_MIDI_DEVICES][100];
 
 static HMIDIIN hMidiIn = 0;
 
+
+
 static void CALLBACK MidiInProc(HMIDIIN hMidiIn, UINT wMsg, DWORD_PTR dwInstance, DWORD_PTR dwParam1, DWORD_PTR dwParam2)
 {
-	if ((dwParam1 & 0xF0) != 0xf0)
+	if (MIM_DATA == wMsg)
 	{
-		Uint8 channel = dwParam1 & 0xf;
-		
-		if (channel == mused.midi_channel)
+		if ((dwParam1 & 0xF0) != 0xf0)
 		{
-			Uint8 command = dwParam1 & 0xf0;
+			Uint8 channel = dwParam1 & 0xf;
 			
-			switch (command)
+			if (channel == mused.midi_channel)
 			{
-				case 0x90:
-				{
-					SDL_Event e;
-					e.type = MSG_NOTEON;
-					e.user.code = (dwParam1 >> 8) & 0xff;
-					e.user.data1 = MAKEPTR((dwParam1 >> 16) & 0xff);
-					SDL_PushEvent(&e);
-				}
-				break;
-					
-				case 0x80:
-				{
-					SDL_Event e;
-					e.type = MSG_NOTEOFF;
-					e.user.code = (dwParam1 >> 8) & 0xff;
-					e.user.data1 = MAKEPTR((dwParam1 >> 16) & 0xff);
-					SDL_PushEvent(&e);
-				}
-				break;
+				Uint8 command = dwParam1 & 0xf0;
 				
-				case 0xC0:
+				switch (command)
 				{
-					SDL_Event e;
-					e.type = MSG_PROGRAMCHANGE;
-					e.user.code = (dwParam1 >> 8) & 0xff;
-					e.user.data1 = MAKEPTR((dwParam1 >> 16) & 0xff);
-					SDL_PushEvent(&e);
+					case 0x90:
+					{
+						SDL_Event e;
+						e.type = MSG_NOTEON;
+						e.user.code = (dwParam1 >> 8) & 0xff;
+						e.user.data1 = MAKEPTR((dwParam1 >> 16) & 0xff);
+						SDL_PushEvent(&e);
+					}
+					break;
+						
+					case 0x80:
+					{
+						SDL_Event e;
+						e.type = MSG_NOTEOFF;
+						e.user.code = (dwParam1 >> 8) & 0xff;
+						e.user.data1 = MAKEPTR((dwParam1 >> 16) & 0xff);
+						SDL_PushEvent(&e);
+					}
+					break;
+					
+					case 0xC0:
+					{
+						SDL_Event e;
+						e.type = MSG_PROGRAMCHANGE;
+						e.user.code = (dwParam1 >> 8) & 0xff;
+						SDL_PushEvent(&e);
+					}
+					break;
 				}
-				break;
 			}
 		}
-	}
-	else
-	{
-		switch ((dwParam1 & 0xFF))
+		else
 		{
-			case 0xF8:
-				break;
-		
-			case 0xFA:
+			if (MIDI_SYNC & mused.flags)
 			{
-				SDL_Event e;
-				e.type = MSG_PLAYSTART;
-				SDL_PushEvent(&e);
+				switch ((dwParam1 & 0xFF))
+				{
+					case 0xF8:
+						midi_clock(dwParam2);
+						break;
+				
+					case 0xFA:
+					{
+						midi_start();
+					}
+					break;
+					
+					case 0xFB:
+					{
+						midi_continue();
+					}
+					break;
+					
+					case 0xFC:
+					{
+						midi_stop();
+					}
+					break;
+					
+					case 0xF2:
+					{
+						midi_spp(midi_14bit((dwParam1 >> 8) & 0xff, (dwParam1 >> 16) & 0xff));
+					}
+					break;
+				}
 			}
-			break;
-			
-			case 0xFB:
-			{
-				SDL_Event e;
-				e.type = MSG_PLAYCONTINUE;
-				SDL_PushEvent(&e);
-			}
-			break;
-			
-			case 0xFC:
-			{
-				SDL_Event e;
-				e.type = MSG_PLAYSTOP;
-				SDL_PushEvent(&e);
-			}
-			break;
 		}
 	}
 }
@@ -203,7 +290,9 @@ void midi_init()
 void midi_deinit() 
 {
 	if (hMidiIn)
+	{
 		midiInClose(hMidiIn);
+	}
 	
 	hMidiIn = 0;
 }
