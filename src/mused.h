@@ -55,6 +55,7 @@ enum
 #include "copypaste.h"
 #include "gui/menu.h"
 #include "undo.h"
+#include <stdbool.h>
 
 #define SCREEN_WIDTH 320
 #define SCREEN_HEIGHT 240
@@ -149,6 +150,10 @@ typedef struct
 #ifdef MIDI
 	Uint32 midi_device;
 	Uint8 midi_channel;
+	bool midi_start;
+	Uint16 midi_rate;
+	Uint32 midi_last_clock;
+	Uint8 tick_ctr;
 #endif
 } Mused;
 
