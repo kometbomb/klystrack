@@ -1692,6 +1692,12 @@ void wave_add_param(int d)
 
 	switch (mused.wavetable_param)
 	{
+		case W_INTERPOLATE:
+		{
+			flipbit(w->flags, CYD_WAVE_NO_INTERPOLATION);
+		}
+		break;
+	
 		case W_WAVE:
 		{
 			clamp(mused.selected_wavetable, d, 0, CYD_WAVE_MAX_ENTRIES - 1);

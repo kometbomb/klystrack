@@ -84,6 +84,12 @@ void wavetable_view(SDL_Surface *dest_surface, const SDL_Rect *dest, const SDL_E
 		}
 		
 		update_rect(&frame, &r);
+		
+		r.w = 128;
+		
+		generic_flags(event, &r, EDITWAVETABLE, W_INTERPOLATE, "NO INTERPOLATION", &w->flags, CYD_WAVE_NO_INTERPOLATION);
+		
+		update_rect(&frame, &r);
 	}
 	
 	my_separator(&frame, &r);
