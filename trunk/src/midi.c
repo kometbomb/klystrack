@@ -68,6 +68,9 @@ static void midi_clock(Uint32 ms)
 	{
 		mused.flags |= SONG_PLAYING;
 	}
+	
+	if (mused.mus.flags & MUS_EXT_SYNC)
+		mus_ext_sync(&mused.mus);
 
 	mused.midi_start = false;
 	++mused.tick_ctr;
@@ -80,6 +83,9 @@ static void midi_start()
 	mused.midi_start = true;
 	mused.tick_ctr = 0;
 	mus_set_song(&mused.mus, &mused.song, 0);
+	mused.mus.flags |= MUS_EXT_SYNC;
+	mused.mus.ext_sync_ticks = 0;
+	
 	if (mused.midi_rate)
 	{
 		cyd_set_callback(&mused.cyd, mus_advance_tick, &mused.mus, mused.midi_rate);
@@ -93,6 +99,7 @@ static void midi_stop()
 	debug("MIDI stop");
 	mused.midi_start = false;
 	mused.flags &= ~SONG_PLAYING;
+	mused.mus.flags &= ~MUS_EXT_SYNC;
 	cyd_set_callback(&mused.cyd, NULL, NULL, 1);
 	mus_set_song(&mused.mus, NULL, 0);
 }
