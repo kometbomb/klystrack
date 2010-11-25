@@ -20,6 +20,8 @@ You can then drop {{{my_theme}}} in the klystrack {{{res}}} directory and load i
 
 *RGB 255 0 255 is the magic color for transparency (because it's a horrible color and should never be used.)*
 
+*You can include either BMP or PNG version of any image file in the theme. E.g. if {{{bevel.bmp}}} doesn't exist in the theme, {{{bevel.png}}} will be used instead.*
+
 Files and colors that do not exist in a theme will be taken from the default theme.
 
 ==colors.txt==
@@ -50,6 +52,8 @@ This file contains the VU meter graphics. The dimensions can be anything as long
 This is the spectrum analyzer bar. The left side of the image is used as the "enabled" graphic and the right side is the "disabled" graphic. I.e. the right side is what is drawn in any case and the left side is the actual bar that's drawn over the disabled gfx.
 
 The actual width of the bar will be the image width divided by two (since half of the image is the disabled graphic).
+
+==logo.bmp==
 
 ==8x8.fnt, 7x6.fnt==
 
