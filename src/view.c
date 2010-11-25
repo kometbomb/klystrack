@@ -1816,12 +1816,35 @@ void bevel_view(SDL_Surface *dest_surface, const SDL_Rect *dest, const SDL_Event
 
 void sequence_spectrum_view(SDL_Surface *dest_surface, const SDL_Rect *dest, const SDL_Event *event, void *param)
 {
-	if (mused.flags & SHOW_ANALYZER)
+	//if (mused.mode == MODE_LOGO)
+	{
+		SDL_Rect d;
+		copy_rect(&d, dest);
+		SDL_BlitSurface(mused.logo->surface, NULL, dest_surface, &d);
+	}
+	/*else if (mused.flags & SHOW_ANALYZER)
 	{
 		spectrum_analyzer_view(dest_surface, dest, event, param);
 	}
 	else
 	{
 		sequence_view(dest_surface, dest, event, param);
-	}
+	}*/
+}
+
+
+void toolbar_view(SDL_Surface *dest_surface, const SDL_Rect *dest, const SDL_Event *event, void *param)
+{
+	SDL_Rect button;
+	copy_rect(&button, dest);
+	button.w = 36;
+	
+	button_text_event(dest_surface, event, &button, mused.slider_bevel->surface, &mused.smallfont,
+		BEV_BUTTON, 
+		BEV_BUTTON_ACTIVE, 
+		"MENU", open_menu_action, 0, 0, 0);
+		
+	button.x += button.w;
+		
+	button.w = button.h;
 }
