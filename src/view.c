@@ -1854,18 +1854,19 @@ void toolbar_view(SDL_Surface *dest_surface, const SDL_Rect *dest, const SDL_Eve
 	button_event(dest_surface, event, &button, mused.slider_bevel->surface, 
 		!(mused.flags & SHOW_ANALYZER) ? BEV_BUTTON : BEV_BUTTON_ACTIVE, 
 		!(mused.flags & SHOW_ANALYZER) ? BEV_BUTTON : BEV_BUTTON_ACTIVE, 
-		DECAL_MODE_PATTERN, flip_bit_action, &mused.flags, MAKEPTR(SHOW_ANALYZER), 0);
+		DECAL_TOOLBAR_VISUALIZATIONS, flip_bit_action, &mused.flags, MAKEPTR(SHOW_ANALYZER), 0);
 		
 	button.x += button.w;
 	
 	button_event(dest_surface, event, &button, mused.slider_bevel->surface, 
 		!(mused.flags & FULLSCREEN) ? BEV_BUTTON : BEV_BUTTON_ACTIVE, 
-		!(mused.flags & FULLSCREEN) ? BEV_BUTTON : BEV_BUTTON_ACTIVE, DECAL_MODE_PATTERN, toggle_fullscreen, 0, 0, 0);
+		!(mused.flags & FULLSCREEN) ? BEV_BUTTON : BEV_BUTTON_ACTIVE, 
+		DECAL_TOOLBAR_FULLSCREEN, toggle_fullscreen, 0, 0, 0);
 		
 	button.x += button.w;
 	
 	button_event(dest_surface, event, &button, mused.slider_bevel->surface, 
-		BEV_BUTTON, BEV_BUTTON_ACTIVE, DECAL_MODE_PATTERN, quit_action, 0, 0, 0);
+		BEV_BUTTON, BEV_BUTTON_ACTIVE, DECAL_TOOLBAR_QUIT, quit_action, 0, 0, 0);
 		
 	button.x += button.w;
 }
