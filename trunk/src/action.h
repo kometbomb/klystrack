@@ -66,5 +66,6 @@ void export_wav_action(void *a, void*b, void*c);
 void open_data(void *type, void*b, void*c);
 void do_undo(void *stack, void*b, void*c);
 void kill_wavetable_entry(void *a, void*b, void*c);
+void open_menu_action(void*,void*,void*);
 
 #endif

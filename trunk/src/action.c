@@ -625,3 +625,8 @@ void kill_wavetable_entry(void *a, void*b, void*c)
 	cyd_wave_entry_init(&mused.mus.cyd->wavetable_entries[mused.selected_wavetable], NULL, 0, 0, 0, 0, 0);
 }
 
+
+void open_menu_action(void*a,void*b,void*c)
+{
+	my_open_menu();
+}

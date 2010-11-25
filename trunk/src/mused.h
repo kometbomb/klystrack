@@ -176,6 +176,7 @@ void change_pixel_scale(void *a, void*b, void*c);
 void mirror_flags();
 void resize_pattern(MusPattern * pattern, Uint16 new_size);
 void init_scrollbars();
+void my_open_menu();
 int viscol(int col);
 
 #endif
