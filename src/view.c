@@ -1816,20 +1816,26 @@ void bevel_view(SDL_Surface *dest_surface, const SDL_Rect *dest, const SDL_Event
 
 void sequence_spectrum_view(SDL_Surface *dest_surface, const SDL_Rect *dest, const SDL_Event *event, void *param)
 {
-	//if (mused.mode == MODE_LOGO)
+	/*if (mused.mode == MODE_LOGO)
 	{
 		SDL_Rect d;
 		copy_rect(&d, dest);
 		SDL_BlitSurface(mused.logo->surface, NULL, dest_surface, &d);
 	}
-	/*else if (mused.flags & SHOW_ANALYZER)
+	else */if (mused.flags & SHOW_ANALYZER)
 	{
 		spectrum_analyzer_view(dest_surface, dest, event, param);
 	}
 	else
 	{
 		sequence_view(dest_surface, dest, event, param);
-	}*/
+	}
+}
+
+
+static void flip_bit_action(void *a, void *b, void *c)
+{
+	*(Uint32*)a ^= CASTPTR(Uint32,b);
 }
 
 
@@ -1837,14 +1843,29 @@ void toolbar_view(SDL_Surface *dest_surface, const SDL_Rect *dest, const SDL_Eve
 {
 	SDL_Rect button;
 	copy_rect(&button, dest);
-	button.w = 36;
+	button.w = dest->w - 3 * dest->h;
 	
 	button_text_event(dest_surface, event, &button, mused.slider_bevel->surface, &mused.smallfont,
-		BEV_BUTTON, 
-		BEV_BUTTON_ACTIVE, 
-		"MENU", open_menu_action, 0, 0, 0);
+		BEV_BUTTON, BEV_BUTTON_ACTIVE, 	"MENU", open_menu_action, 0, 0, 0);
 		
 	button.x += button.w;
-		
 	button.w = button.h;
+	
+	button_event(dest_surface, event, &button, mused.slider_bevel->surface, 
+		!(mused.flags & SHOW_ANALYZER) ? BEV_BUTTON : BEV_BUTTON_ACTIVE, 
+		!(mused.flags & SHOW_ANALYZER) ? BEV_BUTTON : BEV_BUTTON_ACTIVE, 
+		DECAL_MODE_PATTERN, flip_bit_action, &mused.flags, MAKEPTR(SHOW_ANALYZER), 0);
+		
+	button.x += button.w;
+	
+	button_event(dest_surface, event, &button, mused.slider_bevel->surface, 
+		!(mused.flags & FULLSCREEN) ? BEV_BUTTON : BEV_BUTTON_ACTIVE, 
+		!(mused.flags & FULLSCREEN) ? BEV_BUTTON : BEV_BUTTON_ACTIVE, DECAL_MODE_PATTERN, toggle_fullscreen, 0, 0, 0);
+		
+	button.x += button.w;
+	
+	button_event(dest_surface, event, &button, mused.slider_bevel->surface, 
+		BEV_BUTTON, BEV_BUTTON_ACTIVE, DECAL_MODE_PATTERN, quit_action, 0, 0, 0);
+		
+	button.x += button.w;
 }

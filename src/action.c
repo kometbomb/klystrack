@@ -36,6 +36,7 @@ OTHER DEALINGS IN THE SOFTWARE.
 #include "gui/menu.h"
 #include "export.h"
 #include <stdbool.h>
+#include "gui/mouse.h"
 
 extern Mused mused;
 extern GfxDomain *domain;
@@ -456,6 +457,9 @@ void change_pixel_scale(void *scale, void*b, void*c)
 
 void toggle_fullscreen(void *a, void*b, void*c)
 {
+	SDL_Event e;
+	e.button.button = SDL_BUTTON_LEFT;
+	mouse_released(&e);
 	mused.flags ^= FULLSCREEN;
 	change_fullscreen(0,0,0);
 }
