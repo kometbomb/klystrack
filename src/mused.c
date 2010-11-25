@@ -345,6 +345,7 @@ void deinit()
 	if (mused.slider_bevel) gfx_free_surface(mused.slider_bevel);
 	if (mused.vu_meter) gfx_free_surface(mused.vu_meter);
 	if (mused.analyzer) gfx_free_surface(mused.analyzer);
+	if (mused.logo) gfx_free_surface(mused.logo);
 	font_destroy(&mused.smallfont);
 	font_destroy(&mused.largefont);
 	font_destroy(&mused.menufont);

@@ -120,7 +120,7 @@ typedef struct
 	MusChannel *channel;
 	int stat_pattern_number[MUS_MAX_CHANNELS], stat_note[MUS_MAX_CHANNELS];
 	/* ---- */
-	GfxSurface *slider_bevel, *vu_meter, *analyzer;
+	GfxSurface *slider_bevel, *vu_meter, *analyzer, *logo;
 	Font smallfont, largefont;
 	
 	/* for menu */

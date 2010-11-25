@@ -9,7 +9,7 @@ WGET := wget --quiet
 REV := SubWCRev.exe .
 UPLOAD := cmd.exe /c upload.bat
 MAKEBUNDLE := ../klystron/tools/bin/makebundle.exe
-DLLS := zip/data/SDL.dll zip/data/SDL_mixer.dll
+DLLS := zip/data/SDL.dll zip/data/SDL_mixer.dll zip/data/SDL_image.dll
 DESTDIR ?= /usr
 EXT := .c
 CC := gcc
@@ -18,6 +18,7 @@ ARCHIVE := klystrack
 INSTALLER := klystrack.exe
 MIXERVER := 1.2.11
 SDLVER := 1.2.14
+SDL_IMAGEVER := 1.2.10
 THEMES :=
 
 CFLAGS := $(MACHINE) -ftree-vectorize -std=gnu99 --no-strict-aliasing
@@ -26,13 +27,13 @@ ifdef COMSPEC
 	TARGET := $(TARGET).exe
 	ARCHIVE := $(ARCHIVE).zip
 	SDLFLAGS := -I /mingw/include/sdl
-	SDLLIBS :=  -lSDLmain -lSDL -lSDL_mixer -lwinmm
+	SDLLIBS :=  -lSDLmain -lSDL -lSDL_mixer -lSDL_image -lwinmm
 	CFLAGS += -mthreads -DMIDI
 else
 	DLLS = 
 	ARCHIVE := $(ARCHIVE).tar.gz
 	SDLFLAGS := `sdl-config --cflags` -U_FORTIFY_SOURCE
-	SDLLIBS := `sdl-config --libs` -lSDL_mixer
+	SDLLIBS := `sdl-config --libs` -lSDL_mixer -lSDL_image
 	REV := cp -f
 endif
 
@@ -44,7 +45,7 @@ else
 	CONFIG_PATH := ~/.klystrack
 endif
 
-EXTFLAGS := -DUSESDLMUTEXES -DENABLEAUDIODUMP -DSTEREOOUTPUT
+EXTFLAGS := -DUSESDLMUTEXES -DENABLEAUDIODUMP -DSTEREOOUTPUT -DUSESDL_IMAGE
 LDFLAGS :=  -L ../klystron/bin.$(CFG) -lengine_gfx -lengine_util -lengine_snd -lengine_gui $(SDLLIBS)
 INCLUDEFLAGS := -I src $(SDLFLAGS) -I ../klystron/src -L../klystron/bin.$(CFG) -DRES_PATH="$(RES_PATH)" -DCONFIG_PATH="$(CONFIG_PATH)" $(EXTFLAGS)
 
@@ -107,9 +108,10 @@ res/$(1): themes/$(1)/* themes/$(1)/font/* themes/$(1)/font7x6/*
 	@mkdir -p res
 	@mkdir -p themetemp
 	@-cp -f themes/$(1)/colors.txt themetemp
-	@-cp -f themes/$(1)/bevel.bmp themetemp
-	@-cp -f themes/$(1)/vu.bmp themetemp
-	@-cp -f themes/$(1)/analyzor.bmp themetemp
+	@-cp -f themes/$(1)/bevel.* themetemp
+	@-cp -f themes/$(1)/vu.* themetemp
+	@-cp -f themes/$(1)/analyzor.* themetemp
+	@-cp -f themes/$(1)/logo.* themetemp
 	@-$(MAKEBUNDLE) themetemp/8x8.fnt themes/$(1)/font
 	@-$(MAKEBUNDLE) themetemp/7x6.fnt themes/$(1)/font7x6
 	@-$(MAKEBUNDLE) $$@ themetemp
@@ -167,6 +169,7 @@ zip: doc/* $(THEMES) $(DLLS) examples/instruments/* examples/songs/* linux/Makef
 	@cp res/* zip/data/res
 	@cp doc/LICENSE zip/data/LICENSE
 	@cp doc/SDL.txt zip/data/SDL.txt
+	@cp doc/SDL_image.txt zip/data/SDL_image.txt
 	@cp bin.release/$(TARGET) zip/data/$(TARGET)
 ifdef COMSPEC
 	@cd zip/data; rm -f ../$(ARCHIVE); $(ZIP) ../$(ARCHIVE) "*"
@@ -207,13 +210,21 @@ ifneq ($(MAKECMDGOALS),clean)
 endif
 
 zip/data/SDL.dll:
-	@$(ECHO) "Downloading SDL.dll..."
+	@$(ECHO) "Downloading SDL..."
 	@cd temp ; $(WGET) http://www.libsdl.org/release/SDL-$(SDLVER)-win32.zip ; $(ZIPEXT) SDL-$(SDLVER)-win32.zip SDL.dll ; rm SDL-$(SDLVER)-win32.zip
 	@mkdir -p zip/data
 	@mv temp/SDL.dll zip/data/SDL.dll
-		
+
+zip/data/SDL_image.dll:
+	@$(ECHO) "Downloading SDL_image..."
+	@cd temp ; $(WGET) http://www.libsdl.org/projects/SDL_image/release/SDL_image-$(SDL_IMAGEVER)-win32.zip ; $(ZIPEXT) SDL_image-$(SDL_IMAGEVER)-win32.zip SDL_image.dll libpng12-0.dll zlib1.dll ; rm SDL_image-$(SDL_IMAGEVER)-win32.zip
+	@mkdir -p zip/data
+	@mv temp/SDL_image.dll zip/data/SDL_image.dll
+	@mv temp/libpng12-0.dll zip/data/libpng12-0.dll
+	@mv temp/zlib1.dll zip/data/zlib1.dll
+
 zip/data/SDL_mixer.dll:
-	@$(ECHO) "Downloading SDL_mixer.dll..."
+	@$(ECHO) "Downloading SDL_mixer..."
 	@cd temp ; $(WGET) http://www.libsdl.org/projects/SDL_mixer/release/SDL_mixer-$(MIXERVER)-win32.zip ; $(ZIPEXT) SDL_mixer-$(MIXERVER)-win32.zip SDL_mixer.dll ; rm SDL_mixer-$(MIXERVER)-win32.zip
 	@mkdir -p zip/data
 	@mv temp/SDL_mixer.dll zip/data/SDL_mixer.dll

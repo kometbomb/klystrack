@@ -162,7 +162,6 @@ enum
 
 enum
 {
-	SI_MASTERVOL,
 	SI_LENGTH,
 	SI_LOOP,
 	SI_STEP,
@@ -172,6 +171,7 @@ enum
 	SI_TIME,
 	SI_OCTAVE,
 	SI_CHANNELS,
+	SI_MASTERVOL,
 	/*--------*/
 	SI_N_PARAMS
 };
