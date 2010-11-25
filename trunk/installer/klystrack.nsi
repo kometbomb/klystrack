@@ -37,6 +37,9 @@ SectionIn RO
   File zip\data\SDL.dll
   File zip\data\SDL.txt
   File zip\data\SDL_mixer.dll
+  File zip\data\SDL_image.dll
+  File zip\data\zlib1.dll
+  File zip\data\libpng12-0.dll
   
   SetOutPath $INSTDIR\res
   
@@ -108,6 +111,9 @@ Section Uninstall
   Delete SDL.dll
   Delete SDL.txt
   Delete SDL_mixer.dll
+  Delete SDL_image.dll
+  Delete zlib1.dll
+  Delete libpng12-0.dll
   Delete klystrack.exe
   
   SetOutPath $INSTDIR\res

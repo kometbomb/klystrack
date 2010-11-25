@@ -647,7 +647,7 @@ void sequence_view(SDL_Surface *dest_surface, const SDL_Rect *dest, const SDL_Ev
 }
 
 
-void songinfo_view(SDL_Surface *dest_surface, const SDL_Rect *dest, const SDL_Event *event, void *param)
+void songinfo1_view(SDL_Surface *dest_surface, const SDL_Rect *dest, const SDL_Event *event, void *param)
 {
 	SDL_Rect area;
 	copy_rect(&area, dest);
@@ -657,7 +657,50 @@ void songinfo_view(SDL_Surface *dest_surface, const SDL_Rect *dest, const SDL_Ev
 	
 	area.w = my_min(320, area.w);
 	
-	adjust_rect(&area, 3);
+	adjust_rect(&area, 2);
+	SDL_Rect r;
+	copy_rect(&r, &area);
+	r.w = 100-8;
+	
+	if (area.w > r.w)
+	{
+		r.w = area.w / (int)(area.w / r.w) - 5;
+	}
+	else
+	{
+		r.w = area.w;
+	}
+	
+	r.h = 10;
+	console_set_clip(mused.console, &area);
+	
+	int d;
+	
+	d = generic_field(event, &r, EDITSONGINFO, SI_LENGTH, "LEN", "%04X", MAKEPTR(mused.song.song_length), 4);
+	songinfo_add_param(d);
+	update_rect(&area, &r);
+	
+	d = generic_field(event, &r, EDITSONGINFO, SI_LOOP, "LOOP","%04X", MAKEPTR(mused.song.loop_point), 4);
+	songinfo_add_param(d);
+	update_rect(&area, &r);
+	
+	d = generic_field(event, &r, EDITSONGINFO, SI_STEP, "STEP","%02X", MAKEPTR(mused.sequenceview_steps), 2);
+	songinfo_add_param(d);	
+	update_rect(&area, &r);
+}
+
+
+void songinfo2_view(SDL_Surface *dest_surface, const SDL_Rect *dest, const SDL_Event *event, void *param)
+{
+	SDL_Rect area;
+	copy_rect(&area, dest);
+	console_set_clip(mused.console, &area);
+	console_clear(mused.console);
+	bevel(mused.screen,&area, mused.slider_bevel->surface, BEV_BACKGROUND);
+	
+	area.w = my_min(320, area.w);
+	
+	adjust_rect(&area, 2);
 	SDL_Rect r;
 	copy_rect(&r, &area);
 	r.w = 100-8;
@@ -675,43 +718,22 @@ void songinfo_view(SDL_Surface *dest_surface, const SDL_Rect *dest, const SDL_Ev
 	console_set_clip(mused.console, &area);
 	
 	char speedtext[10];
-	if (mused.song.song_speed == mused.song.song_speed2)
-	{
-		snprintf(speedtext, 10, "%d", mused.song.song_speed);
-	}
-	else
-	{
-		snprintf(speedtext, 10, "%d+%d", mused.song.song_speed, mused.song.song_speed2);
-	}
 	
-	int d;
+	int d, tmp = r.w;
 	
-	if (mused.mus.cyd->flags & CYD_CLIPPING)
-		d = generic_field(event, &r, EDITSONGINFO, SI_MASTERVOL, "\2VOL","%02X", MAKEPTR(mused.song.master_volume), 2);
-	else
-		d = generic_field(event, &r, EDITSONGINFO, SI_MASTERVOL, "\1VOL","%02X", MAKEPTR(mused.song.master_volume), 2);
+	r.w -= 26;
+	
+	d = generic_field(event, &r, EDITSONGINFO, SI_SPEED1, "SPD","%01X", MAKEPTR(mused.song.song_speed), 1);
+	songinfo_add_param(d);
+	
+	r.x += r.w;
+	r.w = 26;
+	
+	d = generic_field(event, &r, EDITSONGINFO, SI_SPEED2, "","%01X", MAKEPTR(mused.song.song_speed2), 1);
 	songinfo_add_param(d);
 	update_rect(&area, &r);
 	
-	d = generic_field(event, &r, EDITSONGINFO, SI_LENGTH, "LEN", "%04X", MAKEPTR(mused.song.song_length), 4);
-	songinfo_add_param(d);
-	update_rect(&area, &r);
-	
-	d = generic_field(event, &r, EDITSONGINFO, SI_LOOP, "LOOP","%04X", MAKEPTR(mused.song.loop_point), 4);
-	songinfo_add_param(d);
-	update_rect(&area, &r);
-	
-	d = generic_field(event, &r, EDITSONGINFO, SI_STEP, "STEP","%02X", MAKEPTR(mused.sequenceview_steps), 2);
-	songinfo_add_param(d);	
-	update_rect(&area, &r);
-	
-	d = generic_field(event, &r, EDITSONGINFO, SI_SPEED1, "SPD1","%02X", MAKEPTR(mused.song.song_speed), 2);
-	songinfo_add_param(d);
-	update_rect(&area, &r);
-	
-	d = generic_field(event, &r, EDITSONGINFO, SI_SPEED2, "SPD2","%02X", MAKEPTR(mused.song.song_speed2), 2);
-	songinfo_add_param(d);
-	update_rect(&area, &r);
+	r.w = tmp;
 	
 	d = generic_field(event, &r, EDITSONGINFO, SI_RATE, "RATE","%3d", MAKEPTR(mused.song.song_rate), 3);
 	songinfo_add_param(d);
@@ -721,12 +743,84 @@ void songinfo_view(SDL_Surface *dest_surface, const SDL_Rect *dest, const SDL_Ev
 	d = generic_field(event, &r, EDITSONGINFO, SI_TIME, "TIME","%5s", speedtext, 5);
 	songinfo_add_param(d);
 	update_rect(&area, &r);
+}
+
+
+void songinfo3_view(SDL_Surface *dest_surface, const SDL_Rect *dest, const SDL_Event *event, void *param)
+{
+	SDL_Rect area;
+	copy_rect(&area, dest);
+	console_set_clip(mused.console, &area);
+	console_clear(mused.console);
+	bevel(mused.screen,&area, mused.slider_bevel->surface, BEV_BACKGROUND);
+	
+	area.w = my_min(320, area.w);
+	
+	adjust_rect(&area, 2);
+	SDL_Rect r;
+	copy_rect(&r, &area);
+	r.w = 100-8;
+	
+	if (area.w > r.w)
+	{
+		r.w = area.w / (int)(area.w / r.w) - 5;
+	}
+	else
+	{
+		r.w = area.w;
+	}
+	
+	r.h = 10;
+	console_set_clip(mused.console, &area);
+	
+	int d;
 	
 	d = generic_field(event, &r, EDITSONGINFO, SI_OCTAVE, "OCT","%02X", MAKEPTR(mused.octave), 2);
 	songinfo_add_param(d);
 	update_rect(&area, &r);
 	
 	d = generic_field(event, &r, EDITSONGINFO, SI_CHANNELS, "CHNS","%02X", MAKEPTR(mused.song.num_channels), 2);
+	songinfo_add_param(d);
+	update_rect(&area, &r);
+}
+
+
+void playstop_view(SDL_Surface *dest_surface, const SDL_Rect *dest, const SDL_Event *event, void *param)
+{
+	SDL_Rect area;
+	copy_rect(&area, dest);
+	console_set_clip(mused.console, &area);
+	console_clear(mused.console);
+	bevel(mused.screen,&area, mused.slider_bevel->surface, BEV_BACKGROUND);
+	
+	area.w = my_min(PLAYSTOP_INFO_W * 2, area.w);
+	
+	adjust_rect(&area, 2);
+	area.x++;
+	area.w -= 2;
+	SDL_Rect r;
+	copy_rect(&r, &area);
+	r.w = area.w;
+		
+	r.h = 10;
+	console_set_clip(mused.console, &area);
+	
+	SDL_Rect button;
+	copy_rect(&button, &r);
+	button.w = my_max(button.w / 2, PLAYSTOP_INFO_W/2 - 4);
+	button_text_event(dest_surface, event, &button, mused.slider_bevel->surface, &mused.smallfont, BEV_BUTTON, BEV_BUTTON_ACTIVE, "PLAY", play, NULL, NULL, NULL);
+	button.x -= ELEMENT_MARGIN;
+	update_rect(&area, &button);
+	button_text_event(dest_surface, event, &button, mused.slider_bevel->surface, &mused.smallfont, BEV_BUTTON, BEV_BUTTON_ACTIVE, "STOP", stop, NULL, NULL, NULL);
+	
+	r.y = button.y + button.h;
+	
+	int d;
+
+	if (mused.mus.cyd->flags & CYD_CLIPPING)
+		d = generic_field(event, &r, EDITSONGINFO, SI_MASTERVOL, "\2VOL","%02X", MAKEPTR(mused.song.master_volume), 2);
+	else
+		d = generic_field(event, &r, EDITSONGINFO, SI_MASTERVOL, "\1VOL","%02X", MAKEPTR(mused.song.master_volume), 2);
 	songinfo_add_param(d);
 	update_rect(&area, &r);
 }

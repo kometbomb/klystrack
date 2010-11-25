@@ -153,6 +153,23 @@ int font_load_and_set_color(Font *font, Bundle *b, char *name, Uint32 color)
 }
 
 
+static SDL_RWops *load_img(Bundle *res, const char *base_name)
+{
+	/* load base_name.bmp or .png */
+	
+	char name[100];
+	const char *ext[] = {"bmp", "png", NULL}, **e;
+	
+	for (e = ext ; *e ; ++e)
+	{
+		snprintf(name, sizeof(name), "%s.%s", base_name, *e);
+		SDL_RWops *rw = SDL_RWFromBundle(res, name);
+		if (rw)
+			return rw;
+	}
+		
+	return NULL;
+}
 
 
 void load_theme(const char *name)
@@ -186,7 +203,7 @@ void load_theme(const char *name)
 	
 	if (bnd_open(&res, fullpath))
 	{
-		SDL_RWops *rw = SDL_RWFromBundle(&res, "bevel.bmp");
+		SDL_RWops *rw = load_img(&res, "bevel");
 		
 		if (rw)
 		{
@@ -203,18 +220,25 @@ void load_theme(const char *name)
 			mused.sequence_horiz_slider_param.gfx = mused.slider_bevel->surface;
 		}
 		
-		rw = SDL_RWFromBundle(&res, "vu.bmp");
+		rw = load_img(&res, "vu");
 		if (rw)
 		{
 			if (mused.vu_meter) gfx_free_surface(mused.vu_meter);
 			mused.vu_meter = gfx_load_surface_RW(rw, GFX_KEYED);
 		}
 		
-		rw = SDL_RWFromBundle(&res, "analyzor.bmp");
+		rw = load_img(&res, "analyzor");
 		if (rw)
 		{
 			if (mused.analyzer) gfx_free_surface(mused.analyzer);
 			mused.analyzer = gfx_load_surface_RW(rw, GFX_KEYED);
+		}
+		
+		rw = load_img(&res, "logo");
+		if (rw)
+		{
+			if (mused.logo) gfx_free_surface(mused.logo);
+			mused.logo = gfx_load_surface_RW(rw, GFX_KEYED);
 		}
 	
 		if (mused.console) console_destroy(mused.console); 

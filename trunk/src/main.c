@@ -103,16 +103,22 @@ static const View pattern_view_tab[] =
 
 #define CLASSIC_PAT (0 / 2 + 20 - 2 - 7)
 #define CLASSIC_SONG_INFO (94)
-#define CLASSIC_SONG_INFO_H (96+10)
+#define SONG_INFO1_H (24+10)
+#define SONG_INFO2_H (24+10)
+#define SONG_INFO3_H (15+10)
+#define CLASSIC_SONG_INFO_H (SONG_INFO1_H+SONG_INFO2_H+SONG_INFO3_H)
 
 static const View classic_view_tab[] =
 {
-	{{0,0,CLASSIC_SONG_INFO,CLASSIC_SONG_INFO_H}, songinfo_view, NULL, EDITSONGINFO},
+	{{0,0,CLASSIC_SONG_INFO,SONG_INFO1_H}, songinfo1_view, NULL, EDITSONGINFO},
+	{{0,SONG_INFO1_H,CLASSIC_SONG_INFO,SONG_INFO2_H}, songinfo2_view, NULL, EDITSONGINFO},
+	{{0,SONG_INFO1_H+SONG_INFO2_H,CLASSIC_SONG_INFO,SONG_INFO3_H}, songinfo3_view, NULL, EDITSONGINFO},
 	{{CLASSIC_SONG_INFO, 0, 0-SCROLLBAR, CLASSIC_SONG_INFO_H - 25}, sequence_spectrum_view, NULL, EDITSEQUENCE},
 	{{0-SCROLLBAR, 0, SCROLLBAR, CLASSIC_SONG_INFO_H - 25}, slider, &mused.sequence_slider_param, EDITSEQUENCE},
-	{{CLASSIC_SONG_INFO, CLASSIC_SONG_INFO_H-25, 0, 25}, bevel_view, (void*)BEV_BACKGROUND, -1},
-	{{CLASSIC_SONG_INFO + 2, CLASSIC_SONG_INFO_H - 25 + 2, -2, 10}, song_name_view, NULL, -1},
-	{{CLASSIC_SONG_INFO + 2, CLASSIC_SONG_INFO_H - 25 + 2 + 10 + 1, -2, 10}, instrument_name_view, (void*)1, -1},
+	{{CLASSIC_SONG_INFO, CLASSIC_SONG_INFO_H-25, - PLAYSTOP_INFO_W, 25}, bevel_view, (void*)BEV_BACKGROUND, -1},
+	{{CLASSIC_SONG_INFO + 2, CLASSIC_SONG_INFO_H - 25 + 2, -2 - PLAYSTOP_INFO_W, 10}, song_name_view, NULL, -1},
+	{{CLASSIC_SONG_INFO + 2, CLASSIC_SONG_INFO_H - 25 + 2 + 10 + 1, -2 - PLAYSTOP_INFO_W, 10}, instrument_name_view, (void*)1, -1},
+	{{- PLAYSTOP_INFO_W, CLASSIC_SONG_INFO_H - 25,PLAYSTOP_INFO_W,25}, playstop_view, NULL, EDITSONGINFO},
 	{{0, CLASSIC_SONG_INFO_H, 0-SCROLLBAR, -INFO}, pattern_view, NULL, EDITPATTERN},
 	{{0 - SCROLLBAR, CLASSIC_SONG_INFO_H, SCROLLBAR, -INFO}, slider, &mused.pattern_slider_param, EDITPATTERN},
 	{{0, 0 - INFO, 0, INFO }, info_line, NULL, -1},
@@ -123,7 +129,10 @@ static const View classic_view_tab[] =
 
 static const View sequence_view_tab[] =
 {
-	{{0,0,0,SEQ_VIEW_INFO_H}, songinfo_view, NULL, EDITSONGINFO},
+	{{0,0,CLASSIC_SONG_INFO,SEQ_VIEW_INFO_H}, songinfo1_view, NULL, EDITSONGINFO},
+	{{CLASSIC_SONG_INFO,0,CLASSIC_SONG_INFO,SEQ_VIEW_INFO_H}, songinfo2_view, NULL, EDITSONGINFO},
+	{{CLASSIC_SONG_INFO*2,0,CLASSIC_SONG_INFO,SEQ_VIEW_INFO_H}, songinfo3_view, NULL, EDITSONGINFO},
+	{{CLASSIC_SONG_INFO*3,0,0,SEQ_VIEW_INFO_H}, playstop_view, NULL, EDITSONGINFO},
 	{{0, SEQ_VIEW_INFO_H, -130, 14}, bevel_view, (void*)BEV_BACKGROUND, -1},
 	{{2, SEQ_VIEW_INFO_H+2, -130-2, 10}, song_name_view, NULL, -1},
 	{{-130, SEQ_VIEW_INFO_H, 130, 14}, instrument_disk_view, MAKEPTR(OD_T_SONG), -1},
