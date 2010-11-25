@@ -106,7 +106,7 @@ static const View pattern_view_tab[] =
 #define SONG_INFO1_H (24+10)
 #define SONG_INFO2_H (24+10)
 #define SONG_INFO3_H (15+10)
-#define TOOLBAR_H 12
+#define TOOLBAR_H 13
 #define CLASSIC_SONG_INFO_H (SONG_INFO1_H+SONG_INFO2_H+SONG_INFO3_H+TOOLBAR_H)
 
 static const View classic_view_tab[] =
