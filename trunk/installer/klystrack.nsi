@@ -36,6 +36,7 @@ SectionIn RO
   File zip\data\LICENSE
   File zip\data\SDL.dll
   File zip\data\SDL.txt
+  File zip\data\SDL_image.txt
   File zip\data\SDL_mixer.dll
   File zip\data\SDL_image.dll
   File zip\data\zlib1.dll
@@ -110,6 +111,7 @@ Section Uninstall
   Delete LICENSE
   Delete SDL.dll
   Delete SDL.txt
+  Delete SDL_image.txt
   Delete SDL_mixer.dll
   Delete SDL_image.dll
   Delete zlib1.dll
