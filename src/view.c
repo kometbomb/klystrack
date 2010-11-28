@@ -1484,10 +1484,10 @@ void instrument_list(SDL_Surface *dest_surface, const SDL_Rect *dest, const SDL_
 			console_set_color(mused.console, colors[COLOR_INSTRUMENT_NORMAL], CON_CHARACTER);
 		}
 			
-		char temp[sizeof(mused.song.instrument[i].name)];
+		char temp[sizeof(mused.song.instrument[i].name) + 1];
 		
 		strcpy(temp, mused.song.instrument[i].name);
-		temp[my_max(0, area.w / mused.console->font.w - 3)] = '\0';
+		temp[my_min(sizeof(mused.song.instrument[i].name), my_max(0, area.w / mused.console->font.w - 3))] = '\0';
 			
 		check_event(event, console_write_args(mused.console, "%02X %-16s\n", i, temp), select_instrument, MAKEPTR(i), 0, 0);
 		
