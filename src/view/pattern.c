@@ -284,7 +284,7 @@ void pattern_view_inner(SDL_Surface *dest_surface, const SDL_Rect *dest, const S
 	{
 		const int ah = (dest->h / mused.console->font.h);
 		const int w = mused.vu_meter->surface->w;
-		const int h = mused.vis.cyd_env[channel] * my_min(dest->h / 2, mused.vu_meter->surface->h) / MAX_VOLUME ;
+		const int h = my_min(mused.vu_meter->surface->h, mused.vis.cyd_env[channel] * my_min(dest->h / 2, mused.vu_meter->surface->h) / MAX_VOLUME);
 		SDL_Rect r = { content.x + content.w / 2 - w / 2 , content.y + ah / 2 * mused.console->font.h - h - 1, w, h };
 		SDL_Rect sr = { 0, mused.vu_meter->surface->h - h, mused.vu_meter->surface->w, h };
 		SDL_BlitSurface(mused.vu_meter->surface, &sr, mused.screen, &r);
