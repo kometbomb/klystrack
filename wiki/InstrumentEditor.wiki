@@ -116,7 +116,7 @@ The FXBUS parameter selects the effect chain this instrument will send its outpu
 
 ===No prog restart===
 
-This flag disables restarting of the instrument program when a note is triggered. The program will continue executing where it was (in that channel, even if the previous instrument was not the same as the newly triggered instrument.) Use {{{7D00}} to manually restart the program.
+This flag disables restarting of the instrument program when a note is triggered. The program will continue executing where it was (in that channel, even if the previous instrument was not the same as the newly triggered instrument.) Use {{{7D00}}} to manually restart the program.
 
 =Instrument program=
 
