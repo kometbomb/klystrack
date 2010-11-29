@@ -808,7 +808,7 @@ void playstop_view(SDL_Surface *dest_surface, const SDL_Rect *dest, const SDL_Ev
 	SDL_Rect button;
 	copy_rect(&button, &r);
 	button.w = my_max(button.w / 2, PLAYSTOP_INFO_W/2 - 4);
-	button_text_event(dest_surface, event, &button, mused.slider_bevel->surface, &mused.smallfont, BEV_BUTTON, BEV_BUTTON_ACTIVE, "PLAY", play, NULL, NULL, NULL);
+	button_text_event(dest_surface, event, &button, mused.slider_bevel->surface, &mused.smallfont, (mused.flags & SONG_PLAYING) ? BEV_BUTTON_ACTIVE : BEV_BUTTON, BEV_BUTTON_ACTIVE, "PLAY", play, NULL, NULL, NULL);
 	button.x -= ELEMENT_MARGIN;
 	update_rect(&area, &button);
 	button_text_event(dest_surface, event, &button, mused.slider_bevel->surface, &mused.smallfont, BEV_BUTTON, BEV_BUTTON_ACTIVE, "STOP", stop, NULL, NULL, NULL);
