@@ -13,7 +13,7 @@ note |  ______ legato, slide, vibrato
 C-4 00 LSV 0000 <--- track command
 }}}
 
-If a note is set for a pattern step, a new note will be played when the player position hits the row. The instrument column tells which instrument to use. The note will continue to play until the volume is set to zero, the envelope fades out or a note-off command ({{{Space}}}) is encountered in the note column. 
+If a note is set for a pattern step, a new note will be played when the player position hits the row. The instrument column tells which instrument to use. The note will continue to play until the volume is set to zero, the envelope fades out or a note-off command (key {{{1}}}) is encountered in the note column. 
 
 The legato, slide and vibrato columns (set with {{{1}}}) tell klystrack to enable vibrato or slide from the previously played note. Note that enabling slide without legato will still trigger the note (it will simply start from the previous note and slide to the new pitch), the envelope will be set to attack phase. With legato, the slide will audibly continue from the previous pitch and volume. The slide and vibrato can also be enabled using a [Command command].
 
