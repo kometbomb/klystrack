@@ -158,7 +158,7 @@ endif
 
 all: bin.$(CFG)/$(TARGET) $(THEMES)
 	
-zip: doc/* $(THEMES) $(DLLS) examples/instruments/* examples/songs/* linux/Makefile zip/data/SDL.dll zip/data/SDL_mixer.dll
+zip: doc/* $(THEMES) $(DLLS) examples/instruments/* examples/songs/* linux/Makefile $(DLLS)
 	@make -C ../klystron CFG=release EXTFLAGS="$(EXTFLAGS)"
 	@make build CFG=release
 	@mkdir -p zip/data/res

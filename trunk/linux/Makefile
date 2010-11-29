@@ -12,5 +12,6 @@ install:
 	@mkdir -p $(DESTDIR)/usr/share/doc/klystrack
 	@cp LICENSE $(DESTDIR)/usr/share/doc/klystrack
 	@cp SDL.txt $(DESTDIR)/usr/share/doc/klystrack
+	@cp SDL_image.txt $(DESTDIR)/usr/share/doc/klystrack
 	
 clean:
