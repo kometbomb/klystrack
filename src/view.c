@@ -1816,13 +1816,16 @@ void bevel_view(SDL_Surface *dest_surface, const SDL_Rect *dest, const SDL_Event
 
 void sequence_spectrum_view(SDL_Surface *dest_surface, const SDL_Rect *dest, const SDL_Event *event, void *param)
 {
-	/*if (mused.mode == MODE_LOGO)
+	if (mused.flags & SHOW_LOGO)
 	{
-		SDL_Rect d;
+		SDL_Rect d, s = {0,0,dest->w,dest->h};
 		copy_rect(&d, dest);
-		SDL_BlitSurface(mused.logo->surface, NULL, dest_surface, &d);
+		d.x = d.w / 2 - mused.logo->surface->w / 2 + d.x;
+		SDL_BlitSurface(mused.logo->surface, &s, dest_surface, &d);
+		if (check_event(event, &d, NULL, NULL, NULL, NULL))
+			mused.flags &= ~SHOW_LOGO;
 	}
-	else */if (mused.flags & SHOW_ANALYZER)
+	else if (mused.flags & SHOW_ANALYZER)
 	{
 		spectrum_analyzer_view(dest_surface, dest, event, param);
 	}

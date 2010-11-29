@@ -78,6 +78,7 @@ enum
 #ifdef MIDI
 	MIDI_SYNC = 4096,
 #endif
+	SHOW_LOGO = 8192
 };
 
 enum

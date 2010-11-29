@@ -261,7 +261,7 @@ void init(MusInstrument *instrument, MusPattern *pattern, MusSeqPattern sequence
 	
 	memset(&mused, 0, sizeof(mused));
 	
-	mused.flags = MULTICHANNEL_PREVIEW|ANIMATE_CURSOR|EDIT_MODE;
+	mused.flags = MULTICHANNEL_PREVIEW|ANIMATE_CURSOR|EDIT_MODE|SHOW_LOGO;
 	mused.visible_columns = VC_INSTRUMENT | VC_COMMAND;
 	mused.screen = screen;
 	mused.done = 0;
