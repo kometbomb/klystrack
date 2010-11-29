@@ -1,5 +1,7 @@
 #summary Description of track and program commands
 
+=Commands=
+
 When a note is playing, an instrument program or the track data can modify various parameters by using commands.
 
 The commands are interchangeable between the track commands and the program commands (where applicable). Most of the commands loosely follow the "standards" set by the original Soundtracker and later trackers.
@@ -59,3 +61,11 @@ _{{{xx}}}, {{{yy}}} = parameter to command_
 || {{{fffd}}} || trigger note release ||
 || {{{fffe}}} || nop (no operation) ||
 || {{{ffff}}} || end program ||
+
+
+=Volume column commands=
+
+The volume column can be used to trigger some commands in addition to setting the volume.
+
+|| Dx || Fade volume down (same as command {{{0a0x}}} ||
+|| Ux || Fade volume up (same as command {{{0ax0}}} ||
