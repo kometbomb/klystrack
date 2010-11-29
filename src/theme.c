@@ -174,6 +174,9 @@ static SDL_RWops *load_img(Bundle *res, const char *base_name)
 
 void load_theme(const char *name)
 {
+	char tmpname[1000];
+	strncpy(tmpname, name, sizeof(tmpname));
+
 	if (strcmp(name, "Default") != 0)
 		load_theme("Default"); // for default stuff not in selected theme
 
@@ -194,9 +197,9 @@ void load_theme(const char *name)
 		}
 	}
 	
-	snprintf(fullpath, sizeof(fullpath) - 1, "%s" TOSTRING(RES_PATH) "/res/%s", path, name);
+	snprintf(fullpath, sizeof(fullpath) - 1, "%s" TOSTRING(RES_PATH) "/res/%s", path, tmpname);
 #else
-	snprintf(fullpath, sizeof(fullpath) - 1, TOSTRING(RES_PATH) "/res/%s", name);
+	snprintf(fullpath, sizeof(fullpath) - 1, TOSTRING(RES_PATH) "/res/%s", tmpname);
 #endif
 	
 	debug("Loading theme '%s'", fullpath);
@@ -288,7 +291,7 @@ void load_theme(const char *name)
 		}
 				
 		bnd_free(&res);
-		strcpy(mused.themename, name);
+		strncpy(mused.themename, tmpname, sizeof(mused.themename));
 		update_theme_menu();
 		
 		debug("Theme opened ok");
