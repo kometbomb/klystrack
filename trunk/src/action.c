@@ -634,3 +634,10 @@ void open_menu_action(void*a,void*b,void*c)
 {
 	my_open_menu();
 }
+
+
+void flip_bit_action(void *a, void *b, void *c)
+{
+	*(Uint32*)a ^= CASTPTR(Uint32,b);
+}
+

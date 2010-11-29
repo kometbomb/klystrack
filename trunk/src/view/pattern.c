@@ -462,8 +462,13 @@ void pattern_view(SDL_Surface *dest_surface, const SDL_Rect *dest, const SDL_Eve
 	bevel(mused.screen, &compact, mused.slider_bevel->surface, BEV_BACKGROUND);
 	
 	adjust_rect(&compact, 2);
+	compact.w -= 2;
+	compact.x += 1;
 	
-	checkbox(mused.screen, event, &compact, mused.slider_bevel->surface, &mused.smallfont, BEV_BUTTON, BEV_BUTTON_ACTIVE, DECAL_TICK, "S", &mused.flags, COMPACT_VIEW);
+	button_event(mused.screen, event, &compact, mused.slider_bevel->surface, 
+		!(mused.flags & COMPACT_VIEW) ? BEV_BUTTON : BEV_BUTTON_ACTIVE, 
+		!(mused.flags & COMPACT_VIEW) ? BEV_BUTTON : BEV_BUTTON_ACTIVE, 
+		(mused.flags & COMPACT_VIEW) ? DECAL_COMPACT_SELETED : DECAL_COMPACT, flip_bit_action, &mused.flags, MAKEPTR(COMPACT_VIEW), 0);
 	
 	const int pattern_width = 
 		((mused.console->font.w * NOTE_CHARS) + viscol(VC_INSTRUMENT) * (mused.console->font.w * INST_CHARS + SPACER) + 
