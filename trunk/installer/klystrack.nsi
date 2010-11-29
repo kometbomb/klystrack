@@ -74,6 +74,7 @@ SectionIn RO
   SetOutPath $INSTDIR\examples\songs
   
   File zip\data\examples\songs\ringmod.kt
+  File "zip\data\examples\songs\Sprock'n'Sprawl.kt"
   
   ; For CreateShortCut
   
@@ -148,6 +149,7 @@ Section Uninstall
   SetOutPath $INSTDIR\examples\songs
   
   Delete ringmod.kt
+  Delete "Sprock'n'Sprawl.kt"
   
   SetOutPath $TEMP
   
