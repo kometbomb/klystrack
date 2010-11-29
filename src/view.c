@@ -775,11 +775,11 @@ void songinfo3_view(SDL_Surface *dest_surface, const SDL_Rect *dest, const SDL_E
 	
 	int d;
 	
-	d = generic_field(event, &r, EDITSONGINFO, SI_OCTAVE, "OCT","%02X", MAKEPTR(mused.octave), 2);
+	d = generic_field(event, &r, EDITSONGINFO, SI_OCTAVE, "OCTAVE","%02X", MAKEPTR(mused.octave), 2);
 	songinfo_add_param(d);
 	update_rect(&area, &r);
 	
-	d = generic_field(event, &r, EDITSONGINFO, SI_CHANNELS, "CHNS","%02X", MAKEPTR(mused.song.num_channels), 2);
+	d = generic_field(event, &r, EDITSONGINFO, SI_CHANNELS, "CHANLS","%02X", MAKEPTR(mused.song.num_channels), 2);
 	songinfo_add_param(d);
 	update_rect(&area, &r);
 }
@@ -1843,13 +1843,13 @@ void toolbar_view(SDL_Surface *dest_surface, const SDL_Rect *dest, const SDL_Eve
 {
 	SDL_Rect button;
 	copy_rect(&button, dest);
-	button.w = dest->w - 3 * dest->h;
+	button.w = dest->w - 3 * (dest->h + 2);
 	
 	button_text_event(dest_surface, event, &button, mused.slider_bevel->surface, &mused.smallfont,
 		BEV_BUTTON, BEV_BUTTON_ACTIVE, 	"MENU", open_menu_action, 0, 0, 0);
 		
 	button.x += button.w;
-	button.w = button.h;
+	button.w = button.h + 2;
 	
 	button_event(dest_surface, event, &button, mused.slider_bevel->surface, 
 		!(mused.flags & SHOW_ANALYZER) ? BEV_BUTTON : BEV_BUTTON_ACTIVE, 
