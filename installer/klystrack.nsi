@@ -75,6 +75,7 @@ SectionIn RO
   
   File zip\data\examples\songs\ringmod.kt
   File "zip\data\examples\songs\Sprock'n'Sprawl.kt"
+  File zip\data\examples\songs\phonkeh.kt
   
   ; For CreateShortCut
   
@@ -150,6 +151,7 @@ Section Uninstall
   
   Delete ringmod.kt
   Delete "Sprock'n'Sprawl.kt"
+  Delete phonkeh.kt
   
   SetOutPath $TEMP
   
