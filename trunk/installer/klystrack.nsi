@@ -97,7 +97,7 @@ SectionIn RO
 SectionEnd ; end the section
 
 Section "Register file types"
-  ${registerExtension} "$INSTDIR\klystrack.exe" ".kt" "klystracker song"
+  ${registerExtension} "$INSTDIR\klystrack.exe" ".kt" "klystrack song"
 SectionEnd
 
 ;;;;;;;;
