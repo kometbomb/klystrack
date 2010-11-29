@@ -1833,12 +1833,6 @@ void sequence_spectrum_view(SDL_Surface *dest_surface, const SDL_Rect *dest, con
 }
 
 
-static void flip_bit_action(void *a, void *b, void *c)
-{
-	*(Uint32*)a ^= CASTPTR(Uint32,b);
-}
-
-
 void toolbar_view(SDL_Surface *dest_surface, const SDL_Rect *dest, const SDL_Event *event, void *param)
 {
 	SDL_Rect button;
