@@ -45,6 +45,10 @@ SectionIn RO
   SetOutPath $INSTDIR\res
   
   File zip\data\res\Default
+  File zip\data\res\AHX
+  File zip\data\res\C64
+  File zip\data\res\Gameboy
+  File zip\data\res\Classic
   
   CreateDirectory $INSTDIR\examples
   
@@ -123,6 +127,10 @@ Section Uninstall
   SetOutPath $INSTDIR\res
   
   Delete Default
+  Delete AHX
+  Delete C64
+  Delete Gameboy
+  Delete Classic
   
   SetOutPath $INSTDIR\examples\instruments
   
