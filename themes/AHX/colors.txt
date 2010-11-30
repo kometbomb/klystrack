@@ -31,3 +31,15 @@ menu_header = 0xffffff
 menu_header_selected = 0xffffff
 menu_shortcut = 0xffffff
 menu_shortcut_selected = 0xffffff
+
+pattern_volume = 0xcee7e7
+pattern_volume_beat = 0xcee7e7
+pattern_volume_bar = 0xcee7e7
+
+pattern_ctrl = 0xcee7e7
+pattern_ctrl_beat = 0xcee7e7
+pattern_ctrl_bar = 0xcee7e7
+
+pattern_command = 0xcee7e7
+pattern_command_beat = 0xcee7e7
+pattern_command_bar = 0xcee7e7
