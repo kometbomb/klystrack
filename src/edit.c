@@ -208,35 +208,35 @@ void snapshot_cascade(SHType type, int a, int b)
 		switch (type)
 		{
 			case S_T_PATTERN:
-				undo_store_pattern(&mused.undo, mused.current_pattern, &mused.song.pattern[mused.current_pattern]);
+				undo_store_pattern(&mused.undo, mused.current_pattern, &mused.song.pattern[mused.current_pattern], mused.modified);
 				break;
 				
 			case S_T_SEQUENCE:
-				undo_store_sequence(&mused.undo, mused.current_sequencetrack, mused.song.sequence[mused.current_sequencetrack], mused.song.num_sequences[mused.current_sequencetrack]);
+				undo_store_sequence(&mused.undo, mused.current_sequencetrack, mused.song.sequence[mused.current_sequencetrack], mused.song.num_sequences[mused.current_sequencetrack], mused.modified);
 				break;
 				
 			case S_T_MODE:
-				undo_store_mode(&mused.undo, mused.mode, mused.focus);
+				undo_store_mode(&mused.undo, mused.mode, mused.focus, mused.modified);
 				break;
 				
 			case S_T_FX:
-				undo_store_fx(&mused.undo, mused.fx_bus, &mused.song.fx[mused.fx_bus], mused.song.multiplex_period);
+				undo_store_fx(&mused.undo, mused.fx_bus, &mused.song.fx[mused.fx_bus], mused.song.multiplex_period, mused.modified);
 				break;
 				
 			case S_T_SONGINFO:
-				undo_store_songinfo(&mused.undo, &mused.song);
+				undo_store_songinfo(&mused.undo, &mused.song, mused.modified);
 				break;
 			
 			case S_T_INSTRUMENT:
-				undo_store_instrument(&mused.undo, mused.current_instrument, &mused.song.instrument[mused.current_instrument]);
+				undo_store_instrument(&mused.undo, mused.current_instrument, &mused.song.instrument[mused.current_instrument], mused.modified);
 				break;
 				
 			case S_T_WAVE_PARAM:
-				undo_store_wave_param(&mused.undo, mused.selected_wavetable, &mused.mus.cyd->wavetable_entries[mused.selected_wavetable]);
+				undo_store_wave_param(&mused.undo, mused.selected_wavetable, &mused.mus.cyd->wavetable_entries[mused.selected_wavetable], mused.modified);
 				break;
 				
 			case S_T_WAVE_DATA:
-				undo_store_wave_data(&mused.undo, mused.selected_wavetable, &mused.mus.cyd->wavetable_entries[mused.selected_wavetable]);
+				undo_store_wave_data(&mused.undo, mused.selected_wavetable, &mused.mus.cyd->wavetable_entries[mused.selected_wavetable], mused.modified);
 				break;
 			
 			default: warning("SHType %d not implemented", type); break;
@@ -246,4 +246,7 @@ void snapshot_cascade(SHType type, int a, int b)
 	mused.last_snapshot = type;
 	mused.last_snapshot_a = a;
 	mused.last_snapshot_b = b;
+	
+	if (type != S_T_MODE)
+		mused.modified = true;
 }

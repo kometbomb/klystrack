@@ -37,13 +37,14 @@ void undo_add_frame(UndoStack *stack, UndoFrame *frame)
 	//debug("Added undo frame %p to %p", frame, stack);
 }
 
-static UndoEvent * get_frame(UndoType type, UndoStack *stack)
+static UndoEvent * get_frame(UndoType type, UndoStack *stack, bool modified)
 {
 	if (inside_undo) return NULL;
 	
 	UndoFrame *frame = calloc(sizeof(UndoFrame), 1);
 	undo_add_frame(stack, frame);
 	frame->type = type;
+	frame->modified = modified;
 	
 /*#ifdef DEBUG
 	undo_show_stack(stack);
@@ -76,9 +77,9 @@ void undo_destroy_frame(UndoFrame *frame)
 }
 
 
-void undo_store_mode(UndoStack *stack, int old_mode, int focus)
+void undo_store_mode(UndoStack *stack, int old_mode, int focus, bool modified)
 {
-	UndoEvent *frame = get_frame(UNDO_MODE, stack);
+	UndoEvent *frame = get_frame(UNDO_MODE, stack, modified);
 	
 	if (!frame) return;
 	
@@ -87,9 +88,9 @@ void undo_store_mode(UndoStack *stack, int old_mode, int focus)
 }
 
 
-void undo_store_instrument(UndoStack *stack, int idx, const MusInstrument *instrument)
+void undo_store_instrument(UndoStack *stack, int idx, const MusInstrument *instrument, bool modified)
 {
-	UndoEvent *frame = get_frame(UNDO_INSTRUMENT, stack);
+	UndoEvent *frame = get_frame(UNDO_INSTRUMENT, stack, modified);
 	
 	if (!frame) return;
 	
@@ -98,9 +99,9 @@ void undo_store_instrument(UndoStack *stack, int idx, const MusInstrument *instr
 }
 
 
-void undo_store_pattern(UndoStack *stack, int idx, const MusPattern *pattern)
+void undo_store_pattern(UndoStack *stack, int idx, const MusPattern *pattern, bool modified)
 {
-	UndoEvent *frame = get_frame(UNDO_PATTERN, stack);
+	UndoEvent *frame = get_frame(UNDO_PATTERN, stack, modified);
 	
 	if (!frame) return;
 	
@@ -111,9 +112,9 @@ void undo_store_pattern(UndoStack *stack, int idx, const MusPattern *pattern)
 }
 
 
-void undo_store_sequence(UndoStack *stack, int channel, const MusSeqPattern *sequence, int n_seq)
+void undo_store_sequence(UndoStack *stack, int channel, const MusSeqPattern *sequence, int n_seq, bool modified)
 {
-	UndoEvent *frame = get_frame(UNDO_SEQUENCE, stack);
+	UndoEvent *frame = get_frame(UNDO_SEQUENCE, stack, modified);
 	
 	if (!frame) return;
 	
@@ -124,9 +125,9 @@ void undo_store_sequence(UndoStack *stack, int channel, const MusSeqPattern *seq
 }
 
 
-void undo_store_songinfo(UndoStack *stack, const MusSong *song)
+void undo_store_songinfo(UndoStack *stack, const MusSong *song, bool modified)
 {
-	UndoEvent *frame = get_frame(UNDO_SONGINFO, stack);
+	UndoEvent *frame = get_frame(UNDO_SONGINFO, stack, modified);
 	
 	if (!frame) return;
 	
@@ -141,14 +142,19 @@ void undo_store_songinfo(UndoStack *stack, const MusSong *song)
 	strcpy(frame->songinfo.title, song->title);
 	frame->songinfo.master_volume = song->master_volume;
 	memcpy(frame->songinfo.default_volume, song->default_volume, sizeof(frame->songinfo.default_volume));
+	memcpy(frame->songinfo.default_panning, song->default_panning, sizeof(frame->songinfo.default_panning));
 }
 
 
-void undo_store_fx(UndoStack *stack, int idx, const CydFxSerialized *fx, Uint8 multiplex_period)
+void undo_store_fx(UndoStack *stack, int idx, const CydFxSerialized *fx, Uint8 multiplex_period, bool modified)
 {
-	UndoEvent *frame = get_frame(UNDO_FX, stack);
+	UndoEvent *frame = get_frame(UNDO_FX, stack, modified);
 	
 	if (!frame) return;
+	
+	frame->fx.idx = idx;
+	memcpy(&frame->fx.fx, fx, sizeof(*fx));
+	frame->fx.multiplex_period = multiplex_period;
 }
 
 
@@ -208,9 +214,9 @@ void undo_show_stack(UndoStack *stack)
 #endif
 
 
-void undo_store_wave_data(UndoStack *stack, int idx, const CydWavetableEntry *entry)
+void undo_store_wave_data(UndoStack *stack, int idx, const CydWavetableEntry *entry, bool modified)
 {
-	UndoEvent *frame = get_frame(UNDO_WAVE_DATA, stack);
+	UndoEvent *frame = get_frame(UNDO_WAVE_DATA, stack, modified);
 	
 	if (!frame) return;
 	
@@ -221,9 +227,9 @@ void undo_store_wave_data(UndoStack *stack, int idx, const CydWavetableEntry *en
 }
 
 
-void undo_store_wave_param(UndoStack *stack, int idx, const CydWavetableEntry *entry)
+void undo_store_wave_param(UndoStack *stack, int idx, const CydWavetableEntry *entry, bool modified)
 {
-	UndoEvent *frame = get_frame(UNDO_WAVE_PARAM, stack);
+	UndoEvent *frame = get_frame(UNDO_WAVE_PARAM, stack, modified);
 	
 	if (!frame) return;
 	

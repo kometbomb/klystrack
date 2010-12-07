@@ -527,14 +527,14 @@ void do_undo(void *a, void*b, void*c)
 	{
 		case UNDO_PATTERN:
 			mused.current_pattern = frame->event.pattern.idx;
-			undo_store_pattern(&mused.undo, mused.current_pattern, &mused.song.pattern[mused.current_pattern]);
+			undo_store_pattern(&mused.undo, mused.current_pattern, &mused.song.pattern[mused.current_pattern], mused.modified);
 			resize_pattern(&mused.song.pattern[mused.current_pattern], frame->event.pattern.n_steps);
 			memcpy(mused.song.pattern[mused.current_pattern].step, frame->event.pattern.step, frame->event.pattern.n_steps * sizeof(frame->event.pattern.step[0]));
 			break;
 			
 		case UNDO_SEQUENCE:
 			mused.current_sequencetrack = frame->event.sequence.channel;
-			undo_store_sequence(&mused.undo, mused.current_sequencetrack, mused.song.sequence[mused.current_sequencetrack], mused.song.num_sequences[mused.current_sequencetrack]);
+			undo_store_sequence(&mused.undo, mused.current_sequencetrack, mused.song.sequence[mused.current_sequencetrack], mused.song.num_sequences[mused.current_sequencetrack], mused.modified);
 			
 			mused.song.num_sequences[mused.current_sequencetrack] = frame->event.sequence.n_seq;
 			
@@ -549,7 +549,7 @@ void do_undo(void *a, void*b, void*c)
 		
 		case UNDO_INSTRUMENT:
 			mused.current_instrument = frame->event.instrument.idx;
-			undo_store_instrument(&mused.undo, mused.current_instrument, &mused.song.instrument[mused.current_instrument]);
+			undo_store_instrument(&mused.undo, mused.current_instrument, &mused.song.instrument[mused.current_instrument], mused.modified);
 			
 			memcpy(&mused.song.instrument[mused.current_instrument], &frame->event.instrument.instrument, sizeof(frame->event.instrument.instrument));
 			
@@ -557,7 +557,7 @@ void do_undo(void *a, void*b, void*c)
 			
 		case UNDO_FX:
 			mused.fx_bus = frame->event.fx.idx;
-			undo_store_fx(&mused.undo, mused.fx_bus, &mused.song.fx[mused.fx_bus], mused.song.multiplex_period);
+			undo_store_fx(&mused.undo, mused.fx_bus, &mused.song.fx[mused.fx_bus], mused.song.multiplex_period, mused.modified);
 			memcpy(&mused.song.fx[mused.fx_bus], &frame->event.fx.fx, sizeof(frame->event.fx.fx));
 			mused.song.multiplex_period = frame->event.fx.multiplex_period;
 			mus_set_fx(&mused.mus, &mused.song);
@@ -577,6 +577,7 @@ void do_undo(void *a, void*b, void*c)
 			strcpy(song->title, frame->event.songinfo.title);
 			song->master_volume = frame->event.songinfo.master_volume;
 			memcpy(song->default_volume, frame->event.songinfo.default_volume, sizeof(frame->event.songinfo.default_volume));
+			memcpy(song->default_panning, frame->event.songinfo.default_panning, sizeof(frame->event.songinfo.default_panning));
 		}
 		break;
 		
@@ -605,6 +606,8 @@ void do_undo(void *a, void*b, void*c)
 		
 		default: warning("Undo type %d not handled", frame->type); break;
 	}
+	
+	mused.modified = frame->modified;
 	
 	if (!a)
 	{

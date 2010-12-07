@@ -147,6 +147,7 @@ typedef struct
 	UndoStack redo;
 	SHType last_snapshot;
 	int last_snapshot_a, last_snapshot_b;
+	bool modified;
 	
 #ifdef MIDI
 	Uint32 midi_device;
