@@ -126,11 +126,11 @@ void get_command_desc(char *text, Uint16 inst)
 	else if ((fi & 0x7f00) == MUS_FX_FILTER_TYPE)
 	{
 		static const char *fn[FLT_TYPES] = {"LP", "HP", "BP"};
-		sprintf(text, "%s (%s)\n", name, fn[(fi & 0xf) % FLT_TYPES]);
+		sprintf(text, "%s (%s)\n", name, fn[(inst & 0xf) % FLT_TYPES]);
 	}
 	else if ((fi & 0x7f00) == MUS_FX_BUZZ_SHAPE)
 	{
-		sprintf(text, "%s (%c)\n", name, ((fi & 0xf) % 4) + 0xf0);
+		sprintf(text, "%s (%c)\n", name, ((inst & 0xf) % 4) + 0xf0);
 	}
 	else sprintf(text, "%s\n", name);
 }
