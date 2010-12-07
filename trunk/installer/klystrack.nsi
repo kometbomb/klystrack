@@ -107,7 +107,7 @@ SectionEnd
 ;;;;;;;;
 
 Section Uninstall
-  ${unregisterExtension} ".kt" "klystracker song"
+  ${unregisterExtension} ".kt" "klystrack song"
 
   Delete /REBOOTOK "$PROFILE\.klystrack"
   DeleteRegKey /ifempty HKCU "Software\klystrack"
