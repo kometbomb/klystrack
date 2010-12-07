@@ -401,6 +401,7 @@ int save_song(FILE *f)
 	
 	mused.song.num_patterns = NUM_PATTERNS;
 	mused.song.num_instruments = NUM_INSTRUMENTS;
+	mused.modified = false;
 	
 	return 1;
 }
@@ -430,6 +431,8 @@ int open_wavetable(FILE *f)
 int open_instrument(FILE *f)
 {
 	if (!mus_load_instrument_file2(f, &mused.song.instrument[mused.current_instrument], mused.mus.cyd->wavetable_entries)) return 0;
+	
+	mused.modified = true;
 	
 	return 1;
 }
@@ -500,6 +503,8 @@ void open_data(void *type, void *action, void *_ret)
 				
 				return_val = 0;
 			}
+			else if (a == OD_A_OPEN)
+				mused.modified = true;
 		}	
 		fclose(f);
 		

@@ -38,113 +38,11 @@ OTHER DEALINGS IN THE SOFTWARE.
 #include <stdbool.h>
 #include "edit.h"
 #include "mymsg.h"
+#include "command.h"
 
 extern Mused mused;
 
 extern int event_hit;
-
-typedef struct { Uint16 opcode; char* name; } InstructionDesc;
-
-static const InstructionDesc instruction_desc[] =
-{
-	{MUS_FX_ARPEGGIO, "Arpeggio"},
-	{MUS_FX_ARPEGGIO_ABS, "Absolute arpeggio"},
-	{MUS_FX_SET_EXT_ARP, "Set external arpeggio notes"},
-	{MUS_FX_PORTA_UP, "Portamento up"},
-	{MUS_FX_PORTA_DN, "Portamento down"},
-	{MUS_FX_VIBRATO, "Vibrato"},
-	{MUS_FX_SLIDE, "Slide"},
-	{MUS_FX_PORTA_UP_SEMI, "Portamento up (semitones)"},
-	{MUS_FX_PORTA_DN_SEMI, "Portamento down (semitones)"},
-	{MUS_FX_CUTOFF_UP, "Filter cutoff up"},
-	{MUS_FX_CUTOFF_DN, "Filter cutoff down"},
-	{MUS_FX_CUTOFF_SET, "Set filter cutoff"},
-	{MUS_FX_RESONANCE_SET, "Set filter resonance"},
-	{MUS_FX_FILTER_TYPE, "Set filter type"},
-	{MUS_FX_PW_DN, "PW down"},
-	{MUS_FX_PW_UP, "PW up"},
-	{MUS_FX_PW_SET, "Set PW"},
-	{MUS_FX_SET_VOLUME, "Set volume"},
-	{MUS_FX_FADE_GLOBAL_VOLUME, "Global volume fade"},
-	{MUS_FX_SET_GLOBAL_VOLUME, "Set global volume"},
-	{MUS_FX_SET_CHANNEL_VOLUME, "Set channel volume"},
-	{MUS_FX_SET_WAVEFORM, "Set waveform"},
-	{MUS_FX_SET_SPEED, "Set speed"},
-	{MUS_FX_SET_RATE, "Set rate"},
-	{MUS_FX_LOOP_PATTERN, "Loop pattern"},
-	{MUS_FX_END, "Program end"},
-	{MUS_FX_NOP, "No operation"},
-	{MUS_FX_JUMP, "Goto"},
-	{MUS_FX_LABEL, "Loop begin"},
-	{MUS_FX_LOOP, "Loop end"},
-	{MUS_FX_TRIGGER_RELEASE, "Trigger release"},
-	{MUS_FX_RESTART_PROGRAM, "Restart program"},
-	{MUS_FX_FADE_VOLUME, "Fade volume"},
-	{MUS_FX_EXT_FADE_VOLUME_UP, "Fine fade volume in"},
-	{MUS_FX_EXT_FADE_VOLUME_DN, "Fine fade volume out"},
-	{MUS_FX_EXT_PORTA_UP, "Fine portamento up"},
-	{MUS_FX_EXT_PORTA_DN, "Fine portamento down"},
-	{MUS_FX_EXT_NOTE_CUT, "Note cut"},
-	{MUS_FX_EXT_RETRIGGER, "Retrigger"},
-	{MUS_FX_WAVETABLE_OFFSET, "Wavetable offset"},
-	{MUS_FX_SET_PANNING, "Set panning"},
-	{MUS_FX_PAN_LEFT, "Pan left"},
-	{MUS_FX_PAN_RIGHT, "Pan right"},
-	{MUS_FX_BUZZ_UP, "Tune buzz up"},
-	{MUS_FX_BUZZ_DN, "Tune buzz down" },
-	{MUS_FX_BUZZ_SHAPE, "Set buzz shape" },
-	{MUS_FX_BUZZ_SET, "Set buzz finetune" },
-	{MUS_FX_CUTOFF_FINE_SET, "Set filter cutoff (fine)"},
-	{MUS_FX_BUZZ_SET_SEMI, "Set buzz semitone" },
-	{0, NULL}
-};
-
-
-static const InstructionDesc * get_instruction_desc(Uint16 command)
-{
-	for (int i = 0 ; instruction_desc[i].name != NULL ; ++i)
-	{
-		if (instruction_desc[i].opcode == (command) || instruction_desc[i].opcode == (command & 0xff00) || instruction_desc[i].opcode == (command & 0x7f00) || instruction_desc[i].opcode == (command & 0x7ff0) 
-			|| (((instruction_desc[i].opcode == MUS_FX_CUTOFF_FINE_SET) || (instruction_desc[i].opcode == MUS_FX_WAVETABLE_OFFSET)) && instruction_desc[i].opcode == (command & 0x7000)))
-		{
-			return &instruction_desc[i];
-		}
-	}
-	
-	return false;
-}
-
-
-static bool is_valid_command(Uint16 command)
-{
-	return get_instruction_desc(command) != NULL;
-}
-
-	
-void get_command_desc(char *text, Uint16 inst)
-{
-	const InstructionDesc *i = get_instruction_desc(inst);
-
-	if (i == NULL) 
-	{
-		strcpy(text, "Unknown\n");
-		return;
-	}
-
-	const char *name = i->name;
-	const Uint16 fi = i->opcode;
-	
-	if ((fi & 0x7f00) == MUS_FX_SET_WAVEFORM)
-	{
-		sprintf(text, "%s (%s%s%s%s)\n", name, (inst & CYD_CHN_ENABLE_NOISE) ? "N" : "", (inst & CYD_CHN_ENABLE_SAW) ? "S" : "", (inst & CYD_CHN_ENABLE_TRIANGLE) ? "T" : "", (inst & CYD_CHN_ENABLE_PULSE) ? "P" : "");
-	}
-	else if ((fi & 0x7f00) == MUS_FX_FILTER_TYPE)
-	{
-		static const char *fn[FLT_TYPES] = {"LP", "HP", "BP"};
-		sprintf(text, "%s (%s)\n", name, fn[(fi & 0xf) % FLT_TYPES]);
-	}
-	else sprintf(text, "%s\n", name);
-}
 
 	
 bool is_selected_param(int focus, int p)
@@ -389,6 +287,7 @@ void generic_flags(const SDL_Event *e, const SDL_Rect *_area, int focus, int p, 
 		switch (focus)
 		{
 			case EDITINSTRUMENT: snapshot(S_T_INSTRUMENT); break;
+			case EDITFX: snapshot(S_T_FX); break;
 		}
 		*_flags = flags;
 	}
@@ -1819,10 +1718,12 @@ void sequence_spectrum_view(SDL_Surface *dest_surface, const SDL_Rect *dest, con
 	if (mused.flags & SHOW_LOGO)
 	{
 		SDL_Rect d, s = {0,0,dest->w,dest->h};
+		SDL_SetClipRect(mused.screen, dest);
 		copy_rect(&d, dest);
 		d.x = d.w / 2 - mused.logo->surface->w / 2 + d.x;
 		SDL_BlitSurface(mused.logo->surface, &s, dest_surface, &d);
-		if (check_event(event, &d, NULL, NULL, NULL, NULL))
+		SDL_SetClipRect(mused.screen, NULL);
+		if (check_event(event, dest, NULL, NULL, NULL, NULL))
 			mused.flags &= ~SHOW_LOGO;
 	}
 	else if (mused.flags & SHOW_ANALYZER)

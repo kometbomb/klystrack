@@ -174,6 +174,7 @@ void new_song()
 		kt_default_instrument(inst);
 	}
 	
+	mused.modified = false;
 	mused.song.master_volume = MAX_VOLUME;
 	mused.song.num_channels = 4;
 	mused.song.num_instruments = NUM_INSTRUMENTS;
@@ -318,7 +319,8 @@ void init(MusInstrument *instrument, MusPattern *pattern, MusSeqPattern sequence
 	//change_mode(EDITCLASSIC);
 	mused.mode = EDITCLASSIC;
 	mused.focus = EDITPATTERN;
-	
+	mused.single_pattern_edit = 1;
+		
 	debug("undo = %p redo = %p", mused.undo, mused.redo);
 	
 	debug("init done");

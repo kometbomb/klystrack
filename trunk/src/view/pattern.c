@@ -199,9 +199,9 @@ void pattern_view_inner(SDL_Surface *dest_surface, const SDL_Rect *dest, const S
 			if (mused.song.pattern[current_pattern].step[i].volume <= MAX_VOLUME)
 				r = console_write_args(mused.console, "%X", mused.song.pattern[current_pattern].step[i].volume >> 4);
 			else if ((mused.song.pattern[current_pattern].step[i].volume & 0xf0) == MUS_NOTE_VOLUME_FADE_UP)
-				r = console_write(mused.console, "U");
+				r = console_write(mused.console, "\xfb");
 			else if ((mused.song.pattern[current_pattern].step[i].volume & 0xf0) == MUS_NOTE_VOLUME_FADE_DN)
-				r = console_write(mused.console, "D");
+				r = console_write(mused.console, "\xfc");
 			else
 				r = console_write(mused.console, emptychar);
 				
@@ -410,14 +410,33 @@ static void pattern_header(SDL_Surface *dest_surface, const SDL_Event *event, in
 		copy_rect(&vol, &button);
 	
 		vol.x -= vol.w + 3 + 17;
-		vol.w = 32;
+		vol.x -= vol.w + 3 + 17 + 4;
+		vol.w = 33;
 		vol.h -= 2;
 		vol.y += 1;
 		
 		int d;
 		
+		char tmp[4]="\xfa\xf9";
+		
+		if (mused.song.default_panning[channel])
+			snprintf(tmp, sizeof(tmp), "%c%X", mused.song.default_panning[channel] < 0 ? '\xf9' : '\xfa', mused.song.default_panning[channel] == 63 ? 8 : ((abs((int)mused.song.default_panning[channel]) >> 3) & 0xf));
+		
+		if ((d = generic_field(event, &vol, 97, channel, "", "%s", tmp, 2)))
+		{
+			snapshot_cascade(S_T_SONGINFO, 97, channel);
+			mused.song.default_panning[channel] = my_max(-64, my_min(63, (int)mused.song.default_panning[channel] + d * 8));
+			if (abs(mused.song.default_panning[channel]) < 8)
+				mused.song.default_panning[channel] = 0;
+		}
+			
+		vol.x += vol.w + 2;
+		
 		if ((d = generic_field(event, &vol, 98, channel, "", "%02X", MAKEPTR(mused.song.default_volume[channel]), 2)))
+		{
+			snapshot_cascade(S_T_SONGINFO, 98, channel);
 			mused.song.default_volume[channel] = my_max(0, my_min(MAX_VOLUME, (int)mused.song.default_volume[channel] + d));
+		}
 	}
 	
 	if (channel != -1)

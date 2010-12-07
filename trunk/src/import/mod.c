@@ -279,5 +279,15 @@ int import_mod(FILE *f)
 	
 	mused.sequenceview_steps = 64;
 	
+	if (channels == 4)
+	{
+		// Amiga panning
+		// not completely panned to left and right
+		mused.song.default_panning[0] = -48;
+		mused.song.default_panning[1] = 48;
+		mused.song.default_panning[2] = 48;
+		mused.song.default_panning[3] = -48;
+	}
+	
 	return 1;
 }

@@ -27,6 +27,7 @@ OTHER DEALINGS IN THE SOFTWARE.
 */
 
 #include "snd/music.h"
+#include <stdbool.h>
 
 typedef enum
 {
@@ -54,7 +55,7 @@ typedef union
 		Uint32 flags;
 		Uint8 num_channels;
 		char title[MUS_SONG_TITLE_LEN + 1];
-		Uint8 master_volume, default_volume[MUS_MAX_CHANNELS];
+		Uint8 master_volume, default_volume[MUS_MAX_CHANNELS], default_panning[MUS_MAX_CHANNELS];
 	} songinfo;
 	struct {
 		int idx;
@@ -75,6 +76,7 @@ typedef struct UndoFrame_t
 	UndoType type;
 	struct UndoFrame_t *prev;
 	UndoEvent event;
+	bool modified;
 } UndoFrame;
 
 typedef UndoFrame *UndoStack;
@@ -90,14 +92,14 @@ void undo_pop(UndoStack *stack);
 /* Pops the topmost frame from stack, use undo_destroy_frame() after processed */
 UndoFrame *undo(UndoStack *stack);
 
-void undo_store_mode(UndoStack *stack, int old_mode, int focus);
-void undo_store_instrument(UndoStack *stack, int idx, const MusInstrument *instrument);
-void undo_store_sequence(UndoStack *stack, int channel, const MusSeqPattern *sequence, int n_seq);
-void undo_store_songinfo(UndoStack *stack, const MusSong *song);
-void undo_store_fx(UndoStack *stack, int idx, const CydFxSerialized *fx, Uint8 multiplex_period);
-void undo_store_pattern(UndoStack *stack, int idx, const MusPattern *pattern);
-void undo_store_wave_data(UndoStack *stack, int idx, const CydWavetableEntry *entry);
-void undo_store_wave_param(UndoStack *stack, int idx, const CydWavetableEntry *entry);
+void undo_store_mode(UndoStack *stack, int old_mode, int focus, bool modified);
+void undo_store_instrument(UndoStack *stack, int idx, const MusInstrument *instrument, bool modified);
+void undo_store_sequence(UndoStack *stack, int channel, const MusSeqPattern *sequence, int n_seq, bool modified);
+void undo_store_songinfo(UndoStack *stack, const MusSong *song, bool modified);
+void undo_store_fx(UndoStack *stack, int idx, const CydFxSerialized *fx, Uint8 multiplex_period, bool modified);
+void undo_store_pattern(UndoStack *stack, int idx, const MusPattern *pattern, bool modified);
+void undo_store_wave_data(UndoStack *stack, int idx, const CydWavetableEntry *entry, bool modified);
+void undo_store_wave_param(UndoStack *stack, int idx, const CydWavetableEntry *entry, bool modified);
 
 #ifdef DEBUG
 void undo_show_stack(UndoStack *stack);
