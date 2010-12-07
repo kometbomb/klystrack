@@ -1717,14 +1717,21 @@ void sequence_spectrum_view(SDL_Surface *dest_surface, const SDL_Rect *dest, con
 {
 	if (mused.flags & SHOW_LOGO)
 	{
-		SDL_Rect d, s = {0,0,dest->w,dest->h};
-		SDL_SetClipRect(mused.screen, dest);
-		copy_rect(&d, dest);
-		d.x = d.w / 2 - mused.logo->surface->w / 2 + d.x;
-		SDL_BlitSurface(mused.logo->surface, &s, dest_surface, &d);
-		SDL_SetClipRect(mused.screen, NULL);
-		if (check_event(event, dest, NULL, NULL, NULL, NULL))
+		if (mused.logo != NULL)
+		{
+			SDL_Rect d, s = {0,0,dest->w,dest->h};
+			SDL_SetClipRect(mused.screen, dest);
+			copy_rect(&d, dest);
+			d.x = d.w / 2 - mused.logo->surface->w / 2 + d.x;
+			SDL_BlitSurface(mused.logo->surface, &s, dest_surface, &d);
+			SDL_SetClipRect(mused.screen, NULL);
+			if (check_event(event, dest, NULL, NULL, NULL, NULL))
+				mused.flags &= ~SHOW_LOGO;
+		}
+		else
+		{
 			mused.flags &= ~SHOW_LOGO;
+		}
 	}
 	else if (mused.flags & SHOW_ANALYZER)
 	{
