@@ -146,7 +146,9 @@ static void write_packed_pattern(FILE *f, const MusPattern *pattern)
 		If ctrl bit 7 is set, there's also a volume column incoming
 	*/
 
-	fwrite(&pattern->num_steps, 1, sizeof(pattern->num_steps), f);
+	Uint16 steps = pattern->num_steps;
+	FIX_ENDIAN(steps);
+	fwrite(&steps, 1, sizeof(steps), f);
 	
 	Uint8 buffer = 0;
 	for (int i = 0 ; i < pattern->num_steps ; ++i)
@@ -177,10 +179,10 @@ static void write_packed_pattern(FILE *f, const MusPattern *pattern)
 		if (pattern->step[i].instrument != MUS_NOTE_NO_INSTRUMENT)
 			fwrite(&pattern->step[i].instrument, 1, sizeof(pattern->step[i].instrument), f);
 			
-		if (pattern->step[i].ctrl != 0 || pattern->step[i].ctrl != MUS_NOTE_NO_VOLUME)
+		if (pattern->step[i].ctrl != 0 || pattern->step[i].volume != MUS_NOTE_NO_VOLUME)
 		{
 			Uint8 ctrl = pattern->step[i].ctrl;
-			if (pattern->step[i].ctrl != MUS_NOTE_NO_VOLUME) 
+			if (pattern->step[i].volume != MUS_NOTE_NO_VOLUME) 
 				ctrl |= MUS_PAK_BIT_VOLUME;
 			fwrite(&ctrl, 1, sizeof(pattern->step[i].ctrl), f);
 		}
@@ -192,7 +194,7 @@ static void write_packed_pattern(FILE *f, const MusPattern *pattern)
 			fwrite(&c, 1, sizeof(pattern->step[i].command), f);
 		}
 		
-		if (pattern->step[i].ctrl != MUS_NOTE_NO_VOLUME)
+		if (pattern->step[i].volume != MUS_NOTE_NO_VOLUME)
 			fwrite(&pattern->step[i].volume, 1, sizeof(pattern->step[i].volume), f);
 	}
 }
@@ -295,6 +297,7 @@ int save_song(FILE *f)
 	
 	fwrite(&mused.song.num_channels, 1, sizeof(mused.song.num_channels), f);
 	Uint16 temp16 = mused.song.time_signature;
+	FIX_ENDIAN(temp16);
 	fwrite(&temp16, 1, sizeof(mused.song.time_signature), f);
 	fwrite(&n_inst, 1, sizeof(mused.song.num_instruments), f);
 	temp16 = mused.song.num_patterns;
@@ -385,6 +388,8 @@ int save_song(FILE *f)
 	{
 		write_packed_pattern(f, &mused.song.pattern[i]);
 	}
+	
+	FIX_ENDIAN(max_wt);
 	
 	fwrite(&max_wt, 1, sizeof(Uint8), f);
 	
