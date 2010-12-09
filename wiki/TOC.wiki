@@ -15,6 +15,7 @@
     * [Effects]
     * [KeyboardShortcuts Keyboard shortcuts] 
     * [Clipboard]
+    * [Undo]
     * [Tweaks]
     * [ModuleImport Importing modules]
     * [FAQ FAQ]
