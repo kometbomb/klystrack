@@ -14,11 +14,12 @@
       * [SequenceEditor Sequence editor]
       * [Wavetable Wavetable]
       * [Effects]
-    * [Commands]
-    * [KeyboardShortcuts Keyboard shortcuts] 
+    * *Editing features*
+      * [KeyboardShortcuts Keyboard shortcuts] 
+      * [Clipboard]
+      * [Undo]
     * [ModuleImport Importing modules]
-    * [Clipboard]
-    * [Undo]
+    * [Commands]
     * [Tweaks]
     * [FAQ FAQ]
   * *Developers*
