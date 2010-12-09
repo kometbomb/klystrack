@@ -3,13 +3,14 @@
 
 =Features=
 
-*klystrack* is a tracker for making C64/NES/Amiga style music. It uses software synthesis from the _klystron_ engine.
+*klystrack* is a tracker for making C64/NES/Amiga style music. 
 
-  * Simple editor familiar to anyone who has ever used a tracker with features from more refined sequencers
-  * Chiptune synthesis, no samples used
-  * Instrument programs suitable for arpeggio or more complex patches
+  * Simple [PatternEditor song editor] familiar to anyone who has ever used a tracker with features from more refined sequencers
+  * Standard editing features such as [Clipboard clipboard] and [Undo undo]
+  * [InstrumentEditor Sound synthesis], no samples required
+  * [Wavetable] for combining sampled sound and sound synthesis
+  * [InstrumentEditor#Instrument_program Instrument programs] suitable for arpeggio or more complex patches
   * Envelope, ring modulation, filter and more for each channel
-  * Stereo output
-  * Reverb for SNES cheese
-  * Protracker module import (with samples)
-  * AHX module import (including instruments)
+  * Stereo output with wave export
+  * Reverb, distortion, chorus and other [Effects effects]
+  * [ModuleImport Song import] for Protracker (with samples) and AHX (including instruments)
