@@ -174,7 +174,6 @@ void new_song()
 		kt_default_instrument(inst);
 	}
 	
-	mused.modified = false;
 	mused.song.master_volume = MAX_VOLUME;
 	mused.song.num_channels = 4;
 	mused.song.num_instruments = NUM_INSTRUMENTS;
@@ -230,6 +229,8 @@ void new_song()
 	undo_init(&mused.undo);
 	undo_deinit(&mused.redo);
 	undo_init(&mused.redo);
+	
+	mused.modified = false;
 }
 
 
