@@ -67,7 +67,19 @@ static void write_wavetable_entry(FILE *f, const CydWavetableEntry *write_wave, 
 	_VER_WRITE(&base_note, 0);
 	
 	if (write_wave->samples > 0 && write_wave_data)
-		fwrite(write_wave->data, sizeof(write_wave->data[0]), write_wave->samples, f);
+	{
+		Sint16 *buffer = malloc(write_wave->samples * sizeof(buffer[0]));
+		
+		for (int i = 0 ; i < write_wave->samples ; ++i)
+		{
+			buffer[i] = write_wave->data[i];
+			FIX_ENDIAN(buffer[i]);
+		}
+		
+		fwrite(buffer, sizeof(buffer[0]), write_wave->samples, f);
+		
+		free(buffer);
+	}
 }
 
 	
