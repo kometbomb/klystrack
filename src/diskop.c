@@ -171,7 +171,7 @@ static void write_packed_pattern(FILE *f, const MusPattern *pattern)
 		if (pattern->step[i].instrument != MUS_NOTE_NO_INSTRUMENT)
 			buffer |= MUS_PAK_BIT_INST;
 			
-		if (pattern->step[i].ctrl != 0 || pattern->step[i].ctrl != MUS_NOTE_NO_VOLUME)
+		if (pattern->step[i].ctrl != 0 || pattern->step[i].volume != MUS_NOTE_NO_VOLUME)
 			buffer |= MUS_PAK_BIT_CTRL;
 			
 		if (pattern->step[i].command != 0)
