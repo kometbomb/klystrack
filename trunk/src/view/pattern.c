@@ -280,7 +280,7 @@ void pattern_view_inner(SDL_Surface *dest_surface, const SDL_Rect *dest, const S
 		console_write(mused.console,"\n");
 	}
 	
-	if (channel != -1 && (mused.flags & CENTER_PATTERN_EDITOR) && (mused.flags & FOLLOW_PLAY_POSITION)) 
+	if (channel != -1 && (mused.flags & CENTER_PATTERN_EDITOR) && (mused.flags & FOLLOW_PLAY_POSITION) && (mused.flags & SONG_PLAYING)) 
 	{
 		const int ah = (dest->h / mused.console->font.h);
 		const int w = mused.vu_meter->surface->w;
