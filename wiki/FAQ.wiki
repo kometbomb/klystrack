@@ -1,9 +1,9 @@
 #summary Frequently asked questions
 
-=Patterns are too short=
+= Why are patterns so short? =
 
 Use {{{Alt-Insert}}} and {{{Alt-Delete}}} to change pattern length.
 
-= Pattern editor doesn't show patterns for all channels =
+= Why aren't all patterns visible in pattern editor? =
 
 This is because it only shows patterns that start at the same position in the sequence. You can use equal length patterns to avoid this problem. Or, you can simply use the pattern editor as a single pattern editor like in Buzz (which it actually copies).
