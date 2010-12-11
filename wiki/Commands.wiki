@@ -47,6 +47,7 @@ _{{{xx}}}, {{{yy}}} = parameter to command_
 || {{{29xx}}} || set cutoff ||
 || {{{2axx}}} || set resonance ||
 || {{{2bxx}}} || set filter type ||
+|| {{{2cxx}}} || combined set filter cutoff and type (0x00..0x7F = lowpass, 0x80..0xFF = highpass, similar to AHX command 4xx) ||
 || {{{31xx}}} || slide buzz tuning up ||
 || {{{32xx}}} || slide buzz tuning down ||
 || {{{3f0x}}} || set buzz shape (0-3) ||
