@@ -19,3 +19,4 @@ klystrack attempts to load AHX modules as perfectly as the differences between A
   * klystrack PWM is oscillator-based while in AHX it works between upper and lower limits
   * There is no automatic filter modulation in klystrack
   * The same precautions apply to portamento etc. as in Protracker
+  * In AHX the pattern commands override the instrument commands while in klystrack it is the other way around (e.g. if an instrument sets the cutoff with a command, a pattern command will might not change the cutoff at all)
