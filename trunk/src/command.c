@@ -47,6 +47,7 @@ static const InstructionDesc instruction_desc[] =
 	{MUS_FX_CUTOFF_UP, 0x7f00, "Filter cutoff up", -1, -1},
 	{MUS_FX_CUTOFF_DN, 0x7f00, "Filter cutoff down", -1, -1},
 	{MUS_FX_CUTOFF_SET, 0x7f00, "Set filter cutoff", 0, 0xff},
+	{MUS_FX_CUTOFF_SET_COMBINED, 0x7f00, "Set combined cutoff", 0, 0xff},
 	{MUS_FX_RESONANCE_SET, 0x7f00, "Set filter resonance", 0, 3},
 	{MUS_FX_FILTER_TYPE, 0x7f00, "Set filter type", 0, 2},
 	{MUS_FX_PW_DN, 0x7f00, "PW down", -1, -1},

@@ -34,6 +34,19 @@ OTHER DEALINGS IN THE SOFTWARE.
 extern Mused mused;
 
 
+static Uint8 get_cutoff(int ahx)
+{
+	// Try to set klystrack cutoff so that it sounds like the ahx cutoff value
+	
+	ahx -= 32;
+	
+	if (ahx > 0)
+		return 0x80 + ahx * 0x60 / 32;
+	else
+		return 0x80 + ahx * 0x50 / 32;
+}
+
+
 static Uint16 find_command_ahx(Uint8 command, Uint8 data, Uint8 *ctrl)
 {
 	switch (command)
@@ -91,7 +104,7 @@ static Uint16 find_command_ahx(Uint8 command, Uint8 data, Uint8 *ctrl)
 		
 		case 0x4:
 		{
-			return MUS_FX_CUTOFF_SET | ((int)(data & 63) * 255 / 63);
+			return MUS_FX_CUTOFF_SET_COMBINED | (get_cutoff(data & 63));
 		}
 		break;
 		
@@ -152,7 +165,7 @@ static void ahx_program(Uint8 fx1, Uint8 data1, int *pidx, MusInstrument *i, con
 	switch (fx1)
 	{
 		case 0: 	
-			i->program[*pidx] = MUS_FX_CUTOFF_SET | ((data1 & 0x3f) * 4);
+			i->program[*pidx] = MUS_FX_CUTOFF_SET_COMBINED | (get_cutoff(data1 & 0x3f));
 			break;
 			
 		case 1: 	
