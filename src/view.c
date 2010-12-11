@@ -1756,10 +1756,11 @@ void toolbar_view(SDL_Surface *dest_surface, const SDL_Rect *dest, const SDL_Eve
 	button.x += button.w;
 	button.w = button.h + 2;
 	
-	button_event(dest_surface, event, &button, mused.slider_bevel->surface, 
+	if (button_event(dest_surface, event, &button, mused.slider_bevel->surface, 
 		!(mused.flags & SHOW_ANALYZER) ? BEV_BUTTON : BEV_BUTTON_ACTIVE, 
 		!(mused.flags & SHOW_ANALYZER) ? BEV_BUTTON : BEV_BUTTON_ACTIVE, 
-		DECAL_TOOLBAR_VISUALIZATIONS, flip_bit_action, &mused.flags, MAKEPTR(SHOW_ANALYZER), 0);
+		DECAL_TOOLBAR_VISUALIZATIONS, flip_bit_action, &mused.flags, MAKEPTR(SHOW_ANALYZER), 0))
+			mused.cursor.w = mused.cursor_target.w = 0;
 		
 	button.x += button.w;
 	
