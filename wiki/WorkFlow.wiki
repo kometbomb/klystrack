@@ -3,7 +3,7 @@
 This simple tutorial is meant to give an idea what needs to be done in order to create the sounds, the patterns and the sequence.
 
   # Create or load some nice sounds in the [InstrumentEditor instrument editor].
-  # Go to the [PatternEditor pattern editor] and create a simple melody in pattern 0, bassline or whatever you want to begin with. Resize the pattern if you need to.
-  # Go to the [SequenceEditor sequence editor], set the song length to the pattern length (default is 16 steps, 10 in hex) and press the {{{0}}} key when the cursor is on row 0000 (any channel will do).
+  # Go to the [PatternEditor pattern editor] and create a simple melody in pattern 0, bassline or whatever you want to begin with. Resize the pattern if you need to. Use {{{Alt-Insert}}} to add rows to the pattern (around 32 to 64 is good).
+  # Go to the [SequenceEditor sequence editor], set the song length so the pattern is fully inside the "song loop area" and press the {{{0}}} key when the cursor is on row 0000 (any channel will do). 
   # Press {{{F5}}} to play the song.
   # Repeat the above until you get a record deal.
