@@ -41,9 +41,9 @@ static Uint8 get_cutoff(int ahx)
 	ahx -= 32;
 	
 	if (ahx > 0)
-		return 0x80 + ahx * 0x60 / 32;
-	else
 		return 0x80 + ahx * 0x50 / 32;
+	else
+		return 0x80 + ahx * 0x78 / 32;
 }
 
 
