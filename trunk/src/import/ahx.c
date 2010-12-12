@@ -420,12 +420,12 @@ int import_ahx(FILE *f)
 		
 		for (int s = 0 ; s < PLEN ; ++s)
 		{
-			Uint32 step = SDL_SwapBE32(steps[s]);
-			
 			pos[s] = pidx; // map multiple klystrack program steps to the ahx program step
 			
 			if (pidx < MUS_PROG_LEN - 1)
-			{
+			{			
+				Uint32 step = SDL_Swap32(SDL_SwapLE32(steps[s]));
+
 				Uint8 fx2 = (step & 0xe0000000) >> 29 ;
 				Uint8 fx1 = (step & 0x1c000000) >> 26;
 				Uint8 wave = (step & 0x3800000) >> 23;
