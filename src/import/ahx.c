@@ -297,7 +297,7 @@ int import_ahx(FILE *f)
 		
 		for (int s = 0 ; s < TRL ; ++s)
 		{
-			Uint32 step = SDL_SwapLE32(((Uint32)steps[s * 3] << 16) | ((Uint32)steps[s * 3 + 1] << 8) | ((Uint32)steps[s * 3 + 2]));
+			Uint32 step = (((Uint32)steps[s * 3] << 16) | ((Uint32)steps[s * 3 + 1] << 8) | ((Uint32)steps[s * 3 + 2]));
 			
 			Uint8 note = (step >> 18) & 0x3f;
 			Uint8 instrument = (step >> 12) & 0x3f;
@@ -424,7 +424,7 @@ int import_ahx(FILE *f)
 			
 			if (pidx < MUS_PROG_LEN - 1)
 			{			
-				Uint32 step = SDL_Swap32(SDL_SwapLE32(steps[s]));
+				Uint32 step = SDL_SwapBE32(steps[s]);
 
 				Uint8 fx2 = (step & 0xe0000000) >> 29 ;
 				Uint8 fx1 = (step & 0x1c000000) >> 26;
