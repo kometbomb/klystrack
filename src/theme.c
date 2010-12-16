@@ -113,6 +113,7 @@ static void load_colors(const char *cfg)
 					colors[i] = color;
 					FIX_ENDIAN(colors[i]);
 #if SDL_BYTEORDER == SDL_BIG_ENDIAN
+// fix so that the color is in the 24 bits of RGB8
 					colors[i] >>= 8;
 #endif					
 					break;
