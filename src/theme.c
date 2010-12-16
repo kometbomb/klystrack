@@ -112,7 +112,9 @@ static void load_colors(const char *cfg)
 				{
 					colors[i] = color;
 					FIX_ENDIAN(colors[i]);
-					
+#if SDL_BYTEORDER == SDL_BIG_ENDIAN
+					colors[i] >>= 8;
+#endif					
 					break;
 				}
 			}
