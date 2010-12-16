@@ -190,10 +190,11 @@ void load_theme(const char *name)
 	Bundle res;
 	char fullpath[1000];
 	
-#ifdef WIN32
+#ifdef RESOURCES_IN_BINARY_DIR
 	// RES_PATH is relative to klystrack.exe
+#ifdef WIN32
 	char path[1000] = "";
-	
+
 	if (GetModuleFileName(NULL, path, sizeof(path)))
 	{
 		// Get the path component
@@ -205,6 +206,10 @@ void load_theme(const char *name)
 	}
 	
 	snprintf(fullpath, sizeof(fullpath) - 1, "%s" TOSTRING(RES_PATH) "/res/%s", path, tmpname);
+#else
+	snprintf(fullpath, sizeof(fullpath) - 1, "/proc/self/res/%s", tmpname);
+#endif
+	
 #else
 	snprintf(fullpath, sizeof(fullpath) - 1, TOSTRING(RES_PATH) "/res/%s", tmpname);
 #endif
