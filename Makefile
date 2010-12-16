@@ -39,6 +39,7 @@ endif
 
 ifdef COMSPEC
 	RES_PATH := .
+	CFLAGS += -DRESOURCES_IN_BINARY_DIR
 	CONFIG_PATH := ~/.klystrack
 else
 	RES_PATH := $(DESTDIR)/lib/klystrack
