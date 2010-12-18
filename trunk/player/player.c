@@ -65,7 +65,7 @@ int main(int argc, char **argv)
 	
 	mus_set_song(&mus, &song, 0);
 	
-	printf("Playing %s...\n\nPress any key to exit.\n", song.title);
+	printf("Playing %s...\n\nPress Ctrl-C to exit.\n\n", song.title);
 	
 	int done = 0;
 	
@@ -84,10 +84,16 @@ int main(int argc, char **argv)
 			}
 		}
 		
-		SDL_Delay(10);
+		int song_position;
+		
+		mus_poll_status(&mus, &song_position, NULL, NULL, NULL, NULL, NULL);
+		
+		printf("Position: %4d/%d\r", song_position, song.song_length);
+		
+		SDL_Delay(5);
 	}
 	
-	printf("Quit.\n");
+	printf("\nQuit.\n");
 	
 	cyd_unregister(&cyd); 
 	
