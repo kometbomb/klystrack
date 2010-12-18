@@ -225,7 +225,7 @@ void deinit_icon()
 
 
 // mingw kludge for console output
-#ifdef DEBUG
+#if defined(DEBUG) && defined(WIN32)
 #undef main
 #endif
 
