@@ -520,7 +520,7 @@ void open_data(void *type, void *action, void *_ret)
 				
 				return_val = 0;
 			}
-			else if (a == OD_A_OPEN)
+			else if (a == OD_A_OPEN && t != OD_T_SONG)
 				mused.modified = true;
 		}	
 		fclose(f);
