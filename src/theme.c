@@ -37,6 +37,10 @@ OTHER DEALINGS IN THE SOFTWARE.
 #include "action.h"
 #include "console.h"
 
+#ifdef __APPLE__
+#include <CoreFoundation/CoreFoundation.h>
+#endif
+
 #ifdef WIN32
 
 #include "windows.h"
@@ -179,6 +183,59 @@ static SDL_RWops *load_img_if_exists(Bundle *res, const char *base_name)
 }
 
 
+#ifdef __APPLE__
+// Obtain resources directory - thanks Spenot
+char *query_resource_directory( void )
+{
+	static char *buffer = NULL;
+	
+	if (buffer != NULL)
+	{
+		return buffer;
+	}
+	
+	CFBundleRef mainBundle = CFBundleGetMainBundle();
+	
+	int bufferSize;
+	
+
+	CFURLRef resourceURL = CFBundleCopyBundleURL(mainBundle);
+	CFStringRef fullPathString = CFURLCopyFileSystemPath(resourceURL, kCFURLPOSIXPathStyle);
+	int fullPathLength = CFStringGetLength(fullPathString);
+
+	bufferSize = fullPathLength * 3 + 1;
+	char *bundleBuffer = (char *)calloc(bufferSize, 1);
+	CFStringGetCString(fullPathString, bundleBuffer, bufferSize, kCFStringEncodingUTF8);
+
+	CFRelease(fullPathString);
+	CFRelease(resourceURL);
+
+
+	resourceURL = CFBundleCopyResourcesDirectoryURL(mainBundle);
+	fullPathString = CFURLCopyFileSystemPath(resourceURL, kCFURLPOSIXPathStyle);
+	fullPathLength = CFStringGetLength(fullPathString);
+
+	bufferSize = fullPathLength * 3 + 1;
+	char *resourcesBuffer = (char *)calloc(bufferSize, 1);
+	CFStringGetCString(fullPathString, resourcesBuffer, bufferSize, kCFStringEncodingUTF8);
+
+	CFRelease(fullPathString);
+	CFRelease(resourceURL);
+
+
+	buffer = calloc(strlen(bundleBuffer) + strlen(resourcesBuffer) + 2, 1);
+	strcpy(buffer, bundleBuffer);
+	buffer[strlen(buffer)] = '/';
+	strcat(buffer, resourcesBuffer);
+	
+	free(bundleBuffer);
+	free(resourcesBuffer);
+
+	return buffer;
+}
+#endif
+
+
 void load_theme(const char *name)
 {
 	char tmpname[1000];
@@ -210,6 +267,8 @@ void load_theme(const char *name)
 	snprintf(fullpath, sizeof(fullpath) - 1, "/proc/self/res/%s", tmpname);
 #endif
 	
+#elif __APPLE__
+	snprintf(fullpath, sizeof(fullpath) - 1, "%s/res/%s", query_resource_directory(), tmpname);
 #else
 	snprintf(fullpath, sizeof(fullpath) - 1, TOSTRING(RES_PATH) "/res/%s", tmpname);
 #endif
@@ -340,6 +399,11 @@ void enum_themes()
 	snprintf(fullpath, sizeof(fullpath) - 1, "%s" TOSTRING(RES_PATH) "/res", path);
 	DIR *dir = opendir(fullpath);
 	debug("Enumerating themes at " "%s" TOSTRING(RES_PATH) "/res", path);
+#elif __APPLE__
+	char path[1000];
+	snprintf(path, sizeof(path) - 1, "%s/themes", query_resource_directory());
+	DIR *dir = opendir(path);
+	debug("Enumarating themes at %s", path);
 #else
 	DIR *dir = opendir(TOSTRING(RES_PATH) "/res");
 	debug("Enumerating themes at " TOSTRING(RES_PATH) "/res");
@@ -360,6 +424,8 @@ void enum_themes()
 	
 #ifdef WIN32
 		snprintf(fullpath, sizeof(fullpath) - 1, "%s" TOSTRING(RES_PATH) "/res/%s", path, de->d_name);
+#elif __APPLE__
+		snprintf(fullpath, sizeof(fullpath) - 1, "%s/%s", query_resource_directory(), de->d_name);
 #else
 		snprintf(fullpath, sizeof(fullpath) - 1, TOSTRING(RES_PATH) "/res/%s", de->d_name);
 #endif
