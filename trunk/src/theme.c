@@ -401,7 +401,7 @@ void enum_themes()
 	debug("Enumerating themes at " "%s" TOSTRING(RES_PATH) "/res", path);
 #elif __APPLE__
 	char path[1000];
-	snprintf(path, sizeof(path) - 1, "%s/themes", query_resource_directory());
+	snprintf(path, sizeof(path) - 1, "%s/res", query_resource_directory());
 	DIR *dir = opendir(path);
 	debug("Enumarating themes at %s", path);
 #else
@@ -425,7 +425,7 @@ void enum_themes()
 #ifdef WIN32
 		snprintf(fullpath, sizeof(fullpath) - 1, "%s" TOSTRING(RES_PATH) "/res/%s", path, de->d_name);
 #elif __APPLE__
-		snprintf(fullpath, sizeof(fullpath) - 1, "%s/%s", query_resource_directory(), de->d_name);
+		snprintf(fullpath, sizeof(fullpath) - 1, "%s/res/%s", query_resource_directory(), de->d_name);
 #else
 		snprintf(fullpath, sizeof(fullpath) - 1, TOSTRING(RES_PATH) "/res/%s", de->d_name);
 #endif
