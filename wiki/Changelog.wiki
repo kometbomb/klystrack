@@ -3,6 +3,12 @@
 
 _*Note:* Only significant changes and new features are listed here._ 
 
+=1.5.1=
+
+  * OSX and AmigaOS ports
+  * Raw sample file loading (ST-00 sampledisks)
+  * Default channel panning parameter
+
 =1.5.0=
 
   * Wavetable for low-quality sample action (and for better Protracker module import)
