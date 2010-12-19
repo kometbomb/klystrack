@@ -1,5 +1,13 @@
 #summary Frequently asked questions
 
+= Is klystrack an AHX clone/replacement? =
+
+No. Nor it is possible to import or export AHX modules perfectly since the two programs are very different even if they look similar. The only thing 100 % compatible between the two is the spirit.
+
+= Is klystrack a Protracker clone/replacement? =
+
+No. See above.
+
 = Why are patterns so short? =
 
 Use {{{Alt-Insert}}} and {{{Alt-Delete}}} to change pattern length.
