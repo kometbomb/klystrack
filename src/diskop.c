@@ -445,6 +445,37 @@ int open_wavetable(FILE *f)
 }
 
 
+int open_wavetable_raw(FILE *f)
+{
+	size_t pos = ftell(f);
+	fseek(f, 0, SEEK_END);
+	size_t s = ftell(f) - pos;
+	fseek(f, pos, SEEK_SET);
+	
+	if (s > 0)
+	{
+		Sint8 *w = calloc(s, sizeof(Sint8));
+					
+		if (w)
+		{
+			fread(w, 1, s, f);
+		
+			cyd_wave_entry_init(&mused.mus.cyd->wavetable_entries[mused.selected_wavetable], w, s, CYD_WAVE_TYPE_SINT8, 1, 1, 1);
+			
+			mused.mus.cyd->wavetable_entries[mused.selected_wavetable].flags = 0;
+			mused.mus.cyd->wavetable_entries[mused.selected_wavetable].sample_rate = 8000;
+			mused.mus.cyd->wavetable_entries[mused.selected_wavetable].base_note = MIDDLE_C << 8;
+			
+			free(w);
+			
+			return 1;
+		}
+	}
+	
+	return 0;
+}
+
+
 int open_instrument(FILE *f)
 {
 	if (!mus_load_instrument_file2(f, &mused.song.instrument[mused.current_instrument], mused.mus.cyd->wavetable_entries)) return 0;
@@ -491,7 +522,8 @@ void open_data(void *type, void *action, void *_ret)
 	} open_stuff[] = {
 		{ "song", "kt", { open_song, save_song } },
 		{ "instrument", "ki", { open_instrument, save_instrument } },
-		{ "wave", "wav", {open_wavetable, NULL } }
+		{ "wave", "wav", {open_wavetable, NULL } },
+		{ "raw sample", "", {open_wavetable_raw, NULL} }
 	};
 	
 	const char *mode[] = { "rb", "wb" };
