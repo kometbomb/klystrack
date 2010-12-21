@@ -21,4 +21,4 @@ In the above example, pattern 00 starts at location 0010 (hex, 16 dec) and is 32
 
 The {{{+03}}} after the pattern number 01 means the pattern starts 3 steps after the row shown on the left side of the sequence. That is, 01 starts at location 3 (0000+3). In normal use this is not very common as the patterns usually are located at 0010, 0020 and so on (or whatever you have set as the row length). If the compact option is enabled, the location offset is not shown.
 
-The last offset {{{+02}}} means the pattern is to be played transposed two semitones up. The transposing can be overridden by instrument pitch lock or the absolute arpeggio command.
+The last offset {{{+02}}} means the pattern is to be played transposed two semitones up. The transposing can be overridden by instrument pitch lock or the absolute arpeggio command. This offset is also hidden if the compact mode is enabled.
