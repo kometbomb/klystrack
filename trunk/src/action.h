@@ -69,5 +69,6 @@ void do_undo(void *stack, void*b, void*c);
 void kill_wavetable_entry(void *a, void*b, void*c);
 void open_menu_action(void*,void*,void*);
 void flip_bit_action(void *bits, void *mask, void *);
+void set_note_jump(void *steps, void *, void *);
 
 #endif

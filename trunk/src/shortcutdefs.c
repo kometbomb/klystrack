@@ -82,6 +82,16 @@ const KeyShortcut shortcuts[] =
 	{ KMOD_CTRL, SDLK_m, unmute_all_action, 0, 0, 0 },
 	{ KMOD_CTRL, SDLK_z, do_undo, 0, 0, 0 },
 	{ KMOD_CTRL, SDLK_y, do_undo, MAKEPTR(1), 0, 0 },
+	{ KMOD_CTRL, SDLK_0, set_note_jump, MAKEPTR(0), 0, 0 },
+	{ KMOD_CTRL, SDLK_1, set_note_jump, MAKEPTR(1), 0, 0 },
+	{ KMOD_CTRL, SDLK_2, set_note_jump, MAKEPTR(2), 0, 0 },
+	{ KMOD_CTRL, SDLK_3, set_note_jump, MAKEPTR(3), 0, 0 },
+	{ KMOD_CTRL, SDLK_4, set_note_jump, MAKEPTR(4), 0, 0 },
+	{ KMOD_CTRL, SDLK_5, set_note_jump, MAKEPTR(5), 0, 0 },
+	{ KMOD_CTRL, SDLK_6, set_note_jump, MAKEPTR(6), 0, 0 },
+	{ KMOD_CTRL, SDLK_7, set_note_jump, MAKEPTR(7), 0, 0 },
+	{ KMOD_CTRL, SDLK_8, set_note_jump, MAKEPTR(8), 0, 0 },
+	{ KMOD_CTRL, SDLK_9, set_note_jump, MAKEPTR(9), 0, 0 },
 	/* Null terminated */
 	{ 0, 0, NULL, 0, 0, 0 }
 };
