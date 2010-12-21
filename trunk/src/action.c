@@ -145,10 +145,31 @@ void play(void *from_cursor, void *unused1, void *unused2)
 }
 
 
+void play_position(void *unused1, void *unused2, void *unused3)
+{
+	if (!(mused.flags & LOOP_POSITION))
+	{
+		mused.flags |= LOOP_POSITION;
+		mused.loop_store_length = mused.song.song_length;
+		mused.loop_store_loop = mused.song.loop_point;
+		
+		mused.song.song_length = mused.current_sequencepos + mused.song.pattern[mused.current_pattern].num_steps;
+		mused.song.loop_point = mused.current_sequencepos;
+		
+		play(MAKEPTR(1), 0, 0);
+	}
+}
+
+
 void stop(void *unused1, void *unused2, void *unused3)
 {
 	mus_set_song(&mused.mus, NULL, 0);
-	mused.flags &= ~SONG_PLAYING;
+	if (mused.flags & LOOP_POSITION)
+	{
+		mused.song.song_length = mused.loop_store_length;
+		mused.song.loop_point = mused.loop_store_loop;
+	}
+	mused.flags &= ~(SONG_PLAYING | LOOP_POSITION);
 }
 
 

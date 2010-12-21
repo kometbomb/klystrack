@@ -47,6 +47,7 @@ const KeyShortcut shortcuts[] =
 	{ KMOD_SHIFT, SDLK_F2, change_mode_action, (void*)EDITWAVETABLE, 0, 0},
 	{ 0, SDLK_F5, play, 0, 0, 0 },
 	{ 0, SDLK_F6, play, (void*)1, 0, 0 },
+	{ KMOD_SHIFT, SDLK_F6, play_position, 0, 0, 0 },
 	{ 0, SDLK_F8, stop, 0, 0, 0 },
 	{ 0, SDLK_F9, change_octave, (void*)-1, 0, 0 },
 	{ KMOD_SHIFT, SDLK_F9, change_song_rate, (void*)-1, 0, 0 },
