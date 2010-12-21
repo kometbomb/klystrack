@@ -665,3 +665,8 @@ void flip_bit_action(void *a, void *b, void *c)
 	*(Uint32*)a ^= CASTPTR(Uint32,b);
 }
 
+
+void set_note_jump(void *steps, void *unused1, void *unused2)
+{
+	mused.note_jump = CASTPTR(int, steps);
+}

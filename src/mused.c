@@ -268,6 +268,7 @@ void init(MusInstrument *instrument, MusPattern *pattern, MusSeqPattern sequence
 	mused.screen = screen;
 	mused.done = 0;
 	mused.octave = 4;
+	mused.note_jump = 1;
 	mused.current_instrument = 0;
 	mused.selected_param = 0;
 	mused.editpos = 0;
