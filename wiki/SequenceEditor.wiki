@@ -9,13 +9,16 @@ The patterns are entered using the keyboard, pressing {{{0}}}-{{{9}}} and {{{A}}
 {{{
      pattern
      |  position offset
-     |  |
-0000 01+03 --
-0010 --    00
-0020 --    ::
-0030 --    --
+     |  |  transpose offset
+     |  |  |
+0000 01+03+02 --
+0010 --       00
+0020 --       ::
+0030 --       --
 }}}
 
 In the above example, pattern 00 starts at location 0010 (hex, 16 dec) and is 32 steps long, thus the {{{::}}} that indicates the visual length of the pattern. The 01 pattern is 16 or less steps in length, thus only the pattern number is visible.
 
 The {{{+03}}} after the pattern number 01 means the pattern starts 3 steps after the row shown on the left side of the sequence. That is, 01 starts at location 3 (0000+3). In normal use this is not very common as the patterns usually are located at 0010, 0020 and so on (or whatever you have set as the row length). If the compact option is enabled, the location offset is not shown.
+
+The last offset {{{+02}}} means the pattern is to be played transposed two semitones up. The transposing can be overridden by instrument pitch lock or the absolute arpeggio command.
