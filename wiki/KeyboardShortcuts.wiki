@@ -16,6 +16,7 @@
 || F5 || play || 
 || F8 || stop || 
 || F9/F10 || octave down/up || 
+|| Ctrl+0..9 || Set edit jump (number of rows pattern editor advances when data is entered) || 
 || CTRL+n || new song || 
 || CTRL+s/o || save/open song || 
 || CTRL+c/v / CTRL+ins/SHIFT+ins || copy/paste || 
@@ -23,7 +24,7 @@
 || CTRL+d || select nothing ||
 || CTRL+b || begin selection at cursor ||
 || CTRL+e || end selection at cursor ||
-|| SHIFT+cursor || select || 
+|| SHIFT+Up/Down|| select block || 
 || CTRL+m || Unmute all channels ||
 || keypad plus/minus || select instrument || 
 || CTRL+keypad plus/minus || change song speed  || 
