@@ -408,7 +408,10 @@ void sequence_view(SDL_Surface *dest_surface, const SDL_Rect *dest, const SDL_Ev
 		console_set_clip(mused.console, &pos);
 		console_reset_cursor(mused.console);
 		
-		console_write_args(mused.console, "%04X", i);
+		if (SHOW_DECIMALS & mused.flags)
+			console_write_args(mused.console, "%04d", i);
+		else
+			console_write_args(mused.console, "%04X", i);
 		
 		pos.x += POS_WIDTH;
 		pos.w = CHANNEL_WIDTH;
