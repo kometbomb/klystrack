@@ -1003,7 +1003,12 @@ void pattern_event(SDL_Event *e)
 					}
 					else
 					{
+						int x = mused.current_patternx;
+						
 						switch_track(+1);
+						
+						if (e->key.keysym.mod & KMOD_SHIFT)
+							mused.current_patternx = x;
 					}
 				}
 				else
@@ -1051,7 +1056,12 @@ void pattern_event(SDL_Event *e)
 					}
 					else
 					{
+						int x = mused.current_patternx;
+					
 						switch_track(-1);
+						
+						if (e->key.keysym.mod & KMOD_SHIFT)
+							mused.current_patternx = x;
 					}
 				}
 				else
