@@ -46,6 +46,10 @@ If the compact mode is enabled, some of the parameters will not be shown and the
 
 As with most trackers, {{{Space bar}}} toggles edit mode on and off. This means that if edit mode is not enabled, you can't accidentally edit pattern data while jamming. 
 
+==Compact mode==
+
+You can hide columns you do not need by enabling the compact mode. Set the visible channels in {{{Show > Visible columns}}}. This is useful if you want to fit more channels on the screen.
+
 = Multi-pattern editing =
 
 If you use {{{Return}}} to switch from the sequence to the pattern editor and more than one pattern would be played at that position, the pattern editor will show each pattern side by side. Is makes it easier to see what is happening at the same time on other channels.
