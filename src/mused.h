@@ -79,7 +79,8 @@ enum
 	MIDI_SYNC = 4096,
 #endif
 	SHOW_LOGO = 8192,
-	SHOW_DECIMALS = 16384
+	SHOW_DECIMALS = 16384,
+	LOOP_POSITION = 32768
 };
 
 enum
@@ -104,7 +105,8 @@ typedef struct
 		prev_mode, current_sequenceparam, instrument_list_position,
 		pattern_position, sequence_position, pattern_horiz_position, sequence_horiz_position,
 		program_position, current_program_step,
-		edit_reverb_param, selected_wavetable, wavetable_param, songinfo_param;
+		edit_reverb_param, selected_wavetable, wavetable_param, songinfo_param,
+		loop_store_length, loop_store_loop;
 	Uint16 *ghost_pattern[MUS_MAX_CHANNELS];
 	int current_sequencetrack;
 	Uint16 time_signature;
