@@ -347,7 +347,10 @@ static void pattern_view_stepcounter(SDL_Surface *dest_surface, const SDL_Rect *
 			console_set_color(mused.console, timesig(row, colors[COLOR_PATTERN_BAR], colors[COLOR_PATTERN_BEAT], colors[COLOR_PATTERN_NORMAL]), CON_CHARACTER);
 		}
 		
-		console_write_args(mused.console, "%03X\n", row & 0xfff);
+		if (SHOW_DECIMALS & mused.flags)
+			console_write_args(mused.console, "%03d\n", (row + 1000) % 1000); // so we don't get negative numbers
+		else
+			console_write_args(mused.console, "%03X\n", row & 0xfff);
 	}
 	
 	bevel(mused.screen,dest, mused.slider_bevel->surface, BEV_THIN_FRAME);
