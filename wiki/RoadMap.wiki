@@ -3,4 +3,5 @@
 
 = 1.6 =
 
-  * Sample compression
+  * Wavetable compression
+  * Wavetable editing features
