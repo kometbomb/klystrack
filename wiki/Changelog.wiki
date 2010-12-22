@@ -7,6 +7,8 @@ See [RoadMap the road map] for future plans.
 
 =1.5.1=
 
+Pretty much the 1.5.0 that should have been if there had been more time
+
   * OSX and AmigaOS ports
   * Raw sample file loading (ST-00 sampledisks)
   * Default channel panning parameter
