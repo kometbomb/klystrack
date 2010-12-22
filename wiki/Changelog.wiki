@@ -8,6 +8,7 @@ _*Note:* Only significant changes and new features are listed here._
   * OSX and AmigaOS ports
   * Raw sample file loading (ST-00 sampledisks)
   * Default channel panning parameter
+  * "Position looping" (don't advance sequence past currently edited pattern)
 
 =1.5.0=
 
