@@ -3,6 +3,8 @@
 
 _*Note:* Only significant changes and new features are listed here._ 
 
+See [RoadMap the road map] for future plans.
+
 =1.5.1=
 
   * OSX and AmigaOS ports
