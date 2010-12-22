@@ -15,7 +15,7 @@ When uploading a new stable release, please name the file as "klystrack-1.5.1.dm
 
 Please add a short description such as "AmigaOS4 port" etc. and use the same description across versions. If there are e.g. archive and installer files for the same release, please use a different description for each.
 
-Add suitable tags, namely the {{{OpSys}}} tags and the {{{Type}} tags, e.g. {{{OpSys-OSX Type-Archive}}}.
+Add suitable tags, namely the {{{OpSys}}} tags and the {{{Type}}} tags, e.g. {{{OpSys-OSX Type-Archive}}}.
 
 When adding a new latest stable build, please add the {{{Featured}}} tag and _remove the {{{Featured}}} tag from the older files!_ This makes the latest files visible on the main page so people can find them more easily.
 
