@@ -11,6 +11,7 @@ See [RoadMap the road map] for future plans.
   * Raw sample file loading (ST-00 sampledisks)
   * Default channel panning parameter
   * "Position looping" (don't advance sequence past currently edited pattern)
+  * Adjustable edit position jump ("note jump" in Hivelytracker)
 
 =1.5.0=
 
