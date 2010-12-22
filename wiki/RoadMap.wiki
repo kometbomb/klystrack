@@ -1,0 +1,6 @@
+#summary Planned features
+#labels Phase-Design
+
+= 1.6 =
+
+  * Sample compression
