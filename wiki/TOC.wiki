@@ -6,6 +6,7 @@
     * [Features Features]
     * [Changelog Changelog]
     * [BugReports How to report a bug]
+    * [Thanks]
   * *How to use klystrack*
     * [WorkFlow Example workflow]
     * *Editors*
