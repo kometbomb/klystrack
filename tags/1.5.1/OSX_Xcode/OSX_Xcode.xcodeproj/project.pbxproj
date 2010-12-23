@@ -1,0 +1,801 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		002F39FA09D0881F00EBEB88 /* SDL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 002F39F909D0881F00EBEB88 /* SDL.framework */; };
+		002F3A0009D0884600EBEB88 /* SDL.framework in Copy Frameworks into .app bundle */ = {isa = PBXBuildFile; fileRef = 002F39F909D0881F00EBEB88 /* SDL.framework */; };
+		002F3A2E09D0888800EBEB88 /* SDLMain.m in Sources */ = {isa = PBXBuildFile; fileRef = 002F3A2C09D0888800EBEB88 /* SDLMain.m */; };
+		83C75A3212BB71060067F040 /* action.c in Sources */ = {isa = PBXBuildFile; fileRef = 83C759F812BB71060067F040 /* action.c */; };
+		83C75A3312BB71060067F040 /* clipboard.c in Sources */ = {isa = PBXBuildFile; fileRef = 83C759FA12BB71060067F040 /* clipboard.c */; };
+		83C75A3412BB71060067F040 /* command.c in Sources */ = {isa = PBXBuildFile; fileRef = 83C759FC12BB71060067F040 /* command.c */; };
+		83C75A3512BB71060067F040 /* config.c in Sources */ = {isa = PBXBuildFile; fileRef = 83C759FE12BB71060067F040 /* config.c */; };
+		83C75A3612BB71060067F040 /* console.c in Sources */ = {isa = PBXBuildFile; fileRef = 83C75A0012BB71060067F040 /* console.c */; };
+		83C75A3712BB71060067F040 /* copypaste.c in Sources */ = {isa = PBXBuildFile; fileRef = 83C75A0212BB71060067F040 /* copypaste.c */; };
+		83C75A3812BB71060067F040 /* diskop.c in Sources */ = {isa = PBXBuildFile; fileRef = 83C75A0412BB71060067F040 /* diskop.c */; };
+		83C75A3912BB71060067F040 /* edit.c in Sources */ = {isa = PBXBuildFile; fileRef = 83C75A0612BB71060067F040 /* edit.c */; };
+		83C75A3A12BB71060067F040 /* event.c in Sources */ = {isa = PBXBuildFile; fileRef = 83C75A0812BB71060067F040 /* event.c */; };
+		83C75A3B12BB71060067F040 /* export.c in Sources */ = {isa = PBXBuildFile; fileRef = 83C75A0A12BB71060067F040 /* export.c */; };
+		83C75A3D12BB71060067F040 /* main.c in Sources */ = {isa = PBXBuildFile; fileRef = 83C75A1412BB71060067F040 /* main.c */; };
+		83C75A3E12BB71060067F040 /* menudefs.c in Sources */ = {isa = PBXBuildFile; fileRef = 83C75A1512BB71060067F040 /* menudefs.c */; };
+		83C75A3F12BB71060067F040 /* midi.c in Sources */ = {isa = PBXBuildFile; fileRef = 83C75A1612BB71060067F040 /* midi.c */; };
+		83C75A4012BB71060067F040 /* mused.c in Sources */ = {isa = PBXBuildFile; fileRef = 83C75A1812BB71060067F040 /* mused.c */; };
+		83C75A4112BB71060067F040 /* shortcutdefs.c in Sources */ = {isa = PBXBuildFile; fileRef = 83C75A1C12BB71060067F040 /* shortcutdefs.c */; };
+		83C75A4212BB71060067F040 /* theme.c in Sources */ = {isa = PBXBuildFile; fileRef = 83C75A1E12BB71060067F040 /* theme.c */; };
+		83C75A4312BB71060067F040 /* undo.c in Sources */ = {isa = PBXBuildFile; fileRef = 83C75A2012BB71060067F040 /* undo.c */; };
+		83C75A4412BB71060067F040 /* version in Resources */ = {isa = PBXBuildFile; fileRef = 83C75A2212BB71060067F040 /* version */; };
+		83C75A4712BB71060067F040 /* view.c in Sources */ = {isa = PBXBuildFile; fileRef = 83C75A2E12BB71060067F040 /* view.c */; };
+		83C75A4812BB71060067F040 /* wave.c in Sources */ = {isa = PBXBuildFile; fileRef = 83C75A3012BB71060067F040 /* wave.c */; };
+		83C75A9712BB71860067F040 /* SDL_image.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 83C75A9612BB71860067F040 /* SDL_image.framework */; };
+		83C75A9912BB71860067F040 /* SDL_mixer.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 83C75A9812BB71860067F040 /* SDL_mixer.framework */; };
+		83C75AB012BBD7D90067F040 /* ahx.c in Sources */ = {isa = PBXBuildFile; fileRef = 83C75AAA12BBD7D90067F040 /* ahx.c */; };
+		83C75AB112BBD7D90067F040 /* import.c in Sources */ = {isa = PBXBuildFile; fileRef = 83C75AAC12BBD7D90067F040 /* import.c */; };
+		83C75AB212BBD7D90067F040 /* mod.c in Sources */ = {isa = PBXBuildFile; fileRef = 83C75AAE12BBD7D90067F040 /* mod.c */; };
+		83C75ABA12BBD7FB0067F040 /* pattern.c in Sources */ = {isa = PBXBuildFile; fileRef = 83C75AB412BBD7FB0067F040 /* pattern.c */; };
+		83C75ABB12BBD7FB0067F040 /* visu.c in Sources */ = {isa = PBXBuildFile; fileRef = 83C75AB612BBD7FB0067F040 /* visu.c */; };
+		83C75ABC12BBD7FB0067F040 /* wavetableview.c in Sources */ = {isa = PBXBuildFile; fileRef = 83C75AB812BBD7FB0067F040 /* wavetableview.c */; };
+		83C75ACC12BBD81C0067F040 /* background.c in Sources */ = {isa = PBXBuildFile; fileRef = 83C75ABE12BBD81C0067F040 /* background.c */; };
+		83C75ACD12BBD81C0067F040 /* bgcell.c in Sources */ = {isa = PBXBuildFile; fileRef = 83C75AC012BBD81C0067F040 /* bgcell.c */; };
+		83C75ACE12BBD81C0067F040 /* font.c in Sources */ = {isa = PBXBuildFile; fileRef = 83C75AC212BBD81C0067F040 /* font.c */; };
+		83C75ACF12BBD81C0067F040 /* gfx.c in Sources */ = {isa = PBXBuildFile; fileRef = 83C75AC412BBD81C0067F040 /* gfx.c */; };
+		83C75AD012BBD81C0067F040 /* levelbase.c in Sources */ = {isa = PBXBuildFile; fileRef = 83C75AC712BBD81C0067F040 /* levelbase.c */; };
+		83C75AD112BBD81C0067F040 /* objhdr.c in Sources */ = {isa = PBXBuildFile; fileRef = 83C75AC912BBD81C0067F040 /* objhdr.c */; };
+		83C75AE812BBD8340067F040 /* bevel.c in Sources */ = {isa = PBXBuildFile; fileRef = 83C75AD412BBD8340067F040 /* bevel.c */; };
+		83C75AE912BBD8340067F040 /* dialog.c in Sources */ = {isa = PBXBuildFile; fileRef = 83C75AD612BBD8340067F040 /* dialog.c */; };
+		83C75AEA12BBD8340067F040 /* filebox.c in Sources */ = {isa = PBXBuildFile; fileRef = 83C75AD812BBD8340067F040 /* filebox.c */; };
+		83C75AEB12BBD8340067F040 /* menu.c in Sources */ = {isa = PBXBuildFile; fileRef = 83C75ADA12BBD8340067F040 /* menu.c */; };
+		83C75AEC12BBD8340067F040 /* mouse.c in Sources */ = {isa = PBXBuildFile; fileRef = 83C75ADC12BBD8340067F040 /* mouse.c */; };
+		83C75AED12BBD8340067F040 /* msgbox.c in Sources */ = {isa = PBXBuildFile; fileRef = 83C75ADE12BBD8340067F040 /* msgbox.c */; };
+		83C75AEE12BBD8340067F040 /* shortcuts.c in Sources */ = {isa = PBXBuildFile; fileRef = 83C75AE012BBD8340067F040 /* shortcuts.c */; };
+		83C75AEF12BBD8340067F040 /* slider.c in Sources */ = {isa = PBXBuildFile; fileRef = 83C75AE212BBD8340067F040 /* slider.c */; };
+		83C75AF012BBD8340067F040 /* toolutil.c in Sources */ = {isa = PBXBuildFile; fileRef = 83C75AE412BBD8340067F040 /* toolutil.c */; };
+		83C75AF112BBD8340067F040 /* view.c in Sources */ = {isa = PBXBuildFile; fileRef = 83C75AE612BBD8340067F040 /* view.c */; };
+		83C75B0812BBD84C0067F040 /* cyd.c in Sources */ = {isa = PBXBuildFile; fileRef = 83C75AF312BBD84C0067F040 /* cyd.c */; };
+		83C75B0912BBD84C0067F040 /* cydchr.c in Sources */ = {isa = PBXBuildFile; fileRef = 83C75AF512BBD84C0067F040 /* cydchr.c */; };
+		83C75B0A12BBD84C0067F040 /* cydcrush.c in Sources */ = {isa = PBXBuildFile; fileRef = 83C75AF712BBD84C0067F040 /* cydcrush.c */; };
+		83C75B0B12BBD84C0067F040 /* cydentry.c in Sources */ = {isa = PBXBuildFile; fileRef = 83C75AFA12BBD84C0067F040 /* cydentry.c */; };
+		83C75B0C12BBD84C0067F040 /* cydflt.c in Sources */ = {isa = PBXBuildFile; fileRef = 83C75AFC12BBD84C0067F040 /* cydflt.c */; };
+		83C75B0D12BBD84C0067F040 /* cydfx.c in Sources */ = {isa = PBXBuildFile; fileRef = 83C75AFE12BBD84C0067F040 /* cydfx.c */; };
+		83C75B0E12BBD84C0067F040 /* cydrvb.c in Sources */ = {isa = PBXBuildFile; fileRef = 83C75B0012BBD84C0067F040 /* cydrvb.c */; };
+		83C75B0F12BBD84C0067F040 /* cydwave.c in Sources */ = {isa = PBXBuildFile; fileRef = 83C75B0212BBD84C0067F040 /* cydwave.c */; };
+		83C75B1012BBD84C0067F040 /* freqs.c in Sources */ = {isa = PBXBuildFile; fileRef = 83C75B0412BBD84C0067F040 /* freqs.c */; };
+		83C75B1112BBD84C0067F040 /* music.c in Sources */ = {isa = PBXBuildFile; fileRef = 83C75B0612BBD84C0067F040 /* music.c */; };
+		83C75B1712BBD8650067F040 /* bundle.c in Sources */ = {isa = PBXBuildFile; fileRef = 83C75B1312BBD8650067F040 /* bundle.c */; };
+		83C75B1812BBD8650067F040 /* rnd.c in Sources */ = {isa = PBXBuildFile; fileRef = 83C75B1512BBD8650067F040 /* rnd.c */; };
+		83C75C6812BBF7B20067F040 /* 256x256.icns in Resources */ = {isa = PBXBuildFile; fileRef = 83C75C6712BBF7B20067F040 /* 256x256.icns */; };
+		83C75C7212BBF9D80067F040 /* res in Resources */ = {isa = PBXBuildFile; fileRef = 83C75C6B12BBF9D80067F040 /* res */; };
+		83EBE9F612BC07DE00263A0E /* SDL_mixer.framework in Copy Frameworks into .app bundle */ = {isa = PBXBuildFile; fileRef = 83C75A9812BB71860067F040 /* SDL_mixer.framework */; };
+		83EBE9F712BC07E200263A0E /* SDL_image.framework in Copy Frameworks into .app bundle */ = {isa = PBXBuildFile; fileRef = 83C75A9612BB71860067F040 /* SDL_image.framework */; };
+		8D11072B0486CEB800E47090 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 089C165CFE840E0CC02AAC07 /* InfoPlist.strings */; };
+		8D11072F0486CEB800E47090 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1058C7A1FEA54F0111CA2CBB /* Cocoa.framework */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		002F39FD09D0883400EBEB88 /* Copy Frameworks into .app bundle */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+				83EBE9F712BC07E200263A0E /* SDL_image.framework in Copy Frameworks into .app bundle */,
+				83EBE9F612BC07DE00263A0E /* SDL_mixer.framework in Copy Frameworks into .app bundle */,
+				002F3A0009D0884600EBEB88 /* SDL.framework in Copy Frameworks into .app bundle */,
+			);
+			name = "Copy Frameworks into .app bundle";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
+/* Begin PBXFileReference section */
+		002F39F909D0881F00EBEB88 /* SDL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SDL.framework; path = /Library/Frameworks/SDL.framework; sourceTree = "<absolute>"; };
+		002F3A2B09D0888800EBEB88 /* SDLMain.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = SDLMain.h; sourceTree = SOURCE_ROOT; };
+		002F3A2C09D0888800EBEB88 /* SDLMain.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = SDLMain.m; sourceTree = SOURCE_ROOT; };
+		089C165DFE840E0CC02AAC07 /* English */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = English; path = English.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		1058C7A1FEA54F0111CA2CBB /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = /System/Library/Frameworks/Cocoa.framework; sourceTree = "<absolute>"; };
+		29B97324FDCFA39411CA2CEA /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = /System/Library/Frameworks/AppKit.framework; sourceTree = "<absolute>"; };
+		29B97325FDCFA39411CA2CEA /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = /System/Library/Frameworks/Foundation.framework; sourceTree = "<absolute>"; };
+		32CA4F630368D1EE00C91783 /* OSX_Xcode_Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OSX_Xcode_Prefix.pch; sourceTree = "<group>"; };
+		83C759F812BB71060067F040 /* action.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = action.c; path = ../src/action.c; sourceTree = SOURCE_ROOT; };
+		83C759F912BB71060067F040 /* action.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = action.h; path = ../src/action.h; sourceTree = SOURCE_ROOT; };
+		83C759FA12BB71060067F040 /* clipboard.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = clipboard.c; path = ../src/clipboard.c; sourceTree = SOURCE_ROOT; };
+		83C759FB12BB71060067F040 /* clipboard.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = clipboard.h; path = ../src/clipboard.h; sourceTree = SOURCE_ROOT; };
+		83C759FC12BB71060067F040 /* command.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = command.c; path = ../src/command.c; sourceTree = SOURCE_ROOT; };
+		83C759FD12BB71060067F040 /* command.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = command.h; path = ../src/command.h; sourceTree = SOURCE_ROOT; };
+		83C759FE12BB71060067F040 /* config.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = config.c; path = ../src/config.c; sourceTree = SOURCE_ROOT; };
+		83C759FF12BB71060067F040 /* config.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = config.h; path = ../src/config.h; sourceTree = SOURCE_ROOT; };
+		83C75A0012BB71060067F040 /* console.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = console.c; path = ../src/console.c; sourceTree = SOURCE_ROOT; };
+		83C75A0112BB71060067F040 /* console.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = console.h; path = ../src/console.h; sourceTree = SOURCE_ROOT; };
+		83C75A0212BB71060067F040 /* copypaste.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = copypaste.c; path = ../src/copypaste.c; sourceTree = SOURCE_ROOT; };
+		83C75A0312BB71060067F040 /* copypaste.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = copypaste.h; path = ../src/copypaste.h; sourceTree = SOURCE_ROOT; };
+		83C75A0412BB71060067F040 /* diskop.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = diskop.c; path = ../src/diskop.c; sourceTree = SOURCE_ROOT; };
+		83C75A0512BB71060067F040 /* diskop.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = diskop.h; path = ../src/diskop.h; sourceTree = SOURCE_ROOT; };
+		83C75A0612BB71060067F040 /* edit.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = edit.c; path = ../src/edit.c; sourceTree = SOURCE_ROOT; };
+		83C75A0712BB71060067F040 /* edit.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = edit.h; path = ../src/edit.h; sourceTree = SOURCE_ROOT; };
+		83C75A0812BB71060067F040 /* event.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = event.c; path = ../src/event.c; sourceTree = SOURCE_ROOT; };
+		83C75A0912BB71060067F040 /* event.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = event.h; path = ../src/event.h; sourceTree = SOURCE_ROOT; };
+		83C75A0A12BB71060067F040 /* export.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = export.c; path = ../src/export.c; sourceTree = SOURCE_ROOT; };
+		83C75A0B12BB71060067F040 /* export.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = export.h; path = ../src/export.h; sourceTree = SOURCE_ROOT; };
+		83C75A1412BB71060067F040 /* main.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = main.c; path = ../src/main.c; sourceTree = SOURCE_ROOT; };
+		83C75A1512BB71060067F040 /* menudefs.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = menudefs.c; path = ../src/menudefs.c; sourceTree = SOURCE_ROOT; };
+		83C75A1612BB71060067F040 /* midi.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = midi.c; path = ../src/midi.c; sourceTree = SOURCE_ROOT; };
+		83C75A1712BB71060067F040 /* midi.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = midi.h; path = ../src/midi.h; sourceTree = SOURCE_ROOT; };
+		83C75A1812BB71060067F040 /* mused.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = mused.c; path = ../src/mused.c; sourceTree = SOURCE_ROOT; };
+		83C75A1912BB71060067F040 /* mused.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = mused.h; path = ../src/mused.h; sourceTree = SOURCE_ROOT; };
+		83C75A1A12BB71060067F040 /* mybevdefs.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = mybevdefs.h; path = ../src/mybevdefs.h; sourceTree = SOURCE_ROOT; };
+		83C75A1B12BB71060067F040 /* mymsg.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = mymsg.h; path = ../src/mymsg.h; sourceTree = SOURCE_ROOT; };
+		83C75A1C12BB71060067F040 /* shortcutdefs.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = shortcutdefs.c; path = ../src/shortcutdefs.c; sourceTree = SOURCE_ROOT; };
+		83C75A1D12BB71060067F040 /* shortcutdefs.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = shortcutdefs.h; path = ../src/shortcutdefs.h; sourceTree = SOURCE_ROOT; };
+		83C75A1E12BB71060067F040 /* theme.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = theme.c; path = ../src/theme.c; sourceTree = SOURCE_ROOT; };
+		83C75A1F12BB71060067F040 /* theme.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = theme.h; path = ../src/theme.h; sourceTree = SOURCE_ROOT; };
+		83C75A2012BB71060067F040 /* undo.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = undo.c; path = ../src/undo.c; sourceTree = SOURCE_ROOT; };
+		83C75A2112BB71060067F040 /* undo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = undo.h; path = ../src/undo.h; sourceTree = SOURCE_ROOT; };
+		83C75A2212BB71060067F040 /* version */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = version; path = ../src/version; sourceTree = SOURCE_ROOT; };
+		83C75A2E12BB71060067F040 /* view.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = view.c; path = ../src/view.c; sourceTree = SOURCE_ROOT; };
+		83C75A2F12BB71060067F040 /* view.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = view.h; path = ../src/view.h; sourceTree = SOURCE_ROOT; };
+		83C75A3012BB71060067F040 /* wave.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = wave.c; path = ../src/wave.c; sourceTree = SOURCE_ROOT; };
+		83C75A3112BB71060067F040 /* wave.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = wave.h; path = ../src/wave.h; sourceTree = SOURCE_ROOT; };
+		83C75A7012BB71270067F040 /* macros.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = macros.h; path = ../../klystron/src/macros.h; sourceTree = SOURCE_ROOT; };
+		83C75A7112BB71270067F040 /* sllhdr.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = sllhdr.h; path = ../../klystron/src/sllhdr.h; sourceTree = SOURCE_ROOT; };
+		83C75A8F12BB71270067F040 /* version.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = version.h; path = ../../klystron/src/version.h; sourceTree = SOURCE_ROOT; };
+		83C75A9612BB71860067F040 /* SDL_image.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SDL_image.framework; path = Library/Frameworks/SDL_image.framework; sourceTree = SDKROOT; };
+		83C75A9812BB71860067F040 /* SDL_mixer.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SDL_mixer.framework; path = Library/Frameworks/SDL_mixer.framework; sourceTree = SDKROOT; };
+		83C75AAA12BBD7D90067F040 /* ahx.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = ahx.c; path = ../src/import/ahx.c; sourceTree = SOURCE_ROOT; };
+		83C75AAB12BBD7D90067F040 /* ahx.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ahx.h; path = ../src/import/ahx.h; sourceTree = SOURCE_ROOT; };
+		83C75AAC12BBD7D90067F040 /* import.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = import.c; path = ../src/import/import.c; sourceTree = SOURCE_ROOT; };
+		83C75AAD12BBD7D90067F040 /* import.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = import.h; path = ../src/import/import.h; sourceTree = SOURCE_ROOT; };
+		83C75AAE12BBD7D90067F040 /* mod.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = mod.c; path = ../src/import/mod.c; sourceTree = SOURCE_ROOT; };
+		83C75AAF12BBD7D90067F040 /* mod.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = mod.h; path = ../src/import/mod.h; sourceTree = SOURCE_ROOT; };
+		83C75AB412BBD7FB0067F040 /* pattern.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = pattern.c; path = ../src/view/pattern.c; sourceTree = SOURCE_ROOT; };
+		83C75AB512BBD7FB0067F040 /* pattern.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = pattern.h; path = ../src/view/pattern.h; sourceTree = SOURCE_ROOT; };
+		83C75AB612BBD7FB0067F040 /* visu.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = visu.c; path = ../src/view/visu.c; sourceTree = SOURCE_ROOT; };
+		83C75AB712BBD7FB0067F040 /* visu.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = visu.h; path = ../src/view/visu.h; sourceTree = SOURCE_ROOT; };
+		83C75AB812BBD7FB0067F040 /* wavetableview.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = wavetableview.c; path = ../src/view/wavetableview.c; sourceTree = SOURCE_ROOT; };
+		83C75AB912BBD7FB0067F040 /* wavetableview.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = wavetableview.h; path = ../src/view/wavetableview.h; sourceTree = SOURCE_ROOT; };
+		83C75ABE12BBD81C0067F040 /* background.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = background.c; path = ../../klystron/src/gfx/background.c; sourceTree = SOURCE_ROOT; };
+		83C75ABF12BBD81C0067F040 /* background.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = background.h; path = ../../klystron/src/gfx/background.h; sourceTree = SOURCE_ROOT; };
+		83C75AC012BBD81C0067F040 /* bgcell.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = bgcell.c; path = ../../klystron/src/gfx/bgcell.c; sourceTree = SOURCE_ROOT; };
+		83C75AC112BBD81C0067F040 /* bgcell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = bgcell.h; path = ../../klystron/src/gfx/bgcell.h; sourceTree = SOURCE_ROOT; };
+		83C75AC212BBD81C0067F040 /* font.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = font.c; path = ../../klystron/src/gfx/font.c; sourceTree = SOURCE_ROOT; };
+		83C75AC312BBD81C0067F040 /* font.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = font.h; path = ../../klystron/src/gfx/font.h; sourceTree = SOURCE_ROOT; };
+		83C75AC412BBD81C0067F040 /* gfx.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = gfx.c; path = ../../klystron/src/gfx/gfx.c; sourceTree = SOURCE_ROOT; };
+		83C75AC512BBD81C0067F040 /* gfx.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = gfx.h; path = ../../klystron/src/gfx/gfx.h; sourceTree = SOURCE_ROOT; };
+		83C75AC612BBD81C0067F040 /* gfxsurf.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = gfxsurf.h; path = ../../klystron/src/gfx/gfxsurf.h; sourceTree = SOURCE_ROOT; };
+		83C75AC712BBD81C0067F040 /* levelbase.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = levelbase.c; path = ../../klystron/src/gfx/levelbase.c; sourceTree = SOURCE_ROOT; };
+		83C75AC812BBD81C0067F040 /* levelbase.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = levelbase.h; path = ../../klystron/src/gfx/levelbase.h; sourceTree = SOURCE_ROOT; };
+		83C75AC912BBD81C0067F040 /* objhdr.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = objhdr.c; path = ../../klystron/src/gfx/objhdr.c; sourceTree = SOURCE_ROOT; };
+		83C75ACA12BBD81C0067F040 /* objhdr.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = objhdr.h; path = ../../klystron/src/gfx/objhdr.h; sourceTree = SOURCE_ROOT; };
+		83C75ACB12BBD81C0067F040 /* tiledescriptor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = tiledescriptor.h; path = ../../klystron/src/gfx/tiledescriptor.h; sourceTree = SOURCE_ROOT; };
+		83C75AD312BBD8340067F040 /* bevdefs.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = bevdefs.h; path = ../../klystron/src/gui/bevdefs.h; sourceTree = SOURCE_ROOT; };
+		83C75AD412BBD8340067F040 /* bevel.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = bevel.c; path = ../../klystron/src/gui/bevel.c; sourceTree = SOURCE_ROOT; };
+		83C75AD512BBD8340067F040 /* bevel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = bevel.h; path = ../../klystron/src/gui/bevel.h; sourceTree = SOURCE_ROOT; };
+		83C75AD612BBD8340067F040 /* dialog.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = dialog.c; path = ../../klystron/src/gui/dialog.c; sourceTree = SOURCE_ROOT; };
+		83C75AD712BBD8340067F040 /* dialog.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = dialog.h; path = ../../klystron/src/gui/dialog.h; sourceTree = SOURCE_ROOT; };
+		83C75AD812BBD8340067F040 /* filebox.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = filebox.c; path = ../../klystron/src/gui/filebox.c; sourceTree = SOURCE_ROOT; };
+		83C75AD912BBD8340067F040 /* filebox.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = filebox.h; path = ../../klystron/src/gui/filebox.h; sourceTree = SOURCE_ROOT; };
+		83C75ADA12BBD8340067F040 /* menu.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = menu.c; path = ../../klystron/src/gui/menu.c; sourceTree = SOURCE_ROOT; };
+		83C75ADB12BBD8340067F040 /* menu.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = menu.h; path = ../../klystron/src/gui/menu.h; sourceTree = SOURCE_ROOT; };
+		83C75ADC12BBD8340067F040 /* mouse.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = mouse.c; path = ../../klystron/src/gui/mouse.c; sourceTree = SOURCE_ROOT; };
+		83C75ADD12BBD8340067F040 /* mouse.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = mouse.h; path = ../../klystron/src/gui/mouse.h; sourceTree = SOURCE_ROOT; };
+		83C75ADE12BBD8340067F040 /* msgbox.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = msgbox.c; path = ../../klystron/src/gui/msgbox.c; sourceTree = SOURCE_ROOT; };
+		83C75ADF12BBD8340067F040 /* msgbox.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = msgbox.h; path = ../../klystron/src/gui/msgbox.h; sourceTree = SOURCE_ROOT; };
+		83C75AE012BBD8340067F040 /* shortcuts.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = shortcuts.c; path = ../../klystron/src/gui/shortcuts.c; sourceTree = SOURCE_ROOT; };
+		83C75AE112BBD8340067F040 /* shortcuts.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = shortcuts.h; path = ../../klystron/src/gui/shortcuts.h; sourceTree = SOURCE_ROOT; };
+		83C75AE212BBD8340067F040 /* slider.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = slider.c; path = ../../klystron/src/gui/slider.c; sourceTree = SOURCE_ROOT; };
+		83C75AE312BBD8340067F040 /* slider.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = slider.h; path = ../../klystron/src/gui/slider.h; sourceTree = SOURCE_ROOT; };
+		83C75AE412BBD8340067F040 /* toolutil.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = toolutil.c; path = ../../klystron/src/gui/toolutil.c; sourceTree = SOURCE_ROOT; };
+		83C75AE512BBD8340067F040 /* toolutil.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = toolutil.h; path = ../../klystron/src/gui/toolutil.h; sourceTree = SOURCE_ROOT; };
+		83C75AE612BBD8340067F040 /* view.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = view.c; path = ../../klystron/src/gui/view.c; sourceTree = SOURCE_ROOT; };
+		83C75AE712BBD8340067F040 /* view.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = view.h; path = ../../klystron/src/gui/view.h; sourceTree = SOURCE_ROOT; };
+		83C75AF312BBD84C0067F040 /* cyd.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = cyd.c; path = ../../klystron/src/snd/cyd.c; sourceTree = SOURCE_ROOT; };
+		83C75AF412BBD84C0067F040 /* cyd.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = cyd.h; path = ../../klystron/src/snd/cyd.h; sourceTree = SOURCE_ROOT; };
+		83C75AF512BBD84C0067F040 /* cydchr.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = cydchr.c; path = ../../klystron/src/snd/cydchr.c; sourceTree = SOURCE_ROOT; };
+		83C75AF612BBD84C0067F040 /* cydchr.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = cydchr.h; path = ../../klystron/src/snd/cydchr.h; sourceTree = SOURCE_ROOT; };
+		83C75AF712BBD84C0067F040 /* cydcrush.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = cydcrush.c; path = ../../klystron/src/snd/cydcrush.c; sourceTree = SOURCE_ROOT; };
+		83C75AF812BBD84C0067F040 /* cydcrush.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = cydcrush.h; path = ../../klystron/src/snd/cydcrush.h; sourceTree = SOURCE_ROOT; };
+		83C75AF912BBD84C0067F040 /* cyddefs.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = cyddefs.h; path = ../../klystron/src/snd/cyddefs.h; sourceTree = SOURCE_ROOT; };
+		83C75AFA12BBD84C0067F040 /* cydentry.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = cydentry.c; path = ../../klystron/src/snd/cydentry.c; sourceTree = SOURCE_ROOT; };
+		83C75AFB12BBD84C0067F040 /* cydentry.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = cydentry.h; path = ../../klystron/src/snd/cydentry.h; sourceTree = SOURCE_ROOT; };
+		83C75AFC12BBD84C0067F040 /* cydflt.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = cydflt.c; path = ../../klystron/src/snd/cydflt.c; sourceTree = SOURCE_ROOT; };
+		83C75AFD12BBD84C0067F040 /* cydflt.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = cydflt.h; path = ../../klystron/src/snd/cydflt.h; sourceTree = SOURCE_ROOT; };
+		83C75AFE12BBD84C0067F040 /* cydfx.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = cydfx.c; path = ../../klystron/src/snd/cydfx.c; sourceTree = SOURCE_ROOT; };
+		83C75AFF12BBD84C0067F040 /* cydfx.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = cydfx.h; path = ../../klystron/src/snd/cydfx.h; sourceTree = SOURCE_ROOT; };
+		83C75B0012BBD84C0067F040 /* cydrvb.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = cydrvb.c; path = ../../klystron/src/snd/cydrvb.c; sourceTree = SOURCE_ROOT; };
+		83C75B0112BBD84C0067F040 /* cydrvb.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = cydrvb.h; path = ../../klystron/src/snd/cydrvb.h; sourceTree = SOURCE_ROOT; };
+		83C75B0212BBD84C0067F040 /* cydwave.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = cydwave.c; path = ../../klystron/src/snd/cydwave.c; sourceTree = SOURCE_ROOT; };
+		83C75B0312BBD84C0067F040 /* cydwave.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = cydwave.h; path = ../../klystron/src/snd/cydwave.h; sourceTree = SOURCE_ROOT; };
+		83C75B0412BBD84C0067F040 /* freqs.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = freqs.c; path = ../../klystron/src/snd/freqs.c; sourceTree = SOURCE_ROOT; };
+		83C75B0512BBD84C0067F040 /* freqs.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = freqs.h; path = ../../klystron/src/snd/freqs.h; sourceTree = SOURCE_ROOT; };
+		83C75B0612BBD84C0067F040 /* music.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = music.c; path = ../../klystron/src/snd/music.c; sourceTree = SOURCE_ROOT; };
+		83C75B0712BBD84C0067F040 /* music.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = music.h; path = ../../klystron/src/snd/music.h; sourceTree = SOURCE_ROOT; };
+		83C75B1312BBD8650067F040 /* bundle.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = bundle.c; path = ../../klystron/src/util/bundle.c; sourceTree = SOURCE_ROOT; };
+		83C75B1412BBD8650067F040 /* bundle.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = bundle.h; path = ../../klystron/src/util/bundle.h; sourceTree = SOURCE_ROOT; };
+		83C75B1512BBD8650067F040 /* rnd.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = rnd.c; path = ../../klystron/src/util/rnd.c; sourceTree = SOURCE_ROOT; };
+		83C75B1612BBD8650067F040 /* rnd.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = rnd.h; path = ../../klystron/src/util/rnd.h; sourceTree = SOURCE_ROOT; };
+		83C75C6712BBF7B20067F040 /* 256x256.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; name = 256x256.icns; path = ../icon/256x256.icns; sourceTree = SOURCE_ROOT; };
+		83C75C6B12BBF9D80067F040 /* res */ = {isa = PBXFileReference; lastKnownFileType = folder; name = res; path = ../res; sourceTree = SOURCE_ROOT; };
+		8D1107310486CEB800E47090 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
+		8D1107320486CEB800E47090 /* Klystrack.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Klystrack.app; sourceTree = BUILT_PRODUCTS_DIR; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		8D11072E0486CEB800E47090 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				83C75A9912BB71860067F040 /* SDL_mixer.framework in Frameworks */,
+				002F39FA09D0881F00EBEB88 /* SDL.framework in Frameworks */,
+				8D11072F0486CEB800E47090 /* Cocoa.framework in Frameworks */,
+				83C75A9712BB71860067F040 /* SDL_image.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		080E96DDFE201D6D7F000001 /* Classes */ = {
+			isa = PBXGroup;
+			children = (
+				002F3A2B09D0888800EBEB88 /* SDLMain.h */,
+				002F3A2C09D0888800EBEB88 /* SDLMain.m */,
+			);
+			name = Classes;
+			sourceTree = "<group>";
+		};
+		1058C7A0FEA54F0111CA2CBB /* Linked Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				83C75A9612BB71860067F040 /* SDL_image.framework */,
+				83C75A9812BB71860067F040 /* SDL_mixer.framework */,
+				002F39F909D0881F00EBEB88 /* SDL.framework */,
+				1058C7A1FEA54F0111CA2CBB /* Cocoa.framework */,
+			);
+			name = "Linked Frameworks";
+			sourceTree = "<group>";
+		};
+		1058C7A2FEA54F0111CA2CBB /* Other Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				29B97324FDCFA39411CA2CEA /* AppKit.framework */,
+				29B97325FDCFA39411CA2CEA /* Foundation.framework */,
+			);
+			name = "Other Frameworks";
+			sourceTree = "<group>";
+		};
+		19C28FACFE9D520D11CA2CBB /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				8D1107320486CEB800E47090 /* Klystrack.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		29B97314FDCFA39411CA2CEA /* OSX_Xcode */ = {
+			isa = PBXGroup;
+			children = (
+				83C759F612BB70CA0067F040 /* Klystrack */,
+				83C759F712BB70D30067F040 /* Klystron */,
+				080E96DDFE201D6D7F000001 /* Classes */,
+				29B97315FDCFA39411CA2CEA /* Other Sources */,
+				29B97317FDCFA39411CA2CEA /* Resources */,
+				29B97323FDCFA39411CA2CEA /* Frameworks */,
+				19C28FACFE9D520D11CA2CBB /* Products */,
+			);
+			name = OSX_Xcode;
+			sourceTree = "<group>";
+		};
+		29B97315FDCFA39411CA2CEA /* Other Sources */ = {
+			isa = PBXGroup;
+			children = (
+				32CA4F630368D1EE00C91783 /* OSX_Xcode_Prefix.pch */,
+			);
+			name = "Other Sources";
+			sourceTree = "<group>";
+		};
+		29B97317FDCFA39411CA2CEA /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				83C75C6B12BBF9D80067F040 /* res */,
+				83C75C6712BBF7B20067F040 /* 256x256.icns */,
+				8D1107310486CEB800E47090 /* Info.plist */,
+				089C165CFE840E0CC02AAC07 /* InfoPlist.strings */,
+			);
+			name = Resources;
+			sourceTree = "<group>";
+		};
+		29B97323FDCFA39411CA2CEA /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				1058C7A0FEA54F0111CA2CBB /* Linked Frameworks */,
+				1058C7A2FEA54F0111CA2CBB /* Other Frameworks */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		83C759F612BB70CA0067F040 /* Klystrack */ = {
+			isa = PBXGroup;
+			children = (
+				83C759F812BB71060067F040 /* action.c */,
+				83C759F912BB71060067F040 /* action.h */,
+				83C759FA12BB71060067F040 /* clipboard.c */,
+				83C759FB12BB71060067F040 /* clipboard.h */,
+				83C759FC12BB71060067F040 /* command.c */,
+				83C759FD12BB71060067F040 /* command.h */,
+				83C759FE12BB71060067F040 /* config.c */,
+				83C759FF12BB71060067F040 /* config.h */,
+				83C75A0012BB71060067F040 /* console.c */,
+				83C75A0112BB71060067F040 /* console.h */,
+				83C75A0212BB71060067F040 /* copypaste.c */,
+				83C75A0312BB71060067F040 /* copypaste.h */,
+				83C75A0412BB71060067F040 /* diskop.c */,
+				83C75A0512BB71060067F040 /* diskop.h */,
+				83C75A0612BB71060067F040 /* edit.c */,
+				83C75A0712BB71060067F040 /* edit.h */,
+				83C75A0812BB71060067F040 /* event.c */,
+				83C75A0912BB71060067F040 /* event.h */,
+				83C75A0A12BB71060067F040 /* export.c */,
+				83C75A0B12BB71060067F040 /* export.h */,
+				83C75AA912BBD7BF0067F040 /* import */,
+				83C75A1412BB71060067F040 /* main.c */,
+				83C75A1512BB71060067F040 /* menudefs.c */,
+				83C75A1612BB71060067F040 /* midi.c */,
+				83C75A1712BB71060067F040 /* midi.h */,
+				83C75A1812BB71060067F040 /* mused.c */,
+				83C75A1912BB71060067F040 /* mused.h */,
+				83C75A1A12BB71060067F040 /* mybevdefs.h */,
+				83C75A1B12BB71060067F040 /* mymsg.h */,
+				83C75A1C12BB71060067F040 /* shortcutdefs.c */,
+				83C75A1D12BB71060067F040 /* shortcutdefs.h */,
+				83C75A1E12BB71060067F040 /* theme.c */,
+				83C75A1F12BB71060067F040 /* theme.h */,
+				83C75A2012BB71060067F040 /* undo.c */,
+				83C75A2112BB71060067F040 /* undo.h */,
+				83C75A2212BB71060067F040 /* version */,
+				83C75AB312BBD7EE0067F040 /* view */,
+				83C75A2E12BB71060067F040 /* view.c */,
+				83C75A2F12BB71060067F040 /* view.h */,
+				83C75A3012BB71060067F040 /* wave.c */,
+				83C75A3112BB71060067F040 /* wave.h */,
+			);
+			name = Klystrack;
+			sourceTree = "<group>";
+		};
+		83C759F712BB70D30067F040 /* Klystron */ = {
+			isa = PBXGroup;
+			children = (
+				83C75ABD12BBD80C0067F040 /* gfx */,
+				83C75AD212BBD82A0067F040 /* gui */,
+				83C75A7012BB71270067F040 /* macros.h */,
+				83C75A7112BB71270067F040 /* sllhdr.h */,
+				83C75AF212BBD8420067F040 /* snd */,
+				83C75B1212BBD85B0067F040 /* util */,
+				83C75A8F12BB71270067F040 /* version.h */,
+			);
+			name = Klystron;
+			sourceTree = "<group>";
+		};
+		83C75AA912BBD7BF0067F040 /* import */ = {
+			isa = PBXGroup;
+			children = (
+				83C75AAA12BBD7D90067F040 /* ahx.c */,
+				83C75AAB12BBD7D90067F040 /* ahx.h */,
+				83C75AAC12BBD7D90067F040 /* import.c */,
+				83C75AAD12BBD7D90067F040 /* import.h */,
+				83C75AAE12BBD7D90067F040 /* mod.c */,
+				83C75AAF12BBD7D90067F040 /* mod.h */,
+			);
+			name = import;
+			sourceTree = "<group>";
+		};
+		83C75AB312BBD7EE0067F040 /* view */ = {
+			isa = PBXGroup;
+			children = (
+				83C75AB412BBD7FB0067F040 /* pattern.c */,
+				83C75AB512BBD7FB0067F040 /* pattern.h */,
+				83C75AB612BBD7FB0067F040 /* visu.c */,
+				83C75AB712BBD7FB0067F040 /* visu.h */,
+				83C75AB812BBD7FB0067F040 /* wavetableview.c */,
+				83C75AB912BBD7FB0067F040 /* wavetableview.h */,
+			);
+			name = view;
+			sourceTree = "<group>";
+		};
+		83C75ABD12BBD80C0067F040 /* gfx */ = {
+			isa = PBXGroup;
+			children = (
+				83C75ABE12BBD81C0067F040 /* background.c */,
+				83C75ABF12BBD81C0067F040 /* background.h */,
+				83C75AC012BBD81C0067F040 /* bgcell.c */,
+				83C75AC112BBD81C0067F040 /* bgcell.h */,
+				83C75AC212BBD81C0067F040 /* font.c */,
+				83C75AC312BBD81C0067F040 /* font.h */,
+				83C75AC412BBD81C0067F040 /* gfx.c */,
+				83C75AC512BBD81C0067F040 /* gfx.h */,
+				83C75AC612BBD81C0067F040 /* gfxsurf.h */,
+				83C75AC712BBD81C0067F040 /* levelbase.c */,
+				83C75AC812BBD81C0067F040 /* levelbase.h */,
+				83C75AC912BBD81C0067F040 /* objhdr.c */,
+				83C75ACA12BBD81C0067F040 /* objhdr.h */,
+				83C75ACB12BBD81C0067F040 /* tiledescriptor.h */,
+			);
+			name = gfx;
+			sourceTree = "<group>";
+		};
+		83C75AD212BBD82A0067F040 /* gui */ = {
+			isa = PBXGroup;
+			children = (
+				83C75AD312BBD8340067F040 /* bevdefs.h */,
+				83C75AD412BBD8340067F040 /* bevel.c */,
+				83C75AD512BBD8340067F040 /* bevel.h */,
+				83C75AD612BBD8340067F040 /* dialog.c */,
+				83C75AD712BBD8340067F040 /* dialog.h */,
+				83C75AD812BBD8340067F040 /* filebox.c */,
+				83C75AD912BBD8340067F040 /* filebox.h */,
+				83C75ADA12BBD8340067F040 /* menu.c */,
+				83C75ADB12BBD8340067F040 /* menu.h */,
+				83C75ADC12BBD8340067F040 /* mouse.c */,
+				83C75ADD12BBD8340067F040 /* mouse.h */,
+				83C75ADE12BBD8340067F040 /* msgbox.c */,
+				83C75ADF12BBD8340067F040 /* msgbox.h */,
+				83C75AE012BBD8340067F040 /* shortcuts.c */,
+				83C75AE112BBD8340067F040 /* shortcuts.h */,
+				83C75AE212BBD8340067F040 /* slider.c */,
+				83C75AE312BBD8340067F040 /* slider.h */,
+				83C75AE412BBD8340067F040 /* toolutil.c */,
+				83C75AE512BBD8340067F040 /* toolutil.h */,
+				83C75AE612BBD8340067F040 /* view.c */,
+				83C75AE712BBD8340067F040 /* view.h */,
+			);
+			name = gui;
+			sourceTree = "<group>";
+		};
+		83C75AF212BBD8420067F040 /* snd */ = {
+			isa = PBXGroup;
+			children = (
+				83C75AF312BBD84C0067F040 /* cyd.c */,
+				83C75AF412BBD84C0067F040 /* cyd.h */,
+				83C75AF512BBD84C0067F040 /* cydchr.c */,
+				83C75AF612BBD84C0067F040 /* cydchr.h */,
+				83C75AF712BBD84C0067F040 /* cydcrush.c */,
+				83C75AF812BBD84C0067F040 /* cydcrush.h */,
+				83C75AF912BBD84C0067F040 /* cyddefs.h */,
+				83C75AFA12BBD84C0067F040 /* cydentry.c */,
+				83C75AFB12BBD84C0067F040 /* cydentry.h */,
+				83C75AFC12BBD84C0067F040 /* cydflt.c */,
+				83C75AFD12BBD84C0067F040 /* cydflt.h */,
+				83C75AFE12BBD84C0067F040 /* cydfx.c */,
+				83C75AFF12BBD84C0067F040 /* cydfx.h */,
+				83C75B0012BBD84C0067F040 /* cydrvb.c */,
+				83C75B0112BBD84C0067F040 /* cydrvb.h */,
+				83C75B0212BBD84C0067F040 /* cydwave.c */,
+				83C75B0312BBD84C0067F040 /* cydwave.h */,
+				83C75B0412BBD84C0067F040 /* freqs.c */,
+				83C75B0512BBD84C0067F040 /* freqs.h */,
+				83C75B0612BBD84C0067F040 /* music.c */,
+				83C75B0712BBD84C0067F040 /* music.h */,
+			);
+			name = snd;
+			sourceTree = "<group>";
+		};
+		83C75B1212BBD85B0067F040 /* util */ = {
+			isa = PBXGroup;
+			children = (
+				83C75B1312BBD8650067F040 /* bundle.c */,
+				83C75B1412BBD8650067F040 /* bundle.h */,
+				83C75B1512BBD8650067F040 /* rnd.c */,
+				83C75B1612BBD8650067F040 /* rnd.h */,
+			);
+			name = util;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		8D1107260486CEB800E47090 /* Klystrack */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = C01FCF4A08A954540054247B /* Build configuration list for PBXNativeTarget "Klystrack" */;
+			buildPhases = (
+				83EBEA2A12BC0D3E00263A0E /* ShellScript */,
+				8D1107290486CEB800E47090 /* Resources */,
+				8D11072C0486CEB800E47090 /* Sources */,
+				8D11072E0486CEB800E47090 /* Frameworks */,
+				002F39FD09D0883400EBEB88 /* Copy Frameworks into .app bundle */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = Klystrack;
+			productInstallPath = "$(HOME)/Applications";
+			productName = OSX_Xcode;
+			productReference = 8D1107320486CEB800E47090 /* Klystrack.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		29B97313FDCFA39411CA2CEA /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				ORGANIZATIONNAME = "Zorin Heavy Industries";
+			};
+			buildConfigurationList = C01FCF4E08A954540054247B /* Build configuration list for PBXProject "OSX_Xcode" */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
+			hasScannedForEncodings = 1;
+			knownRegions = (
+				English,
+				Japanese,
+				French,
+				German,
+			);
+			mainGroup = 29B97314FDCFA39411CA2CEA /* OSX_Xcode */;
+			projectDirPath = "";
+			projectRoots = (
+				"",
+				..,
+			);
+			targets = (
+				8D1107260486CEB800E47090 /* Klystrack */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		8D1107290486CEB800E47090 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				8D11072B0486CEB800E47090 /* InfoPlist.strings in Resources */,
+				83C75A4412BB71060067F040 /* version in Resources */,
+				83C75C6812BBF7B20067F040 /* 256x256.icns in Resources */,
+				83C75C7212BBF9D80067F040 /* res in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		83EBEA2A12BC0D3E00263A0E /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+				"$(SRCROOT)/../src/version",
+			);
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/../src/version_number.h",
+				"$(DERIVED_FILE_DIR)/../src/version.h",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "cat > ../src/version_number.h <<EOF\n#ifndef VERSION_NUMBER\n#define VERSION_NUMBER\n#define VERSION \"`cat ../src/version`\"\n#endif\nEOF\n\ncat > ../src/version.h <<EOF\n#ifndef VERSION_H\n#define VERSION_H\n#include \"version_number.h\"\n#define REVISION \"r`svnversion -n ..`\"\n#define VERSION_STRING \"klystrack \" VERSION \" \" REVISION\n#endif\nEOF\n";
+			showEnvVarsInLog = 0;
+		};
+/* End PBXShellScriptBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		8D11072C0486CEB800E47090 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				002F3A2E09D0888800EBEB88 /* SDLMain.m in Sources */,
+				83C75A3212BB71060067F040 /* action.c in Sources */,
+				83C75A3312BB71060067F040 /* clipboard.c in Sources */,
+				83C75A3412BB71060067F040 /* command.c in Sources */,
+				83C75A3512BB71060067F040 /* config.c in Sources */,
+				83C75A3612BB71060067F040 /* console.c in Sources */,
+				83C75A3712BB71060067F040 /* copypaste.c in Sources */,
+				83C75A3812BB71060067F040 /* diskop.c in Sources */,
+				83C75A3912BB71060067F040 /* edit.c in Sources */,
+				83C75A3A12BB71060067F040 /* event.c in Sources */,
+				83C75A3B12BB71060067F040 /* export.c in Sources */,
+				83C75A3D12BB71060067F040 /* main.c in Sources */,
+				83C75A3E12BB71060067F040 /* menudefs.c in Sources */,
+				83C75A3F12BB71060067F040 /* midi.c in Sources */,
+				83C75A4012BB71060067F040 /* mused.c in Sources */,
+				83C75A4112BB71060067F040 /* shortcutdefs.c in Sources */,
+				83C75A4212BB71060067F040 /* theme.c in Sources */,
+				83C75A4312BB71060067F040 /* undo.c in Sources */,
+				83C75A4712BB71060067F040 /* view.c in Sources */,
+				83C75A4812BB71060067F040 /* wave.c in Sources */,
+				83C75AB012BBD7D90067F040 /* ahx.c in Sources */,
+				83C75AB112BBD7D90067F040 /* import.c in Sources */,
+				83C75AB212BBD7D90067F040 /* mod.c in Sources */,
+				83C75ABA12BBD7FB0067F040 /* pattern.c in Sources */,
+				83C75ABB12BBD7FB0067F040 /* visu.c in Sources */,
+				83C75ABC12BBD7FB0067F040 /* wavetableview.c in Sources */,
+				83C75ACC12BBD81C0067F040 /* background.c in Sources */,
+				83C75ACD12BBD81C0067F040 /* bgcell.c in Sources */,
+				83C75ACE12BBD81C0067F040 /* font.c in Sources */,
+				83C75ACF12BBD81C0067F040 /* gfx.c in Sources */,
+				83C75AD012BBD81C0067F040 /* levelbase.c in Sources */,
+				83C75AD112BBD81C0067F040 /* objhdr.c in Sources */,
+				83C75AE812BBD8340067F040 /* bevel.c in Sources */,
+				83C75AE912BBD8340067F040 /* dialog.c in Sources */,
+				83C75AEA12BBD8340067F040 /* filebox.c in Sources */,
+				83C75AEB12BBD8340067F040 /* menu.c in Sources */,
+				83C75AEC12BBD8340067F040 /* mouse.c in Sources */,
+				83C75AED12BBD8340067F040 /* msgbox.c in Sources */,
+				83C75AEE12BBD8340067F040 /* shortcuts.c in Sources */,
+				83C75AEF12BBD8340067F040 /* slider.c in Sources */,
+				83C75AF012BBD8340067F040 /* toolutil.c in Sources */,
+				83C75AF112BBD8340067F040 /* view.c in Sources */,
+				83C75B0812BBD84C0067F040 /* cyd.c in Sources */,
+				83C75B0912BBD84C0067F040 /* cydchr.c in Sources */,
+				83C75B0A12BBD84C0067F040 /* cydcrush.c in Sources */,
+				83C75B0B12BBD84C0067F040 /* cydentry.c in Sources */,
+				83C75B0C12BBD84C0067F040 /* cydflt.c in Sources */,
+				83C75B0D12BBD84C0067F040 /* cydfx.c in Sources */,
+				83C75B0E12BBD84C0067F040 /* cydrvb.c in Sources */,
+				83C75B0F12BBD84C0067F040 /* cydwave.c in Sources */,
+				83C75B1012BBD84C0067F040 /* freqs.c in Sources */,
+				83C75B1112BBD84C0067F040 /* music.c in Sources */,
+				83C75B1712BBD8650067F040 /* bundle.c in Sources */,
+				83C75B1812BBD8650067F040 /* rnd.c in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXVariantGroup section */
+		089C165CFE840E0CC02AAC07 /* InfoPlist.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				089C165DFE840E0CC02AAC07 /* English */,
+			);
+			name = InfoPlist.strings;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
+/* Begin XCBuildConfiguration section */
+		83EBE95A12BBFDF900263A0E /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = "$(ARCHS_STANDARD_32_64_BIT)";
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(HOME)/Library/Frameworks",
+					/Library/Frameworks,
+					"$(FRAMEWORK_SEARCH_PATHS)",
+				);
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					DEBUG,
+					USESDL_IMAGE,
+					STEREOOUTPUT,
+					ENABLEAUDIODUMP,
+					USESDLMUTEXES,
+				);
+				GCC_VERSION = 4.0;
+				"GCC_VERSION[arch=x86_64]" = 4.2;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				HEADER_SEARCH_PATHS = (
+					/Library/Frameworks/SDL_image.framework/Headers,
+					/Library/Frameworks/SDL_mixer.framework/Headers,
+					"$(HOME)/Library/Frameworks/SDL.framework/Headers",
+					/Library/Frameworks/SDL.framework/Headers,
+				);
+				PREBINDING = NO;
+				SDKROOT = macosx10.5;
+				USER_HEADER_SEARCH_PATHS = "../../klystron/src ../src";
+			};
+			name = Release;
+		};
+		83EBE95B12BBFDF900263A0E /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COPY_PHASE_STRIP = NO;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_FIX_AND_CONTINUE = YES;
+				GCC_MODEL_TUNING = G5;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = OSX_Xcode_Prefix.pch;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"CONFIG_PATH=~/.klystrack",
+					USESDL_IMAGE,
+					STEREOOUTPUT,
+					ENABLEAUDIODUMP,
+					USESDLMUTEXES,
+					USESTATICTEMPSTRINGS,
+				);
+				INFOPLIST_FILE = Info.plist;
+				INSTALL_PATH = "$(HOME)/Applications";
+				ONLY_ACTIVE_ARCH = NO;
+				PRODUCT_NAME = Klystrack;
+				WRAPPER_EXTENSION = app;
+			};
+			name = Release;
+		};
+		C01FCF4B08A954540054247B /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COPY_PHASE_STRIP = NO;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_FIX_AND_CONTINUE = YES;
+				GCC_MODEL_TUNING = G5;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = OSX_Xcode_Prefix.pch;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"CONFIG_PATH=~/.klystrack",
+					DEBUG,
+					USESDL_IMAGE,
+					STEREOOUTPUT,
+					ENABLEAUDIODUMP,
+					USESDLMUTEXES,
+					USESTATICTEMPSTRINGS,
+				);
+				INFOPLIST_FILE = Info.plist;
+				INSTALL_PATH = "$(HOME)/Applications";
+				PRODUCT_NAME = Klystrack;
+				WRAPPER_EXTENSION = app;
+			};
+			name = Debug;
+		};
+		C01FCF4F08A954540054247B /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = "$(ARCHS_STANDARD_32_64_BIT)";
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(HOME)/Library/Frameworks",
+					/Library/Frameworks,
+					"$(FRAMEWORK_SEARCH_PATHS)",
+				);
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					DEBUG,
+					USESDL_IMAGE,
+					STEREOOUTPUT,
+					ENABLEAUDIODUMP,
+					USESDLMUTEXES,
+				);
+				GCC_VERSION = 4.0;
+				"GCC_VERSION[arch=x86_64]" = 4.2;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				HEADER_SEARCH_PATHS = (
+					/Library/Frameworks/SDL_image.framework/Headers,
+					/Library/Frameworks/SDL_mixer.framework/Headers,
+					"$(HOME)/Library/Frameworks/SDL.framework/Headers",
+					/Library/Frameworks/SDL.framework/Headers,
+				);
+				ONLY_ACTIVE_ARCH = YES;
+				PREBINDING = NO;
+				SDKROOT = macosx10.5;
+				"SDKROOT[arch=x86_64]" = macosx10.6;
+				USER_HEADER_SEARCH_PATHS = "../../klystron/src ../src";
+			};
+			name = Debug;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		C01FCF4A08A954540054247B /* Build configuration list for PBXNativeTarget "Klystrack" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				C01FCF4B08A954540054247B /* Debug */,
+				83EBE95B12BBFDF900263A0E /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		C01FCF4E08A954540054247B /* Build configuration list for PBXProject "OSX_Xcode" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				C01FCF4F08A954540054247B /* Debug */,
+				83EBE95A12BBFDF900263A0E /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 29B97313FDCFA39411CA2CEA /* Project object */;
+}
