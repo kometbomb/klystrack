@@ -7,6 +7,10 @@ No need to take this document too seriously. Common sense applies. :)
 
 =Stable releases=
 
+==Revision==
+
+Take the corresponding tag from the repository and compile that. E.g. if you want to build 1.5.1, take tags/1.5.1, not the HEAD revision.
+
 ==Filenames==
 
 When uploading a new stable release, please name the file as "klystrack-1.5.1.dmg" or such, adding the platform in the filename in case the extension might collide with another file. E.g. "klystrack-1.5.1-win32.zip" (some other platform might use the zip format).
