@@ -5,3 +5,5 @@
 
   * Wavetable compression
   * Wavetable editing features
+  * More metadata for songs (author, notes)
+  * Subsongs
