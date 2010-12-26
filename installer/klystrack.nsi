@@ -80,6 +80,7 @@ SectionIn RO
   File zip\data\examples\songs\ringmod.kt
   File "zip\data\examples\songs\Sprock'n'Sprawl.kt"
   File zip\data\examples\songs\phonkeh.kt
+  File zip\data\examples\songs\obspatial.kt
   File "zip\data\examples\songs\Paranoimia (Suntronic).kt"
   
   ; For CreateShortCut
@@ -159,6 +160,7 @@ Section Uninstall
   SetOutPath $INSTDIR\examples\songs
   
   Delete ringmod.kt
+  Delete obspatial.kt
   Delete "Sprock'n'Sprawl.kt"
   Delete "Paranoimia (Suntronic).kt"
   Delete phonkeh.kt
