@@ -1,6 +1,7 @@
 #summary Thanks to these people
 
-|| ilkke || graphics, GUI design, example songs and instruments ||
+|| ilkke || graphics, GUI design, example songs (phonkeh.kt, Sprock'n'Sprawl.kt) and instruments ||
 || spot || Amiga port, ideas ||
 || deltafire || OSX port ||
-|| Dr. Mabuse || example song ||
+|| Dr. Mabuse || example song (Paranoimia (Suntronic).kt) ||
+|| null1023 || example song (obspatial.kt) ||
