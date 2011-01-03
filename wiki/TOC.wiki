@@ -5,6 +5,7 @@
     * [IntroductionToTrackers Introduction to trackers]
     * [Features Features]
     * [Changelog Changelog]
+    * [RoadMap Future plans]
     * [BugReports How to report a bug]
     * [Thanks]
   * *How to use klystrack*
