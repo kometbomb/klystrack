@@ -502,8 +502,10 @@ void open_data(void *type, void *action, void *_ret)
 			if (ret) *ret = 0;
 			return;
 		}
+		
 		if (r == 1) 
 		{ 
+			stop(0,0,0); // so loop positions set by pattern loop mode will be restored
 			open_data(MAKEPTR(OD_T_SONG), MAKEPTR(OD_A_SAVE), &ret_val); 
 			if (!ret_val) 
 			{
@@ -511,8 +513,6 @@ void open_data(void *type, void *action, void *_ret)
 				return;
 			}
 		}
-		
-		stop(0,0,0);
 	}
 	
 	const struct 
