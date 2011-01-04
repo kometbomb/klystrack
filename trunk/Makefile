@@ -6,6 +6,7 @@ NSIS := C:/program\ files\ \(x86\)/nsis/makensis.exe /V2 /NOCD
 WGET := wget --quiet
 REV := SubWCRev.exe .
 MAKEBUNDLE := ../klystron/tools/bin/makebundle.exe
+UPLOAD := cmd.exe /c upload.bat
 DLLS := zip/data/SDL.dll zip/data/SDL_mixer.dll zip/data/SDL_image.dll
 DESTDIR ?= /usr
 EXT := .c
