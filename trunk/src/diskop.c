@@ -32,6 +32,7 @@ OTHER DEALINGS IN THE SOFTWARE.
 #include <stdbool.h>
 #include "wave.h"
 #include "snd/freqs.h"
+#include "snd/pack.h"
 
 extern Mused mused;
 extern GfxDomain *domain;
@@ -52,6 +53,17 @@ static void write_wavetable_entry(FILE *f, const CydWavetableEntry *write_wave, 
 		samples = 0;
 	}
 	
+	Uint8 *packed = NULL;
+	Uint32 packed_size = 0;
+	
+	if (write_wave->samples > 0 && write_wave_data)
+	{
+		int pack_flags;
+		packed = bitpack_best(write_wave->data, write_wave->samples, &packed_size, &pack_flags);
+		
+		flags |= (Uint32)pack_flags << 3;
+	}
+	
 	FIX_ENDIAN(flags);
 	FIX_ENDIAN(sample_rate);
 	FIX_ENDIAN(samples);
@@ -66,19 +78,15 @@ static void write_wavetable_entry(FILE *f, const CydWavetableEntry *write_wave, 
 	_VER_WRITE(&loop_end, 0);
 	_VER_WRITE(&base_note, 0);
 	
-	if (write_wave->samples > 0 && write_wave_data)
+	
+	if (packed)
 	{
-		Sint16 *buffer = malloc(write_wave->samples * sizeof(buffer[0]));
+		FIX_ENDIAN(packed_size);
+		_VER_WRITE(&packed_size, 0);
 		
-		for (int i = 0 ; i < write_wave->samples ; ++i)
-		{
-			buffer[i] = write_wave->data[i];
-			FIX_ENDIAN(buffer[i]);
-		}
+		fwrite(packed, sizeof(packed[0]), (packed_size + 7) / 8, f);
 		
-		fwrite(buffer, sizeof(buffer[0]), write_wave->samples, f);
-		
-		free(buffer);
+		free(packed);
 	}
 }
 
