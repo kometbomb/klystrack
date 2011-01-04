@@ -3,11 +3,8 @@ ECHO := echo
 CFG := debug
 MACHINE := -march=pentium2 
 NSIS := C:/program\ files\ \(x86\)/nsis/makensis.exe /V2 /NOCD
-ZIP := pkzipc -exclude=.* -zipdate=newest -path=relative -silent -rec -dir -add
-ZIPEXT := pkzipc -ext -silent
 WGET := wget --quiet
 REV := SubWCRev.exe .
-UPLOAD := cmd.exe /c upload.bat
 MAKEBUNDLE := ../klystron/tools/bin/makebundle.exe
 DLLS := zip/data/SDL.dll zip/data/SDL_mixer.dll zip/data/SDL_image.dll
 DESTDIR ?= /usr
@@ -29,7 +26,10 @@ ifdef COMSPEC
 	SDLFLAGS := -I /mingw/include/sdl
 	SDLLIBS :=  -lSDLmain -lSDL -lSDL_mixer -lSDL_image -lwinmm
 	CFLAGS += -mthreads -DMIDI
+	ZIP := pkzipc -exclude=.* -zipdate=newest -path=relative -silent -rec -dir -add
+	ZIPEXT := pkzipc -ext -silent
 else
+	ZIP := tar czf
 	DLLS = 
 	ARCHIVE := $(ARCHIVE).tar.gz
 	SDLFLAGS := `sdl-config --cflags` -U_FORTIFY_SOURCE
@@ -176,6 +176,8 @@ ifdef COMSPEC
 	@cd zip/data; rm -f ../$(ARCHIVE); $(ZIP) ../$(ARCHIVE) "*"
 	@cp -f zip/klystrack.zip zip/klystrack-`cat src/version`-win32.zip
 else
+	-@rm -f zip/data/Makefile
+	@cd zip; cp -r data klystrack-`cat src/version` ; rm -f $(ARCHIVE); $(ZIP) klystrack-`cat src/version`.tar.gz klystrack-`cat src/version` ; rm -rf klystrack-`cat src/version`
 	@cp -f linux/Makefile zip/data
 endif
 	
