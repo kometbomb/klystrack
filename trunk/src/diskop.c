@@ -453,7 +453,7 @@ int open_wavetable(FILE *f)
 }
 
 
-int open_wavetable_raw(FILE *f)
+static int open_wavetable_raw_inner(FILE *f, int t)
 {
 	size_t pos = ftell(f);
 	fseek(f, 0, SEEK_END);
@@ -468,7 +468,7 @@ int open_wavetable_raw(FILE *f)
 		{
 			fread(w, 1, s, f);
 		
-			cyd_wave_entry_init(&mused.mus.cyd->wavetable_entries[mused.selected_wavetable], w, s, CYD_WAVE_TYPE_SINT8, 1, 1, 1);
+			cyd_wave_entry_init(&mused.mus.cyd->wavetable_entries[mused.selected_wavetable], w, s, t, 1, 1, 1);
 			
 			mused.mus.cyd->wavetable_entries[mused.selected_wavetable].flags = 0;
 			mused.mus.cyd->wavetable_entries[mused.selected_wavetable].sample_rate = 8000;
@@ -481,6 +481,18 @@ int open_wavetable_raw(FILE *f)
 	}
 	
 	return 0;
+}
+
+
+int open_wavetable_raw(FILE *f)
+{
+	return open_wavetable_raw_inner(f, CYD_WAVE_TYPE_SINT8);
+}
+
+
+int open_wavetable_raw_u(FILE *f)
+{
+	return open_wavetable_raw_inner(f, CYD_WAVE_TYPE_UINT8);
 }
 
 
@@ -531,7 +543,8 @@ void open_data(void *type, void *action, void *_ret)
 		{ "song", "kt", { open_song, save_song } },
 		{ "instrument", "ki", { open_instrument, save_instrument } },
 		{ "wave", "wav", {open_wavetable, NULL } },
-		{ "raw sample", "", {open_wavetable_raw, NULL} }
+		{ "raw signed", "", {open_wavetable_raw, NULL} },
+		{ "raw unsigned", "", {open_wavetable_raw_u, NULL} }
 	};
 	
 	const char *mode[] = { "rb", "wb" };

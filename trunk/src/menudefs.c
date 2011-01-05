@@ -129,7 +129,8 @@ static const Menu wavetablemenu[] =
 {
 	{ 0, filemenu, "Kill wave", NULL, kill_wavetable_entry, 0, 0 },
 	{ 0, filemenu, "Open .WAV", NULL, open_data, MAKEPTR(OD_T_WAVETABLE), MAKEPTR(OD_A_OPEN) },
-	{ 0, filemenu, "Open 8-bit raw", NULL, open_data, MAKEPTR(OD_T_WAVETABLE_RAW), MAKEPTR(OD_A_OPEN) },
+	{ 0, filemenu, "Open 8-bit signed", NULL, open_data, MAKEPTR(OD_T_WAVETABLE_RAW_S), MAKEPTR(OD_A_OPEN) },
+	{ 0, filemenu, "Open 8-bit unsigned", NULL, open_data, MAKEPTR(OD_T_WAVETABLE_RAW_U), MAKEPTR(OD_A_OPEN) },
 	{ 0, NULL, NULL }
 };
 
