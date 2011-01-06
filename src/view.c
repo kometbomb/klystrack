@@ -819,6 +819,7 @@ void info_line(SDL_Surface *dest_surface, const SDL_Rect *dest, const SDL_Event 
 			{
 				"Enable multiplex",
 				"Multiplex period",
+				"Pitch inaccuracy",
 				"FX bus",
 				"Enable bitcrusher",
 				"Drop bits",
@@ -1431,6 +1432,18 @@ void fx_view(SDL_Surface *dest_surface, const SDL_Rect *dest, const SDL_Event *e
 	}
 	
 	update_rect(&area, &r);
+	
+	r.x += 8;
+	r.w = area.w + area.x - r.x;
+	
+	if ((d = generic_field(event, &r, EDITFX, R_PITCH_INACCURACY, "INACCURACY", "%2d", MAKEPTR(mused.song.pitch_inaccuracy), 2))) 
+	{
+		mused.edit_reverb_param = R_PITCH_INACCURACY;
+		fx_add_param(d);
+	}
+	
+	update_rect(&area, &r);
+	
 	my_separator(&area, &r);
 	
 	r.w = 320 / (CYD_MAX_FX_CHANNELS) - 5;
