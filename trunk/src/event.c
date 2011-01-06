@@ -1573,6 +1573,12 @@ void fx_add_param(int d)
 		}
 		break;
 		
+		case R_PITCH_INACCURACY:
+		{
+			clamp(mused.song.pitch_inaccuracy, d, 0, 12);
+		}
+		break;
+		
 		case R_MULTIPLEX:
 		{
 			flipbit(mused.song.fx[mused.fx_bus].flags, MUS_ENABLE_MULTIPLEX);
