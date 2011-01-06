@@ -3,7 +3,6 @@
 
 = 1.6 =
 
-  * [http://kometbomb.net/2011/01/02/lossless-audio-compression/ Wavetable compression]
   * Wavetable editing features
   * More metadata for songs (author, notes)
   * Subsongs
