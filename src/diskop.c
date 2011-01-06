@@ -40,7 +40,7 @@ extern GfxDomain *domain;
 
 static void write_wavetable_entry(FILE *f, const CydWavetableEntry *write_wave, bool write_wave_data)
 {
-	Uint32 flags = write_wave->flags;
+	Uint32 flags = write_wave->flags & ~(CYD_WAVE_COMPRESSED_DELTA|CYD_WAVE_COMPRESSED_GRAY); // need to unmask bits because they're set by bitpack
 	Uint32 sample_rate = write_wave->sample_rate;
 	Uint32 samples = write_wave->samples, loop_begin = write_wave->loop_begin, loop_end = write_wave->loop_end;
 	Uint16 base_note = write_wave->base_note;
