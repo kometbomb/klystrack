@@ -92,7 +92,13 @@ void instrument_add_param(int a)
 	if (a < 0) a = -1; else if (a > 0) a = 1;
 	
 	if (SDL_GetModState() & KMOD_SHIFT)
-		a *= 16;
+	{
+		switch (mused.selected_param)
+		{
+			case P_BASENOTE: a *= 12; break;
+			default: a *= 16; break;
+		}
+	}
 
 	switch (mused.selected_param)
 	{
@@ -1694,7 +1700,13 @@ void wave_add_param(int d)
 	if (d < 0) d = -1; else if (d > 0) d = 1;
 	
 	if (SDL_GetModState() & KMOD_SHIFT)
-		d *= 256;
+	{
+		switch (mused.wavetable_param)
+		{
+			case W_BASE: d *= 12; break;
+			default: d *= 256; break;
+		}
+	}
 		
 	snapshot_cascade(S_T_WAVE_PARAM, mused.selected_wavetable, mused.wavetable_param);
 
