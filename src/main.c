@@ -382,6 +382,8 @@ int main(int argc, char **argv)
 #ifdef DUMPKEYS
 					debug("SDL_KEYDOWN: time = %.1f sym = %x mod = %x unicode = %x scancode = %x", (double)SDL_GetTicks() / 1000.0, e.key.keysym.sym, e.key.keysym.mod, e.key.keysym.unicode, e.key.keysym.scancode);
 #endif
+					// Translate F12 into SDLK_INSERT (Issue 37)
+					if (e.key.keysym.sym == SDLK_F12) e.key.keysym.sym = SDLK_INSERT;
 
 					// Special multimedia keys look like a-z keypresses but the unicode value is zero
 					// We don't care about the special keys and don't want fake keypresses either
