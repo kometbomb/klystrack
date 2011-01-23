@@ -10,6 +10,7 @@
 		002F39FA09D0881F00EBEB88 /* SDL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 002F39F909D0881F00EBEB88 /* SDL.framework */; };
 		002F3A0009D0884600EBEB88 /* SDL.framework in Copy Frameworks into .app bundle */ = {isa = PBXBuildFile; fileRef = 002F39F909D0881F00EBEB88 /* SDL.framework */; };
 		002F3A2E09D0888800EBEB88 /* SDLMain.m in Sources */ = {isa = PBXBuildFile; fileRef = 002F3A2C09D0888800EBEB88 /* SDLMain.m */; };
+		8329AF8F12ECE929006497E9 /* pack.c in Sources */ = {isa = PBXBuildFile; fileRef = 8329AF8D12ECE929006497E9 /* pack.c */; };
 		83C75A3212BB71060067F040 /* action.c in Sources */ = {isa = PBXBuildFile; fileRef = 83C759F812BB71060067F040 /* action.c */; };
 		83C75A3312BB71060067F040 /* clipboard.c in Sources */ = {isa = PBXBuildFile; fileRef = 83C759FA12BB71060067F040 /* clipboard.c */; };
 		83C75A3412BB71060067F040 /* command.c in Sources */ = {isa = PBXBuildFile; fileRef = 83C759FC12BB71060067F040 /* command.c */; };
@@ -99,6 +100,9 @@
 		29B97324FDCFA39411CA2CEA /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = /System/Library/Frameworks/AppKit.framework; sourceTree = "<absolute>"; };
 		29B97325FDCFA39411CA2CEA /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = /System/Library/Frameworks/Foundation.framework; sourceTree = "<absolute>"; };
 		32CA4F630368D1EE00C91783 /* OSX_Xcode_Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OSX_Xcode_Prefix.pch; sourceTree = "<group>"; };
+		8329AF8C12ECE929006497E9 /* cydtypes.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = cydtypes.h; path = ../../klystron/src/snd/cydtypes.h; sourceTree = SOURCE_ROOT; };
+		8329AF8D12ECE929006497E9 /* pack.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = pack.c; path = ../../klystron/src/snd/pack.c; sourceTree = SOURCE_ROOT; };
+		8329AF8E12ECE929006497E9 /* pack.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = pack.h; path = ../../klystron/src/snd/pack.h; sourceTree = SOURCE_ROOT; };
 		83C759F812BB71060067F040 /* action.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = action.c; path = ../src/action.c; sourceTree = SOURCE_ROOT; };
 		83C759F912BB71060067F040 /* action.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = action.h; path = ../src/action.h; sourceTree = SOURCE_ROOT; };
 		83C759FA12BB71060067F040 /* clipboard.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = clipboard.c; path = ../src/clipboard.c; sourceTree = SOURCE_ROOT; };
@@ -366,6 +370,9 @@
 		83C759F712BB70D30067F040 /* Klystron */ = {
 			isa = PBXGroup;
 			children = (
+				8329AF8C12ECE929006497E9 /* cydtypes.h */,
+				8329AF8D12ECE929006497E9 /* pack.c */,
+				8329AF8E12ECE929006497E9 /* pack.h */,
 				83C75ABD12BBD80C0067F040 /* gfx */,
 				83C75AD212BBD82A0067F040 /* gui */,
 				83C75A7012BB71270067F040 /* macros.h */,
@@ -637,6 +644,7 @@
 				83C75B1112BBD84C0067F040 /* music.c in Sources */,
 				83C75B1712BBD8650067F040 /* bundle.c in Sources */,
 				83C75B1812BBD8650067F040 /* rnd.c in Sources */,
+				8329AF8F12ECE929006497E9 /* pack.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
