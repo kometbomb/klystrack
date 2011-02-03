@@ -343,6 +343,7 @@ int save_song(FILE *f)
 	FIX_ENDIAN(temp32);
 	fwrite(&temp32, 1, sizeof(mused.song.flags), f);
 	fwrite(&mused.song.multiplex_period, 1, sizeof(mused.song.multiplex_period), f);
+	fwrite(&mused.song.pitch_inaccuracy, 1, sizeof(mused.song.pitch_inaccuracy), f);
 	
 	Uint8 len = strlen(mused.song.title);
 	fwrite(&len, 1, 1, f);
