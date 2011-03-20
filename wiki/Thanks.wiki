@@ -5,3 +5,4 @@
 || deltafire || OSX port ||
 || Dr. Mabuse || example song (Paranoimia (Suntronic).kt) ||
 || null1024 || example song (obspatial.kt) ||
+|| Jeremy D. Landry || example song (hskv03-rygar_trance.kt) ||
