@@ -84,6 +84,7 @@ SectionIn RO
   File zip\data\examples\songs\phonkeh.kt
   File zip\data\examples\songs\obspatial.kt
   File "zip\data\examples\songs\Paranoimia (Suntronic).kt"
+  File "zip\data\examples\songs\hskv03-rygar_trance.kt"
   
   ; For CreateShortCut
   
@@ -168,6 +169,7 @@ Section Uninstall
   Delete "Sprock'n'Sprawl.kt"
   Delete "Paranoimia (Suntronic).kt"
   Delete phonkeh.kt
+  Delete hskv03-rygar_trance.kt
   
   SetOutPath $TEMP
   
