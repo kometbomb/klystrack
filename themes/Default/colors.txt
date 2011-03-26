@@ -18,16 +18,16 @@ pattern_instrument = 0x00c8e8
 pattern_instrument_beat = 0x009fba
 pattern_instrument_bar = 0xffffff
 
-pattern_volume = 0xc9a0d0
-pattern_volume_beat = 0x9f61ac
+pattern_volume = 0xa0c9d0
+pattern_volume_beat = 0x619fac
 pattern_volume_bar = 0xffffff
 
 pattern_ctrl = 0xa0c9d0
 pattern_ctrl_beat = 0x619fac
 pattern_ctrl_bar = 0xffffff
 
-pattern_command = 0xd0a0c9
-pattern_command_beat = 0xac619f
+pattern_command = 0x00c8e8
+pattern_command_beat = 0x009fba
 pattern_command_bar = 0xffffff
 
 program_selected = 0xffffff
