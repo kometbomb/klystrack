@@ -9,7 +9,7 @@ See [RoadMap the road map] for future plans.
 
   * Wavetable compression
   * Frequency inaccuracy parameter (for Atari VCS/XL kind of dissonance)
-  * New example song
+  * New example songs
   
 =1.5.1=
 
