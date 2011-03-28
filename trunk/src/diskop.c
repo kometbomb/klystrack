@@ -515,7 +515,7 @@ void open_data(void *type, void *action, void *_ret)
 	
 	if (a == OD_A_OPEN && t == OD_T_SONG)
 	{
-		int r = 1;
+		int r = -1;
 		if (mused.modified) r = confirm_ync(domain, mused.slider_bevel->surface, &mused.largefont, "Save song?");
 		int ret_val;
 				
