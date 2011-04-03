@@ -45,6 +45,9 @@ const int CTRL_BITS = 3;
 const int CMD_CHARS = 4;
 
 
+#define selrow(sel, nor) ((mused.current_patternstep == i) ? (sel) : (nor))
+
+
 static void update_pattern_cursor(const SDL_Rect *area, SDL_Rect *selected_rect, int current_pattern, int patternstep, int pattern_param)
 {
 	if (mused.current_pattern == current_pattern && mused.current_patternstep == patternstep && mused.current_patternx == pattern_param)
@@ -159,7 +162,7 @@ void pattern_view_inner(SDL_Surface *dest_surface, const SDL_Rect *dest, const S
 			mused.console->clip.x += SPACER;
 		
 			if (channel == -1 || !(mused.mus.channel[channel].flags & MUS_CHN_DISABLED))
-				console_set_color(mused.console, timesig(i, colors[COLOR_PATTERN_INSTRUMENT_BAR], colors[COLOR_PATTERN_INSTRUMENT_BEAT], colors[COLOR_PATTERN_INSTRUMENT]), CON_CHARACTER);
+				console_set_color(mused.console, selrow(colors[COLOR_PATTERN_SELECTED], timesig(i, colors[COLOR_PATTERN_INSTRUMENT_BAR], colors[COLOR_PATTERN_INSTRUMENT_BEAT], colors[COLOR_PATTERN_INSTRUMENT])), CON_CHARACTER);
 			
 			if (mused.song.pattern[current_pattern].step[i].instrument != MUS_NOTE_NO_INSTRUMENT)
 				r = console_write_args(mused.console, "%X", mused.song.pattern[current_pattern].step[i].instrument >> 4);
@@ -194,7 +197,7 @@ void pattern_view_inner(SDL_Surface *dest_surface, const SDL_Rect *dest, const S
 			mused.console->clip.x += SPACER;
 			
 			if (channel == -1 || !(mused.mus.channel[channel].flags & MUS_CHN_DISABLED))
-				console_set_color(mused.console, timesig(i, colors[COLOR_PATTERN_VOLUME_BAR], colors[COLOR_PATTERN_VOLUME_BEAT], colors[COLOR_PATTERN_VOLUME]), CON_CHARACTER);
+				console_set_color(mused.console, selrow(colors[COLOR_PATTERN_SELECTED], timesig(i, colors[COLOR_PATTERN_VOLUME_BAR], colors[COLOR_PATTERN_VOLUME_BEAT], colors[COLOR_PATTERN_VOLUME])), CON_CHARACTER);
 						
 			if (mused.song.pattern[current_pattern].step[i].volume <= MAX_VOLUME)
 				r = console_write_args(mused.console, "%X", mused.song.pattern[current_pattern].step[i].volume >> 4);
@@ -233,7 +236,7 @@ void pattern_view_inner(SDL_Surface *dest_surface, const SDL_Rect *dest, const S
 			mused.console->clip.x += SPACER;
 			
 			if (channel == -1 || !(mused.mus.channel[channel].flags & MUS_CHN_DISABLED))
-				console_set_color(mused.console, timesig(i, colors[COLOR_PATTERN_CTRL_BAR], colors[COLOR_PATTERN_CTRL_BEAT], colors[COLOR_PATTERN_CTRL]), CON_CHARACTER);
+				console_set_color(mused.console, selrow(colors[COLOR_PATTERN_SELECTED], timesig(i, colors[COLOR_PATTERN_CTRL_BAR], colors[COLOR_PATTERN_CTRL_BEAT], colors[COLOR_PATTERN_CTRL])), CON_CHARACTER);
 			
 			for (int p = PED_CTRL ; p < PED_COMMAND1 ; ++p)
 			{
@@ -252,7 +255,7 @@ void pattern_view_inner(SDL_Surface *dest_surface, const SDL_Rect *dest, const S
 			mused.console->clip.x += SPACER;
 			
 			if (channel == -1 || !(mused.mus.channel[channel].flags & MUS_CHN_DISABLED))
-				console_set_color(mused.console, timesig(i, colors[COLOR_PATTERN_COMMAND_BAR], colors[COLOR_PATTERN_COMMAND_BEAT], colors[COLOR_PATTERN_COMMAND]), CON_CHARACTER);
+				console_set_color(mused.console, selrow(colors[COLOR_PATTERN_SELECTED], timesig(i, colors[COLOR_PATTERN_COMMAND_BAR], colors[COLOR_PATTERN_COMMAND_BEAT], colors[COLOR_PATTERN_COMMAND])), CON_CHARACTER);
 			
 			for (int p = 0 ; p < 4 ; ++p)
 			{
@@ -344,7 +347,7 @@ static void pattern_view_stepcounter(SDL_Surface *dest_surface, const SDL_Rect *
 			console_set_color(mused.console, colors[COLOR_PATTERN_DISABLED], CON_CHARACTER);
 		else
 		{
-			console_set_color(mused.console, timesig(row, colors[COLOR_PATTERN_BAR], colors[COLOR_PATTERN_BEAT], colors[COLOR_PATTERN_NORMAL]), CON_CHARACTER);
+			console_set_color(mused.console, ((row == mused.current_patternstep) ? colors[COLOR_PATTERN_SELECTED] : timesig(row, colors[COLOR_PATTERN_BAR], colors[COLOR_PATTERN_BEAT], colors[COLOR_PATTERN_NORMAL])), CON_CHARACTER);
 		}
 		
 		if (SHOW_DECIMALS & mused.flags)
