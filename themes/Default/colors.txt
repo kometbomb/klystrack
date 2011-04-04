@@ -1,6 +1,7 @@
 background = 0x0
 main_text = 0xffffff
 small_text = 0xffffff
+button_text = 0xffffff
 
 sequence_selected = 0xffffff
 sequence_bar = 0x800000
