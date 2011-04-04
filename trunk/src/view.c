@@ -710,10 +710,10 @@ void playstop_view(SDL_Surface *dest_surface, const SDL_Rect *dest, const SDL_Ev
 	SDL_Rect button;
 	copy_rect(&button, &r);
 	button.w = my_max(button.w / 2, PLAYSTOP_INFO_W/2 - 4);
-	button_text_event(dest_surface, event, &button, mused.slider_bevel->surface, &mused.smallfont, (mused.flags & SONG_PLAYING) ? BEV_BUTTON_ACTIVE : BEV_BUTTON, BEV_BUTTON_ACTIVE, "PLAY", play, NULL, NULL, NULL);
+	button_text_event(dest_surface, event, &button, mused.slider_bevel->surface, &mused.buttonfont, (mused.flags & SONG_PLAYING) ? BEV_BUTTON_ACTIVE : BEV_BUTTON, BEV_BUTTON_ACTIVE, "PLAY", play, NULL, NULL, NULL);
 	button.x -= ELEMENT_MARGIN;
 	update_rect(&area, &button);
-	button_text_event(dest_surface, event, &button, mused.slider_bevel->surface, &mused.smallfont, BEV_BUTTON, BEV_BUTTON_ACTIVE, "STOP", stop, NULL, NULL, NULL);
+	button_text_event(dest_surface, event, &button, mused.slider_bevel->surface, &mused.buttonfont, BEV_BUTTON, BEV_BUTTON_ACTIVE, "STOP", stop, NULL, NULL, NULL);
 	
 	r.y = button.y + button.h;
 	
@@ -1452,7 +1452,7 @@ void fx_view(SDL_Surface *dest_surface, const SDL_Rect *dest, const SDL_Event *e
 	{
 		char txt[10];
 		sprintf(txt, "FX%d", i);
-		if (button_text_event(dest_surface, event, &r, mused.slider_bevel->surface, &mused.smallfont, i == mused.fx_bus ? BEV_BUTTON_ACTIVE : BEV_BUTTON, BEV_BUTTON_ACTIVE, txt, NULL, MAKEPTR(R_FX_BUS), MAKEPTR(i), NULL) & 1)
+		if (button_text_event(dest_surface, event, &r, mused.slider_bevel->surface, &mused.buttonfont, i == mused.fx_bus ? BEV_BUTTON_ACTIVE : BEV_BUTTON, BEV_BUTTON_ACTIVE, txt, NULL, MAKEPTR(R_FX_BUS), MAKEPTR(i), NULL) & 1)
 		{
 			mused.edit_reverb_param = R_FX_BUS;
 			mused.fx_bus = i;
@@ -1594,7 +1594,7 @@ void fx_view(SDL_Surface *dest_surface, const SDL_Rect *dest, const SDL_Event *e
 		
 		r.w = 32;
 		
-		if (button_text_event(dest_surface, event, &r, mused.slider_bevel->surface, &mused.smallfont, BEV_BUTTON, BEV_BUTTON_ACTIVE, "SET", NULL, NULL, NULL, NULL) & 1)
+		if (button_text_event(dest_surface, event, &r, mused.slider_bevel->surface, &mused.buttonfont, BEV_BUTTON, BEV_BUTTON_ACTIVE, "SET", NULL, NULL, NULL, NULL) & 1)
 		{
 			set_room_size(mused.fx_bus, mused.fx_room_size, mused.fx_room_vol, mused.fx_room_dec);
 		}
@@ -1632,7 +1632,7 @@ void fx_view(SDL_Surface *dest_surface, const SDL_Rect *dest, const SDL_Event *e
 		char tmp[10];
 		snprintf(tmp, sizeof(tmp), "%d", (int)((float)(mused.song.fx[mused.fx_bus].rvb.tap[i].delay / (int)spd * (int)spd) / spd));
 		
-		if (button_text_event(dest_surface, event, &r, mused.slider_bevel->surface, &mused.smallfont, BEV_BUTTON, BEV_BUTTON_ACTIVE, tmp, NULL, NULL, NULL, NULL) & 1)
+		if (button_text_event(dest_surface, event, &r, mused.slider_bevel->surface, &mused.buttonfont, BEV_BUTTON, BEV_BUTTON_ACTIVE, tmp, NULL, NULL, NULL, NULL) & 1)
 		{
 			mused.song.fx[mused.fx_bus].rvb.tap[i].delay = (mused.song.fx[mused.fx_bus].rvb.tap[i].delay) / (int)spd * (int)spd;
 			mused.edit_reverb_param = p;
@@ -1661,7 +1661,7 @@ void fx_view(SDL_Surface *dest_surface, const SDL_Rect *dest, const SDL_Event *e
 		
 		r.w = 32;
 		
-		if (button_text_event(dest_surface, event, &r, mused.slider_bevel->surface, &mused.smallfont, BEV_BUTTON, BEV_BUTTON_ACTIVE, "-INF", NULL, NULL, NULL, NULL) & 1)
+		if (button_text_event(dest_surface, event, &r, mused.slider_bevel->surface, &mused.buttonfont, BEV_BUTTON, BEV_BUTTON_ACTIVE, "-INF", NULL, NULL, NULL, NULL) & 1)
 		{
 			mused.song.fx[mused.fx_bus].rvb.tap[i].gain = CYDRVB_LOW_LIMIT;
 			mused.edit_reverb_param = p;
@@ -1670,7 +1670,7 @@ void fx_view(SDL_Surface *dest_surface, const SDL_Rect *dest, const SDL_Event *e
 		
 		update_rect(&area, &r);
 		
-		if (button_text_event(dest_surface, event, &r, mused.slider_bevel->surface, &mused.smallfont, BEV_BUTTON, BEV_BUTTON_ACTIVE, "0", NULL, NULL, NULL, NULL) & 1)
+		if (button_text_event(dest_surface, event, &r, mused.slider_bevel->surface, &mused.buttonfont, BEV_BUTTON, BEV_BUTTON_ACTIVE, "0", NULL, NULL, NULL, NULL) & 1)
 		{
 			mused.song.fx[mused.fx_bus].rvb.tap[i].gain = 0;
 			mused.edit_reverb_param = p;
@@ -1699,9 +1699,9 @@ void instrument_disk_view(SDL_Surface *dest_surface, const SDL_Rect *dest, const
 	
 	SDL_Rect button = { area.x + 2, area.y, area.w / 2 - 4, area.h };
 	
-	int open = button_text_event(dest_surface, event, &button, mused.slider_bevel->surface, &mused.smallfont, BEV_BUTTON, BEV_BUTTON_ACTIVE, "LOAD", NULL, MAKEPTR(1), NULL, NULL);
+	int open = button_text_event(dest_surface, event, &button, mused.slider_bevel->surface, &mused.buttonfont, BEV_BUTTON, BEV_BUTTON_ACTIVE, "LOAD", NULL, MAKEPTR(1), NULL, NULL);
 	update_rect(&area, &button);
-	int save = button_text_event(dest_surface, event, &button, mused.slider_bevel->surface, &mused.smallfont, BEV_BUTTON, BEV_BUTTON_ACTIVE, "SAVE", NULL, MAKEPTR(2), NULL, NULL);
+	int save = button_text_event(dest_surface, event, &button, mused.slider_bevel->surface, &mused.buttonfont, BEV_BUTTON, BEV_BUTTON_ACTIVE, "SAVE", NULL, MAKEPTR(2), NULL, NULL);
 	update_rect(&area, &button);
 	
 	if (open & 1) open_data(param, MAKEPTR(OD_A_OPEN), 0);
@@ -1766,7 +1766,7 @@ void toolbar_view(SDL_Surface *dest_surface, const SDL_Rect *dest, const SDL_Eve
 	copy_rect(&button, dest);
 	button.w = dest->w - 3 * (dest->h + 2);
 	
-	button_text_event(dest_surface, event, &button, mused.slider_bevel->surface, &mused.smallfont,
+	button_text_event(dest_surface, event, &button, mused.slider_bevel->surface, &mused.buttonfont,
 		BEV_BUTTON, BEV_BUTTON_ACTIVE, 	"MENU", open_menu_action, 0, 0, 0);
 		
 	button.x += button.w;

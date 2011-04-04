@@ -358,6 +358,7 @@ void deinit()
 	font_destroy(&mused.shortcutfont_selected);
 	font_destroy(&mused.headerfont);
 	font_destroy(&mused.headerfont_selected);
+	font_destroy(&mused.buttonfont);
 	free_themes();
 }
 

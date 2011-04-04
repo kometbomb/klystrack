@@ -106,7 +106,8 @@ static void load_colors(const char *cfg)
 				"menu_shortcut_selected",
 				"main_text",
 				"small_text",
-				"background"
+				"background",
+				"button_text"
 			};
 			
 			int i;
@@ -351,6 +352,8 @@ void load_theme(const char *name)
 			font_load_and_set_color(&mused.headerfont, &res, "7x6.fnt", colors[COLOR_MENU_HEADER]);
 			font_destroy(&mused.headerfont_selected);
 			font_load_and_set_color(&mused.headerfont_selected, &res, "7x6.fnt", colors[COLOR_MENU_HEADER_SELECTED]);
+			font_destroy(&mused.buttonfont);
+			font_load_and_set_color(&mused.buttonfont, &res, "7x6.fnt", colors[COLOR_BUTTON_TEXT]);
 		}
 		
 		if (bnd_exists(&res, "8x8.fnt"))

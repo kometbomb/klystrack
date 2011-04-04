@@ -128,7 +128,7 @@ typedef struct
 	Font smallfont, largefont;
 	
 	/* for menu */
-	Font menufont, menufont_selected, headerfont, headerfont_selected, shortcutfont, shortcutfont_selected;
+	Font menufont, menufont_selected, headerfont, headerfont_selected, shortcutfont, shortcutfont_selected, buttonfont;
 	
 	SDL_Surface *screen;
 	char themename[100];
