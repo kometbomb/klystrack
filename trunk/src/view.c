@@ -1789,10 +1789,14 @@ void toolbar_view(SDL_Surface *dest_surface, const SDL_Rect *dest, const SDL_Eve
 		
 	button.x += button.w;
 	
-	button_event(dest_surface, event, &button, mused.slider_bevel->surface, 
+	if (button_event(dest_surface, event, &button, mused.slider_bevel->surface, 
 		!(mused.flags & FULLSCREEN) ? BEV_BUTTON : BEV_BUTTON_ACTIVE, 
 		!(mused.flags & FULLSCREEN) ? BEV_BUTTON : BEV_BUTTON_ACTIVE, 
-		DECAL_TOOLBAR_FULLSCREEN, toggle_fullscreen, 0, 0, 0);
+		DECAL_TOOLBAR_FULLSCREEN, NULL, 0, 0, 0)) 
+	{
+		toggle_fullscreen(0,0,0);
+		return; // dest_surface is now invalid
+	}
 		
 	button.x += button.w;
 	
