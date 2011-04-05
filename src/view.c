@@ -1738,7 +1738,7 @@ void sequence_spectrum_view(SDL_Surface *dest_surface, const SDL_Rect *dest, con
 			SDL_Rect a;
 			copy_rect(&a, dest);
 			a.w += SCROLLBAR;
-			SDL_FillRect(dest_surface, &a, 0);
+			SDL_FillRect(dest_surface, &a, colors[COLOR_BACKGROUND]);
 			SDL_Rect d, s = {0,0,a.w,a.h};
 			SDL_SetClipRect(mused.screen, &a);
 			copy_rect(&d, &a);
