@@ -33,8 +33,6 @@ void spectrum_analyzer_view(SDL_Surface *dest_surface, const SDL_Rect *dest, con
 {
 	SDL_Rect content;
 	copy_rect(&content, dest);
-	adjust_rect(&content, 1);
-	bevel(mused.screen, dest, mused.slider_bevel->surface, BEV_SEQUENCE_BORDER);
 	
 	SDL_Rect clip;
 	SDL_GetClipRect(mused.screen, &clip);
