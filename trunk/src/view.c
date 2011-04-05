@@ -309,7 +309,7 @@ void sequence_view(SDL_Surface *dest_surface, const SDL_Rect *dest, const SDL_Ev
 {
 	char text[200];
 	
-	SDL_SetClipRect(mused.screen, NULL);
+	SDL_SetClipRect(mused.screen, dest);
 	
 	console_clear(mused.console);
 	
@@ -1735,13 +1735,17 @@ void sequence_spectrum_view(SDL_Surface *dest_surface, const SDL_Rect *dest, con
 	{
 		if (mused.logo != NULL)
 		{
-			SDL_Rect d, s = {0,0,dest->w,dest->h};
-			SDL_SetClipRect(mused.screen, dest);
-			copy_rect(&d, dest);
+			SDL_Rect a;
+			copy_rect(&a, dest);
+			a.w += SCROLLBAR;
+			SDL_FillRect(dest_surface, &a, 0);
+			SDL_Rect d, s = {0,0,a.w,a.h};
+			SDL_SetClipRect(mused.screen, &a);
+			copy_rect(&d, &a);
 			d.x = d.w / 2 - mused.logo->surface->w / 2 + d.x;
 			SDL_BlitSurface(mused.logo->surface, &s, dest_surface, &d);
 			SDL_SetClipRect(mused.screen, NULL);
-			if (check_event(event, dest, NULL, NULL, NULL, NULL))
+			if (check_event(event, &a, NULL, NULL, NULL, NULL))
 				mused.flags &= ~SHOW_LOGO;
 		}
 		else
@@ -1751,7 +1755,12 @@ void sequence_spectrum_view(SDL_Surface *dest_surface, const SDL_Rect *dest, con
 	}
 	else if (mused.flags & SHOW_ANALYZER)
 	{
-		spectrum_analyzer_view(dest_surface, dest, event, param);
+		SDL_Rect a;
+		copy_rect(&a, dest);
+		a.w += SCROLLBAR;
+		SDL_SetClipRect(dest_surface, &a);
+		spectrum_analyzer_view(dest_surface, &a, event, param);
+		SDL_SetClipRect(mused.screen, NULL);
 	}
 	else
 	{
