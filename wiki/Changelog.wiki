@@ -5,6 +5,10 @@ _*Note:* Only significant changes and new features are listed here._
 
 See [RoadMap the road map] for future plans.
 
+=1.5.3/1.6=
+
+  * New Blacklyst theme
+
 =1.5.2=
 
   * Wavetable compression
