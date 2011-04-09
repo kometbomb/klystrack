@@ -107,7 +107,8 @@ static void load_colors(const char *cfg)
 				"main_text",
 				"small_text",
 				"background",
-				"button_text"
+				"button_text",
+				"text_shadow"
 			};
 			
 			int i;
@@ -148,8 +149,8 @@ int font_load_and_set_color(Font *font, Bundle *b, char *name, Uint32 color)
 		
 		SDL_BlitSurface(font->surface->surface, NULL, temp, NULL);
 		
-		SDL_Color rgb = { color >> 16, color >> 8, color };
-		SDL_SetColors(temp, &rgb, 1, 1);
+		SDL_Color rgb[] = {{ color >> 16, color >> 8, color }, {(colors[COLOR_TEXT_SHADOW] >> 16) & 255, (colors[COLOR_TEXT_SHADOW] >> 8) & 255,colors[COLOR_TEXT_SHADOW] & 255}};
+		SDL_SetColors(temp, rgb, 1, 2);
 		
 		SDL_BlitSurface(temp, NULL, font->surface->surface, NULL);
 		
