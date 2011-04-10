@@ -2,6 +2,7 @@ background = 0x0
 main_text = 0xffffff
 small_text = 0xffffff
 button_text = 0xffffff
+text_shadow = 0x0
 
 sequence_normal = 0x3eb6a3
 sequence_beat = 0x00f4cd
@@ -30,6 +31,8 @@ pattern_ctrl_bar = 0x00f4cd
 pattern_command = 0x3eb6a3
 pattern_command_beat = 0x00f4cd
 pattern_command_bar = 0x00f4cd
+
+pattern_empty_data = 0xc0000000
 
 program_selected = 0xffffff
 program_even = 0x3eb6a3
