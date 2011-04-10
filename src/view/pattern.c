@@ -379,7 +379,22 @@ static void pattern_header(SDL_Surface *dest_surface, const SDL_Event *event, in
 	
 	if (channel != -1)
 	{
-		sprintf(label, "%02X", channel);
+		if ((mused.flags & COMPACT_VIEW))
+		{
+			const char *fmts[] = {"CHN %02X", "CH%02X", "%02X", "%01X", NULL};
+			const char **ptr = fmts;
+			
+			do
+			{
+				snprintf(label, sizeof(label), *ptr, channel);
+				++ptr;
+				if (!*ptr) { break; }
+				
+			}
+			while (strlen(label) * mused.smallfont.w > pattern_width - button.w - 2);
+		}
+		else
+			snprintf(label, sizeof(label), "%02X", channel);
 	}
 	
 	if (!(mused.flags & COMPACT_VIEW)) 
