@@ -586,7 +586,7 @@ void songinfo1_view(SDL_Surface *dest_surface, const SDL_Rect *dest, const SDL_E
 	songinfo_add_param(d);
 	update_rect(&area, &r);
 	
-	d = generic_field(event, &r, EDITSONGINFO, SI_STEP, "STEP","%02X", MAKEPTR(mused.sequenceview_steps), 2);
+	d = generic_field(event, &r, EDITSONGINFO, SI_STEP, "STEP","%04X", MAKEPTR(mused.sequenceview_steps), 4);
 	songinfo_add_param(d);	
 	update_rect(&area, &r);
 }
@@ -637,12 +637,12 @@ void songinfo2_view(SDL_Surface *dest_surface, const SDL_Rect *dest, const SDL_E
 	
 	r.w = tmp;
 	
-	d = generic_field(event, &r, EDITSONGINFO, SI_RATE, "RATE","%3d", MAKEPTR(mused.song.song_rate), 3);
+	d = generic_field(event, &r, EDITSONGINFO, SI_RATE, "RATE","%4d", MAKEPTR(mused.song.song_rate), 4);
 	songinfo_add_param(d);
 	update_rect(&area, &r);
 	
 	sprintf(speedtext, "%d/%d", mused.time_signature >> 8, mused.time_signature & 0xff);
-	d = generic_field(event, &r, EDITSONGINFO, SI_TIME, "TIME","%5s", speedtext, 5);
+	d = generic_field(event, &r, EDITSONGINFO, SI_TIME, "TIME","%4s", speedtext, 4);
 	songinfo_add_param(d);
 	update_rect(&area, &r);
 }
