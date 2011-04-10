@@ -485,7 +485,7 @@ void free_themes()
 
 Uint32 mix_colors(Uint32 a, Uint32 b)
 {
-	Sint32 ba = (b >> 24) & 0xff;
+	Sint32 ba = 255 - ((b >> 24) & 0xff);
 	Sint32 ar = a & 0xff;
 	Sint32 ag = (a >> 8) & 0xff;
 	Sint32 ab = (a >> 16) & 0xff;
