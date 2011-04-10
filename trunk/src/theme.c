@@ -108,7 +108,8 @@ static void load_colors(const char *cfg)
 				"small_text",
 				"background",
 				"button_text",
-				"text_shadow"
+				"text_shadow",
+				"pattern_empty_data"
 			};
 			
 			int i;
@@ -120,7 +121,7 @@ static void load_colors(const char *cfg)
 					FIX_ENDIAN(colors[i]);
 #if SDL_BYTEORDER == SDL_BIG_ENDIAN
 // fix so that the color is in the 24 bits of RGB8
-					colors[i] >>= 8;
+					colors[i] = (colors[i] >> 8) | ((colors[i] & 0xff) << 24);
 #endif					
 					break;
 				}
@@ -479,4 +480,22 @@ void free_themes()
 	}
 	
 	memset(thememenu, 0, sizeof(thememenu));
+}
+
+
+Uint32 mix_colors(Uint32 a, Uint32 b)
+{
+	Sint32 ba = (b >> 24) & 0xff;
+	Sint32 ar = a & 0xff;
+	Sint32 ag = (a >> 8) & 0xff;
+	Sint32 ab = (a >> 16) & 0xff;
+	Sint32 br = (b & 0xff) - ar;
+	Sint32 bg = ((b >> 8) & 0xff) - ag;
+	Sint32 bb = ((b >> 16) & 0xff) - ab;
+	
+	Uint32 fr = ar + br * ba / 256;
+	Uint32 fg = ag + bg * ba / 256;
+	Uint32 fb = ab + bb * ba / 256;
+	
+	return fr | (fg << 8) | (fb << 16);
 }
