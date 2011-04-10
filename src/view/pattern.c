@@ -46,6 +46,7 @@ const int CMD_CHARS = 4;
 
 
 #define selrow(sel, nor) ((mused.current_patternstep == i) ? (sel) : (nor))
+#define diszero(e, c) ((!(e)) ? mix_colors(c, colors[COLOR_PATTERN_EMPTY_DATA]) : c)
 
 
 static void update_pattern_cursor(const SDL_Rect *area, SDL_Rect *selected_rect, int current_pattern, int patternstep, int pattern_param)
@@ -118,7 +119,7 @@ void pattern_view_inner(SDL_Surface *dest_surface, const SDL_Rect *dest, const S
 			}
 			else
 			{
-				console_set_color(mused.console, base = timesig(i, colors[COLOR_PATTERN_BAR], colors[COLOR_PATTERN_BEAT], colors[COLOR_PATTERN_NORMAL]), CON_CHARACTER);
+				console_set_color(mused.console, base = diszero(mused.song.pattern[current_pattern].step[i].note != MUS_NOTE_NONE, timesig(i, colors[COLOR_PATTERN_BAR], colors[COLOR_PATTERN_BEAT], colors[COLOR_PATTERN_NORMAL])), CON_CHARACTER);
 			}
 		}
 		else
@@ -147,7 +148,9 @@ void pattern_view_inner(SDL_Surface *dest_surface, const SDL_Rect *dest, const S
 		if (mused.song.pattern[current_pattern].step[i].note == MUS_NOTE_RELEASE)
 			r = console_write(mused.console, "\x08\x09\x0b");
 		else if (mused.song.pattern[current_pattern].step[i].note == MUS_NOTE_NONE)
+		{
 			r = console_write(mused.console, emptynote);
+		}
 		else
 			r = console_write(mused.console, notename(mused.song.pattern[current_pattern].step[i].note));
 			
@@ -162,7 +165,7 @@ void pattern_view_inner(SDL_Surface *dest_surface, const SDL_Rect *dest, const S
 			mused.console->clip.x += SPACER;
 		
 			if (channel == -1 || !(mused.mus.channel[channel].flags & MUS_CHN_DISABLED))
-				console_set_color(mused.console, selrow(colors[COLOR_PATTERN_SELECTED], timesig(i, colors[COLOR_PATTERN_INSTRUMENT_BAR], colors[COLOR_PATTERN_INSTRUMENT_BEAT], colors[COLOR_PATTERN_INSTRUMENT])), CON_CHARACTER);
+				console_set_color(mused.console, diszero(mused.song.pattern[current_pattern].step[i].instrument != MUS_NOTE_NO_INSTRUMENT, selrow(colors[COLOR_PATTERN_SELECTED], timesig(i, colors[COLOR_PATTERN_INSTRUMENT_BAR], colors[COLOR_PATTERN_INSTRUMENT_BEAT], colors[COLOR_PATTERN_INSTRUMENT]))), CON_CHARACTER);
 			
 			if (mused.song.pattern[current_pattern].step[i].instrument != MUS_NOTE_NO_INSTRUMENT)
 				r = console_write_args(mused.console, "%X", mused.song.pattern[current_pattern].step[i].instrument >> 4);
@@ -197,7 +200,7 @@ void pattern_view_inner(SDL_Surface *dest_surface, const SDL_Rect *dest, const S
 			mused.console->clip.x += SPACER;
 			
 			if (channel == -1 || !(mused.mus.channel[channel].flags & MUS_CHN_DISABLED))
-				console_set_color(mused.console, selrow(colors[COLOR_PATTERN_SELECTED], timesig(i, colors[COLOR_PATTERN_VOLUME_BAR], colors[COLOR_PATTERN_VOLUME_BEAT], colors[COLOR_PATTERN_VOLUME])), CON_CHARACTER);
+				console_set_color(mused.console, diszero(mused.song.pattern[current_pattern].step[i].volume != MUS_NOTE_NO_VOLUME, selrow(colors[COLOR_PATTERN_SELECTED], timesig(i, colors[COLOR_PATTERN_VOLUME_BAR], colors[COLOR_PATTERN_VOLUME_BEAT], colors[COLOR_PATTERN_VOLUME]))), CON_CHARACTER);
 						
 			if (mused.song.pattern[current_pattern].step[i].volume <= MAX_VOLUME)
 				r = console_write_args(mused.console, "%X", mused.song.pattern[current_pattern].step[i].volume >> 4);
@@ -235,11 +238,11 @@ void pattern_view_inner(SDL_Surface *dest_surface, const SDL_Rect *dest, const S
 		{
 			mused.console->clip.x += SPACER;
 			
-			if (channel == -1 || !(mused.mus.channel[channel].flags & MUS_CHN_DISABLED))
-				console_set_color(mused.console, selrow(colors[COLOR_PATTERN_SELECTED], timesig(i, colors[COLOR_PATTERN_CTRL_BAR], colors[COLOR_PATTERN_CTRL_BEAT], colors[COLOR_PATTERN_CTRL])), CON_CHARACTER);
-			
 			for (int p = PED_CTRL ; p < PED_COMMAND1 ; ++p)
 			{
+				if (channel == -1 || !(mused.mus.channel[channel].flags & MUS_CHN_DISABLED))
+					console_set_color(mused.console, diszero(mused.song.pattern[current_pattern].step[i].ctrl & (MUS_CTRL_BIT << (p - PED_CTRL)), selrow(colors[COLOR_PATTERN_SELECTED], timesig(i, colors[COLOR_PATTERN_CTRL_BAR], colors[COLOR_PATTERN_CTRL_BEAT], colors[COLOR_PATTERN_CTRL]))), CON_CHARACTER);
+			
 				char *bitname = "LSV";
 				r = console_write_args(mused.console, "%c", mused.song.pattern[current_pattern].step[i].ctrl & (MUS_CTRL_BIT << (p - PED_CTRL)) ? bitname[p - PED_CTRL] : emptychar[0]);
 				copy_rect(&clipped, r);
@@ -255,7 +258,7 @@ void pattern_view_inner(SDL_Surface *dest_surface, const SDL_Rect *dest, const S
 			mused.console->clip.x += SPACER;
 			
 			if (channel == -1 || !(mused.mus.channel[channel].flags & MUS_CHN_DISABLED))
-				console_set_color(mused.console, selrow(colors[COLOR_PATTERN_SELECTED], timesig(i, colors[COLOR_PATTERN_COMMAND_BAR], colors[COLOR_PATTERN_COMMAND_BEAT], colors[COLOR_PATTERN_COMMAND])), CON_CHARACTER);
+				console_set_color(mused.console, diszero(mused.song.pattern[current_pattern].step[i].command != 0, selrow(colors[COLOR_PATTERN_SELECTED], timesig(i, colors[COLOR_PATTERN_COMMAND_BAR], colors[COLOR_PATTERN_COMMAND_BEAT], colors[COLOR_PATTERN_COMMAND]))), CON_CHARACTER);
 			
 			for (int p = 0 ; p < 4 ; ++p)
 			{

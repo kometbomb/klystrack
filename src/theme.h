@@ -66,6 +66,7 @@ enum
 	COLOR_BACKGROUND,
 	COLOR_BUTTON_TEXT,
 	COLOR_TEXT_SHADOW,
+	COLOR_PATTERN_EMPTY_DATA,
 	/*-------------*/
 	NUM_COLORS
 };
@@ -78,5 +79,6 @@ void load_theme(const char *name);
 void enum_themes();
 void free_themes();
 void update_theme_menu();
+Uint32 mix_colors(Uint32 a, Uint32 b); // result = a * (1.0-b_alpha) + b*(b_alpha)
 
 #endif
