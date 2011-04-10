@@ -842,10 +842,10 @@ static void switch_track(int d)
 void pattern_event(SDL_Event *e)
 {
 	int last_param = PED_PARAMS - 1;
-	if (!viscol(VC_COMMAND)) last_param = PED_COMMAND1 - 1;
-	if (!viscol(VC_CTRL)) last_param = PED_CTRL - 1;
-	if (!viscol(VC_VOLUME)) last_param = PED_VOLUME1 - 1;
-	if (!viscol(VC_INSTRUMENT)) last_param = PED_INSTRUMENT1 - 1;
+	if (!viscol(VC_COMMAND)) last_param = my_max(PED_COMMAND1 - 1, last_param);
+	else if (!viscol(VC_CTRL)) last_param = my_max(PED_CTRL - 1, last_param);
+	else if (!viscol(VC_VOLUME)) last_param = my_max(PED_VOLUME1 - 1, last_param);
+	else if (!viscol(VC_INSTRUMENT)) last_param = my_max(PED_INSTRUMENT1 - 1, last_param);
 
 	switch (e->type)
 	{
@@ -1037,7 +1037,7 @@ void pattern_event(SDL_Event *e)
 					{
 						if (mused.single_pattern_edit)
 						{
-							mused.current_patternx = last_param;
+							mused.current_patternx = 0;
 						}
 						else
 						{
@@ -1078,7 +1078,7 @@ void pattern_event(SDL_Event *e)
 					{
 						if (mused.single_pattern_edit)
 						{
-							mused.current_patternx = 0;
+							mused.current_patternx = last_param;
 						}
 						else
 						{
