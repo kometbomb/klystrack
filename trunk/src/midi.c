@@ -271,7 +271,7 @@ void midi_init()
 	if (midiInGetNumDevs() == 0) 
 	{
 		midi_device_menu[0].parent = midi_menu;
-		warning("No MIDI devices detected");
+		debug("No MIDI devices detected");
 		return;
 	}
 
