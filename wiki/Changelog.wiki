@@ -8,6 +8,7 @@ See [RoadMap the road map] for future plans.
 =1.5.3=
 
   * New Blacklyst theme
+  * Keypad numbers now select instruments (select the instrument page with CTRL+0-9)
 
 =1.5.2=
 
