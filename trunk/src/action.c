@@ -41,6 +41,7 @@ OTHER DEALINGS IN THE SOFTWARE.
 extern Mused mused;
 extern GfxDomain *domain;
 extern Menu pixelmenu[];
+extern Menu patternlengthmenu[];
 
 bool inside_undo = false;
 
@@ -685,4 +686,26 @@ void flip_bit_action(void *a, void *b, void *c)
 void set_note_jump(void *steps, void *unused1, void *unused2)
 {
 	mused.note_jump = CASTPTR(int, steps);
+}
+
+
+void change_default_pattern_length(void *length, void *unused1, void *unused2)
+{
+	for (int i = 0 ; i < NUM_PATTERNS ; ++i)
+	{
+		if (mused.song.pattern[i].num_steps == mused.default_pattern_length && mused.default_pattern_length < CASTPTR(int,length))
+		{
+			resize_pattern(&mused.song.pattern[i], CASTPTR(int,length));
+		}
+	}
+	
+	mused.sequenceview_steps = mused.default_pattern_length = CASTPTR(int,length);
+	
+	for (Menu *m = patternlengthmenu ; m->text ; ++m)
+	{
+		if (CASTPTR(int, m->p1) == mused.default_pattern_length)
+			m->flags |= MENU_BULLET;
+		else
+			m->flags &= ~MENU_BULLET;
+	}
 }
