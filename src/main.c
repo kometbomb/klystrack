@@ -48,6 +48,7 @@ OTHER DEALINGS IN THE SOFTWARE.
 #include "view/pattern.h"
 #include "view/wavetableview.h"
 #include "mymsg.h"
+#include "key.h"
 
 #ifdef MIDI
 
@@ -318,6 +319,11 @@ int main(int argc, char **argv)
 		int got_event = 0, menu_closed = 0;
 		while (SDL_PollEvent(&e))
 		{
+			if (e.type == SDL_KEYDOWN || e.type == SDL_KEYUP)
+			{
+				translate_key_event(&e.key);
+			}
+		
 			switch (e.type)
 			{
 				case SDL_QUIT:
