@@ -86,6 +86,15 @@ Menu pixelmenu[] =
 };
 
 
+Menu patternlengthmenu[] =
+{
+	{ 0, prefsmenu, "16", NULL, change_default_pattern_length, (void*)16, 0, 0 },
+	{ 0, prefsmenu, "32", NULL, change_default_pattern_length, (void*)32, 0, 0 },
+	{ 0, prefsmenu, "64", NULL, change_default_pattern_length, (void*)64, 0, 0 },
+	{ 0, NULL,NULL },
+};
+
+
 const Menu prefsmenu[] =
 {
 	{ 0, mainmenu, "Theme", thememenu, NULL },
@@ -104,6 +113,7 @@ const Menu prefsmenu[] =
 	{ 0, mainmenu, "Protracker style delete", NULL, MENU_CHECK, &mused.flags, (void*)DELETE_EMPTIES, 0 },
 	{ 0, mainmenu, "Center pattern editor", NULL, MENU_CHECK, &mused.flags, (void*)CENTER_PATTERN_EDITOR, 0 },
 	{ 0, mainmenu, "Decimal numbers", NULL, MENU_CHECK, &mused.flags, (void*)SHOW_DECIMALS, 0 },
+	{ 0, mainmenu, "Default pattern length", patternlengthmenu },
 	{ 0, NULL, NULL }
 };
 

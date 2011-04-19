@@ -99,7 +99,7 @@ typedef struct
 	MusSong song;
 	CydEngine cyd;
 	MusEngine mus;
-	int octave, instrument_page, current_instrument, selected_param, editpos, mode, focus,
+	int octave, instrument_page, current_instrument, default_pattern_length, selected_param, editpos, mode, focus,
 		current_patternstep, current_pattern, current_patternx, 
 		current_sequencepos, sequenceview_steps, single_pattern_edit, 
 		prev_mode, current_sequenceparam, instrument_list_position,
@@ -183,5 +183,6 @@ void resize_pattern(MusPattern * pattern, Uint16 new_size);
 void init_scrollbars();
 void my_open_menu();
 int viscol(int col);
+void post_config_load();
 
 #endif

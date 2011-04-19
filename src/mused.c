@@ -242,12 +242,15 @@ void kt_default_instrument(MusInstrument *inst)
 
 void resize_pattern(MusPattern * pattern, Uint16 new_size)
 {
-	if (new_size > pattern->num_steps)
+	int old_steps = pattern->num_steps;
+	pattern->num_steps = new_size;
+
+	if (new_size > old_steps)
 	{
 		pattern->step = realloc(pattern->step, sizeof(pattern->step[0]) * (size_t)new_size);
+		clear_pattern_range(pattern, old_steps, new_size);
 	}
 	
-	pattern->num_steps = new_size;
 	
 	if (mused.focus == EDITPATTERN)
 	{
@@ -277,7 +280,7 @@ void init(MusInstrument *instrument, MusPattern *pattern, MusSeqPattern sequence
 	mused.current_pattern = 0;
 	mused.current_patternx = 0;
 	mused.current_sequencepos = 0;
-	mused.sequenceview_steps = 16;
+	mused.default_pattern_length = mused.sequenceview_steps = 16;
 	mused.current_sequencetrack = 0;
 	mused.time_signature = 0x0404;
 	mused.prev_mode = 0;
@@ -308,7 +311,7 @@ void init(MusInstrument *instrument, MusPattern *pattern, MusSeqPattern sequence
 	{
 		mused.song.pattern[i].step = NULL; 
 		mused.song.pattern[i].num_steps = 0;
-		resize_pattern(&mused.song.pattern[i], 16);
+		resize_pattern(&mused.song.pattern[i], mused.default_pattern_length);
 	}
 	
 	undo_init(&mused.undo);
@@ -378,4 +381,17 @@ void mirror_flags()
 int viscol(int col)
 {
 	return !(mused.flags & COMPACT_VIEW) || (mused.visible_columns & col);
+}
+
+
+void post_config_load()
+{
+	int new_val = mused.default_pattern_length;
+	mused.default_pattern_length = 16;
+	
+	debug("%d", new_val);
+	
+	change_default_pattern_length(MAKEPTR(new_val), 0, 0);
+	
+	debug("%d", mused.default_pattern_length);
 }
