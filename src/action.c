@@ -81,15 +81,31 @@ void select_pattern_param(void *id, void *position, void *pattern)
 }
 
 
-void select_instrument(void *idx, void *relative, void *unused2)
+void select_instrument_page(void *page, void *unused1, void *unused2)
 {
-	if (relative)
-		mused.current_instrument += CASTPTR(int,idx);
+	mused.instrument_page = CASTPTR(int,page) * 10;
+}
+
+
+void select_instrument(void *idx, void *relative, void *pagey)
+{
+	if (pagey)
+	{
+		mused.current_instrument = mused.instrument_page + CASTPTR(int,idx);
+	}
 	else
-		mused.current_instrument = CASTPTR(int,idx);
-		
-	if (mused.current_instrument >= NUM_INSTRUMENTS) mused.current_instrument = NUM_INSTRUMENTS-1;
-	else if (mused.current_instrument < 0) mused.current_instrument = 0;
+	{
+		if (relative)
+			mused.current_instrument += CASTPTR(int,idx);
+		else
+			mused.current_instrument = CASTPTR(int,idx);
+	}
+			
+	if (mused.current_instrument >= NUM_INSTRUMENTS) 
+		mused.current_instrument = NUM_INSTRUMENTS-1;
+	else if (mused.current_instrument < 0) 
+		mused.current_instrument = 0;
+	
 }
 
 
