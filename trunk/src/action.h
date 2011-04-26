@@ -64,6 +64,7 @@ void change_pixel_scale(void *scale, void*, void*);
 void toggle_fullscreen(void *a, void*b, void*c);
 void change_fullscreen(void *a, void*b, void*c);
 void load_theme_action(void *a, void*b, void*c);
+void load_keymap_action(void *a, void*b, void*c);
 void unmute_all_action(void*, void*, void*);
 void export_wav_action(void *a, void*b, void*c);
 void open_data(void *type, void*b, void*c);

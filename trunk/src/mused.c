@@ -32,6 +32,7 @@ OTHER DEALINGS IN THE SOFTWARE.
 #include "theme.h"
 #include "undo.h"
 #include "edit.h"
+#include "key.h"
 
 extern Mused mused;
 extern Menu editormenu[];
@@ -295,6 +296,7 @@ void init(MusInstrument *instrument, MusPattern *pattern, MusSeqPattern sequence
 	mused.fx_room_dec = 8;
 		
 	strcpy(mused.themename, "Default");
+	strcpy(mused.keymapname, "Default");
 	
 	memset(&mused.cp, 0, sizeof(mused.cp));
 	memset(&mused.song, 0, sizeof(mused.song));
@@ -320,6 +322,7 @@ void init(MusInstrument *instrument, MusPattern *pattern, MusSeqPattern sequence
 	new_song();
 	
 	enum_themes();
+	enum_keymaps();
 	
 	//change_mode(EDITCLASSIC);
 	mused.mode = EDITCLASSIC;
@@ -389,9 +392,5 @@ void post_config_load()
 	int new_val = mused.default_pattern_length;
 	mused.default_pattern_length = 16;
 	
-	debug("%d", new_val);
-	
 	change_default_pattern_length(MAKEPTR(new_val), 0, 0);
-	
-	debug("%d", mused.default_pattern_length);
 }

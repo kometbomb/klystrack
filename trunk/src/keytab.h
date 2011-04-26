@@ -23,13 +23,29 @@ FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 OTHER DEALINGS IN THE SOFTWARE.
 */
 
-#ifndef KEY_H
-#define KEY_H
+#ifndef KEYTAB_H
+#define KEYTAB_H
 
 #include "SDL.h"
 
-void translate_key_event(SDL_KeyboardEvent *e);
-void load_keymap(const char *name);
-void enum_keymaps();
+typedef struct
+{
+	int from_mod;
+	int from_key;
+	int to_mod;
+	int to_key;
+} KeyTran;
+
+typedef struct
+{
+	const char *name;
+	int key;
+} KeyDef;
+
+#define KEYDEF(key) {#key, SDLK_##key}
+#define MODDEF(key) {#key, KMOD_##key}
+
+extern const KeyDef keydefs[];
+extern const KeyDef moddefs[];
 
 #endif

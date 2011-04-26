@@ -408,7 +408,7 @@ void enum_themes()
 	char path[1000];
 	snprintf(path, sizeof(path) - 1, "%s/res", query_resource_directory());
 	DIR *dir = opendir(path);
-	debug("Enumarating themes at %s", path);
+	debug("Enumerating themes at %s", path);
 #else
 	DIR *dir = opendir(TOSTRING(RES_PATH) "/res");
 	debug("Enumerating themes at " TOSTRING(RES_PATH) "/res");
