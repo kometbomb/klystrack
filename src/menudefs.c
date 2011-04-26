@@ -38,6 +38,7 @@ static const Menu showmenu[];
 static const Menu filemenu[];
 
 extern Menu thememenu[];
+extern Menu keymapmenu[];
 
 Menu editormenu[] =
 {
@@ -98,6 +99,7 @@ Menu patternlengthmenu[] =
 const Menu prefsmenu[] =
 {
 	{ 0, mainmenu, "Theme", thememenu, NULL },
+	{ 0, mainmenu, "Keymap", keymapmenu, NULL },
 	{ 0, mainmenu, "", NULL, NULL },
 	{ 0, mainmenu, "Pixel size", pixelmenu },
 	{ 0, mainmenu, "Fullscreen", NULL, MENU_CHECK_NOSET, &mused.flags, (void*)FULLSCREEN, toggle_fullscreen },

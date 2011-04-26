@@ -44,6 +44,7 @@ static const struct { int type; const char *name; void *param; int mask; } confi
 	{ C_INT, "mix_buffer", &mused.mix_buffer },
 	{ C_BOOL, "compact", &mused.flags, COMPACT_VIEW },
 	{ C_STR, "theme", mused.themename, sizeof(mused.themename) - 1 },
+	{ C_STR, "keymap", mused.keymapname, sizeof(mused.keymapname) - 1 },
 	{ C_BOOL, "multichannel_instrument_edit", &mused.flags, MULTICHANNEL_PREVIEW },
 	{ C_BOOL, "show_position_offset", &mused.flags, SHOW_PATTERN_POS_OFFSET },
 	{ C_BOOL, "follow_play_position", &mused.flags, FOLLOW_PLAY_POSITION },
@@ -67,6 +68,7 @@ static void apply_config()
 	change_fullscreen(0, 0, 0);
 	change_pixel_scale(CASTTOPTR(void,mused.pixel_scale), 0, 0);
 	load_theme_action(mused.themename, 0, 0);
+	load_keymap_action(mused.keymapname, 0, 0);
 }
 
 

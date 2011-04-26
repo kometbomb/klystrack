@@ -33,6 +33,7 @@ OTHER DEALINGS IN THE SOFTWARE.
 #include "../../klystron/src/version.h"
 #include "gfx/gfx.h"
 #include "theme.h"
+#include "key.h"
 #include "gui/menu.h"
 #include "export.h"
 #include <stdbool.h>
@@ -514,6 +515,12 @@ void change_fullscreen(void *a, void*b, void*c)
 void load_theme_action(void *name, void*b, void*c)
 {
 	load_theme((char*)name);
+}
+
+
+void load_keymap_action(void *name, void*b, void*c)
+{
+	load_keymap((char*)name);
 }
 
 

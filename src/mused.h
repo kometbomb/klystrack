@@ -131,7 +131,7 @@ typedef struct
 	Font menufont, menufont_selected, headerfont, headerfont_selected, shortcutfont, shortcutfont_selected, buttonfont;
 	
 	SDL_Surface *screen;
-	char themename[100];
+	char themename[100], keymapname[100];
 	int pixel_scale;
 	int mix_rate, mix_buffer;
 	int window_w, window_h;
