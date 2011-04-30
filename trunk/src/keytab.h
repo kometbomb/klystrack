@@ -42,8 +42,8 @@ typedef struct
 	int key;
 } KeyDef;
 
-#define KEYDEF(key) {#key, SDLK_##key}
-#define MODDEF(key) {#key, KMOD_##key}
+#define KEYDEF(key) {"K_"#key, SDLK_##key}
+#define MODDEF(key) {"M_"#key, KMOD_##key}
 
 extern const KeyDef keydefs[];
 extern const KeyDef moddefs[];
