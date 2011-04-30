@@ -311,7 +311,7 @@ void load_keymap(const char *name)
 			
 			if (!fgets(line, sizeof(line) - 1, f)) break;
 			
-			if (from[0] == '#') 
+			if (line[0] == '#') 
 				continue;
 			else if (sscanf(line, "%*[[]%64[^]]%*[]]", from) == 1)
 			{
