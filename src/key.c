@@ -32,6 +32,7 @@ OTHER DEALINGS IN THE SOFTWARE.
 #include "action.h"
 #include "mused.h"
 #include "keytab.h"
+#include <string.h>
 
 extern Mused mused;
 
@@ -61,9 +62,13 @@ static KeyTran keytrans[MAX_KEYTRANS];
 
 void translate_key_event(SDL_KeyboardEvent *e)
 {
+	const int allowed = KMOD_SHIFT|KMOD_CTRL|KMOD_ALT;
+	
+	//debug("key = %u mod = %u %u", e->keysym.sym, e->keysym.mod & allowed, keytrans[0].from_mod);
+
 	for (int i = 0 ; i < MAX_KEYTRANS && !(keytrans[i].from_key == 0 && keytrans[i].from_mod == 0) ; ++i)
 	{
-		if (e->keysym.sym == keytrans[i].from_key && (e->keysym.mod & keytrans[i].from_mod) == keytrans[i].from_mod)
+		if (e->keysym.sym == keytrans[i].from_key && ((e->keysym.mod & allowed) == keytrans[i].from_mod))
 		{
 			e->keysym.sym = keytrans[i].to_key;
 			e->keysym.mod = keytrans[i].to_mod;
@@ -170,30 +175,75 @@ void update_keymap_menu()
 }
 
 
+int parse_key(const char *keys, int *key, int *mod)
+{
+	*mod = 0;
+	*key = 0;
+	
+	char *temp = strdup(keys);
+	int done = 0;
+	char *tok = strtok(temp, " \t");
+	
+	do
+	{
+		if (!tok) break;
+		int found = 0;
+		
+		for (int i = 0 ; keydefs[i].name ; ++i)
+		{
+			if (strcasecmp(tok, keydefs[i].name) == 0)
+			{
+				if (*key != 0) 
+				{
+					warning("More than one key (%s, was %d) specified", tok, *key);
+					done = 1;
+				}
+				
+				*key = keydefs[i].key;
+				found = 1;
+				break;
+			}
+		}
+		
+		for (int i = 0 ; moddefs[i].name ; ++i)
+		{
+			if (strcasecmp(tok, moddefs[i].name) == 0)
+			{
+				*mod |= moddefs[i].key;
+				found = 1;
+				break;
+			}
+		}
+		
+		if (!found && strlen(tok) > 0)
+		{
+			warning("Unknown token %s", tok);
+			break;
+		}
+		
+		tok = strtok(NULL, " \t");
+	}
+	while (!done);
+	
+	free(temp);
+	
+	if (*key == 0)
+	{
+		warning("No keys specified");
+		*mod = 0;
+	}
+	
+	return (*key != 0);
+}
+
+
 int parse_keys(const char *from, const char *to, KeyTran *tran)
 {
-	memset(tran, 0, sizeof(*tran));
-
-	for (int i = 0 ; keydefs[i].name ; ++i)
-	{
-		if (strcmp(from, keydefs[i].name) == 0)
-		{
-			tran->from_key = keydefs[i].key;
-			debug("%s", keydefs[i].name);
-		}
-	}
+	if (!parse_key(from, &tran->from_key, &tran->from_mod)) return 0;
 	
-	for (int i = 0 ; keydefs[i].name ; ++i)
-	{
-		if (strcmp(to, keydefs[i].name) == 0)
-		{
-			tran->to_key = keydefs[i].key;
-			debug("%s", keydefs[i].name);
-			return 1;
-		}
-	}
+	if (!parse_key(to, &tran->to_key, &tran->to_mod)) return 0;
 	
-	return 0;
+	return 1;
 }
 
 
