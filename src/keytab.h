@@ -30,6 +30,7 @@ OTHER DEALINGS IN THE SOFTWARE.
 
 typedef struct
 {
+	int focus;
 	int from_mod;
 	int from_key;
 	int to_mod;
