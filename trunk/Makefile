@@ -169,6 +169,8 @@ zip: doc/* $(THEMES) $(DLLS) examples/instruments/* examples/songs/* linux/Makef
 	@cp examples/songs/*.kt zip/data/examples/songs
 	@cp examples/instruments/*.ki zip/data/examples/instruments
 	@cp res/* zip/data/res
+	@mkdir -p zip/data/key
+	@cp key/* zip/data/key
 	@cp doc/LICENSE zip/data/LICENSE
 	@cp doc/SDL.txt zip/data/SDL.txt
 	@cp doc/SDL_image.txt zip/data/SDL_image.txt

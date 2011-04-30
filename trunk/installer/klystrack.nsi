@@ -50,6 +50,10 @@ SectionIn RO
   File zip\data\res\Gameboy
   File zip\data\res\Classic
   
+  SetOutPath $INSTDIR\key
+  
+  File zip\data\key\FT2
+  
   CreateDirectory $INSTDIR\examples
   
   SetOutPath $INSTDIR\examples\instruments

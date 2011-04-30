@@ -68,7 +68,7 @@ void translate_key_event(SDL_KeyboardEvent *e)
 
 	for (int i = 0 ; i < MAX_KEYTRANS && !(keytrans[i].from_key == 0 && keytrans[i].from_mod == 0) ; ++i)
 	{
-		if (e->keysym.sym == keytrans[i].from_key && ((e->keysym.mod & allowed) == keytrans[i].from_mod))
+		if ((keytrans[i].focus == mused.focus || keytrans[i].focus == -1) && e->keysym.sym == keytrans[i].from_key && ((e->keysym.mod & allowed) == keytrans[i].from_mod))
 		{
 			e->keysym.sym = keytrans[i].to_key;
 			e->keysym.mod = keytrans[i].to_mod;
@@ -298,6 +298,7 @@ void load_keymap(const char *name)
 	if (f)
 	{
 		int lnr = 1;
+		int focus = -1;
 		
 		do
 		{
@@ -310,8 +311,32 @@ void load_keymap(const char *name)
 			
 			if (!fgets(line, sizeof(line) - 1, f)) break;
 			
-			if (sscanf(line, "%[^=]=%[^\r\n]", from, to) == 2 && parse_keys(from, to, &keytrans[trans]))
+			if (from[0] == '#') 
+				continue;
+			else if (sscanf(line, "%*[[]%64[^]]%*[]]", from) == 1)
 			{
+				if (strcasecmp(from, "global") == 0)
+				{
+					focus = -1;
+				}
+				else if (strcasecmp(from, "pattern") == 0)
+				{
+					focus = EDITPATTERN;
+				} 
+				else if (strcasecmp(from, "sequence") == 0)
+				{
+					focus = EDITSEQUENCE;
+				}
+				else if (strcasecmp(from, "instrument") == 0)
+				{
+					focus = EDITINSTRUMENT;
+				}
+				else
+					warning("Unknown GUI focus \"%s\" on line %d", from, lnr);
+			}
+			else if (sscanf(line, "%99[^=]=%99[^\r\n]", from, to) == 2 && parse_keys(from, to, &keytrans[trans]))
+			{
+				keytrans[trans].focus = focus;
 				++trans;
 			}
 			else
