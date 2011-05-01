@@ -69,6 +69,8 @@
 		83C75B1812BBD8650067F040 /* rnd.c in Sources */ = {isa = PBXBuildFile; fileRef = 83C75B1512BBD8650067F040 /* rnd.c */; };
 		83C75C6812BBF7B20067F040 /* 256x256.icns in Resources */ = {isa = PBXBuildFile; fileRef = 83C75C6712BBF7B20067F040 /* 256x256.icns */; };
 		83C75C7212BBF9D80067F040 /* res in Resources */ = {isa = PBXBuildFile; fileRef = 83C75C6B12BBF9D80067F040 /* res */; };
+		83DE4D6E136D7F9E009B63EB /* key.c in Sources */ = {isa = PBXBuildFile; fileRef = 83DE4D6A136D7F9E009B63EB /* key.c */; };
+		83DE4D6F136D7F9E009B63EB /* keytab.c in Sources */ = {isa = PBXBuildFile; fileRef = 83DE4D6C136D7F9E009B63EB /* keytab.c */; };
 		83EBE9F612BC07DE00263A0E /* SDL_mixer.framework in Copy Frameworks into .app bundle */ = {isa = PBXBuildFile; fileRef = 83C75A9812BB71860067F040 /* SDL_mixer.framework */; };
 		83EBE9F712BC07E200263A0E /* SDL_image.framework in Copy Frameworks into .app bundle */ = {isa = PBXBuildFile; fileRef = 83C75A9612BB71860067F040 /* SDL_image.framework */; };
 		8D11072B0486CEB800E47090 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 089C165CFE840E0CC02AAC07 /* InfoPlist.strings */; };
@@ -221,6 +223,10 @@
 		83C75B1612BBD8650067F040 /* rnd.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = rnd.h; path = ../../klystron/src/util/rnd.h; sourceTree = SOURCE_ROOT; };
 		83C75C6712BBF7B20067F040 /* 256x256.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; name = 256x256.icns; path = ../icon/256x256.icns; sourceTree = SOURCE_ROOT; };
 		83C75C6B12BBF9D80067F040 /* res */ = {isa = PBXFileReference; lastKnownFileType = folder; name = res; path = ../res; sourceTree = SOURCE_ROOT; };
+		83DE4D6A136D7F9E009B63EB /* key.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = key.c; path = ../src/key.c; sourceTree = SOURCE_ROOT; };
+		83DE4D6B136D7F9E009B63EB /* key.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = key.h; path = ../src/key.h; sourceTree = SOURCE_ROOT; };
+		83DE4D6C136D7F9E009B63EB /* keytab.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = keytab.c; path = ../src/keytab.c; sourceTree = SOURCE_ROOT; };
+		83DE4D6D136D7F9E009B63EB /* keytab.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = keytab.h; path = ../src/keytab.h; sourceTree = SOURCE_ROOT; };
 		8D1107310486CEB800E47090 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		8D1107320486CEB800E47090 /* Klystrack.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Klystrack.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
@@ -322,6 +328,10 @@
 		83C759F612BB70CA0067F040 /* Klystrack */ = {
 			isa = PBXGroup;
 			children = (
+				83DE4D6A136D7F9E009B63EB /* key.c */,
+				83DE4D6B136D7F9E009B63EB /* key.h */,
+				83DE4D6C136D7F9E009B63EB /* keytab.c */,
+				83DE4D6D136D7F9E009B63EB /* keytab.h */,
 				83C759F812BB71060067F040 /* action.c */,
 				83C759F912BB71060067F040 /* action.h */,
 				83C759FA12BB71060067F040 /* clipboard.c */,
@@ -645,6 +655,8 @@
 				83C75B1712BBD8650067F040 /* bundle.c in Sources */,
 				83C75B1812BBD8650067F040 /* rnd.c in Sources */,
 				8329AF8F12ECE929006497E9 /* pack.c in Sources */,
+				83DE4D6E136D7F9E009B63EB /* key.c in Sources */,
+				83DE4D6F136D7F9E009B63EB /* keytab.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
