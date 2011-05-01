@@ -11,6 +11,7 @@
 		002F3A0009D0884600EBEB88 /* SDL.framework in Copy Frameworks into .app bundle */ = {isa = PBXBuildFile; fileRef = 002F39F909D0881F00EBEB88 /* SDL.framework */; };
 		002F3A2E09D0888800EBEB88 /* SDLMain.m in Sources */ = {isa = PBXBuildFile; fileRef = 002F3A2C09D0888800EBEB88 /* SDLMain.m */; };
 		8329AF8F12ECE929006497E9 /* pack.c in Sources */ = {isa = PBXBuildFile; fileRef = 8329AF8D12ECE929006497E9 /* pack.c */; };
+		833500FC136DE29A007D582E /* key in Resources */ = {isa = PBXBuildFile; fileRef = 833500F9136DE29A007D582E /* key */; };
 		83C75A3212BB71060067F040 /* action.c in Sources */ = {isa = PBXBuildFile; fileRef = 83C759F812BB71060067F040 /* action.c */; };
 		83C75A3312BB71060067F040 /* clipboard.c in Sources */ = {isa = PBXBuildFile; fileRef = 83C759FA12BB71060067F040 /* clipboard.c */; };
 		83C75A3412BB71060067F040 /* command.c in Sources */ = {isa = PBXBuildFile; fileRef = 83C759FC12BB71060067F040 /* command.c */; };
@@ -105,6 +106,9 @@
 		8329AF8C12ECE929006497E9 /* cydtypes.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = cydtypes.h; path = ../../klystron/src/snd/cydtypes.h; sourceTree = SOURCE_ROOT; };
 		8329AF8D12ECE929006497E9 /* pack.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = pack.c; path = ../../klystron/src/snd/pack.c; sourceTree = SOURCE_ROOT; };
 		8329AF8E12ECE929006497E9 /* pack.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = pack.h; path = ../../klystron/src/snd/pack.h; sourceTree = SOURCE_ROOT; };
+		833500F2136DE250007D582E /* FT2 */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = FT2; path = ../key/FT2; sourceTree = SOURCE_ROOT; };
+		833500F7136DE281007D582E /* FT2 */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = FT2; sourceTree = "<group>"; };
+		833500F9136DE29A007D582E /* key */ = {isa = PBXFileReference; lastKnownFileType = folder; name = key; path = ../key; sourceTree = SOURCE_ROOT; };
 		83C759F812BB71060067F040 /* action.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = action.c; path = ../src/action.c; sourceTree = SOURCE_ROOT; };
 		83C759F912BB71060067F040 /* action.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = action.h; path = ../src/action.h; sourceTree = SOURCE_ROOT; };
 		83C759FA12BB71060067F040 /* clipboard.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = clipboard.c; path = ../src/clipboard.c; sourceTree = SOURCE_ROOT; };
@@ -286,6 +290,9 @@
 		29B97314FDCFA39411CA2CEA /* OSX_Xcode */ = {
 			isa = PBXGroup;
 			children = (
+				833500F9136DE29A007D582E /* key */,
+				833500F6136DE281007D582E /* key */,
+				833500F2136DE250007D582E /* FT2 */,
 				83C759F612BB70CA0067F040 /* Klystrack */,
 				83C759F712BB70D30067F040 /* Klystron */,
 				080E96DDFE201D6D7F000001 /* Classes */,
@@ -324,6 +331,15 @@
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
+		};
+		833500F6136DE281007D582E /* key */ = {
+			isa = PBXGroup;
+			children = (
+				833500F7136DE281007D582E /* FT2 */,
+			);
+			name = key;
+			path = ../key;
+			sourceTree = SOURCE_ROOT;
 		};
 		83C759F612BB70CA0067F040 /* Klystrack */ = {
 			isa = PBXGroup;
@@ -570,6 +586,7 @@
 				83C75A4412BB71060067F040 /* version in Resources */,
 				83C75C6812BBF7B20067F040 /* 256x256.icns in Resources */,
 				83C75C7212BBF9D80067F040 /* res in Resources */,
+				833500FC136DE29A007D582E /* key in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
