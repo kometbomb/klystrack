@@ -1,5 +1,7 @@
 #summary Keymap presets
 
+Keymaps can be used to adjust the keyboard commands to match e.g. Protracker key commands.
+
 Keymap presets are in key subdirectory in the program directory. The directory has a file for each preset, similarly to the [Themes theme]/skin system.
 
 =Format=
