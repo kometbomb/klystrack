@@ -16,6 +16,8 @@
 || F4 || sequence editor || 
 || Shift+F4 || classic editor || 
 || F5 || play || 
+|| F6 || play from cursor || 
+|| Shift+F6 || loop patterns at cursor || 
 || F8 || stop || 
 || F9/F10 || octave down/up || 
 || Ctrl+0..9 || Set edit jump (number of rows pattern editor advances when data is entered) || 
