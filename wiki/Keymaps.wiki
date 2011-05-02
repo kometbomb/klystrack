@@ -1,6 +1,6 @@
 #summary Keymap presets
 
-Keymap presets are in key subdirectory in the program directory. The directory has a file for each preset.
+Keymap presets are in key subdirectory in the program directory. The directory has a file for each preset, similarly to the [Themes theme]/skin system.
 
 =Format=
 
