@@ -632,6 +632,13 @@ void sequence_event(SDL_Event *e)
 		
 		switch (e->key.keysym.sym)
 		{
+			case SDLK_SPACE:
+			{
+				if (mused.flags & SONG_PLAYING) stop(0, 0, 0);
+				mused.flags ^= EDIT_MODE;
+			}
+			break;
+		
 			case SDLK_RETURN:
 			{
 				for (int i = (int)mused.song.num_sequences[mused.current_sequencetrack] - 1 ; i >= 0 ; --i)
@@ -992,7 +999,7 @@ void pattern_event(SDL_Event *e)
 				
 					//zero_step(&mused.song.pattern[mused.current_pattern].step[mused.current_patternstep]);				
 					
-					if (mused.current_patternstep + 1 < mused.song.pattern[mused.current_pattern].num_steps) ++mused.current_patternstep;
+					slider_move_position(&mused.current_patternstep, &mused.pattern_position, &mused.pattern_slider_param, mused.note_jump, mused.song.pattern[mused.current_pattern].num_steps);
 				}
 			}
 			break;
