@@ -3,6 +3,8 @@
 
 <wiki:toc max_depth="2" />
 
+*Note:* Shortcuts can be customized using [Keymaps keymap presets].
+
 =Global keyboard shortcuts=
 
 || cursor keys || move around/change values ||
