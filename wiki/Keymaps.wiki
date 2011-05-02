@@ -6,7 +6,9 @@ Keymap presets are in key subdirectory in the program directory. The directory h
 
 The file has one shortcut mapping on each line:
 
-{{{<FROM> = <TO>}}}
+{{{
+<FROM> = <TO>
+}}}
 
 {{{FROM}}} and {{{TO}}} are combinations of modifiers (M_ prefix) and keypresses (K_ prefix). Generally, Alt, Ctrl and Shift are to be used as modifiers when used in combination with other keys. If e.g. pressing just the right Ctrl does something, it has to be used as a key (K_RCTRL).
 
@@ -16,10 +18,12 @@ Valid key definitions can be found in [http://code.google.com/p/klystrack/source
 
 The file is divided in sections so that shortcuts apply globally or to specific editors. The sections are marked as follows:
 
-{{{[global]
+{{{
+[global]
 M_LCTRL K_Q = K_ESCAPE
 
 [pattern]
-M_LCTRL K_Q = K_SPACE}}}
+M_LCTRL K_Q = K_SPACE
+}}}
 
 The above would map {{{LeftCtrl-Q}}} the same as pressing {{{escape}}} except in the pattern editor where it would be the same as pressing {{{space bar}}}. Valid sections are global, pattern, instrument and sequence.
