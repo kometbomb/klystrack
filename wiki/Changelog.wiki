@@ -9,6 +9,7 @@ See [RoadMap the road map] for future plans.
 
   * New Blacklyst theme
   * Keypad numbers now select instruments (select the instrument page with CTRL+0-9)
+  * Customizable key mappings
 
 =1.5.2=
 
