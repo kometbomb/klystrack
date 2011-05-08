@@ -540,7 +540,7 @@ int main(int argc, char **argv)
 				
 				open_data(MAKEPTR(OD_T_SONG), MAKEPTR(OD_A_SAVE), &r);
 				
-				if (r) mused.done = 0; else break; 
+				if (!r) mused.done = 0; else break; 
 			}
 		}
 	}
