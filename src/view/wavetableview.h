@@ -29,5 +29,6 @@ OTHER DEALINGS IN THE SOFTWARE.
 #include "SDL.h"
 
 void wavetable_view(SDL_Surface *dest_surface, const SDL_Rect *dest, const SDL_Event *event, void *param);
+void wavetablelist_view(SDL_Surface *dest_surface, const SDL_Rect *dest, const SDL_Event *event, void *param);
 
 #endif

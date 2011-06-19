@@ -154,7 +154,9 @@ static const View fx_view_tab[] =
 
 static const View wavetable_view_tab[] =
 {
-	{{0, 0, 0, -INFO}, wavetable_view, NULL, -1},
+	{{0, 0, 204, -INFO}, wavetable_view, NULL, -1},
+	{{204, 0, -SCROLLBAR, -INFO}, wavetablelist_view, NULL, -1},
+	{{0 - SCROLLBAR, 0, SCROLLBAR, -INFO }, slider, &mused.wavetable_list_slider_param, EDITWAVETABLE },
 	{{0, 0 - INFO, 0, INFO }, info_line, NULL, -1},
 	{{0, 0, 0, 0}, NULL}
 };

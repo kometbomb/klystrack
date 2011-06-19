@@ -30,6 +30,7 @@ void select_sequence_position(void *channel, void *position, void *);
 void select_pattern_param(void *id, void *position, void *pattern);
 void select_instrument_param(void *idx, void *, void *);
 void select_instrument(void *idx, void *relative, void *pagey);
+void select_wavetable(void *idx, void *, void *);
 void select_instrument_page(void *page, void *relative, void *);
 void change_default_pattern_length(void *length, void *, void *);
 void select_program_step(void *idx, void *, void *);

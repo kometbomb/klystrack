@@ -32,6 +32,7 @@ OTHER DEALINGS IN THE SOFTWARE.
 #include "gui/bevel.h"
 #include "theme.h"
 #include "mybevdefs.h"
+#include "action.h"
 
 extern Mused mused;
 
@@ -125,4 +126,46 @@ void wavetable_view(SDL_Surface *dest_surface, const SDL_Rect *dest, const SDL_E
 		
 		update_rect(&frame, &r);
 	}
+}
+
+
+void wavetablelist_view(SDL_Surface *dest_surface, const SDL_Rect *dest, const SDL_Event *event, void *param)
+{
+	SDL_Rect area;
+	copy_rect(&area, dest);
+	console_set_clip(mused.console, &area);
+	console_clear(mused.console);
+	bevel(mused.screen,&area, mused.slider_bevel->surface, BEV_THIN_FRAME);
+	adjust_rect(&area, 3);
+	console_set_clip(mused.console, &area);
+	SDL_Rect tmp;
+	SDL_GetClipRect(dest_surface, &tmp);
+	SDL_SetClipRect(dest_surface, &area);
+
+	int y = area.y;
+	
+	int start = mused.wavetable_list_position;
+	
+	for (int i = start ; i < CYD_WAVE_MAX_ENTRIES && y < area.h + area.y ; ++i, y += mused.console->font.h)
+	{
+		if (i == mused.selected_wavetable)
+		{
+			SDL_Rect row = { area.x - 1, y - 1, area.w + 2, mused.console->font.h + 1};
+			bevel(mused.screen,&row, mused.slider_bevel->surface, BEV_SELECTED_PATTERN_ROW);
+			console_set_color(mused.console, colors[COLOR_INSTRUMENT_SELECTED], CON_CHARACTER);
+		}
+		else
+		{
+			console_set_color(mused.console, colors[COLOR_INSTRUMENT_NORMAL], CON_CHARACTER);
+		}
+			
+		const CydWavetableEntry *w = &mused.mus.cyd->wavetable_entries[i];
+		check_event(event, console_write_args(mused.console, "%02X %u smp %0.1f kHz\n", i, w->samples, (float)w->sample_rate / 1000), select_wavetable, MAKEPTR(i), 0, 0);
+		
+		slider_set_params(&mused.wavetable_list_slider_param, 0, CYD_WAVE_MAX_ENTRIES - 1, start, i, &mused.wavetable_list_position, 1, SLIDER_VERTICAL, mused.slider_bevel->surface);
+	}
+	
+	SDL_SetClipRect(dest_surface, &tmp);
+	
+	check_mouse_wheel_event(event, dest, &mused.wavetable_list_slider_param);	
 }

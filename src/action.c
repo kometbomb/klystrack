@@ -89,6 +89,7 @@ void select_instrument_page(void *page, void *unused1, void *unused2)
 }
 
 
+
 void select_instrument(void *idx, void *relative, void *pagey)
 {
 	if (pagey)
@@ -107,6 +108,18 @@ void select_instrument(void *idx, void *relative, void *pagey)
 		mused.current_instrument = NUM_INSTRUMENTS-1;
 	else if (mused.current_instrument < 0) 
 		mused.current_instrument = 0;
+	
+}
+
+
+void select_wavetable(void *idx, void *unused1, void *unused2)
+{
+	mused.selected_wavetable = CASTPTR(int,idx);
+			
+	if (mused.selected_wavetable >= CYD_WAVE_MAX_ENTRIES) 
+		mused.selected_wavetable = CYD_WAVE_MAX_ENTRIES-1;
+	else if (mused.selected_wavetable < 0) 
+		mused.selected_wavetable = 0;
 	
 }
 
