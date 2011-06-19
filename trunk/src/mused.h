@@ -106,14 +106,15 @@ typedef struct
 		pattern_position, sequence_position, pattern_horiz_position, sequence_horiz_position,
 		program_position, current_program_step,
 		edit_reverb_param, selected_wavetable, wavetable_param, songinfo_param,
-		loop_store_length, loop_store_loop, note_jump;
+		loop_store_length, loop_store_loop, note_jump, wavetable_list_position;
 	Uint16 *ghost_pattern[MUS_MAX_CHANNELS];
 	int current_sequencetrack;
 	Uint16 time_signature;
 	Clipboard cp;
 	char * edit_buffer;
 	int edit_buffer_size;
-	SliderParam sequence_slider_param, pattern_slider_param, program_slider_param, instrument_list_slider_param, pattern_horiz_slider_param, sequence_horiz_slider_param;
+	SliderParam sequence_slider_param, pattern_slider_param, program_slider_param, instrument_list_slider_param, 
+		pattern_horiz_slider_param, sequence_horiz_slider_param, wavetable_list_slider_param;
 	/*---*/
 	char * edit_backup_buffer;
 	Selection selection;
