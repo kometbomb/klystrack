@@ -137,6 +137,7 @@ void wavetablelist_view(SDL_Surface *dest_surface, const SDL_Rect *dest, const S
 	SDL_Rect area;
 	copy_rect(&area, dest);
 	console_set_clip(mused.console, &area);
+	const int chars = area.w / mused.console->font.w - 3;
 	console_clear(mused.console);
 	bevel(mused.screen,&area, mused.slider_bevel->surface, BEV_THIN_FRAME);
 	adjust_rect(&area, 3);
@@ -151,9 +152,9 @@ void wavetablelist_view(SDL_Surface *dest_surface, const SDL_Rect *dest, const S
 	
 	for (int i = start ; i < CYD_WAVE_MAX_ENTRIES && y < area.h + area.y ; ++i, y += mused.console->font.h)
 	{
+		SDL_Rect row = { area.x - 1, y - 1, area.w + 2, mused.console->font.h + 1};
 		if (i == mused.selected_wavetable)
 		{
-			SDL_Rect row = { area.x - 1, y - 1, area.w + 2, mused.console->font.h + 1};
 			bevel(mused.screen,&row, mused.slider_bevel->surface, BEV_SELECTED_PATTERN_ROW);
 			console_set_color(mused.console, colors[COLOR_INSTRUMENT_SELECTED], CON_CHARACTER);
 		}
@@ -163,7 +164,12 @@ void wavetablelist_view(SDL_Surface *dest_surface, const SDL_Rect *dest, const S
 		}
 			
 		const CydWavetableEntry *w = &mused.mus.cyd->wavetable_entries[i];
-		check_event(event, console_write_args(mused.console, "%02X %u smp %0.1f kHz\n", i, w->samples, (float)w->sample_rate / 1000), select_wavetable, MAKEPTR(i), 0, 0);
+		char temp[1000] = "";
+		
+		if (w->samples > 0)
+			snprintf(temp, chars, "%u smp %0.1f kHz", w->samples, (float)w->sample_rate / 1000);
+		
+		check_event(event, console_write_args(mused.console, "%02X %s\n", i, temp), select_wavetable, MAKEPTR(i), 0, 0);
 		
 		slider_set_params(&mused.wavetable_list_slider_param, 0, CYD_WAVE_MAX_ENTRIES - 1, start, i, &mused.wavetable_list_position, 1, SLIDER_VERTICAL, mused.slider_bevel->surface);
 	}
