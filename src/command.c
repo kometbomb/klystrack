@@ -145,7 +145,7 @@ Uint16 validate_command(Uint16 command)
 	{
 		if (i->maxv != -1 && i->minv != -1)
 		{
-			Uint16 v = (~i->mask) & command;
+			Uint16 v = ((~i->mask) & command) & ~0x8000;
 			Uint16 c = command & 0x8000;
 			v = my_min(i->maxv, my_max(i->minv, v));
 			command = (command & i->mask) | v | c;
