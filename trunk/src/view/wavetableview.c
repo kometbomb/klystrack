@@ -84,9 +84,9 @@ void wavetable_view(SDL_Surface *dest_surface, const SDL_Rect *dest, const SDL_E
 			wave_add_param(d);
 		}
 		
-		update_rect(&frame, &r);
-		
 		r.w = 128;
+		
+		update_rect(&frame, &r);
 		
 		generic_flags(event, &r, EDITWAVETABLE, W_INTERPOLATE, "NO INTERPOLATION", &w->flags, CYD_WAVE_NO_INTERPOLATION);
 		
@@ -96,15 +96,9 @@ void wavetable_view(SDL_Surface *dest_surface, const SDL_Rect *dest, const SDL_E
 	my_separator(&frame, &r);
 	
 	{
-		r.w = 48;
+		r.w = 80;
 		
 		generic_flags(event, &r, EDITWAVETABLE, W_LOOP, "LOOP", &w->flags, CYD_WAVE_LOOP);
-		
-		update_rect(&frame, &r);
-		
-		r.w = 76;
-		
-		generic_flags(event, &r, EDITWAVETABLE, W_LOOPPINGPONG, "PINGPONG", &w->flags, CYD_WAVE_PINGPONG);
 		
 		update_rect(&frame, &r);
 		
@@ -118,6 +112,15 @@ void wavetable_view(SDL_Surface *dest_surface, const SDL_Rect *dest, const SDL_E
 		}
 		
 		update_rect(&frame, &r);
+		
+		r.w = 80;
+		
+		generic_flags(event, &r, EDITWAVETABLE, W_LOOPPINGPONG, "PINGPONG", &w->flags, CYD_WAVE_PINGPONG);
+		
+		update_rect(&frame, &r);
+		
+		
+		r.w = 112;
 		
 		if ((d = generic_field(event, &r, EDITWAVETABLE, W_LOOPEND, "END", "%7d", MAKEPTR(w->loop_end), 7)) != 0)
 		{
