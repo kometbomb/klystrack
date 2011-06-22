@@ -106,7 +106,7 @@ typedef struct
 		pattern_position, sequence_position, pattern_horiz_position, sequence_horiz_position,
 		program_position, current_program_step,
 		edit_reverb_param, selected_wavetable, wavetable_param, songinfo_param,
-		loop_store_length, loop_store_loop, note_jump, wavetable_list_position;
+		loop_store_length, loop_store_loop, note_jump, wavetable_list_position, wavetable_preview_idx;
 	Uint16 *ghost_pattern[MUS_MAX_CHANNELS];
 	int current_sequencetrack;
 	Uint16 time_signature;
@@ -152,6 +152,9 @@ typedef struct
 	SHType last_snapshot;
 	int last_snapshot_a, last_snapshot_b;
 	bool modified;
+	/*------------*/
+	SDL_Surface *wavetable_preview;
+	
 	
 #ifdef MIDI
 	Uint32 midi_device;

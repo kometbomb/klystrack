@@ -328,6 +328,8 @@ void init(MusInstrument *instrument, MusPattern *pattern, MusSeqPattern sequence
 	mused.mode = EDITCLASSIC;
 	mused.focus = EDITPATTERN;
 	mused.single_pattern_edit = 1;
+	
+	mused.wavetable_preview_idx = -1;
 		
 	debug("undo = %p redo = %p", mused.undo, mused.redo);
 	
@@ -367,6 +369,9 @@ void deinit()
 	font_destroy(&mused.headerfont_selected);
 	font_destroy(&mused.buttonfont);
 	free_themes();
+	
+	if (mused.wavetable_preview)
+		SDL_FreeSurface(mused.wavetable_preview);
 }
 
 
