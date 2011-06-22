@@ -178,3 +178,57 @@ void wavetablelist_view(SDL_Surface *dest_surface, const SDL_Rect *dest, const S
 	
 	check_mouse_wheel_event(event, dest, &mused.wavetable_list_slider_param);	
 }
+
+
+static void update_sample_preview(const SDL_Surface *dest, const SDL_Rect* area)
+{
+	if (!mused.wavetable_preview || (mused.wavetable_preview->w != area->w || mused.wavetable_preview->h != area->h))
+	{
+		if (mused.wavetable_preview) SDL_FreeSurface(mused.wavetable_preview);
+		
+		mused.wavetable_preview = SDL_CreateRGBSurface(SDL_SWSURFACE, area->w, area->h, dest->format->BitsPerPixel, 
+                                  dest->format->Rmask, dest->format->Gmask, dest->format->Bmask, 0);
+	}
+	
+	if (mused.wavetable_preview_idx == mused.selected_wavetable) return;
+	
+	mused.wavetable_preview_idx = mused.selected_wavetable;
+	
+	SDL_FillRect(mused.wavetable_preview, NULL, colors[COLOR_WAVETABLE_BACKGROUND]);
+
+	const CydWavetableEntry *w = &mused.mus.cyd->wavetable_entries[mused.selected_wavetable];
+	
+	if (w->samples > 0)
+	{
+		const int gran = w->samples / area->w;
+		Sint16 *ptr = w->data;
+		int c = 0;
+	
+		for (int i = 0  ; i < area->w ; ++i)
+		{
+			int min_sample = 32768, max_sample = -32768;
+			for (int x = 0 ; x < gran && c < w->samples ; ++x, ++c, ++ptr)
+			{
+				min_sample = my_min(min_sample, *ptr);
+				max_sample = my_max(max_sample, *ptr);
+			}
+			
+			min_sample = area->h * min_sample / 32768;
+			max_sample = area->h * max_sample / 32768;
+			
+			SDL_Rect r = { i, area->h / 2 + min_sample / 2, 1, (max_sample - min_sample) / 2 + 1 };
+			
+			SDL_FillRect(mused.wavetable_preview, &r, colors[COLOR_WAVETABLE_SAMPLE]);
+		}
+	}
+}
+
+void wavetable_sample_view(SDL_Surface *dest_surface, const SDL_Rect *dest, const SDL_Event *event, void *param)
+{
+	SDL_Rect area;
+	copy_rect(&area, dest);
+	bevel(mused.screen,&area, mused.slider_bevel->surface, BEV_THIN_FRAME);
+	adjust_rect(&area, 3);
+	update_sample_preview(dest_surface, &area);
+	SDL_BlitSurface(mused.wavetable_preview, NULL, dest_surface, &area);
+}
