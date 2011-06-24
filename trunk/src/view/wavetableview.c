@@ -189,8 +189,7 @@ static void update_sample_preview(const SDL_Surface *dest, const SDL_Rect* area)
 		mused.wavetable_preview = SDL_CreateRGBSurface(SDL_SWSURFACE, area->w, area->h, dest->format->BitsPerPixel, 
                                   dest->format->Rmask, dest->format->Gmask, dest->format->Bmask, 0);
 	}
-	
-	if (mused.wavetable_preview_idx == mused.selected_wavetable) return;
+	else if (mused.wavetable_preview_idx == mused.selected_wavetable) return;
 	
 	mused.wavetable_preview_idx = mused.selected_wavetable;
 	
@@ -200,7 +199,7 @@ static void update_sample_preview(const SDL_Surface *dest, const SDL_Rect* area)
 	
 	if (w->samples > 0)
 	{
-		const int gran = w->samples / area->w;
+		const int gran = my_max(1, w->samples / area->w);
 		Sint16 *ptr = w->data;
 		int c = 0;
 	
