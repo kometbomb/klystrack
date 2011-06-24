@@ -33,6 +33,7 @@ OTHER DEALINGS IN THE SOFTWARE.
 #include "wave.h"
 #include "snd/freqs.h"
 #include "snd/pack.h"
+#include "view/wavetableview.h"
 
 extern Mused mused;
 extern GfxDomain *domain;
@@ -447,6 +448,8 @@ int open_wavetable(FILE *f)
 		
 		wave_destroy(w);
 		
+		invalidate_wavetable_view();
+		
 		return 1;
 	}
 	
@@ -477,6 +480,8 @@ static int open_wavetable_raw_inner(FILE *f, int t)
 			
 			free(w);
 			
+			invalidate_wavetable_view();
+			
 			return 1;
 		}
 	}
@@ -502,6 +507,8 @@ int open_instrument(FILE *f)
 	if (!mus_load_instrument_file2(f, &mused.song.instrument[mused.current_instrument], mused.mus.cyd->wavetable_entries)) return 0;
 	
 	mused.modified = true;
+	
+	invalidate_wavetable_view();
 	
 	return 1;
 }

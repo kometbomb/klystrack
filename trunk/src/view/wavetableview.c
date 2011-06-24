@@ -216,7 +216,7 @@ static void update_sample_preview(const SDL_Surface *dest, const SDL_Rect* area)
 			min_sample = area->h * min_sample / 32768;
 			max_sample = area->h * max_sample / 32768;
 			
-			SDL_Rect r = { i, area->h / 2 + min_sample / 2, 1, (max_sample - min_sample) / 2 + 1 };
+			SDL_Rect r = { i, area->h / 2 + min_sample, 1, (max_sample - min_sample) + 1 };
 			
 			SDL_FillRect(mused.wavetable_preview, &r, colors[COLOR_WAVETABLE_SAMPLE]);
 		}
@@ -231,4 +231,10 @@ void wavetable_sample_view(SDL_Surface *dest_surface, const SDL_Rect *dest, cons
 	adjust_rect(&area, 3);
 	update_sample_preview(dest_surface, &area);
 	SDL_BlitSurface(mused.wavetable_preview, NULL, dest_surface, &area);
+}
+
+
+void invalidate_wavetable_view()
+{
+	mused.wavetable_preview_idx = -1;
 }

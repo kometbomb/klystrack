@@ -33,6 +33,7 @@ OTHER DEALINGS IN THE SOFTWARE.
 #include "undo.h"
 #include "edit.h"
 #include "key.h"
+#include "view/wavetableview.h"
 
 extern Mused mused;
 extern Menu editormenu[];
@@ -232,6 +233,8 @@ void new_song()
 	undo_init(&mused.redo);
 	
 	mused.modified = false;
+	
+	invalidate_wavetable_view();
 }
 
 
@@ -329,8 +332,6 @@ void init(MusInstrument *instrument, MusPattern *pattern, MusSeqPattern sequence
 	mused.focus = EDITPATTERN;
 	mused.single_pattern_edit = 1;
 	
-	mused.wavetable_preview_idx = -1;
-		
 	debug("undo = %p redo = %p", mused.undo, mused.redo);
 	
 	debug("init done");
