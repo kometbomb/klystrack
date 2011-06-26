@@ -38,6 +38,7 @@ OTHER DEALINGS IN THE SOFTWARE.
 #include "export.h"
 #include <stdbool.h>
 #include "gui/mouse.h"
+#include "view/wavetableview.h"
 
 extern Mused mused;
 extern GfxDomain *domain;
