@@ -199,23 +199,28 @@ static void update_sample_preview(const SDL_Surface *dest, const SDL_Rect* area)
 	
 	if (w->samples > 0)
 	{
-		const int gran = my_max(1, w->samples / area->w);
-		Sint16 *ptr = w->data;
-		int c = 0;
-	
-		for (int i = 0  ; i < area->w ; ++i)
+		const int dadd = my_max(256, w->samples * 256 / area->w);
+		const int gadd = my_max(256, area->w * 256 / w->samples);
+		int d = 0;
+		
+		for (int x = 0 ; x < area->w * 256 ; )
 		{
-			int min_sample = 32768, max_sample = -32768;
-			for (int x = 0 ; x < gran && c < w->samples ; ++x, ++c, ++ptr)
+			int min = 32768;
+			int max = -32768;
+			
+			for (int c = 0 ; d < w->samples && c < dadd / 256 ; ++c, ++d)
 			{
-				min_sample = my_min(min_sample, *ptr);
-				max_sample = my_max(max_sample, *ptr);
+				min = my_min(min, w->data[d]);
+				max = my_max(max, w->data[d]);
 			}
 			
-			min_sample = area->h * min_sample / 32768;
-			max_sample = area->h * max_sample / 32768;
+			min = (32768 + min) * area->h / 65536;
+			max = (32768 + max) * area->h / 65536 - min;
+		
+			int prev_x = x - 1;
+			x += gadd;
 			
-			SDL_Rect r = { i, area->h / 2 + min_sample, 1, (max_sample - min_sample) + 1 };
+			SDL_Rect r = { prev_x / 256, min, my_max(1, x / 256 - prev_x / 256), max + 1 };
 			
 			SDL_FillRect(mused.wavetable_preview, &r, colors[COLOR_WAVETABLE_SAMPLE]);
 		}
