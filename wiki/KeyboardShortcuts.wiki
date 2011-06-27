@@ -52,6 +52,7 @@
 || 1 || Note colum: Note-off ||
 || 0/1 || Set legato etc. bits ||
 || Insert/delete/backspace || do what you would expect || 
+|| Shift + Delete || Empty the whole pattern row (In Protracker mode) ||
 || . || no note/no instrument number etc. || 
 || most other keys || enter note ||
 
