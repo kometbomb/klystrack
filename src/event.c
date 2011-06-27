@@ -966,39 +966,44 @@ void pattern_event(SDL_Event *e)
 				}
 				else
 				{
-					switch (mused.current_patternx)
+					if (e->key.keysym.mod & KMOD_SHIFT)
 					{
-						case PED_NOTE:
-							mused.song.pattern[mused.current_pattern].step[mused.current_patternstep].note = MUS_NOTE_NONE;	
-							mused.song.pattern[mused.current_pattern].step[mused.current_patternstep].instrument = MUS_NOTE_NO_INSTRUMENT;	
-							break;
+						zero_step(&mused.song.pattern[mused.current_pattern].step[mused.current_patternstep]);				
+					}
+					else
+					{
+						switch (mused.current_patternx)
+						{
+							case PED_NOTE:
+								mused.song.pattern[mused.current_pattern].step[mused.current_patternstep].note = MUS_NOTE_NONE;	
+								mused.song.pattern[mused.current_pattern].step[mused.current_patternstep].instrument = MUS_NOTE_NO_INSTRUMENT;	
+								break;
+								
+							case PED_INSTRUMENT1:
+							case PED_INSTRUMENT2:
+								mused.song.pattern[mused.current_pattern].step[mused.current_patternstep].instrument = MUS_NOTE_NO_INSTRUMENT;	
+								break;
+								
+							case PED_VOLUME1:
+							case PED_VOLUME2:
+								mused.song.pattern[mused.current_pattern].step[mused.current_patternstep].volume = MUS_NOTE_NO_VOLUME;	
+								break;
+								
+							case PED_LEGATO:
+							case PED_SLIDE:
+							case PED_VIB:
+								mused.song.pattern[mused.current_pattern].step[mused.current_patternstep].ctrl = 0;	
+								break;
 							
-						case PED_INSTRUMENT1:
-						case PED_INSTRUMENT2:
-							mused.song.pattern[mused.current_pattern].step[mused.current_patternstep].instrument = MUS_NOTE_NO_INSTRUMENT;	
-							break;
-							
-						case PED_VOLUME1:
-						case PED_VOLUME2:
-							mused.song.pattern[mused.current_pattern].step[mused.current_patternstep].volume = MUS_NOTE_NO_VOLUME;	
-							break;
-							
-						case PED_LEGATO:
-						case PED_SLIDE:
-						case PED_VIB:
-							mused.song.pattern[mused.current_pattern].step[mused.current_patternstep].ctrl = 0;	
-							break;
-						
-						case PED_COMMAND1:
-						case PED_COMMAND2:
-						case PED_COMMAND3:
-						case PED_COMMAND4:
-							mused.song.pattern[mused.current_pattern].step[mused.current_patternstep].command = 0;	
-							break;
+							case PED_COMMAND1:
+							case PED_COMMAND2:
+							case PED_COMMAND3:
+							case PED_COMMAND4:
+								mused.song.pattern[mused.current_pattern].step[mused.current_patternstep].command = 0;	
+								break;
+						}
 					}
 				
-					//zero_step(&mused.song.pattern[mused.current_pattern].step[mused.current_patternstep]);				
-					
 					slider_move_position(&mused.current_patternstep, &mused.pattern_position, &mused.pattern_slider_param, mused.note_jump, mused.song.pattern[mused.current_pattern].num_steps);
 				}
 			}

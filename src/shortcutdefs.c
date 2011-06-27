@@ -67,7 +67,7 @@ const KeyShortcut shortcuts[] =
 	{ KMOD_CTRL,  SDLK_c, generic_action, copy, 0, 0 },
 	{ KMOD_CTRL, SDLK_v, generic_action, paste, 0, 0 },
 	{ KMOD_CTRL, SDLK_x, generic_action, cut, 0, 0 },
-	{ KMOD_SHIFT, SDLK_DELETE, generic_action, delete, 0, 0 },
+	{ KMOD_CTRL, SDLK_DELETE, generic_action, delete, 0, 0 },
 	{ KMOD_SHIFT, SDLK_INSERT, generic_action, paste, 0, 0 },
 	{ KMOD_CTRL, SDLK_INSERT, generic_action, copy, 0, 0 },
 	{ KMOD_CTRL, SDLK_a, select_all, 0, 0, 0 },
