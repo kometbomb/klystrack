@@ -276,7 +276,33 @@ void change_mode_action(void *mode, void *unused1, void *unused2)
 
 void enable_channel(void *channel, void *unused1, void *unused2)
 {
+	debug("Toggle chn %d", CASTPTR(int,channel));
 	mused.mus.channel[CASTPTR(int,channel)].flags ^= MUS_CHN_DISABLED;
+}
+
+
+void solo_channel(void *channel, void *unused1, void *unused2)
+{
+	int c = 0;
+	
+	for (int i = 0 ; i < MUS_MAX_CHANNELS ; ++i)
+		if (!(mused.mus.channel[i].flags & MUS_CHN_DISABLED))
+			++c;
+			
+	if (c == 1 && !(mused.mus.channel[CASTPTR(int,channel)].flags & MUS_CHN_DISABLED))
+	{
+		debug("Unmuted all");
+		for (int i = 0 ; i < MUS_MAX_CHANNELS ; ++i)
+			mused.mus.channel[i].flags &= ~MUS_CHN_DISABLED;
+	}	
+	else
+	{
+		debug("Solo chn %d", CASTPTR(int,channel));
+		for (int i = 0 ; i < MUS_MAX_CHANNELS ; ++i)
+			mused.mus.channel[i].flags |= MUS_CHN_DISABLED;
+			
+		mused.mus.channel[CASTPTR(int,channel)].flags &= ~MUS_CHN_DISABLED;
+	}
 }
 
 
