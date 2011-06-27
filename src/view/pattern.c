@@ -464,10 +464,16 @@ static void pattern_header(SDL_Surface *dest_surface, const SDL_Event *event, in
 	}
 	
 	if (channel != -1)
+	{
+		void *action = enable_channel;
+		
+		if (SDL_GetModState() & KMOD_SHIFT) action = solo_channel;
+	
 		button_event(dest_surface, event, &button, mused.slider_bevel->surface, 
 			(mused.mus.channel[channel].flags & MUS_CHN_DISABLED) ? BEV_BUTTON : BEV_BUTTON_ACTIVE, 
 			(mused.mus.channel[channel].flags & MUS_CHN_DISABLED) ? BEV_BUTTON : BEV_BUTTON_ACTIVE, 
-			(mused.mus.channel[channel].flags & MUS_CHN_DISABLED) ? DECAL_AUDIO_DISABLED : DECAL_AUDIO_ENABLED, enable_channel, MAKEPTR(channel), 0, 0);
+			(mused.mus.channel[channel].flags & MUS_CHN_DISABLED) ? DECAL_AUDIO_DISABLED : DECAL_AUDIO_ENABLED, action, MAKEPTR(channel), 0, 0);
+	}
 }
 
 
