@@ -54,6 +54,8 @@ You can hide columns you do not need by enabling the compact mode. Set the visib
 
 If you use {{{Return}}} to switch from the sequence to the pattern editor and more than one pattern would be played at that position, the pattern editor will show each pattern side by side. Is makes it easier to see what is happening at the same time on other channels.
 
+Use the channel toggle button to enable and disable channels, holding down {{{Shift}}} while pressing the button solos the channel instead (mutes all other channels).
+
 = Editing tools =
 
 For convenience, klystrack includes some basic tools for editing patterns. Namely, it is possible to clone a pattern and start editing the new pattern ({{{Ctrl+K}}}), find an unused (no note data) pattern ({{{Ctrl+U}}}) and interpolate the command parameter ({{{Ctrl+I}}}).
