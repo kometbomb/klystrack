@@ -35,6 +35,7 @@ typedef struct
 
 void copy();
 void paste();
+void join_paste();
 void cut();
 void delete();
 void begin_selection(int position);
