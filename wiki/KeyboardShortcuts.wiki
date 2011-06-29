@@ -24,6 +24,7 @@
 || CTRL+n || new song || 
 || CTRL+s/o || save/open song || 
 || CTRL+c/v / CTRL+ins/SHIFT+ins || copy/paste || 
+|| CTRL+j || join paste || 
 || CTRL+a || select all ||
 || CTRL+d || select nothing ||
 || CTRL+b || begin selection at cursor ||
@@ -55,6 +56,8 @@
 || Shift + Delete || Empty the whole pattern row (In Protracker mode) ||
 || . || no note/no instrument number etc. || 
 || most other keys || enter note ||
+
+|| Ctrl+Shift+E || Expand pattern x2 ||
 
 =Sequence editor=
 
