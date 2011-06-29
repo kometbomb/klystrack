@@ -297,6 +297,7 @@ void pattern_view_inner(SDL_Surface *dest_surface, const SDL_Rect *dest, const S
 	}
 	
 	if (current_pattern == mused.current_pattern && mused.focus == EDITPATTERN && mused.selection.start != mused.selection.end 
+		&& mused.selection.end > start
 		/*&& !(mused.selection.start > mused.pattern_slider_param.visible_last || mused.selection.end <= mused.pattern_slider_param.visible_first)*/)
 	{
 		if (selection_begin == -1) selection_begin = content.y - 8;
@@ -306,6 +307,7 @@ void pattern_view_inner(SDL_Surface *dest_surface, const SDL_Rect *dest, const S
 		
 		SDL_Rect selection = { clipped.x+2, selection_begin + 1, clipped.w-4, selection_end - selection_begin };
 		adjust_rect(&selection, -4);
+		debug("{%d,%d,%d,%d}", selection.x, selection.y, selection.w, selection.h);
 		bevel(mused.screen,&selection, mused.slider_bevel->surface, BEV_SELECTION);
 	}
 	
