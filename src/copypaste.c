@@ -186,15 +186,83 @@ void paste()
 }
 
 
+void join_paste()
+{
+	switch (mused.focus)
+	{
+		case EDITSEQUENCE:
+		{
+			if (mused.cp.type != CP_SEQUENCE) break;
+			
+			snapshot(S_T_SEQUENCE);
+			
+			size_t items = cp_get_item_count(&mused.cp, sizeof(mused.song.sequence[0][0]));
+			
+			if (items < 1) break;
+			
+			int first = ((MusSeqPattern*)mused.cp.data)[0].position;
+			
+			for (int i = 0 ; i < items ; ++i)
+			{
+				add_sequence(mused.current_sequencetrack, ((MusSeqPattern*)mused.cp.data)[i].position-first+mused.current_sequencepos, ((MusSeqPattern*)mused.cp.data)[i].pattern, ((MusSeqPattern*)mused.cp.data)[i].note_offset);
+			}
+		}
+		break;
+		
+		case EDITPATTERN:
+		{
+			size_t items = cp_get_item_count(&mused.cp, sizeof(mused.song.pattern[0].step[0]));
+			
+			if (items < 1) break;
+			
+			if (mused.cp.type == CP_PATTERNSEGMENT || mused.cp.type == CP_PATTERN)
+			{
+				snapshot(S_T_PATTERN);
+				
+				int ofs;
+				
+				if (mused.cp.type == CP_PATTERN) 
+					ofs = 0;
+				else
+					ofs = mused.current_patternstep;
+				
+				for (int i = 0 ; i < items && i + ofs < mused.song.pattern[mused.current_pattern].num_steps ; ++i)
+				{
+					const MusStep *s = &((MusStep*)mused.cp.data)[i];
+					MusStep *d = &mused.song.pattern[mused.current_pattern].step[ofs + i];
+					if (s->note != MUS_NOTE_NONE)
+						d->note = s->note;
+						
+					if (s->volume != MUS_NOTE_NO_VOLUME)
+						d->volume = s->volume;
+						
+					if (s->instrument != MUS_NOTE_NO_INSTRUMENT)
+						d->instrument = s->instrument;
+						
+					if (s->command != 0)
+						d->command = s->command;
+						
+					if (s->ctrl != 0)
+						d->ctrl = s->ctrl;
+				}
+			}
+		}
+		break;
+	}
+}
+
+
 void begin_selection(int position)
 {
 	mused.selection.start = mused.selection.end;
 	mused.selection.keydown = position;
+	debug("Selected from %d", position);
 }
 
 
 void select_range(int position)
 {
+	debug("Selected from %d-%d", mused.selection.start, position);
 	mused.selection.start = mused.selection.keydown;
 	
 	if (mused.selection.end == position)

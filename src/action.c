@@ -473,7 +473,7 @@ void change_master_volume(void *delta, void *unused1, void *unused2)
 
 void begin_selection_action(void *unused1, void *unused2, void *unused3)
 {
-	switch (mused.mode)
+	switch (mused.focus)
 	{
 		case EDITPATTERN:
 		begin_selection(mused.current_patternstep);
@@ -492,7 +492,7 @@ void begin_selection_action(void *unused1, void *unused2, void *unused3)
 
 void end_selection_action(void *unused1, void *unused2, void *unused3)
 {
-	switch (mused.mode)
+	switch (mused.focus)
 	{
 		case EDITPATTERN:
 		select_range(mused.current_patternstep);
