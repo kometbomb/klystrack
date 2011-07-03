@@ -307,7 +307,6 @@ void pattern_view_inner(SDL_Surface *dest_surface, const SDL_Rect *dest, const S
 		
 		SDL_Rect selection = { clipped.x+2, selection_begin + 1, clipped.w-4, selection_end - selection_begin };
 		adjust_rect(&selection, -4);
-		debug("{%d,%d,%d,%d}", selection.x, selection.y, selection.w, selection.h);
 		bevel(mused.screen,&selection, mused.slider_bevel->surface, BEV_SELECTION);
 	}
 	
