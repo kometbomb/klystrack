@@ -563,7 +563,27 @@ void open_data(void *type, void *action, void *_ret)
 	
 	stop(0,0,0);
 	
-	FILE * f = open_dialog(mode[a], str, open_stuff[t].ext, domain, mused.slider_bevel->surface, &mused.largefont, &mused.smallfont);
+	const char *def = NULL;
+	
+	if (a == OD_A_SAVE)
+	{
+		switch (t)
+		{
+			case OD_T_INSTRUMENT:
+			{
+				def = mused.song.instrument[mused.current_instrument].name;
+			}
+			break;
+			
+			case OD_T_SONG:
+			{
+				def = mused.song.title;
+			}
+			break;
+		}
+	}
+	
+	FILE * f = open_dialog(mode[a], str, open_stuff[t].ext, domain, mused.slider_bevel->surface, &mused.largefont, &mused.smallfont, def);
 	
 	if (f)
 	{

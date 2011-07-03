@@ -59,7 +59,7 @@ void import_module(void *type, void* unused1, void* unused2)
 	char buffer[100];
 	snprintf(buffer, sizeof(buffer), "Import %s module", mod_name[(int)type]);
 
-	FILE * f = open_dialog("rb", buffer, mod_ext[(int)type], domain, mused.slider_bevel->surface, &mused.largefont, &mused.smallfont);
+	FILE * f = open_dialog("rb", buffer, mod_ext[(int)type], domain, mused.slider_bevel->surface, &mused.largefont, &mused.smallfont, NULL);
 	
 	if (!f) return;
 	
