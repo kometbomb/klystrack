@@ -298,7 +298,7 @@ int save_song(FILE *f)
 		
 		n_inst = 0;
 		
-		for (int i = 0 ; i < maxpat ; ++i)
+		for (int i = 0 ; i <= maxpat ; ++i)
 			for (int s = 0 ; s < mused.song.pattern[i].num_steps ; ++s)
 				if (mused.song.pattern[i].step[s].instrument != MUS_NOTE_NO_INSTRUMENT)
 					n_inst = my_max(n_inst, mused.song.pattern[i].step[s].instrument + 1);
@@ -351,7 +351,7 @@ int save_song(FILE *f)
 	if (len)
 		fwrite(mused.song.title, 1, len, f);
 	
-	Uint8 n_fx = CYD_MAX_FX_CHANNELS;
+	Uint8 n_fx = kill_unused_things ? 0 : CYD_MAX_FX_CHANNELS;
 	
 	if (kill_unused_things)
 	{
@@ -361,6 +361,7 @@ int save_song(FILE *f)
 	
 	fwrite(&n_fx, 1, sizeof(n_fx), f);
 	
+	debug("Saving %d fx", n_fx);
 	for (int fx = 0 ; fx < n_fx ; ++fx)
 	{
 		CydFxSerialized temp;
@@ -379,8 +380,9 @@ int save_song(FILE *f)
 	fwrite(&mused.song.default_volume[0], sizeof(mused.song.default_volume[0]), mused.song.num_channels, f);
 	fwrite(&mused.song.default_panning[0], sizeof(mused.song.default_panning[0]), mused.song.num_channels, f);
 	
-	int max_wt = CYD_WAVE_MAX_ENTRIES;
+	int max_wt = kill_unused_things ? 0 : CYD_WAVE_MAX_ENTRIES;
 	
+	debug("Saving %d instruments", n_inst);
 	for (int i = 0 ; i < n_inst ; ++i)
 	{
 		save_instrument_inner(f, &mused.song.instrument[i], NULL);
@@ -415,6 +417,7 @@ int save_song(FILE *f)
 	
 	fwrite(&max_wt, 1, sizeof(Uint8), f);
 	
+	debug("Saving %d wavetable items", max_wt);
 	for (int i = 0 ; i < max_wt ; ++i)
 	{
 		bool used = false;
