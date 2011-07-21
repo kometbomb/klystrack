@@ -28,6 +28,7 @@ OTHER DEALINGS IN THE SOFTWARE.
 #include "import.h"
 #include "mod.h"
 #include "ahx.h"
+#include "xm.h"
 #include "gui/toolutil.h"
 #include "gui/msgbox.h"
 #include "diskop.h"
@@ -53,8 +54,8 @@ void import_module(void *type, void* unused1, void* unused2)
 		if (!r) return;
 	}
 	
-	static const char *mod_name[] = {"a Protracker", "an AHX"};
-	static const char *mod_ext[] = {"mod", "ahx"};
+	static const char *mod_name[] = {"a Protracker", "an AHX", "a FastTracker II"};
+	static const char *mod_ext[] = {"mod", "ahx", "xm"};
 	
 	char buffer[100];
 	snprintf(buffer, sizeof(buffer), "Import %s module", mod_name[(int)type]);
@@ -70,6 +71,7 @@ void import_module(void *type, void* unused1, void* unused2)
 	{
 		case IMPORT_MOD: r = import_mod(f); break;
 		case IMPORT_AHX: r = import_ahx(f); break;
+		case IMPORT_XM: r = import_xm(f); break;
 	}
 	
 	if (!r) 
