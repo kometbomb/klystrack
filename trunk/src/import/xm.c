@@ -235,8 +235,8 @@ int import_xm(FILE *f)
 			
 			FIX_ENDIAN(instrument_ext_hdr.vol_fadeout);
 			
-			Uint32 first_length = 0, total_length = 0, type;
-			Sint32 fine = 0, loop_begin, loop_len;
+			Uint32 first_length = 0, total_length = 0, type = 0;
+			Sint32 fine = 0, loop_begin = 0, loop_len = 0;
 			
 			for (int s = 0 ; s < instrument_hdr.num_samples ; ++s)
 			{
@@ -306,7 +306,7 @@ int import_xm(FILE *f)
 				mused.song.instrument[i].flags = MUS_INST_SET_PW | MUS_INST_SET_CUTOFF;
 				mused.song.instrument[i].vibrato_speed = instrument_ext_hdr.vib_rate;
 				mused.song.instrument[i].vibrato_depth = instrument_ext_hdr.vib_depth;
-				mused.song.instrument[i].vibrato_delay = instrument_ext_hdr.vib_sweep;
+				mused.song.instrument[i].vib_delay = instrument_ext_hdr.vib_sweep;
 								
 				// from mod.c
 				mused.mus.cyd->wavetable_entries[wt_e].base_note = (MIDDLE_C << 8) - (Sint16)fine;

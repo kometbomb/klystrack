@@ -168,7 +168,7 @@ typedef struct
 
 extern Mused mused;
 
-#define NUM_PATTERNS 256
+#define NUM_PATTERNS 1024
 #define NUM_INSTRUMENTS 128
 #define NUM_SEQUENCES 1024
 
