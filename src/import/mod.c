@@ -33,7 +33,7 @@ OTHER DEALINGS IN THE SOFTWARE.
 
 extern Mused mused;
 
-static Uint16 find_command_pt(Uint16 command, int sample_length)
+Uint16 find_command_pt(Uint16 command, int sample_length)
 {
 	if ((command & 0xff00) == 0x0c00)
 		command = MUS_FX_SET_VOLUME | ((command & 0xff) * 2);
