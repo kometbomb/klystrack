@@ -1,0 +1,45 @@
+background = 0x0
+main_text = 0xffffff
+small_text = 0xffffff
+
+sequence_selected = 0xffffff
+sequence_bar = 0xc6c6ce
+sequence_beat = 0xc6c6ce
+sequence_normal = 0xc6c6ce
+sequence_disabled = 0x000000
+
+pattern_normal = 0xcee7e7
+pattern_beat = 0xcee7e7
+pattern_bar = 0xcee7e7
+pattern_selected = 0xffffff
+pattern_disabled = 0x525a63
+
+pattern_instrument = 0xcee7e7
+pattern_instrument_beat = 0xcee7e7
+pattern_instrument_bar = 0xcee7e7
+
+program_selected = 0xffffff
+program_even = 0xcee7e7
+program_odd = 0xcee7e7
+
+instrument_selected = 0xffffff
+instrument_normal = 0xcee7e7
+
+menu = 0xffffff
+menu_selected = 0xffffff
+menu_header = 0xffffff
+menu_header_selected = 0xffffff
+menu_shortcut = 0xffffff
+menu_shortcut_selected = 0xffffff
+
+pattern_volume = 0xcee7e7
+pattern_volume_beat = 0xcee7e7
+pattern_volume_bar = 0xcee7e7
+
+pattern_ctrl = 0xcee7e7
+pattern_ctrl_beat = 0xcee7e7
+pattern_ctrl_bar = 0xcee7e7
+
+pattern_command = 0xcee7e7
+pattern_command_beat = 0xcee7e7
+pattern_command_bar = 0xcee7e7

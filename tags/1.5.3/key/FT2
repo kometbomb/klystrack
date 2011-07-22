@@ -1,0 +1,4 @@
+# Fasttracker 2 key shortcuts
+[pattern]
+M_LSHIFT K_TAB = M_CTRL K_LEFT
+K_TAB = M_CTRL K_RIGHT

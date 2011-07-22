@@ -1,0 +1,33 @@
+background = 0x0
+main_text = 0xffffff
+small_text = 0xffffff
+
+sequence_selected = 0xffffff
+sequence_bar = 0x000080
+sequence_beat = 0x800000
+sequence_normal = 0x000000
+sequence_disabled = 0xa0a0a0
+
+pattern_selected = 0xffffff
+pattern_bar = 0xffffff
+pattern_beat = 0xc0c0ff
+pattern_normal = 0xd0a0d0
+pattern_disabled = 0x808080
+
+pattern_instrument = 0xd0a0d0
+pattern_instrument_bar = 0xffffff
+pattern_instrument_beat = 0xffffff
+
+program_selected = 0xffffff
+program_even = 0xe0d0d0
+program_odd = 0xb0a0b0
+
+instrument_selected = 0xffffff
+instrument_normal = 0xc0c0c0
+
+menu = 0xffffff
+menu_selected = 0xffffff
+menu_header = 0xffffff
+menu_header_selected = 0xffffff
+menu_shortcut = 0xffffff
+menu_shortcut_selected = 0xffffff
