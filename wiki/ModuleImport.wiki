@@ -10,6 +10,10 @@ Currently, only Protracker and AHX modules can be imported. klystrack can't save
 
 Some effects are converted but because Protracker works on sample periods and not notes when e.g. pitch bending, the actual speeds will be off.
 
+=FastTracker II=
+
+Song data is loaded, however multisample instruments only load the first sample. 
+
 =AHX=
 
 klystrack attempts to load AHX modules as perfectly as the differences between AHX and klystrack permit. Here are some things that can't be converted perfectly:
