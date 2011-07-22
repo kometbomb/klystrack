@@ -122,7 +122,6 @@ int import_xm(FILE *f)
 		for (int c = 0 ; c < header.num_channels ; ++c)
 		{
 			int pat = p * header.num_channels + c;
-			debug("%d", pat);
 			resize_pattern(&mused.song.pattern[pat], pattern_hdr.num_rows);
 		}
 		
@@ -306,6 +305,8 @@ int import_xm(FILE *f)
 				mused.song.instrument[i].cydflags = CYD_CHN_ENABLE_WAVE | CYD_CHN_WAVE_OVERRIDE_ENV | CYD_CHN_ENABLE_KEY_SYNC;
 				mused.song.instrument[i].flags = MUS_INST_SET_PW | MUS_INST_SET_CUTOFF;
 				mused.song.instrument[i].vibrato_speed = instrument_ext_hdr.vib_rate;
+				mused.song.instrument[i].vibrato_depth = instrument_ext_hdr.vib_depth;
+				mused.song.instrument[i].vibrato_delay = instrument_ext_hdr.vib_sweep;
 								
 				// from mod.c
 				mused.mus.cyd->wavetable_entries[wt_e].base_note = (MIDDLE_C << 8) - (Sint16)fine;
