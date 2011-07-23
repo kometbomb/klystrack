@@ -282,17 +282,32 @@ int import_xm(FILE *f)
 				
 				fread(smp, 1, first_length, f);
 				
-				int x = 0;
-				for (int idx = 0 ; idx < first_length ; ++idx)
-				{
-					x += smp[idx];
-					smp[idx] = x;
-				}
-				
 				if (type & 16)
+				{
+					debug("16-bit sample");
+					
+					int x = 0;
+					for (int idx = 0 ; idx < first_length / 2 ; ++idx)
+					{
+						x += ((Uint16*)smp)[idx];
+						((Uint16*)smp)[idx] = x;
+					}
+					
 					cyd_wave_entry_init(&mused.mus.cyd->wavetable_entries[wt_e], smp, first_length / 2, CYD_WAVE_TYPE_SINT16, 1, 1, 16);
+				}
 				else
+				{
+					debug("8-bit sample");
+					
+					int x = 0;
+					for (int idx = 0 ; idx < first_length ; ++idx)
+					{
+						x += smp[idx];
+						smp[idx] = x;
+					}
+					
 					cyd_wave_entry_init(&mused.mus.cyd->wavetable_entries[wt_e], smp, first_length, CYD_WAVE_TYPE_SINT8, 1, 1, 16);
+				}
 				
 				free(smp);
 				
@@ -325,6 +340,10 @@ int import_xm(FILE *f)
 			}
 			
 			fseek(f, total_length - first_length, SEEK_CUR);
+		}
+		else 
+		{
+			fseek(f, si + instrument_hdr.size, SEEK_SET);
 		}
 	}
 	
