@@ -12,6 +12,7 @@
 		002F3A2E09D0888800EBEB88 /* SDLMain.m in Sources */ = {isa = PBXBuildFile; fileRef = 002F3A2C09D0888800EBEB88 /* SDLMain.m */; };
 		8329AF8F12ECE929006497E9 /* pack.c in Sources */ = {isa = PBXBuildFile; fileRef = 8329AF8D12ECE929006497E9 /* pack.c */; };
 		833500FC136DE29A007D582E /* key in Resources */ = {isa = PBXBuildFile; fileRef = 833500F9136DE29A007D582E /* key */; };
+		838D906913DAE89000E3C165 /* xm.c in Sources */ = {isa = PBXBuildFile; fileRef = 838D906713DAE89000E3C165 /* xm.c */; };
 		83C75A3212BB71060067F040 /* action.c in Sources */ = {isa = PBXBuildFile; fileRef = 83C759F812BB71060067F040 /* action.c */; };
 		83C75A3312BB71060067F040 /* clipboard.c in Sources */ = {isa = PBXBuildFile; fileRef = 83C759FA12BB71060067F040 /* clipboard.c */; };
 		83C75A3412BB71060067F040 /* command.c in Sources */ = {isa = PBXBuildFile; fileRef = 83C759FC12BB71060067F040 /* command.c */; };
@@ -109,6 +110,8 @@
 		833500F2136DE250007D582E /* FT2 */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = FT2; path = ../key/FT2; sourceTree = SOURCE_ROOT; };
 		833500F7136DE281007D582E /* FT2 */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = FT2; sourceTree = "<group>"; };
 		833500F9136DE29A007D582E /* key */ = {isa = PBXFileReference; lastKnownFileType = folder; name = key; path = ../key; sourceTree = SOURCE_ROOT; };
+		838D906713DAE89000E3C165 /* xm.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = xm.c; path = ../src/import/xm.c; sourceTree = SOURCE_ROOT; };
+		838D906813DAE89000E3C165 /* xm.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = xm.h; path = ../src/import/xm.h; sourceTree = SOURCE_ROOT; };
 		83C759F812BB71060067F040 /* action.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = action.c; path = ../src/action.c; sourceTree = SOURCE_ROOT; };
 		83C759F912BB71060067F040 /* action.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = action.h; path = ../src/action.h; sourceTree = SOURCE_ROOT; };
 		83C759FA12BB71060067F040 /* clipboard.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = clipboard.c; path = ../src/clipboard.c; sourceTree = SOURCE_ROOT; };
@@ -344,6 +347,8 @@
 		83C759F612BB70CA0067F040 /* Klystrack */ = {
 			isa = PBXGroup;
 			children = (
+				838D906713DAE89000E3C165 /* xm.c */,
+				838D906813DAE89000E3C165 /* xm.h */,
 				83DE4D6A136D7F9E009B63EB /* key.c */,
 				83DE4D6B136D7F9E009B63EB /* key.h */,
 				83DE4D6C136D7F9E009B63EB /* keytab.c */,
@@ -674,6 +679,7 @@
 				8329AF8F12ECE929006497E9 /* pack.c in Sources */,
 				83DE4D6E136D7F9E009B63EB /* key.c in Sources */,
 				83DE4D6F136D7F9E009B63EB /* keytab.c in Sources */,
+				838D906913DAE89000E3C165 /* xm.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
