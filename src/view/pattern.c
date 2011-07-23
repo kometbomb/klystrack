@@ -550,13 +550,20 @@ void pattern_view(SDL_Surface *dest_surface, const SDL_Rect *dest, const SDL_Eve
 	
 	pattern_view_stepcounter(dest_surface, &pos, event, param, mused.single_pattern_edit ? mused.song.pattern[mused.current_pattern].num_steps : ml);
 	
+	SDL_Rect tdest;
+	
+	copy_rect(&tdest, dest);
+	
+	if (vert_scrollbar)
+		tdest.w -= SCROLLBAR;
+	
 	SDL_SetClipRect(mused.screen, dest);
 	
 	pos.x += pos.w - 2;
 	pos.w = pattern_width;
 	
 	int first = mused.song.num_channels, last = 0;
-	for (int i = 0 ; i < mused.song.num_channels && pos.x < dest->w + dest->x ; ++i)
+	for (int i = 0 ; i < mused.song.num_channels && pos.x < tdest.w + tdest.x ; ++i)
 	{
 		if (mused.ghost_pattern[i] != NULL)
 		{
@@ -568,7 +575,7 @@ void pattern_view(SDL_Surface *dest_surface, const SDL_Rect *dest, const SDL_Eve
 				pattern_header(dest_surface, event, pos.x, i, &button_topleft, pattern_width, mused.ghost_pattern[i]);
 				first = my_min(first, i);
 				// Only consider fully visible pattern drawn
-				if (pos.x + pos.w < dest->x + dest->w) last = my_max(last, i);
+				if (pos.x + pos.w < tdest.x + tdest.w) last = my_max(last, i);
 				
 				pattern_view_inner(dest_surface, &pos, dest, event, *mused.ghost_pattern[i], i);
 				pos.x += pos.w - 2;
