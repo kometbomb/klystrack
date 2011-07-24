@@ -359,7 +359,7 @@ int import_xm(FILE *f)
 			add_sequence(c, pos, header.pattern_order[s] * header.num_channels + c, 0);
 		}
 		
-		pos += pattern_length[s];
+		pos += pattern_length[header.pattern_order[s]];
 	}
 	
 	strncpy(mused.song.title, header.name, 20);
