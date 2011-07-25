@@ -47,6 +47,8 @@ Uint16 find_command_pt(Uint16 command, int sample_length)
 		command = (command & 0xff00) | my_min(0xff, (command & 0xff) * 8);
 	else if ((command & 0xff00) == 0x0900 && sample_length) 
 		command = MUS_FX_WAVETABLE_OFFSET | ((Uint64)(command & 0xff) * 256 * 0x1000 / (Uint64)sample_length);
+	else if ((command & 0xff00) == 0x0000 && (command & 0xff) != 0) 
+		command = MUS_FX_SET_EXT_ARP | (command & 0xff);
 	else if ((command & 0xff00) != 0x0400 && (command & 0xff00) != 0x0000) 
 		command = 0;	
 	else if ((command & 0xfff0) == 0x0ec0)
