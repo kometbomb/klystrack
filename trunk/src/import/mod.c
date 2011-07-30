@@ -280,6 +280,7 @@ int import_mod(FILE *f)
 	free(sample_data);
 	
 	mused.sequenceview_steps = 64;
+	mused.song.num_patterns = patterns * channels;
 	
 	if (channels == 4)
 	{

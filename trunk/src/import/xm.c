@@ -368,6 +368,7 @@ int import_xm(FILE *f)
 	mused.song.song_rate = header.default_bpm * 50 / 125;
 	mused.song.num_channels = header.num_channels;
 	mused.sequenceview_steps = 64;
+	mused.song.num_patterns = header.num_patterns * header.num_channels;
 	
 	return 1;
 }

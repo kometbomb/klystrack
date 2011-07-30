@@ -34,6 +34,8 @@ OTHER DEALINGS IN THE SOFTWARE.
 #include "diskop.h"
 #include "SDL_endian.h"
 #include "action.h"
+#include "optimize.h"
+
 
 extern Mused mused;
 extern GfxDomain *domain;
@@ -79,6 +81,12 @@ void import_module(void *type, void* unused1, void* unused2)
 		snprintf(buffer, sizeof(buffer), "Not %s module", mod_name[(int)type]);
 		msgbox(domain, mused.slider_bevel->surface, &mused.largefont, buffer, MB_OK);
 	}
+	else
+	{
+		optimize_song(&mused.song);
+	}
+	
+	mused.song.num_patterns = NUM_PATTERNS;
 	
 	fclose(f);
 }
