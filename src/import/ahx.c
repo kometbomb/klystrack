@@ -282,6 +282,8 @@ int import_ahx(FILE *f)
 		}
 	}
 	
+	mused.song.num_patterns = TRK + 1;
+	
 	for (int pat = 0 ; pat < TRK + 1; ++pat)
 	{
 		resize_pattern(&mused.song.pattern[pat], TRL);
