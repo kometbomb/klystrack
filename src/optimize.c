@@ -25,6 +25,7 @@ OTHER DEALINGS IN THE SOFTWARE.
 
 
 #include "optimize.h"
+#include "edit.h"
 #include "macros.h"
 #include <stdbool.h>
 
@@ -81,13 +82,19 @@ static void remove_pattern(MusSong *song, int p)
 {
 	debug("Removing %x", p);
 
-	free(song->pattern[p].step);
+	void * temp = song->pattern[p].step;
+	
+	for (int i = 0 ; i < song->pattern[p].num_steps ; ++i)
+		zero_step(&song->pattern[p].step[i]);
 
 	for (int a = p ; a < song->num_patterns - 1 ; ++a)
 	{
 		memcpy(&song->pattern[a], &song->pattern[a + 1], sizeof(song->pattern[a]));
 		replace_pattern(song, a + 1, a);
 	}
+	
+	if (song->num_patterns - 1 >= 0)
+		song->pattern[song->num_patterns - 1].step = temp;
 	
 	--song->num_patterns;
 }
