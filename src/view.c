@@ -1434,7 +1434,7 @@ void fx_view(SDL_Surface *dest_surface, const SDL_Rect *dest, const SDL_Event *e
 	update_rect(&area, &r);
 	
 	r.x += 8;
-	r.w = area.w + area.x - r.x;
+	r.w = 120;
 	
 	if ((d = generic_field(event, &r, EDITFX, R_PITCH_INACCURACY, "INACCURACY", "%2d", MAKEPTR(mused.song.pitch_inaccuracy), 2))) 
 	{

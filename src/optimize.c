@@ -80,8 +80,6 @@ static bool is_pattern_equal(const MusPattern *a, const MusPattern *b)
 
 static void remove_pattern(MusSong *song, int p)
 {
-	debug("Removing %x", p);
-
 	void * temp = song->pattern[p].step;
 	
 	for (int i = 0 ; i < song->pattern[p].num_steps ; ++i)
