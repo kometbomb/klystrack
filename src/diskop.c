@@ -232,26 +232,31 @@ int open_song(FILE *f)
 	
 	// Use kewlkool heuristics to determine sequence spacing
 	
-	mused.sequenceview_steps = 1000;
+	mused.sequenceview_steps = mused.song.sequence_step;
 	
-	for (int c = 0 ; c < MUS_MAX_CHANNELS ; ++c)
-		for (int s = 1 ; s < mused.song.num_sequences[c] && mused.song.sequence[c][s-1].position < mused.song.song_length ; ++s)
-			if (mused.sequenceview_steps > mused.song.sequence[c][s].position - mused.song.sequence[c][s-1].position)
+	if (mused.sequenceview_steps == 0)
+	{
+		mused.sequenceview_steps = 1000;
+		
+		for (int c = 0 ; c < MUS_MAX_CHANNELS ; ++c)
+			for (int s = 1 ; s < mused.song.num_sequences[c] && mused.song.sequence[c][s-1].position < mused.song.song_length ; ++s)
+				if (mused.sequenceview_steps > mused.song.sequence[c][s].position - mused.song.sequence[c][s-1].position)
+				{
+					mused.sequenceview_steps = mused.song.sequence[c][s].position - mused.song.sequence[c][s-1].position;
+				}
+		
+		for (int c = 0 ; c < MUS_MAX_CHANNELS ; ++c)	
+			if (mused.song.num_sequences[c] > 0 && mused.song.sequence[c][mused.song.num_sequences[c]-1].position < mused.song.song_length)
 			{
-				mused.sequenceview_steps = mused.song.sequence[c][s].position - mused.song.sequence[c][s-1].position;
+				if (mused.sequenceview_steps > mused.song.song_length - mused.song.sequence[c][mused.song.num_sequences[c]-1].position)
+				{
+					mused.sequenceview_steps = mused.song.song_length - mused.song.sequence[c][mused.song.num_sequences[c]-1].position;
+				}
 			}
-	
-	for (int c = 0 ; c < MUS_MAX_CHANNELS ; ++c)	
-		if (mused.song.num_sequences[c] > 0 && mused.song.sequence[c][mused.song.num_sequences[c]-1].position < mused.song.song_length)
-		{
-			if (mused.sequenceview_steps > mused.song.song_length - mused.song.sequence[c][mused.song.num_sequences[c]-1].position)
-			{
-				mused.sequenceview_steps = mused.song.song_length - mused.song.sequence[c][mused.song.num_sequences[c]-1].position;
-			}
-		}
-	
-	if (mused.sequenceview_steps < 1) mused.sequenceview_steps = 1;
-	if (mused.sequenceview_steps == 1000) mused.sequenceview_steps = 16;
+		
+		if (mused.sequenceview_steps < 1) mused.sequenceview_steps = 1;
+		if (mused.sequenceview_steps == 1000) mused.sequenceview_steps = 16;
+	}
 	
 	mus_set_fx(&mused.mus, &mused.song);
 	cyd_set_callback(&mused.cyd, mus_advance_tick, &mused.mus, mused.song.song_rate);
@@ -313,6 +318,7 @@ int save_song(FILE *f)
 	const Uint8 version = MUS_VERSION;
 	
 	mused.song.time_signature = mused.time_signature;
+	mused.song.sequence_step = mused.sequenceview_steps;
 	
 	fwrite(&version, 1, sizeof(version), f);
 	
@@ -320,6 +326,9 @@ int save_song(FILE *f)
 	Uint16 temp16 = mused.song.time_signature;
 	FIX_ENDIAN(temp16);
 	fwrite(&temp16, 1, sizeof(mused.song.time_signature), f);
+	temp16 = mused.song.sequence_step;
+	FIX_ENDIAN(temp16);
+	fwrite(&temp16, 1, sizeof(mused.song.sequence_step), f);
 	fwrite(&n_inst, 1, sizeof(mused.song.num_instruments), f);
 	temp16 = mused.song.num_patterns;
 	FIX_ENDIAN(temp16);
