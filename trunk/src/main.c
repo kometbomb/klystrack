@@ -485,7 +485,11 @@ int main(int argc, char **argv)
 				int tmp = mused.current_patternx;
 				update_ghost_patterns();
 				mused.current_patternx = tmp;
-				mused.current_patternstep = mused.stat_pattern_position[mused.current_sequencetrack];
+				
+				for (int x = 0 ; x < mused.song.num_channels ; ++x)
+					if (mused.stat_pattern[x] != NULL)
+						mused.current_patternstep = mused.stat_pattern_position[x];
+						
 				update_position_sliders();
 			}
 		
