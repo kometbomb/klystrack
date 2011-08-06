@@ -31,7 +31,13 @@ OTHER DEALINGS IN THE SOFTWARE.
 #define PLAYSTOP_INFO_W 78
 #define SCROLLBAR 10
 
-#define timesig(i, bar, beat, normal) ((((i)%((mused.time_signature>>8)*(mused.time_signature&0xff))) == 0)?(bar):((((i)%(mused.time_signature&0xff))==0)?(beat):(normal)))
+#define uppersig (Uint32)(mused.time_signature >> 8)
+#define lowersig (Uint32)(mused.time_signature & 0xff)
+#define compoundbeats (uppersig / 3)
+#define compounddivider (lowersig)
+#define simpletime(i, bar, beat, normal) (((i % (lowersig * uppersig) == 0) ? (bar) : (i % (lowersig) == 0) ? (beat) : (normal)))
+#define compoundtime(i, bar, beat, normal) ((i % (compoundbeats * 16 * 3 / compounddivider) == 0) ? (bar) : (i % (16 * 3 / compounddivider) == 0 ? (beat) : (normal)))
+#define timesig(i, bar, beat, normal) (((uppersig != 3) && (uppersig % 3) == 0) ? compoundtime(i, bar, beat, normal) : simpletime(i, bar, beat, normal))
 #define swap(a,b) { a ^= b; b ^= a; a ^= b; }
 
 void my_draw_view(const View* views, const SDL_Event *_event, const SDL_Surface *screen);
