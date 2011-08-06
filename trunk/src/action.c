@@ -652,6 +652,7 @@ void do_undo(void *a, void*b, void*c)
 		{
 			MusSong *song = &mused.song;
 			song->song_length = frame->event.songinfo.song_length;  
+			mused.sequenceview_steps = song->sequence_step = frame->event.songinfo.sequence_step;  
 			song->loop_point = frame->event.songinfo.loop_point;
 			song->song_speed = frame->event.songinfo.song_speed;
 			song->song_speed2 = frame->event.songinfo.song_speed2; 

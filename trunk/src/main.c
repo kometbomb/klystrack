@@ -475,7 +475,7 @@ int main(int argc, char **argv)
 		
 		int prev_position = mused.stat_song_position;
 		
-		mus_poll_status(&mused.mus, &mused.stat_song_position, mused.stat_pattern_position, mused.stat_pattern, channel, mused.vis.cyd_env, mused.stat_note);
+		if (active) mus_poll_status(&mused.mus, &mused.stat_song_position, mused.stat_pattern_position, mused.stat_pattern, channel, mused.vis.cyd_env, mused.stat_note);
 		
 		if (active && (got_event || gfx_domain_is_next_frame(domain) || prev_position != mused.stat_song_position))
 		{

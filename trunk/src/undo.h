@@ -49,7 +49,7 @@ typedef union
 	struct { CydFxSerialized fx; int idx; Uint8 multiplex_period; } fx;
 	struct { int old_mode, focus; } mode;
 	struct { 
-		Uint16 song_length, loop_point;
+		Uint16 song_length, loop_point, sequence_step;
 		Uint8 song_speed, song_speed2, song_rate;
 		Uint16 time_signature;
 		Uint32 flags;

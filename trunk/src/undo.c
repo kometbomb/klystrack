@@ -25,9 +25,12 @@ OTHER DEALINGS IN THE SOFTWARE.
 
 #include "undo.h"
 #include "macros.h"
+#include "mused.h"
 #include <stdbool.h>
 
 extern bool inside_undo;
+
+extern Mused mused;
 
 void undo_add_frame(UndoStack *stack, UndoFrame *frame)
 {
@@ -133,6 +136,7 @@ void undo_store_songinfo(UndoStack *stack, const MusSong *song, bool modified)
 	
 	frame->songinfo.song_length = song->song_length;  
 	frame->songinfo.loop_point = song->loop_point;
+	frame->songinfo.sequence_step = mused.sequenceview_steps;
 	frame->songinfo.song_speed = song->song_speed;
 	frame->songinfo.song_speed2 = song->song_speed2; 
 	frame->songinfo.song_rate = song->song_rate;
