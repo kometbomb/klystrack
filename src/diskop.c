@@ -575,7 +575,8 @@ void open_data(void *type, void *action, void *_ret)
 	
 	stop(0,0,0);
 	
-	const char *def = NULL;
+	char _def[1024] = "";
+	char *def = NULL;
 	
 	if (a == OD_A_SAVE)
 	{
@@ -583,16 +584,20 @@ void open_data(void *type, void *action, void *_ret)
 		{
 			case OD_T_INSTRUMENT:
 			{
-				def = mused.song.instrument[mused.current_instrument].name;
+				strncpy(_def, mused.song.instrument[mused.current_instrument].name, sizeof(_def)-4);
+				strcat(_def, ".ki");
 			}
 			break;
 			
 			case OD_T_SONG:
 			{
-				def = mused.song.title;
+				strncpy(_def, mused.song.title, sizeof(_def)-4);
+				strcat(_def, ".kt");
 			}
 			break;
 		}
+		
+		def = _def;
 	}
 	
 	FILE * f = open_dialog(mode[a], str, open_stuff[t].ext, domain, mused.slider_bevel->surface, &mused.largefont, &mused.smallfont, def);
