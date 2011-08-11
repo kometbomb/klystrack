@@ -94,6 +94,7 @@ Menu patternlengthmenu[] =
 	{ 0, prefsmenu, "", NULL, NULL },
 	{ 0, prefsmenu, "16", NULL, change_default_pattern_length, (void*)16, 0, 0 },
 	{ 0, prefsmenu, "32", NULL, change_default_pattern_length, (void*)32, 0, 0 },
+	{ 0, prefsmenu, "48", NULL, change_default_pattern_length, (void*)48, 0, 0 },
 	{ 0, prefsmenu, "64", NULL, change_default_pattern_length, (void*)64, 0, 0 },
 	{ 0, NULL,NULL },
 };
