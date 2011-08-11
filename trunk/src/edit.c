@@ -24,6 +24,7 @@ OTHER DEALINGS IN THE SOFTWARE.
 */
 
 #include "edit.h"
+#include "event.h"
 #include "mused.h"
 #include "gui/msgbox.h"
 
@@ -36,7 +37,7 @@ static int find_unused_pattern()
 	{
 		int not_empty = 0;
 		for (int s = 0 ; s < mused.song.pattern[empty].num_steps && !not_empty ; ++s)
-			if (empty == mused.current_pattern || (mused.song.pattern[empty].step[s].note != MUS_NOTE_NONE
+			if ((empty == mused.current_pattern && mused.focus == EDITPATTERN) || (mused.song.pattern[empty].step[s].note != MUS_NOTE_NONE
 				|| mused.song.pattern[empty].step[s].ctrl != 0 
 				|| mused.song.pattern[empty].step[s].instrument != MUS_NOTE_NO_INSTRUMENT
 				|| mused.song.pattern[empty].step[s].command != 0))
@@ -54,12 +55,16 @@ static int find_unused_pattern()
 
 static void set_pattern(int pattern)
 {
-	if (!mused.single_pattern_edit)
+	if ((mused.focus == EDITPATTERN && !mused.single_pattern_edit) || mused.focus != EDITPATTERN)
 	{
+		snapshot(S_T_SEQUENCE);
+	
 		for (int i = 0 ; i < mused.song.num_sequences[mused.current_sequencetrack] ; ++i)
+		{
 			if (mused.song.sequence[mused.current_sequencetrack][i].position == mused.current_sequencepos
 				&& mused.song.sequence[mused.current_sequencetrack][i].pattern == mused.current_pattern)
 				mused.song.sequence[mused.current_sequencetrack][i].pattern = pattern;
+		}
 	}
 	
 	mused.current_pattern = pattern;
@@ -70,8 +75,6 @@ static void set_pattern(int pattern)
 
 void clone_pattern(void *unused1, void *unused2, void *unused3)
 {
-	if (mused.focus != EDITPATTERN) return;
-	
 	int empty = find_unused_pattern();
 	
 	if (empty == -1 || mused.current_pattern == empty)
@@ -90,13 +93,28 @@ void clone_pattern(void *unused1, void *unused2, void *unused3)
 
 void get_unused_pattern(void *unused1, void *unused2, void *unused3)
 {
-	if (mused.focus != EDITPATTERN) return;
-
 	int empty = find_unused_pattern();
 		
-	if (empty == -1 || mused.current_pattern == empty)
+	if (empty == -1 || (mused.current_pattern == empty && mused.focus == EDITPATTERN))
 	{
 		return;
+	}
+	
+	if (mused.focus == EDITSEQUENCE)
+	{
+		snapshot(S_T_SEQUENCE);
+		
+		bool found = false;
+		
+		for (int i = 0 ; i < mused.song.num_sequences[mused.current_sequencetrack] ; ++i)
+		{
+			if (mused.song.sequence[mused.current_sequencetrack][i].position == mused.current_sequencepos
+				&& mused.song.sequence[mused.current_sequencetrack][i].pattern == mused.current_pattern)
+				found = true;
+		}
+		
+		if (!found)
+			add_sequence(mused.current_sequencetrack, mused.current_sequencepos, empty, 0);
 	}
 	
 	set_pattern(empty);
