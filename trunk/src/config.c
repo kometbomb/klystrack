@@ -59,6 +59,7 @@ static const struct { int type; const char *name; void *param; int mask; } confi
 	{ C_INT, "midi_device", &mused.midi_device },
 	{ C_INT, "midi_channel", &mused.midi_channel },
 #endif
+	{ C_BOOL, "lock_pattern_length", &mused.flags, LOCK_SEQUENCE_STEP_AND_PATTERN_LENGTH },
 	{ C_END }
 };
 
