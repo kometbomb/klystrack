@@ -436,6 +436,9 @@ void change_seq_steps(void *delta, void *unused1, void *unused2)
 	}
 	
 	mused.current_sequencepos = (mused.current_sequencepos/mused.sequenceview_steps) * mused.sequenceview_steps;
+	
+	if (mused.flags & LOCK_SEQUENCE_STEP_AND_PATTERN_LENGTH)
+		change_default_pattern_length(MAKEPTR(mused.sequenceview_steps), NULL, NULL);
 }
 
 

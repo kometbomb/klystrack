@@ -90,6 +90,8 @@ Menu pixelmenu[] =
 
 Menu patternlengthmenu[] =
 {
+	{ 0, prefsmenu, "Same as STEP", NULL, MENU_CHECK, &mused.flags, (void*)LOCK_SEQUENCE_STEP_AND_PATTERN_LENGTH, 0 },
+	{ 0, prefsmenu, "", NULL, NULL },
 	{ 0, prefsmenu, "16", NULL, change_default_pattern_length, (void*)16, 0, 0 },
 	{ 0, prefsmenu, "32", NULL, change_default_pattern_length, (void*)32, 0, 0 },
 	{ 0, prefsmenu, "64", NULL, change_default_pattern_length, (void*)64, 0, 0 },
