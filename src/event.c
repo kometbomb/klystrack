@@ -877,18 +877,25 @@ void pattern_event(SDL_Event *e)
 			case SDLK_PAGEDOWN:
 			case SDLK_DOWN:
 			{
-				int steps = 1;
-				if (e->key.keysym.sym == SDLK_PAGEDOWN) steps = my_min(mused.song.pattern[mused.current_pattern].num_steps - mused.current_patternstep - 1, steps * 16);
-				if (e->key.keysym.sym == SDLK_END) steps = mused.song.pattern[mused.current_pattern].num_steps - mused.current_patternstep - 1;
-				
-				if (e->key.keysym.mod & KMOD_SHIFT)
-					steps = my_min(steps, mused.song.pattern[mused.current_pattern].num_steps - mused.current_patternstep - 1);
-				
-				update_pattern_slider(steps);
-				
-				if (e->key.keysym.mod & KMOD_SHIFT)
+				if (e->key.keysym.mod & KMOD_CTRL)
 				{
-					select_range(mused.current_patternstep);
+					update_sequence_slider(mused.sequenceview_steps);
+				}
+				else
+				{
+					int steps = 1;
+					if (e->key.keysym.sym == SDLK_PAGEDOWN) steps = my_min(mused.song.pattern[mused.current_pattern].num_steps - mused.current_patternstep - 1, steps * 16);
+					if (e->key.keysym.sym == SDLK_END) steps = mused.song.pattern[mused.current_pattern].num_steps - mused.current_patternstep - 1;
+					
+					if (e->key.keysym.mod & KMOD_SHIFT)
+						steps = my_min(steps, mused.song.pattern[mused.current_pattern].num_steps - mused.current_patternstep - 1);
+					
+					update_pattern_slider(steps);
+					
+					if (e->key.keysym.mod & KMOD_SHIFT)
+					{
+						select_range(mused.current_patternstep);
+					}
 				}
 			}
 			break;
@@ -897,18 +904,27 @@ void pattern_event(SDL_Event *e)
 			case SDLK_PAGEUP:
 			case SDLK_UP:
 			{
-				int steps = 1;
-				if (e->key.keysym.sym == SDLK_PAGEUP) steps = my_min(mused.current_patternstep , steps * 16);
-				if (e->key.keysym.sym == SDLK_HOME) steps = mused.current_patternstep;
-				
-				if (e->key.keysym.mod & KMOD_SHIFT)
-					steps = my_min(steps, mused.current_patternstep);
-				
-				update_pattern_slider(-steps);
-			
-				if (e->key.keysym.mod & KMOD_SHIFT)
+				if (e->key.keysym.mod & KMOD_CTRL)
 				{
-					select_range(mused.current_patternstep);
+					update_sequence_slider(-mused.sequenceview_steps);
+				}
+				else
+				{
+					
+					int steps = 1;
+					if (e->key.keysym.sym == SDLK_PAGEUP) steps = my_min(mused.current_patternstep , steps * 16);
+					if (e->key.keysym.sym == SDLK_HOME) steps = mused.current_patternstep;
+					
+					if (e->key.keysym.mod & KMOD_SHIFT)
+						steps = my_min(steps, mused.current_patternstep);
+					
+					update_pattern_slider(-steps);
+				
+					if (e->key.keysym.mod & KMOD_SHIFT)
+					{
+						select_range(mused.current_patternstep);
+					}
+					
 				}
 			}
 			break;
