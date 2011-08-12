@@ -65,6 +65,8 @@
 || Return || edit currently selected pattern in the pattern editor (actually edits all patterns on the current sequence position) ||
 || Period || Set current pattern to none ||
 || ALT+up/down || adjust transpose for current pattern ||
+|| CTRL+U || Add unused pattern at cursor ||
+|| CTRL+K || Clone pattern at cursor ||
 || CTRL+down/up || edit song length ||
 || CTRL+left/right || edit sequence editor pattern step ||
 || insert/delete/backspace || do what you would expect ||
