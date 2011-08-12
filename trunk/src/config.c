@@ -26,6 +26,7 @@ OTHER DEALINGS IN THE SOFTWARE.
 #include "config.h"
 #include "mused.h"
 #include "gui/toolutil.h"
+#include "gui/filebox.h"
 #include "action.h"
 #include "gfx/gfx.h"
 
@@ -145,6 +146,14 @@ void load_config(const char *path)
 	}
 	
 	apply_config();
+	
+	e = expand_tilde("~/.klystrackfavorites");
+	
+	if (e) 
+	{
+		filebox_init(e);
+		free(e);
+	}
 }
 
 
@@ -183,6 +192,14 @@ void save_config(const char *path)
 	else
 	{
 		warning("Could not write config (%s)", path);
+	}
+	
+	e = expand_tilde("~/.klystrackfavorites");
+	
+	if (e) 
+	{
+		filebox_quit(e);
+		free(e);
 	}
 }
 
