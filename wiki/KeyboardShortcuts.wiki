@@ -45,8 +45,10 @@
 || Return || jump to sequence editor || 
 || ALT+insert/delete || change pattern length ||
 || Cursor keys/pg up/pg dn || move cursor || 
-|| Ctrl+left/right || Single pattern edit: change current pattern<br>Multiple pattern edit: Jump to neighboring channel || 
+|| Ctrl+left/right || Single pattern edit: change current 
+pattern<br>Multiple pattern edit: Jump to neighboring channel || 
 || Ctrl+Shift+left/right || Jump to the same parameter column in neighboring channel || 
+|| Ctrl+up/down || Move sequence editor position ||
 || Ctrl+I || Interpolate selection ||
 || Ctrl+K || Clone pattern ||
 || Ctrl+U || Jump to an unused pattern ||
