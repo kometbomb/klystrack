@@ -5,6 +5,13 @@ _*Note:* Only significant changes and new features are listed here._
 
 See [RoadMap the road map] for future plans.
 
+=1.5.4=
+
+  * Improved file selector (drive list, bookmarks)
+  * Sequence editor step size is saved with song
+  * Module import optimizations for duplicate patterns
+  * Numerous fixes (time signature visualization, pattern clone etc.)
+
 =1.5.3=
 
   * New Blacklyst theme
