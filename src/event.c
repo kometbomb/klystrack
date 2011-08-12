@@ -880,6 +880,7 @@ void pattern_event(SDL_Event *e)
 				if (e->key.keysym.mod & KMOD_CTRL)
 				{
 					update_sequence_slider(mused.sequenceview_steps);
+					update_ghost_patterns();
 				}
 				else
 				{
@@ -907,6 +908,7 @@ void pattern_event(SDL_Event *e)
 				if (e->key.keysym.mod & KMOD_CTRL)
 				{
 					update_sequence_slider(-mused.sequenceview_steps);
+					update_ghost_patterns();
 				}
 				else
 				{
