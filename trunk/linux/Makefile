@@ -8,6 +8,7 @@ install:
 	@cp -f $(TARGET) $(DESTDIR)/usr/bin/$(TARGET)
 	@mkdir -p $(RES_PATH)
 	@cp -Rf res $(RES_PATH)
+	@cp -Rf key $(RES_PATH)
 	@cp -Rf examples $(RES_PATH)
 	@mkdir -p $(DESTDIR)/usr/share/doc/klystrack
 	@cp LICENSE $(DESTDIR)/usr/share/doc/klystrack
