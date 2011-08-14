@@ -40,7 +40,7 @@ static const InstructionDesc instruction_desc[] =
 	{MUS_FX_SET_EXT_ARP, 0x7f00, "Set external arpeggio notes", -1, -1},
 	{MUS_FX_PORTA_UP, 0x7f00, "Portamento up", -1, -1},
 	{MUS_FX_PORTA_DN, 0x7f00, "Portamento down", -1, -1},
-	{MUS_FX_EXT_NOTE_DELAY, 0x7f00, "Note delay", -1, -1},
+	{MUS_FX_EXT_NOTE_DELAY, 0x7ff0, "Note delay", -1, -1},
 	{MUS_FX_VIBRATO, 0x7f00, "Vibrato", -1, -1},
 	{MUS_FX_SLIDE, 0x7f00, "Slide", -1, -1},
 	{MUS_FX_PORTA_UP_SEMI, 0x7f00, "Portamento up (semitones)", -1, -1},
