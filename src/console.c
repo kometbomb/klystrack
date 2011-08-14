@@ -84,19 +84,13 @@ void console_clear(Console *console)
 }
 
 
-Console * console_create(const char * theme)
+Console * console_create(Bundle *b)
 {
 	Console * c = calloc(1, sizeof(*c));
 	
 	c->cursor = 0;
 		
-	Bundle b;
-	
-	if (bnd_open(&b, theme))
-	{
-		font_load(&c->font, &b, "8x8.fnt");
-		bnd_free(&b);
-	}
+	font_load(&c->font, b, "8x8.fnt");
 	
 	// let's use a 8-bit surface so we can change the text color using the per surface palette
 	

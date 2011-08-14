@@ -321,9 +321,6 @@ void load_theme(const char *name)
 			mused.logo = gfx_load_surface_RW(rw, GFX_KEYED);
 		}
 	
-		if (mused.console) console_destroy(mused.console); 
-		mused.console = console_create(fullpath);
-		
 		if (bnd_exists(&res, "colors.txt"))
 		{
 			SDL_RWops *colors = SDL_RWFromBundle(&res, "colors.txt");
@@ -336,7 +333,8 @@ void load_theme(const char *name)
 				SDL_RWread(colors, temp, 1, s);
 				
 				strcat(temp, "\n");
-				
+
+				SDL_RWclose(colors);
 				SDL_FreeRW(colors);
 				
 				load_colors(temp);
@@ -362,6 +360,9 @@ void load_theme(const char *name)
 		
 		if (bnd_exists(&res, "8x8.fnt"))
 		{
+			if (mused.console) console_destroy(mused.console); 
+			mused.console = console_create(&res);
+		
 			font_destroy(&mused.largefont);
 			font_load_and_set_color(&mused.largefont, &res, "8x8.fnt", colors[COLOR_MAIN_TEXT]);
 			font_destroy(&mused.menufont);
