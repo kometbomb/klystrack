@@ -27,7 +27,6 @@ OTHER DEALINGS IN THE SOFTWARE.
 #include "optimize.h"
 #include "edit.h"
 #include "macros.h"
-#include <stdbool.h>
 
 static bool is_pattern_used(const MusSong *song, int p)
 {
@@ -61,17 +60,31 @@ static void replace_pattern(MusSong *song, int from, int to)
 }
 
 
-static bool is_pattern_equal(const MusPattern *a, const MusPattern *b)
+bool is_pattern_equal(const MusPattern *a, const MusPattern *b)
 {
 	if (b->num_steps != a->num_steps)
 		return false;
 		
 	for (int i = 0 ; i < a->num_steps ; ++i)
 		if (a->step[i].note != b->step[i].note 
-			|| a->step[i].volume != b->step[i].instrument
+			|| a->step[i].instrument != b->step[i].instrument
 			|| a->step[i].volume != b->step[i].volume
 			|| a->step[i].ctrl != b->step[i].ctrl
 			|| a->step[i].command != b->step[i].command)
+			return false;
+
+	return true;
+}
+
+
+bool is_pattern_empty(const MusPattern *a)
+{
+	for (int i = 0 ; i < a->num_steps ; ++i)
+		if (a->step[i].note != MUS_NOTE_NONE
+			|| a->step[i].instrument != MUS_NOTE_NO_INSTRUMENT
+			|| a->step[i].volume != MUS_NOTE_NO_VOLUME
+			|| a->step[i].ctrl != 0
+			|| a->step[i].command != 0)
 			return false;
 
 	return true;
