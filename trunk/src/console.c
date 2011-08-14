@@ -86,7 +86,7 @@ void console_clear(Console *console)
 
 Console * console_create(const char * theme)
 {
-	Console * c = malloc(sizeof(*c));
+	Console * c = calloc(1, sizeof(*c));
 	
 	c->cursor = 0;
 		
