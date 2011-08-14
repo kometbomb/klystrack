@@ -24,6 +24,7 @@ OTHER DEALINGS IN THE SOFTWARE.
 */
 
 #include "action.h"
+#include "optimize.h"
 #include "mused.h"
 #include "gui/toolutil.h"
 #include "view.h"
@@ -745,7 +746,7 @@ void change_default_pattern_length(void *length, void *unused1, void *unused2)
 {
 	for (int i = 0 ; i < NUM_PATTERNS ; ++i)
 	{
-		if (mused.song.pattern[i].num_steps == mused.default_pattern_length && mused.default_pattern_length < CASTPTR(int,length))
+		if (mused.song.pattern[i].num_steps == mused.default_pattern_length && is_pattern_empty(&mused.song.pattern[i]))
 		{
 			resize_pattern(&mused.song.pattern[i], CASTPTR(int,length));
 		}
