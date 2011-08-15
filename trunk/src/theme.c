@@ -335,7 +335,6 @@ void load_theme(const char *name)
 				strcat(temp, "\n");
 
 				SDL_RWclose(colors);
-				SDL_FreeRW(colors);
 				
 				load_colors(temp);
 				free(temp);
