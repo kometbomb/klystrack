@@ -554,8 +554,8 @@ void pattern_view(SDL_Surface *dest_surface, const SDL_Rect *dest, const SDL_Eve
 	
 	copy_rect(&tdest, dest);
 	
-	if (vert_scrollbar)
-		tdest.w -= SCROLLBAR;
+	/*if (vert_scrollbar)
+		tdest.w -= SCROLLBAR;*/
 	
 	SDL_SetClipRect(mused.screen, dest);
 	
@@ -568,7 +568,7 @@ void pattern_view(SDL_Surface *dest_surface, const SDL_Rect *dest, const SDL_Eve
 		if (mused.ghost_pattern[i] != NULL)
 		{
 			console_set_clip(mused.console, &pos);
-			console_clear(mused.console);
+			//console_clear(mused.console);
 	
 			if (mused.pattern_horiz_position <= i)
 			{
@@ -577,11 +577,15 @@ void pattern_view(SDL_Surface *dest_surface, const SDL_Rect *dest, const SDL_Eve
 				// Only consider fully visible pattern drawn
 				if (pos.x + pos.w < tdest.x + tdest.w) last = my_max(last, i);
 				
+				debug("%d %d / %d %d", pos.x, pos.w, tdest.x, tdest.w);
+				
 				pattern_view_inner(dest_surface, &pos, dest, event, *mused.ghost_pattern[i], i);
 				pos.x += pos.w - 2;
 			}
 		}
 	}
+	
+	debug("%d %d | %d %d", 0, top_i, first, last);
 	
 	if (vert_scrollbar) 
 		slider_set_params(&mused.pattern_horiz_slider_param, 0, top_i, first, last, &mused.pattern_horiz_position, 1, SLIDER_HORIZONTAL, mused.slider_bevel->surface);
