@@ -1618,7 +1618,19 @@ void fx_view(SDL_Surface *dest_surface, const SDL_Rect *dest, const SDL_Event *e
 		
 		int d;
 		
-		if ((d = generic_field(event, &r, EDITFX, p, label, "%4d ms", MAKEPTR(mused.song.fx[mused.fx_bus].rvb.tap[i].delay), 7))) 
+		if (mused.flags & SHOW_DELAY_IN_TICKS)
+		{
+			char tmp[10];
+			float ticks = (float)mused.song.fx[mused.fx_bus].rvb.tap[i].delay / (1000 / (float)mused.song.song_rate);
+			snprintf(tmp, sizeof(tmp), "%5.2f", ticks);
+			d = generic_field(event, &r, EDITFX, p, label, "%s t", tmp, 7);
+		}
+		else
+		{
+			d = generic_field(event, &r, EDITFX, p, label, "%4d ms", MAKEPTR(mused.song.fx[mused.fx_bus].rvb.tap[i].delay), 7);
+		}
+		
+		if (d) 
 		{
 			fx_add_param(d);
 		}

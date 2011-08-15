@@ -120,6 +120,7 @@ const Menu prefsmenu[] =
 	{ 0, mainmenu, "Center pattern editor", NULL, MENU_CHECK, &mused.flags, (void*)CENTER_PATTERN_EDITOR, 0 },
 	{ 0, mainmenu, "Decimal numbers", NULL, MENU_CHECK, &mused.flags, (void*)SHOW_DECIMALS, 0 },
 	{ 0, mainmenu, "Default pattern length", patternlengthmenu },
+	{ 0, mainmenu, "Reverb length in ticks", NULL, MENU_CHECK, &mused.flags, (void*)SHOW_DELAY_IN_TICKS, 0 },
 	{ 0, NULL, NULL }
 };
 
