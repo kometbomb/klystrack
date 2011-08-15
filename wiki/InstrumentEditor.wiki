@@ -120,7 +120,7 @@ This flag disables restarting of the instrument program when a note is triggered
 
 =Instrument program=
 
-When an instrument is triggered, the program starts executing from the beginning. The execution speed is independent from the song speed but relative to the routine update frequency. The program period instrument parameter controls how many routine updates it takes to advance the program one step.
+When an instrument is triggered, the program starts executing from the beginning (unless NO PROG RESTART is set). The program executes an instruction according to the P.PRD (program period) parameter. If P.PRD is set to 1, the program will update every tick. If P.PRD is set to 2, the program will update every second check and so on.
 
 A program modifies the played waveform and can be used to create more interesting sounds. The commands are the same as the [Commands track commands]. This means the program can also be thought as a macro: you do not need to enter the same track commands if the instrument executes has the same commands in the program. 
 
