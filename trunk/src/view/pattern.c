@@ -577,15 +577,11 @@ void pattern_view(SDL_Surface *dest_surface, const SDL_Rect *dest, const SDL_Eve
 				// Only consider fully visible pattern drawn
 				if (pos.x + pos.w < tdest.x + tdest.w) last = my_max(last, i);
 				
-				debug("%d %d / %d %d", pos.x, pos.w, tdest.x, tdest.w);
-				
 				pattern_view_inner(dest_surface, &pos, dest, event, *mused.ghost_pattern[i], i);
 				pos.x += pos.w - 2;
 			}
 		}
 	}
-	
-	debug("%d %d | %d %d", 0, top_i, first, last);
 	
 	if (vert_scrollbar) 
 		slider_set_params(&mused.pattern_horiz_slider_param, 0, top_i, first, last, &mused.pattern_horiz_position, 1, SLIDER_HORIZONTAL, mused.slider_bevel->surface);
