@@ -96,7 +96,7 @@ The slide parameter controls the time it takes for the previous note to change i
 
 ===Program period===
 
-Program period controls how many ticks one program tick takes to execute. E.g. if program period is 2 and the song speed is 6, every row in a channel equals 3 program ticks.
+Program period specifies how many ticks does it take for the program to advance one step.
 
 ===Vibrato===
 
