@@ -24,8 +24,17 @@ OTHER DEALINGS IN THE SOFTWARE.
 */
 
 #include "export.h"
+#include "gui/bevel.h"
 #include "snd/cyd.h"
 #include "macros.h"
+#include "mused.h"
+#include "gfx/gfx.h"
+#include "gui/view.h"
+#include "mybevdefs.h"
+#include "gfx/font.h"
+#include "theme.h"
+
+extern GfxDomain *domain;
 
 void export_wav(MusSong *song, CydWavetableEntry * entry, FILE *f)
 {
@@ -107,6 +116,8 @@ void export_wav(MusSong *song, CydWavetableEntry * entry, FILE *f)
 	tmp = 0;
 	fwrite(&tmp, 4, 1, f);
 	
+	int last_percentage = -1;
+	
 	for (;;)
 	{
 		memset(buffer, 0, sizeof(buffer)); // Zero the input to cyd
@@ -116,7 +127,51 @@ void export_wav(MusSong *song, CydWavetableEntry * entry, FILE *f)
 			fwrite(buffer, cyd.samples_output * channels * sizeof(buffer[0]), 1, f);
 		
 		if (mus.song_position >= song->song_length) break;
+		
+		if (song->song_length != 0)
+		{
+			int percentage = mus.song_position * 100 / song->song_length;
+			
+			if (percentage > last_percentage)
+			{
+				last_percentage = percentage;
+				
+				SDL_Rect area = {domain->screen_w / 2 - 140, domain->screen_h / 2 - 24, 280, 48};
+				bevel(gfx_domain_get_surface(domain), &area, mused.slider_bevel->surface, BEV_MENU);
+				
+				adjust_rect(&area, 8);
+				area.h = 16;
+				
+				bevel(gfx_domain_get_surface(domain), &area, mused.slider_bevel->surface, BEV_FIELD);
+				
+				adjust_rect(&area, 2);
+				
+				int t = area.w;
+				area.w = area.w * percentage / 100;
+				
+				SDL_FillRect(gfx_domain_get_surface(domain), &area, colors[COLOR_PROGRESS_BAR]);
+				
+				area.y += 16 + 4 + 4;
+				area.w = t;
+				
+				font_write_args(&mused.smallfont, gfx_domain_get_surface(domain), &area, "Exporting... Press ESC to abort.");
+				
+				SDL_Event e;
+				
+				while (SDL_PollEvent(&e))
+				{
+					if (e.type == SDL_QUIT || (e.type == SDL_KEYDOWN && e.key.keysym.sym == SDLK_ESCAPE))
+					{
+						goto abort;
+					}
+				}
+				
+				gfx_domain_flip(domain);
+			}
+		}
 	}
+	
+abort:;
 	
 	Uint32 sz = ftell(f) - 8;
 	
