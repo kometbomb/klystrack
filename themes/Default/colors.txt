@@ -49,3 +49,4 @@ menu_shortcut_selected = 0xffffff
 
 wavetable_sample = 0xffffff
 wavetable_background = 0x0
+progress_bar = 0xffffff
