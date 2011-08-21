@@ -190,5 +190,6 @@ void init_scrollbars();
 void my_open_menu();
 int viscol(int col);
 void post_config_load();
+void enable_callback(bool state);
 
 #endif

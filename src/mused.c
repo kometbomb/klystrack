@@ -401,3 +401,18 @@ void post_config_load()
 	
 	change_default_pattern_length(MAKEPTR(new_val), 0, 0);
 }
+
+
+static int tick_cb(void *data)
+{
+	return mus_advance_tick(data);
+}
+
+
+void enable_callback(bool state)
+{
+	if (state)
+		cyd_set_callback(&mused.cyd, tick_cb, &mused.mus, mused.song.song_rate);
+	else
+		cyd_set_callback(&mused.cyd, NULL, NULL, 0);
+}

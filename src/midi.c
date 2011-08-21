@@ -59,7 +59,7 @@ static void midi_clock(Uint32 ms)
 
 		if (mused.midi_rate)
 		{
-			cyd_set_callback(&mused.cyd, mus_advance_tick, &mused.mus, mused.midi_rate);
+			enable_callback(true);
 			mused.song.song_rate = mused.midi_rate;
 		}
 	}
@@ -88,7 +88,7 @@ static void midi_start()
 	
 	if (mused.midi_rate)
 	{
-		cyd_set_callback(&mused.cyd, mus_advance_tick, &mused.mus, mused.midi_rate);
+		enable_callback(true);
 		mused.song.song_rate = mused.midi_rate;
 	}
 }
@@ -100,7 +100,7 @@ static void midi_stop()
 	mused.midi_start = false;
 	mused.flags &= ~SONG_PLAYING;
 	mused.mus.flags &= ~MUS_EXT_SYNC;
-	cyd_set_callback(&mused.cyd, NULL, NULL, 1);
+	enable_callback(false);
 	mus_set_song(&mused.mus, NULL, 0);
 }
 

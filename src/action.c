@@ -151,7 +151,7 @@ void change_song_rate(void *delta, void *unused1, void *unused2)
 			mused.song.song_rate = 1;
 	}
 	
-	cyd_set_callback(&mused.cyd, mus_advance_tick, &mused.mus, mused.song.song_rate);
+	enable_callback(true);
 }
 
 
@@ -172,7 +172,7 @@ void change_time_signature(void *beat, void *unused1, void *unused2)
 
 void play(void *from_cursor, void *unused1, void *unused2)
 {
-	cyd_set_callback(&mused.cyd, mus_advance_tick, &mused.mus, mused.song.song_rate);
+	enable_callback(true);
 	mus_set_song(&mused.mus, &mused.song, from_cursor ? mused.current_sequencepos : 0);
 	mused.flags |= SONG_PLAYING;
 }

@@ -259,7 +259,7 @@ int open_song(FILE *f)
 	}
 	
 	mus_set_fx(&mused.mus, &mused.song);
-	cyd_set_callback(&mused.cyd, mus_advance_tick, &mused.mus, mused.song.song_rate);
+	enable_callback(true);
 	mirror_flags();
 	
 	if (!mused.song.time_signature) mused.song.time_signature = 0x404;

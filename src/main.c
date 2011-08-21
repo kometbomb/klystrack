@@ -288,6 +288,7 @@ int main(int argc, char **argv)
 	
 	cyd_init(&mused.cyd, mused.mix_rate, MUS_MAX_CHANNELS);
 	mus_init_engine(&mused.mus, &mused.cyd);
+	enable_callback(true);
 	
 	for (int i = 0 ; i < CYD_MAX_FX_CHANNELS ; ++i)
 		cydfx_set(&mused.cyd.fx[i], &mused.song.fx[i]);
@@ -298,7 +299,6 @@ int main(int argc, char **argv)
 #endif
 	
 	cyd_register(&mused.cyd);
-	cyd_set_callback(&mused.cyd, mus_advance_tick, &mused.mus, mused.song.song_rate);
 	
 	if (argc > 1)
 	{
