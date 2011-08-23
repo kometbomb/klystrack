@@ -4,7 +4,11 @@ The sequence editor is the place where all the patterns are put together to form
 
 Each channel can use any of the patterns. The patterns are not locked to a certain channel nor do the patterns lock to other patterns. A pattern can be used as many times as needed -- you do not need to duplicate the pattern data unless you want to make little changes such as a drum fill. 
 
-The patterns are entered using the keyboard, pressing {{{0}}}-{{{9}}} and {{{A}}}-{{{Z}}} puts a pattern at the current cursor location ({{{Shift}}} allows yet more patterns). The editor is pretty straightforward and generally works like the [PatternEditor pattern editor].
+The patterns are entered in two ways (see the preferences menu): 
+
+  * _Jeskola Buzz style_: using the keyboard, pressing {{{0}}}-{{{9}}} and {{{A}}}-{{{Z}}} puts a pattern at the current cursor location ({{{Shift}}} allows yet more patterns). The editor is pretty straightforward and generally works like the [PatternEditor pattern editor].
+  * _AHX-style_: pattern numbers are entered digit by digit, similarly to how the pattern editor works.
+
 
 {{{
      pattern
