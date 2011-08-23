@@ -491,6 +491,12 @@ void sequence_view(SDL_Surface *dest_surface, const SDL_Rect *dest, const SDL_Ev
 			if (mused.current_sequencepos == i && mused.current_sequencetrack == c && mused.focus == EDITSEQUENCE)
 			{
 				adjust_rect(&r, -2);
+				if (mused.flags & EDIT_SEQUENCE_DIGITS)
+				{
+					r.w = mused.console->font.w + 4;
+					r.x += mused.sequence_digit * mused.console->font.w; 
+				}
+				
 				set_cursor(&r);
 			}
 			
@@ -531,6 +537,7 @@ void sequence_view(SDL_Surface *dest_surface, const SDL_Rect *dest, const SDL_Ev
 		
 		SDL_Rect selection = { selection_begin.x, selection_begin.y, selection_end.x - selection_begin.x, selection_end.y - selection_begin.y - 1 };
 		adjust_rect(&selection, -4);
+		
 		bevel(mused.screen,&selection, mused.slider_bevel->surface, BEV_SELECTION);
 	}
 	

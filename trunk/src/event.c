@@ -588,6 +588,18 @@ void add_sequence(int channel, int position, int pattern, int offset)
 }
 
 
+Uint8 get_pattern_at(int channel, int position)
+{
+	for (int i = 0 ; i < mused.song.num_sequences[channel] ; ++i)
+		if (mused.song.sequence[channel][i].position == position)
+		{
+			return mused.song.sequence[channel][i].pattern;
+		}
+		
+	return 0;
+}
+
+
 void del_sequence(int first,int last,int track)
 {
 	if (mused.song.num_sequences[track] == 0) return;
@@ -803,6 +815,16 @@ void sequence_event(SDL_Event *e)
 				}
 				else
 				{
+					if (mused.flags & EDIT_SEQUENCE_DIGITS)
+					{
+						if (mused.sequence_digit < 1)
+						{
+							++mused.sequence_digit;
+							break;
+						}
+					}
+				
+					mused.sequence_digit = 0;
 					++mused.current_sequencetrack;
 					if (mused.current_sequencetrack >= mused.song.num_channels)
 						mused.current_sequencetrack = mused.song.num_channels-1;
@@ -820,6 +842,16 @@ void sequence_event(SDL_Event *e)
 				}
 				else
 				{
+					if (mused.flags & EDIT_SEQUENCE_DIGITS)
+					{
+						if (mused.sequence_digit > 0)
+						{
+							--mused.sequence_digit;
+							break;
+						}
+					}
+				
+					mused.sequence_digit = 0;
 					--mused.current_sequencetrack;
 					if (mused.current_sequencetrack < 0)
 						mused.current_sequencetrack = 0;
@@ -831,13 +863,37 @@ void sequence_event(SDL_Event *e)
 		
 			default:
 			{
-				int p = getalphanum(&e->key.keysym);
-				if (p != -1 && p < NUM_PATTERNS)
+				if (mused.flags & EDIT_SEQUENCE_DIGITS)
 				{
-					snapshot(S_T_SEQUENCE);
-					add_sequence(mused.current_sequencetrack, mused.current_sequencepos, p, 0);
-					if (mused.song.song_length > mused.current_sequencepos + mused.sequenceview_steps)
-						mused.current_sequencepos += mused.sequenceview_steps;
+					int k;
+				
+					if ((k = gethex(e->key.keysym.sym)) != -1)
+					{
+						snapshot(S_T_SEQUENCE);
+						
+						Uint8 p = get_pattern_at(mused.current_sequencetrack, mused.current_sequencepos);
+		
+						if (mused.sequence_digit == 0)
+							p = (p & (0x0f)) | (k << 4);
+						else
+							p = (p & (0xf0)) | k;
+		
+						add_sequence(mused.current_sequencetrack, mused.current_sequencepos, p, 0);
+						
+						if (mused.song.song_length > mused.current_sequencepos + mused.sequenceview_steps)
+							mused.current_sequencepos += mused.sequenceview_steps;
+					}
+				}
+				else
+				{
+					int p = getalphanum(&e->key.keysym);
+					if (p != -1 && p < NUM_PATTERNS)
+					{
+						snapshot(S_T_SEQUENCE);
+						add_sequence(mused.current_sequencetrack, mused.current_sequencepos, p, 0);
+						if (mused.song.song_length > mused.current_sequencepos + mused.sequenceview_steps)
+							mused.current_sequencepos += mused.sequenceview_steps;
+					}
 				}
 			}
 			break;
@@ -868,6 +924,7 @@ static void switch_track(int d)
 	slider_move_position(&mused.current_patternstep, &mused.pattern_position, &mused.pattern_slider_param, 0, mused.song.pattern[mused.current_pattern].num_steps);
 
 	mused.current_patternstep = my_min(my_max(0, mused.current_patternstep), mused.song.pattern[mused.current_pattern].num_steps - 1);
+	mused.sequence_digit = 0;
 }
 
 

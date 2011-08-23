@@ -82,7 +82,8 @@ enum
 	SHOW_DECIMALS = 16384,
 	LOOP_POSITION = 32768,
 	LOCK_SEQUENCE_STEP_AND_PATTERN_LENGTH = 65536,
-	SHOW_DELAY_IN_TICKS = 65536 << 1
+	SHOW_DELAY_IN_TICKS = 65536 << 1,
+	EDIT_SEQUENCE_DIGITS = 65536 << 2
 };
 
 enum
@@ -108,7 +109,7 @@ typedef struct
 		pattern_position, sequence_position, pattern_horiz_position, sequence_horiz_position,
 		program_position, current_program_step,
 		edit_reverb_param, selected_wavetable, wavetable_param, songinfo_param,
-		loop_store_length, loop_store_loop, note_jump, wavetable_list_position, wavetable_preview_idx;
+		loop_store_length, loop_store_loop, note_jump, wavetable_list_position, wavetable_preview_idx, sequence_digit;
 	Uint16 *ghost_pattern[MUS_MAX_CHANNELS];
 	int current_sequencetrack;
 	Uint16 time_signature;
