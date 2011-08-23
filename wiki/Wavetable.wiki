@@ -15,3 +15,5 @@ Basically, the wavetable makes it possible for an instrument to play an actual s
 =Wavetable editor=
 
 Use WAVE to select the wave to be edited. Loading a wave will set the sample rate but it can be fine tuned with RATE. BASE sets the base note (the pitch of the sampled sound). NO INTERPOLATION disables smooth playback (useful for lo-fi samples that get very muddy with interpolation). LOOP enables looping between BEGIN and END, PINGPONG makes the loop run back and forth.
+
+Use the keyboard to preview the currently selected wavetable item.
