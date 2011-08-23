@@ -422,6 +422,31 @@ static void play_the_jams(int sym, int chn)
 }
 
 
+static void wave_the_jams(int sym)
+{
+	if (sym == SDLK_SPACE)
+	{
+		for (int i = 0 ; i < MUS_MAX_CHANNELS ; ++i)
+			cyd_enable_gate(mused.mus.cyd, &mused.mus.cyd->channel[i], 0);
+	}
+	else
+	{
+		int note = find_note(sym, mused.octave);
+		if (note != -1) 
+		{
+			static MusInstrument inst;
+			mus_get_default_instrument(&inst);
+			inst.wavetable_entry = mused.selected_wavetable;
+			inst.cydflags &= ~WAVEFORMS;
+			inst.cydflags |= CYD_CHN_WAVE_OVERRIDE_ENV | CYD_CHN_ENABLE_WAVE;
+			inst.flags &= ~MUS_INST_DRUM;
+			mus_trigger_instrument(&mused.mus, 0, &inst, note);
+		}
+	}
+}
+
+
+
 void edit_instrument_event(SDL_Event *e)
 {
 	switch (e->type)
@@ -1831,7 +1856,7 @@ void wave_event(SDL_Event *e)
 			break;
 		
 			default: 
-				play_the_jams(e->key.keysym.sym, -1);
+				wave_the_jams(e->key.keysym.sym);
 			break;
 		}
 		
