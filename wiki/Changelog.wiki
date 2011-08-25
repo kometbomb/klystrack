@@ -13,6 +13,7 @@ See [RoadMap the road map] for future plans.
   * Better wavetable preview
   * Module import optimizations for duplicate patterns
   * Numerous fixes (time signature visualization, pattern clone etc.)
+  * New theme (Golden_Brown)
 
 =1.5.3=
 
