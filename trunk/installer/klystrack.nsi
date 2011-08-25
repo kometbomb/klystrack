@@ -49,6 +49,7 @@ SectionIn RO
   File zip\data\res\C64
   File zip\data\res\Gameboy
   File zip\data\res\Classic
+  File "zip\data\res\Golden_Brown"
   
   SetOutPath $INSTDIR\key
   
@@ -140,6 +141,7 @@ Section Uninstall
   Delete C64
   Delete Gameboy
   Delete Classic
+  Delete "Golden_Brown"
   
   SetOutPath $INSTDIR\examples\instruments
   
