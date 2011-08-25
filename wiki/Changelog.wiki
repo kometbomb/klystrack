@@ -10,7 +10,7 @@ See [RoadMap the road map] for future plans.
   * Improved file selector (drive list, bookmarks)
   * Sequence editor step size is saved with song
   * Sequence data can be entered digit by digit 
-  * Better wavetable preview
+  * Better wavetable preview (including key jamming with samples)
   * Module import optimizations for duplicate patterns
   * Numerous fixes (time signature visualization, pattern clone etc.)
   * New theme (Golden_Brown)
