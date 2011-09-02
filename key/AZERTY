@@ -1,0 +1,5 @@
+# Fix problems with AZERTY keyboards 
+K_A = K_Q
+K_Q = K_A
+K_W = K_Z
+K_Z = K_W
