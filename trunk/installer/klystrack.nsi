@@ -54,6 +54,7 @@ SectionIn RO
   SetOutPath $INSTDIR\key
   
   File zip\data\key\FT2
+  File zip\data\key\AZERTY
   
   CreateDirectory $INSTDIR\examples
   
@@ -142,6 +143,11 @@ Section Uninstall
   Delete Gameboy
   Delete Classic
   Delete "Golden_Brown"
+  
+  SetOutPath $TEMP\key
+  
+  Delete FT2
+  Delete AZERTY
   
   SetOutPath $INSTDIR\examples\instruments
   
