@@ -15,3 +15,7 @@ Use {{{Alt-Insert}}} and {{{Alt-Delete}}} to change pattern length.
 = Why aren't all patterns visible in pattern editor? =
 
 This is because it only shows patterns that start at the same position in the sequence. You can use equal length patterns to avoid this problem. Or, you can simply use the pattern editor as a single pattern editor like in Buzz (which it actually copies).
+
+= I use an AZERTY keyboard, what now? =
+
+Use the keymap for AZERTY keyboards. It swaps the keys so it works similarly to a QWERTY keyboard when entering notes.
