@@ -217,12 +217,14 @@ endif
 
 zip/data/SDL.dll:
 	@$(ECHO) "Downloading SDL..."
+	@mkdir -p temp
 	@cd temp ; $(WGET) http://www.libsdl.org/release/SDL-$(SDLVER)-win32.zip ; $(ZIPEXT) SDL-$(SDLVER)-win32.zip SDL.dll ; rm SDL-$(SDLVER)-win32.zip
 	@mkdir -p zip/data
 	@mv temp/SDL.dll zip/data/SDL.dll
 
 zip/data/SDL_image.dll:
 	@$(ECHO) "Downloading SDL_image..."
+	@mkdir -p temp
 	@cd temp ; $(WGET) http://www.libsdl.org/projects/SDL_image/release/SDL_image-$(SDL_IMAGEVER)-win32.zip ; $(ZIPEXT) SDL_image-$(SDL_IMAGEVER)-win32.zip SDL_image.dll libpng12-0.dll zlib1.dll ; rm SDL_image-$(SDL_IMAGEVER)-win32.zip
 	@mkdir -p zip/data
 	@mv temp/SDL_image.dll zip/data/SDL_image.dll
@@ -231,6 +233,7 @@ zip/data/SDL_image.dll:
 
 zip/data/SDL_mixer.dll:
 	@$(ECHO) "Downloading SDL_mixer..."
+	@mkdir -p temp
 	@cd temp ; $(WGET) http://www.libsdl.org/projects/SDL_mixer/release/SDL_mixer-$(MIXERVER)-win32.zip ; $(ZIPEXT) SDL_mixer-$(MIXERVER)-win32.zip SDL_mixer.dll ; rm SDL_mixer-$(MIXERVER)-win32.zip
 	@mkdir -p zip/data
 	@mv temp/SDL_mixer.dll zip/data/SDL_mixer.dll
