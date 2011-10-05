@@ -169,7 +169,9 @@ void wavetablelist_view(SDL_Surface *dest_surface, const SDL_Rect *dest, const S
 		if (w->samples > 0)
 			snprintf(temp, chars, "%u smp %0.1f kHz", w->samples, (float)w->sample_rate / 1000);
 		
-		check_event(event, console_write_args(mused.console, "%02X %s\n", i, temp), select_wavetable, MAKEPTR(i), 0, 0);
+		console_write_args(mused.console, "%02X %s\n", i, temp);
+		
+		check_event(event, &row, select_wavetable, MAKEPTR(i), 0, 0);
 		
 		slider_set_params(&mused.wavetable_list_slider_param, 0, CYD_WAVE_MAX_ENTRIES - 1, start, i, &mused.wavetable_list_position, 1, SLIDER_VERTICAL, mused.slider_bevel->surface);
 	}
