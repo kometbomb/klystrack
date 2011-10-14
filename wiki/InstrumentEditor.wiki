@@ -60,7 +60,7 @@ WAVE is used to associate a [Wavetable wavetable] sample with the instrument. Mu
 
 ==Volume envelope==
 
-The volume envelope is a standard attack-decay-sustain-release type envelope. When the note is triggered, the attack (ATK) parameter controls the speed at which the volume rises to the level specified by the volume (VOL) parameter. The volume then decays (DEC) to the sustain (SUS) level (which is relative to the overall volume). When a note-off is triggered, the played sound then decays at the rate controlled by the DEC parameter.
+The volume envelope is a standard attack-decay-sustain-release type envelope. When the note is triggered, the attack (ATK) parameter controls the speed at which the volume rises to the level specified by the volume (VOL) parameter. The volume then decays (DEC) to the sustain (SUS) level (which is relative to the overall volume). When a note-off is triggered, the played sound then releases (fades out) at the rate controlled by the REL parameter.
 
 If RELATIVE is checked, all volume commands will be relative to the volume. That is, the command {{{0C20}}} will set the audible volume to 25% (32/128) of VOL. If RELATIVE is not checked, {{{0C20}}} will set the audible volume to 32 no matter what the instrument volume is.
 
@@ -100,7 +100,7 @@ Program period specifies how many ticks does it take for the program to advance 
 
 ===Vibrato===
 
-PWM modulates the pulse width parameter at the set speed (VIB.S) and depth (VIB.D) if the vibrato bit is set in the track data or if the VIB flag is set for the instrument (which inverses the bit). V.DEL sets the delay time it takes for the vibrato depth to rise to the full depth (useful for "auto" vibrato). VIB.SH sets the vibrato shape, available waveforms are sine wave, ramp up, ramp down, pulse and cyclic random values.
+VIB modulates instrument pitch at the set speed (VIB.S) and depth (VIB.D) if the vibrato bit is set in the track data or if the VIB flag is set for the instrument (which inverses the bit). V.DEL sets the delay time it takes for the vibrato depth to rise to the full depth (useful for "auto" vibrato). VIB.SH sets the vibrato shape, available waveforms are sine wave, ramp up, ramp down, pulse and cyclic random values.
 
 Vibrato can also be achieved with a little program that uses the portamento commands (01xx and 02xx) to modulate the played note.
 
