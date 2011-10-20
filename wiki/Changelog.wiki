@@ -5,6 +5,10 @@ _*Note:* Only significant changes and new features are listed here._
 
 See [RoadMap the road map] for future plans.
 
+=1.6.0=
+
+  * New pattern editor with exact neighboring patterns and no more single pattern editing
+
 =1.5.4=
 
   * Improved file selector (drive list, bookmarks)
