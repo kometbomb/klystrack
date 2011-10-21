@@ -56,6 +56,7 @@ _{{{xx}}}, {{{yy}}} = parameter to command_
 || {{{5xxx}}} || start wavetable sample at offset xxx (0-fff) ||
 || {{{6xxx}}} || set fine cutoff frequency (0-7ff) ||
 || {{{7dxx}}} || restart instument program ||
+|| {{{fc00}}} || trigger release ||
 || {{{fd00}}} || loop begin ||
 || {{{fexx}}} || loop to previous "fd00" xx times ||
 || {{{ffxx}}} || go to step xx ||
