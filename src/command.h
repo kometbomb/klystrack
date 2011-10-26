@@ -29,7 +29,7 @@ OTHER DEALINGS IN THE SOFTWARE.
 #include "SDL.h"
 #include <stdbool.h>
 
-typedef struct { Uint16 opcode; Uint16 mask; char* name; int minv, maxv; } InstructionDesc;
+typedef struct { Uint16 opcode; Uint16 mask; char *name, *shortname; int minv, maxv; } InstructionDesc;
 
 const InstructionDesc * get_instruction_desc(Uint16 command);
 bool is_valid_command(Uint16 command);
