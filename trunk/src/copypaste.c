@@ -125,11 +125,11 @@ void paste()
 		{
 			if (mused.cp.type != CP_SEQUENCE) break;
 			
-			snapshot(S_T_SEQUENCE);
-			
 			size_t items = cp_get_item_count(&mused.cp, sizeof(mused.song.sequence[0][0]));
 			
 			if (items < 1) break;
+			
+			snapshot(S_T_SEQUENCE);
 			
 			int first = ((MusSeqPattern*)mused.cp.data)[0].position;
 			int last = ((MusSeqPattern*)mused.cp.data)[items-1].position;
@@ -145,12 +145,16 @@ void paste()
 		
 		case EDITPATTERN:
 		{
+			size_t items = cp_get_item_count(&mused.cp, sizeof(mused.song.sequence[0][0]));
+			
+			if (items < 1) 
+				break;
 			
 			if (mused.cp.type == CP_PATTERN)
 			{
 				snapshot(S_T_PATTERN);
-				resize_pattern(&mused.song.pattern[mused.current_pattern], cp_get_item_count(&mused.cp, sizeof(mused.song.pattern[mused.current_pattern].step[0])));
-				cp_paste_items(&mused.cp, CP_PATTERN, mused.song.pattern[mused.current_pattern].step, cp_get_item_count(&mused.cp, sizeof(mused.song.pattern[mused.current_pattern].step[0])), sizeof(mused.song.pattern[mused.current_pattern].step[0]));
+				resize_pattern(&mused.song.pattern[mused.current_pattern], items);
+				cp_paste_items(&mused.cp, CP_PATTERN, mused.song.pattern[mused.current_pattern].step, items, sizeof(mused.song.pattern[mused.current_pattern].step[0]));
 			}
 			else if (mused.cp.type == CP_PATTERNSEGMENT)
 			{
@@ -174,6 +178,11 @@ void paste()
 		
 		case EDITPROG:
 		{
+			size_t items = cp_get_item_count(&mused.cp, sizeof(mused.song.sequence[0][0]));
+			
+			if (items < 1) 
+				break;
+		
 			if (mused.cp.type == CP_PROGRAM)
 			{
 				snapshot(S_T_INSTRUMENT);
