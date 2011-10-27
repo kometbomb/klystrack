@@ -186,9 +186,9 @@ endif
 	
 nightly: zip
 	@$(REV) ver.in ver.txt
-	@cp zip/$(ARCHIVE) zip/klystrack-nightly-`svnversion`-win32.zip
+	@cp zip/$(ARCHIVE) zip/klystrack-nightly-`svnversion -n .`-win32.zip
 ifneq ($(UPLOAD),)
-	@$(UPLOAD) zip/klystrack-nightly-`svnversion`-win32.zip
+	@$(UPLOAD) zip/klystrack-nightly-`svnversion -n .`-win32.zip
 endif
 	@rm -f ver.txt
 
