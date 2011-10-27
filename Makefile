@@ -4,7 +4,6 @@ CFG := debug
 MACHINE := -march=pentium2 
 NSIS := C:/program\ files\ \(x86\)/nsis/makensis.exe /V2 /NOCD
 WGET := wget --quiet
-REV := SubWCRev.exe .
 MAKEBUNDLE := ../klystron/tools/bin/makebundle.exe
 UPLOAD := cmd.exe /c upload.bat
 DLLS := zip/data/SDL.dll zip/data/SDL_mixer.dll zip/data/SDL_image.dll
@@ -129,9 +128,6 @@ build: Makefile src/version
 	@echo -n `cat src/version` >> src/version_number.h
 	@echo '"' >> src/version_number.h
 	@echo '#endif' >> src/version_number.h
-ifdef COMSPEC
-	@$(REV) ./src/version.in ./src/version.h
-else
 	@echo '#ifndef VERSION_H' > ./src/version.h
 	@echo '#define VERSION_H' >> ./src/version.h
 	@echo '#include "version_number.h"' >> ./src/version.h
@@ -140,7 +136,6 @@ else
 	@echo '"' >> ./src/version.h
 	@echo '#define VERSION_STRING "klystrack " VERSION " " REVISION' >> ./src/version.h
 	@echo '#endif' >> ./src/version.h
-endif
 	@make -C ../klystron CFG=$(CFG) EXTFLAGS="$(EXTFLAGS)"
 	@make all CFG=$(CFG) EXTFLAGS="$(EXTFLAGS)"
 
