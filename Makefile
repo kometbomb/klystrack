@@ -17,6 +17,7 @@ MIXERVER := 1.2.11
 SDLVER := 1.2.14
 SDL_IMAGEVER := 1.2.10
 THEMES :=
+REV := cp -f
 
 CFLAGS := $(MACHINE) -ftree-vectorize -std=gnu99 --no-strict-aliasing
 
@@ -34,7 +35,6 @@ else
 	ARCHIVE := $(ARCHIVE).tar.gz
 	SDLFLAGS := `sdl-config --cflags` -U_FORTIFY_SOURCE
 	SDLLIBS := `sdl-config --libs` -lSDL_mixer -lSDL_image
-	REV := cp -f
 endif
 
 ifdef COMSPEC
