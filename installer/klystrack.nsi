@@ -74,6 +74,7 @@ SectionIn RO
   File zip\data\examples\instruments\lethal_kick.ki
   File zip\data\examples\instruments\lethal_snare.ki
   File zip\data\examples\instruments\major.ki
+  File zip\data\examples\instruments\MontyKick.ki
   File zip\data\examples\instruments\snappy.ki
   File zip\data\examples\instruments\ssnare.ki
   File zip\data\examples\instruments\stabmaj.ki
@@ -165,6 +166,7 @@ Section Uninstall
   Delete lethal_kick.ki
   Delete lethal_snare.ki
   Delete major.ki
+  Delete MontyKick.ki
   Delete snappy.ki
   Delete ssnare.ki
   Delete stabmaj.ki
