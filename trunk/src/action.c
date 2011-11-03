@@ -378,19 +378,11 @@ void cycle_focus(void *_views, void *_focus, void *_mode)
 
 void change_song_length(void *delta, void *unused1, void *unused2)
 {
-	if (CASTPTR(int,delta) < 0)
-	{
-		if (mused.song.song_length >= -CASTPTR(int,delta))
-			mused.song.song_length += CASTPTR(int,delta);
-						
-		if (mused.song.loop_point >= mused.song.song_length)
-			mused.song.loop_point = mused.song.song_length;
-	}
-	else if (CASTPTR(int,delta) > 0)
-	{
-		if (mused.song.song_length < 0xfffe - CASTPTR(int,delta))
-			mused.song.song_length += CASTPTR(int,delta);
-	}
+	int l = mused.song.song_length;
+	l += CASTPTR(int, delta);
+	l = l - (l % mused.sequenceview_steps);
+
+	mused.song.song_length = my_max(0, my_min(0xfffe, l));
 }
 
 
