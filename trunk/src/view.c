@@ -1025,6 +1025,12 @@ void program_view(SDL_Surface *dest_surface, const SDL_Rect *dest, const SDL_Eve
 			else
 				console_write_args(mused.console, "EXT%x", inst->program[i] & 0x0f);
 		}
+		else
+		{
+			const InstructionDesc *d = get_instruction_desc(inst->program[i]);
+			if (d)
+				console_write(mused.console, d->shortname ? d->shortname : d->name);
+		}
 			
 		console_write_args(mused.console, "\n");
 			
