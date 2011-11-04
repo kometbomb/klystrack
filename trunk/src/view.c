@@ -1025,7 +1025,7 @@ void program_view(SDL_Surface *dest_surface, const SDL_Rect *dest, const SDL_Eve
 			else
 				console_write_args(mused.console, "EXT%x", inst->program[i] & 0x0f);
 		}
-		else
+		else if (inst->program[i] != MUS_FX_NOP)
 		{
 			const InstructionDesc *d = get_instruction_desc(inst->program[i]);
 			if (d)
