@@ -609,3 +609,52 @@ void pattern_view(SDL_Surface *dest_surface, const SDL_Rect *dest, const SDL_Eve
 }
 
 
+void pattern_view2(SDL_Surface *dest_surface, const SDL_Rect *dest, const SDL_Event *event, void *param)
+{
+	SDL_SetClipRect(mused.screen, dest);
+	bevel(mused.screen, dest, mused.slider_bevel->surface, BEV_SEQUENCE_BORDER);
+	
+	const int height = 8;
+	const int top = mused.pattern_position - dest->h / height / 2;
+	const int bottom = top + dest->h / height;
+	
+	slider_set_params(&mused.pattern_slider_param, 0, mused.song.song_length - 1, top, bottom, &mused.pattern_position, 1, SLIDER_VERTICAL, mused.slider_bevel->surface);
+	
+	const int w = 4 * 8;
+	
+	for (int channel = 0 ; channel < mused.song.num_channels ; ++channel)
+	{
+		const MusSeqPattern *sp = &mused.song.sequence[channel][0];
+		const int x = channel * w;
+		
+		for (int i = 0 ; i < mused.song.num_sequences[channel] ; ++i, ++sp)
+		{
+			if (sp->position >= bottom) break;
+			
+			int len = mused.song.pattern[sp->pattern].num_steps;
+			
+			if (sp->position + len <= top) continue;
+			
+			if (i < mused.song.num_sequences[channel] - 1)
+				len = my_min(len, (sp + 1)->position - sp->position);
+			
+			SDL_Rect pat = { x + dest->x, (sp->position - top) * height + dest->y, w, len * height };
+			SDL_Rect text;
+			copy_rect(&text, &pat);
+			clip_rect(&pat, dest);
+			
+			SDL_SetClipRect(mused.screen, &pat);
+			
+			for (int step = 0 ; step < len ; ++step)
+			{
+				const char *note = mused.song.pattern[sp->pattern].step[step].note < 0xff ? notename(mused.song.pattern[sp->pattern].step[step].note) : "---";
+				font_write(&mused.largefont, mused.screen, &text, note);
+				text.y += height;
+			}
+		}
+	}
+	
+	
+	SDL_SetClipRect(mused.screen, NULL);
+}
+
