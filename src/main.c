@@ -46,6 +46,7 @@ OTHER DEALINGS IN THE SOFTWARE.
 #include "util/rnd.h"
 #include "view/visu.h"
 #include "view/pattern.h"
+#include "view/sequence.h"
 #include "view/wavetableview.h"
 #include "mymsg.h"
 #include "key.h"
@@ -96,7 +97,7 @@ static const View pattern_view_tab[] =
 {
 	{{0, 0, 0, 14}, bevel_view, (void*)BEV_BACKGROUND, -1},
 	{{2, 2, 164 + 32, 10}, instrument_name_view, (void*)1, EDITINSTRUMENT},
-	{{0, 14, 0-SCROLLBAR, 0 - INFO}, pattern_view, NULL, EDITPATTERN},
+	{{0, 14, 0-SCROLLBAR, 0 - INFO}, pattern_view2, NULL, EDITPATTERN},
 	{{0-SCROLLBAR, 14, SCROLLBAR, 0 - INFO}, slider, &mused.pattern_slider_param, EDITPATTERN},
 	{{0, 0 - INFO, 0, INFO }, info_line, NULL, -1},
 	{{0, 0, 0, 0}, NULL}
@@ -118,11 +119,11 @@ static const View classic_view_tab[] =
 	{{0,TOOLBAR_H + SONG_INFO1_H+SONG_INFO2_H,CLASSIC_SONG_INFO,SONG_INFO3_H}, songinfo3_view, NULL, EDITSONGINFO},
 	{{- PLAYSTOP_INFO_W, CLASSIC_SONG_INFO_H - 25,PLAYSTOP_INFO_W,25}, playstop_view, NULL, EDITSONGINFO},
 	{{0-SCROLLBAR, 0, SCROLLBAR, CLASSIC_SONG_INFO_H - 25}, slider, &mused.sequence_slider_param, EDITSEQUENCE},
-	{{CLASSIC_SONG_INFO, 0, 0-SCROLLBAR, CLASSIC_SONG_INFO_H - 25}, sequence_spectrum_view, NULL, EDITSEQUENCE},
+	{{CLASSIC_SONG_INFO, 0, 0-SCROLLBAR, CLASSIC_SONG_INFO_H - 25}, sequence_view2, NULL, EDITSEQUENCE},
 	{{CLASSIC_SONG_INFO, CLASSIC_SONG_INFO_H-25, - PLAYSTOP_INFO_W, 25}, bevel_view, (void*)BEV_BACKGROUND, -1},
 	{{CLASSIC_SONG_INFO + 2, CLASSIC_SONG_INFO_H - 25 + 2, -2 - PLAYSTOP_INFO_W, 10}, song_name_view, NULL, -1},
 	{{CLASSIC_SONG_INFO + 2, CLASSIC_SONG_INFO_H - 25 + 2 + 10 + 1, -2 - PLAYSTOP_INFO_W, 10}, instrument_name_view, (void*)1, -1},
-	{{0, CLASSIC_SONG_INFO_H, 0-SCROLLBAR, -INFO}, pattern_view, NULL, EDITPATTERN},
+	{{0, CLASSIC_SONG_INFO_H, 0-SCROLLBAR, -INFO}, pattern_view2, NULL, EDITPATTERN},
 	{{0 - SCROLLBAR, CLASSIC_SONG_INFO_H, SCROLLBAR, -INFO}, slider, &mused.pattern_slider_param, EDITPATTERN},
 	{{0, 0 - INFO, 0, INFO }, info_line, NULL, -1},
 	{{0, 0, 0, 0}, NULL}
@@ -483,13 +484,7 @@ int main(int argc, char **argv)
 			{
 				mused.current_sequencepos = mused.stat_song_position - mused.stat_song_position % mused.sequenceview_steps;
 				int tmp = mused.current_patternx;
-				update_ghost_patterns();
 				mused.current_patternx = tmp;
-				
-				for (int x = 0 ; x < mused.song.num_channels ; ++x)
-					if (mused.stat_pattern[x] != NULL)
-						mused.current_patternstep = mused.stat_pattern_position[x];
-						
 				update_position_sliders();
 			}
 		

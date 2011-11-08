@@ -45,20 +45,22 @@ const int CTRL_BITS = 3;
 const int CMD_CHARS = 4;
 
 
-#define selrow(sel, nor) ((mused.current_patternstep == i) ? (sel) : (nor))
+#define selrow(sel, nor) ((current_patternstep() == i) ? (sel) : (nor))
 #define diszero(e, c) ((!(e)) ? mix_colors(c, colors[COLOR_PATTERN_EMPTY_DATA]) : c)
 
 
-static void update_pattern_cursor(const SDL_Rect *area, SDL_Rect *selected_rect, int current_pattern, int patternstep, int pattern_param)
+/*static void update_pattern_cursor(const SDL_Rect *area, SDL_Rect *selected_rect, int current_pattern, int patternstep, int pattern_param)
 {
-	if (mused.current_pattern == current_pattern && mused.current_patternstep == patternstep && mused.current_patternx == pattern_param)
+	if (current_pattern() == current_pattern && current_patternstep() == patternstep && mused.current_patternx == pattern_param)
 	{
 		copy_rect(selected_rect, area);
 		adjust_rect(selected_rect, -2);
 		--selected_rect->h;
 	}
-}
+}*/
 
+
+#if 0
 
 void pattern_view_inner(SDL_Surface *dest_surface, const SDL_Rect *dest, const SDL_Rect *limits, const SDL_Event *event, int current_pattern, int channel)
 {
@@ -76,8 +78,8 @@ void pattern_view_inner(SDL_Surface *dest_surface, const SDL_Rect *dest, const S
 
 	if (mused.flags & CENTER_PATTERN_EDITOR) 
 	{
-		start = mused.current_patternstep - dest->h / mused.console->font.h / 2;
-		slider_set_params(&mused.pattern_slider_param, 0, mused.song.pattern[current_pattern].num_steps, mused.current_patternstep, mused.current_patternstep + 1, &mused.current_patternstep, 1, SLIDER_VERTICAL, mused.slider_bevel->surface);
+		start = current_patternstep() - dest->h / mused.console->font.h / 2;
+		slider_set_params(&mused.pattern_slider_param, 0, mused.song.pattern[current_pattern].num_steps, current_patternstep(), current_patternstep() + 1, &current_patternstep(), 1, SLIDER_VERTICAL, mused.slider_bevel->surface);
 	}
 	
 	SDL_Rect selected_rect = { 0 };
@@ -93,7 +95,7 @@ void pattern_view_inner(SDL_Surface *dest_surface, const SDL_Rect *dest, const S
 	{
 		SDL_Rect row = { content.x - SPACER / 2, content.y + y - 1, content.w + SPACER, mused.console->font.h + 1};
 	
-		if (!(mused.flags & CENTER_PATTERN_EDITOR) && current_pattern == mused.current_pattern && row.y + row.h - 2 <= content.y + content.h)
+		if (!(mused.flags & CENTER_PATTERN_EDITOR) && current_pattern == current_pattern() && row.y + row.h - 2 <= content.y + content.h)
 			slider_set_params(&mused.pattern_slider_param, 0, mused.song.pattern[current_pattern].num_steps - 1, start, i, &mused.pattern_position, 1, SLIDER_VERTICAL, mused.slider_bevel->surface);
 	
 		if (i < 0) 
@@ -104,7 +106,7 @@ void pattern_view_inner(SDL_Surface *dest_surface, const SDL_Rect *dest, const S
 		
 		console_set_clip(mused.console, &content);
 		
-		if (mused.current_patternstep == i)
+		if (current_patternstep() == i)
 		{
 			bevel(mused.screen,&row, mused.slider_bevel->surface, BEV_SELECTED_PATTERN_ROW);
 		}
@@ -113,7 +115,7 @@ void pattern_view_inner(SDL_Surface *dest_surface, const SDL_Rect *dest, const S
 		
 		if (channel == -1 || !(mused.mus.channel[channel].flags & MUS_CHN_DISABLED))
 		{
-			if (mused.current_patternstep == i)
+			if (current_patternstep() == i)
 			{		
 				console_set_color(mused.console, base = colors[COLOR_PATTERN_SELECTED], CON_CHARACTER);
 			}
@@ -127,7 +129,7 @@ void pattern_view_inner(SDL_Surface *dest_surface, const SDL_Rect *dest, const S
 			console_set_color(mused.console, base = colors[COLOR_PATTERN_DISABLED], CON_CHARACTER);
 		}
 		
-		if (current_pattern == mused.current_pattern && mused.focus == EDITPATTERN)
+		if (current_pattern == current_pattern() && mused.focus == EDITPATTERN)
 		{
 			if (i <= mused.selection.start)
 			{
@@ -296,7 +298,7 @@ void pattern_view_inner(SDL_Surface *dest_surface, const SDL_Rect *dest, const S
 		SDL_BlitSurface(mused.vu_meter->surface, &sr, mused.screen, &r);
 	}
 	
-	if (current_pattern == mused.current_pattern && mused.focus == EDITPATTERN && mused.selection.start != mused.selection.end 
+	if (current_pattern == current_pattern() && mused.focus == EDITPATTERN && mused.selection.start != mused.selection.end 
 		&& mused.selection.end > start
 		/*&& !(mused.selection.start > mused.pattern_slider_param.visible_last || mused.selection.end <= mused.pattern_slider_param.visible_first)*/)
 	{
@@ -336,12 +338,12 @@ static void pattern_view_stepcounter(SDL_Surface *dest_surface, const SDL_Rect *
 	
 	int start = mused.pattern_position;
 
-	if (mused.flags & CENTER_PATTERN_EDITOR) start = mused.current_patternstep - dest->h / mused.console->font.h / 2;
+	if (mused.flags & CENTER_PATTERN_EDITOR) start = current_patternstep() - dest->h / mused.console->font.h / 2;
 	
 	int y = 0;
 	for (int row = start ; y < content.h ; ++row, y += mused.console->font.h)
 	{
-		if (mused.current_patternstep == row)
+		if (current_patternstep() == row)
 		{
 			SDL_Rect row = { content.x - 2, content.y + y - 1, content.w + 4, mused.console->font.h + 1};
 			bevel(mused.screen,&row, mused.slider_bevel->surface, BEV_SELECTED_PATTERN_ROW);
@@ -351,7 +353,7 @@ static void pattern_view_stepcounter(SDL_Surface *dest_surface, const SDL_Rect *
 			console_set_color(mused.console, colors[COLOR_PATTERN_DISABLED], CON_CHARACTER);
 		else
 		{
-			console_set_color(mused.console, ((row == mused.current_patternstep) ? colors[COLOR_PATTERN_SELECTED] : timesig(row, colors[COLOR_PATTERN_BAR], colors[COLOR_PATTERN_BEAT], colors[COLOR_PATTERN_NORMAL])), CON_CHARACTER);
+			console_set_color(mused.console, ((row == current_patternstep()) ? colors[COLOR_PATTERN_SELECTED] : timesig(row, colors[COLOR_PATTERN_BAR], colors[COLOR_PATTERN_BEAT], colors[COLOR_PATTERN_NORMAL])), CON_CHARACTER);
 		}
 		
 		if (SHOW_DECIMALS & mused.flags)
@@ -417,8 +419,8 @@ static void pattern_header(SDL_Surface *dest_surface, const SDL_Event *event, in
 		
 		if (d)
 		{
-			if (mused.current_pattern == old)
-				mused.current_pattern = *pattern_var;
+			if (current_pattern() == old)
+				current_pattern() = *pattern_var;
 		}
 	}
 	else
@@ -548,7 +550,7 @@ void pattern_view(SDL_Surface *dest_surface, const SDL_Rect *dest, const SDL_Eve
 			ml = my_max(ml, mused.song.pattern[*mused.ghost_pattern[i]].num_steps);
 	}
 	
-	pattern_view_stepcounter(dest_surface, &pos, event, param, mused.single_pattern_edit ? mused.song.pattern[mused.current_pattern].num_steps : ml);
+	pattern_view_stepcounter(dest_surface, &pos, event, param, mused.single_pattern_edit ? mused.song.pattern[current_pattern()].num_steps : ml);
 	
 	SDL_Rect tdest;
 	
@@ -600,14 +602,14 @@ void pattern_view(SDL_Surface *dest_surface, const SDL_Rect *dest, const SDL_Eve
 		console_set_clip(mused.console, &pos);
 		console_clear(mused.console);
 		
-		pattern_header(dest_surface, event, pos.x, -1, &button_topleft, pattern_width, (Uint16*)&mused.current_pattern);
+		pattern_header(dest_surface, event, pos.x, -1, &button_topleft, pattern_width, (Uint16*)&current_pattern());
 	
-		pattern_view_inner(dest_surface, &pos, dest, event, mused.current_pattern, -1);
+		pattern_view_inner(dest_surface, &pos, dest, event, current_pattern(), -1);
 	}
 	
 	check_mouse_wheel_event(event, dest, &mused.pattern_slider_param);
 }
-
+#endif
 
 void pattern_view2(SDL_Surface *dest_surface, const SDL_Rect *dest, const SDL_Event *event, void *param)
 {
@@ -617,8 +619,17 @@ void pattern_view2(SDL_Surface *dest_surface, const SDL_Rect *dest, const SDL_Ev
 	const int height = 8;
 	const int top = mused.pattern_position - dest->h / height / 2;
 	const int bottom = top + dest->h / height;
+	SDL_Rect row;
+	copy_rect(&row, dest);
 	
-	slider_set_params(&mused.pattern_slider_param, 0, mused.song.song_length - 1, top, bottom, &mused.pattern_position, 1, SLIDER_VERTICAL, mused.slider_bevel->surface);
+	adjust_rect(&row, 1);
+	
+	row.y = (row.y + dest->h / 2 - (height + 2) / 2) / height * height;
+	row.h = height + 2;
+	
+	bevel(mused.screen, &row, mused.slider_bevel->surface, BEV_SELECTED_PATTERN_ROW);
+	
+	slider_set_params(&mused.pattern_slider_param, 0, mused.song.song_length - 1, my_max(0, top), my_min(mused.song.song_length - 1, bottom), &mused.pattern_position, 1, SLIDER_VERTICAL, mused.slider_bevel->surface);
 	
 	const int w = 4 * 8;
 	

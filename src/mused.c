@@ -51,32 +51,6 @@ void set_edit_buffer(char *buffer, size_t size)
 } 
 
 
-void update_ghost_patterns()
-{
-	/*for (int e = 0 ; e < mused.song.num_sequences[mused.current_sequencetrack] ; ++e)
-			if (mused.song.sequence[mused.current_sequencetrack][e].position == mused.current_sequencepos)
-				mused.current_sequencepos = mused.song.sequence[mused.current_sequencetrack][e].position;*/
-				
-	memset(mused.ghost_pattern, 0, sizeof(mused.ghost_pattern));
-				
-	int p = 0;				
-	for (int i = 0 ; i < mused.song.num_channels ; ++i)
-	{
-		for (int e = 0 ; e < mused.song.num_sequences[i] ; ++e)
-			if (mused.song.sequence[i][e].position == mused.current_sequencepos)
-			{
-				mused.ghost_pattern[i] = &mused.song.sequence[i][e].pattern;
-				if (i == mused.current_sequencetrack) mused.current_pattern = mused.song.sequence[i][e].pattern; 
-				++p;
-			}
-	}
-	
-	mused.current_patternstep = 0;
-	mused.current_patternx = 0;
-	mused.single_pattern_edit = (p <= 1);
-}
-
-
 void change_mode(int newmode)
 {
 	if (newmode < VIRTUAL_MODE && mused.mode != MENU) 
@@ -119,18 +93,12 @@ void change_mode(int newmode)
 			if (mused.mode == EDITBUFFER) break;
 			if (mused.mode == EDITSEQUENCE || (mused.mode == MENU && !mused.single_pattern_edit) || newmode == EDITCLASSIC)
 			{
-				update_ghost_patterns();
 				slider_move_position(&mused.current_sequencetrack, &mused.pattern_horiz_position, &mused.pattern_horiz_slider_param, 0, mused.pattern_horiz_slider_param.last - mused.pattern_horiz_slider_param.first + 1);
-				slider_move_position(&mused.current_patternstep, &mused.pattern_position, &mused.pattern_slider_param, 0, mused.song.pattern[mused.current_pattern].num_steps);
+				//slider_move_position(&mused.current_patternstep, &mused.pattern_position, &mused.pattern_slider_param, 0, mused.song.pattern[mused.current_pattern].num_steps);
 			}
 			else
 			{
 				mused.single_pattern_edit = 1;
-				for (int i = 0 ; i < MUS_MAX_CHANNELS ; ++i)
-				{
-					mused.ghost_pattern[i] = NULL;
-				}
-				mused.current_patternstep = 0;
 				mused.current_patternx = 0;
 			}
 			break;
@@ -186,7 +154,6 @@ void new_song()
 	mused.song.song_length = 0;
 	mused.song.loop_point = 0;
 	mused.song.flags = 0;
-	mused.current_patternstep = 0;
 	mused.current_sequencepos = 0;
 	mused.current_sequencetrack = 0;
 	update_position_sliders();
@@ -220,8 +187,6 @@ void new_song()
 		mused.song.default_volume[i] = MAX_VOLUME;
 		mused.song.default_panning[i] = 0;
 	}
-	
-	memset(mused.ghost_pattern, 0, sizeof(mused.ghost_pattern));
 	
 	if (mused.mus.cyd) cyd_reset_wavetable(mused.mus.cyd);
 	
@@ -280,8 +245,6 @@ void init(MusInstrument *instrument, MusPattern *pattern, MusSeqPattern sequence
 	mused.selected_param = 0;
 	mused.editpos = 0;
 	mused.mode = EDITINSTRUMENT;
-	mused.current_patternstep = 0;
-	mused.current_pattern = 0;
 	mused.current_patternx = 0;
 	mused.current_sequencepos = 0;
 	mused.default_pattern_length = mused.sequenceview_steps = 16;
@@ -415,4 +378,33 @@ void enable_callback(bool state)
 		cyd_set_callback(&mused.cyd, tick_cb, &mused.mus, mused.song.song_rate);
 	else
 		cyd_set_callback(&mused.cyd, NULL, NULL, 0);
+}
+
+
+int current_pattern()
+{
+	int p = -1;
+	
+	const MusSeqPattern *sp = &mused.song.sequence[mused.current_sequencetrack][0];
+	
+	for (int i = 0 ; i < mused.song.num_sequences[mused.current_sequencetrack] && sp->position <= mused.current_patternpos ; ++i, ++sp)
+	{
+		if (sp->position <= mused.current_patternpos && sp->position + mused.song.pattern[sp->pattern].num_steps > mused.current_patternpos) p = sp->pattern;
+	}
+	
+	return p;
+}
+
+int current_patternstep()
+{
+	int p = -1;
+	
+	const MusSeqPattern *sp = &mused.song.sequence[mused.current_sequencetrack][0];
+	
+	for (int i = 0 ; i < mused.song.num_sequences[mused.current_sequencetrack] && sp->position <= mused.current_patternpos ; ++i, ++sp)
+	{
+		if (sp->position <= mused.current_patternpos && sp->position + mused.song.pattern[sp->pattern].num_steps > mused.current_patternpos) p = mused.current_patternpos - sp->position;
+	}
+	
+	return p;
 }

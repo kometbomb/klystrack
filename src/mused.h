@@ -103,14 +103,12 @@ typedef struct
 	CydEngine cyd;
 	MusEngine mus;
 	int octave, instrument_page, current_instrument, default_pattern_length, selected_param, editpos, mode, focus,
-		current_patternstep, current_pattern, current_patternx, 
-		current_sequencepos, sequenceview_steps, single_pattern_edit, 
+		current_patternx, current_patternpos, current_sequencepos, sequenceview_steps, single_pattern_edit, 
 		prev_mode, current_sequenceparam, instrument_list_position,
 		pattern_position, sequence_position, pattern_horiz_position, sequence_horiz_position,
 		program_position, current_program_step,
 		edit_reverb_param, selected_wavetable, wavetable_param, songinfo_param,
 		loop_store_length, loop_store_loop, note_jump, wavetable_list_position, wavetable_preview_idx, sequence_digit;
-	Uint16 *ghost_pattern[MUS_MAX_CHANNELS];
 	int current_sequencetrack;
 	Uint16 time_signature;
 	Clipboard cp;
@@ -183,7 +181,6 @@ void deinit();
 void new_song();
 void kt_default_instrument(MusInstrument *instrument);
 void set_edit_buffer(char *buffer, size_t size);
-void update_ghost_patterns();
 void change_pixel_scale(void *a, void*b, void*c);
 void mirror_flags();
 void resize_pattern(MusPattern * pattern, Uint16 new_size);
@@ -192,5 +189,7 @@ void my_open_menu();
 int viscol(int col);
 void post_config_load();
 void enable_callback(bool state);
+int current_pattern();
+int current_patternstep();
 
 #endif
