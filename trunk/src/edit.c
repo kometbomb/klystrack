@@ -37,7 +37,7 @@ static int find_unused_pattern()
 	{
 		int not_empty = 0;
 		for (int s = 0 ; s < mused.song.pattern[empty].num_steps && !not_empty ; ++s)
-			if ((empty == mused.current_pattern && mused.focus == EDITPATTERN) || (mused.song.pattern[empty].step[s].note != MUS_NOTE_NONE
+			if ((empty == current_pattern() && mused.focus == EDITPATTERN) || (mused.song.pattern[empty].step[s].note != MUS_NOTE_NONE
 				|| mused.song.pattern[empty].step[s].ctrl != 0 
 				|| mused.song.pattern[empty].step[s].instrument != MUS_NOTE_NO_INSTRUMENT
 				|| mused.song.pattern[empty].step[s].command != 0))
@@ -62,14 +62,14 @@ static void set_pattern(int pattern)
 		for (int i = 0 ; i < mused.song.num_sequences[mused.current_sequencetrack] ; ++i)
 		{
 			if (mused.song.sequence[mused.current_sequencetrack][i].position == mused.current_sequencepos
-				&& mused.song.sequence[mused.current_sequencetrack][i].pattern == mused.current_pattern)
+				&& mused.song.sequence[mused.current_sequencetrack][i].pattern == current_pattern())
 				mused.song.sequence[mused.current_sequencetrack][i].pattern = pattern;
 		}
 	}
 	
-	mused.current_pattern = pattern;
+	//current_pattern() = pattern;
 	
-	update_ghost_patterns();
+	//update_ghost_patterns();
 }
 
 
@@ -77,15 +77,15 @@ void clone_pattern(void *unused1, void *unused2, void *unused3)
 {
 	int empty = find_unused_pattern();
 	
-	if (empty == -1 || mused.current_pattern == empty)
+	if (empty == -1 || current_pattern() == empty)
 	{
 		return;
 	}
 	
-	resize_pattern(&mused.song.pattern[empty], mused.song.pattern[mused.current_pattern].num_steps);
+	resize_pattern(&mused.song.pattern[empty], mused.song.pattern[current_pattern()].num_steps);
 	
-	memcpy(mused.song.pattern[empty].step, mused.song.pattern[mused.current_pattern].step, 
-		mused.song.pattern[mused.current_pattern].num_steps * sizeof(mused.song.pattern[mused.current_pattern].step[0]));
+	memcpy(mused.song.pattern[empty].step, mused.song.pattern[current_pattern()].step, 
+		mused.song.pattern[current_pattern()].num_steps * sizeof(mused.song.pattern[current_pattern()].step[0]));
 		
 	set_pattern(empty);
 }
@@ -95,7 +95,7 @@ void get_unused_pattern(void *unused1, void *unused2, void *unused3)
 {
 	int empty = find_unused_pattern();
 		
-	if (empty == -1 || (mused.current_pattern == empty && mused.focus == EDITPATTERN))
+	if (empty == -1 || (current_pattern() == empty && mused.focus == EDITPATTERN))
 	{
 		return;
 	}
@@ -109,7 +109,7 @@ void get_unused_pattern(void *unused1, void *unused2, void *unused3)
 		for (int i = 0 ; i < mused.song.num_sequences[mused.current_sequencetrack] ; ++i)
 		{
 			if (mused.song.sequence[mused.current_sequencetrack][i].position == mused.current_sequencepos
-				&& mused.song.sequence[mused.current_sequencetrack][i].pattern == mused.current_pattern)
+				&& mused.song.sequence[mused.current_sequencetrack][i].pattern == current_pattern())
 				found = true;
 		}
 		
@@ -135,7 +135,7 @@ void expand_pattern(void *factor, void *unused2, void *unused3)
 {
 	if (mused.focus != EDITPATTERN) return;
 	
-	MusPattern *pattern = &mused.song.pattern[mused.current_pattern];
+	MusPattern *pattern = &mused.song.pattern[current_pattern()];
 	
 	MusStep *temp = malloc(pattern->num_steps * sizeof(pattern->step[0]));
 	memcpy(temp, pattern->step, pattern->num_steps * sizeof(pattern->step[0]));
@@ -166,7 +166,7 @@ void shrink_pattern(void *factor, void *unused2, void *unused3)
 {
 	if (mused.focus != EDITPATTERN) return;
 	
-	MusPattern *pattern = &mused.song.pattern[mused.current_pattern];
+	MusPattern *pattern = &mused.song.pattern[current_pattern()];
 	
 	if (pattern->num_steps <= CASTPTR(int,factor)) return;
 	
@@ -185,7 +185,7 @@ void interpolate(void *unused1, void *unused2, void *unused3)
 {
 	if (mused.focus != EDITPATTERN || mused.selection.start >= mused.selection.end - 1) return;
 	
-	MusPattern *pat = &mused.song.pattern[mused.current_pattern];
+	MusPattern *pat = &mused.song.pattern[current_pattern()];
 	
 	Uint16 command = pat->step[mused.selection.start].command;
 	Uint16 mask = 0xff00;
@@ -226,7 +226,7 @@ void snapshot_cascade(SHType type, int a, int b)
 		switch (type)
 		{
 			case S_T_PATTERN:
-				undo_store_pattern(&mused.undo, mused.current_pattern, &mused.song.pattern[mused.current_pattern], mused.modified);
+				undo_store_pattern(&mused.undo, current_pattern(), &mused.song.pattern[current_pattern()], mused.modified);
 				break;
 				
 			case S_T_SEQUENCE:

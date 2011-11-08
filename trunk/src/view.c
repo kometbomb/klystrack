@@ -857,7 +857,7 @@ void info_line(SDL_Surface *dest_surface, const SDL_Rect *dest, const SDL_Event 
 		
 			if (mused.current_patternx >= PED_COMMAND1)
 			{
-				Uint16 inst = mused.song.pattern[mused.current_pattern].step[mused.current_patternstep].command;
+				Uint16 inst = mused.song.pattern[current_pattern()].step[current_patternstep()].command;
 				
 				if (inst != 0)
 					get_command_desc(text, inst);
@@ -866,7 +866,7 @@ void info_line(SDL_Surface *dest_surface, const SDL_Rect *dest, const SDL_Event 
 			}
 			else if (mused.current_patternx == PED_VOLUME1 || mused.current_patternx == PED_VOLUME2)
 			{
-				Uint16 vol = mused.song.pattern[mused.current_pattern].step[mused.current_patternstep].volume;
+				Uint16 vol = mused.song.pattern[current_pattern()].step[current_patternstep()].volume;
 				
 				if (vol != MUS_NOTE_NO_VOLUME && vol > MAX_VOLUME)
 				{

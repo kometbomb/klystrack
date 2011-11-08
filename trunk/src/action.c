@@ -61,26 +61,14 @@ void select_sequence_position(void *channel, void *position, void* unused)
 		
 	mused.focus = EDITSEQUENCE;
 		
-	if (mused.mode == EDITCLASSIC) update_ghost_patterns();
 }
 
 
-void select_pattern_param(void *id, void *position, void *pattern)
+void select_pattern_param(void *id, void *position, void *track)
 {
 	mused.current_patternx = CASTPTR(int,id);
-	mused.current_pattern = CASTPTR(int,pattern);
-	mused.current_patternstep = CASTPTR(int,position);
-	
-	for (int i = 0 ; i < MUS_MAX_CHANNELS ; ++i)
-		if (mused.ghost_pattern[i] && *mused.ghost_pattern[i] == mused.current_pattern) 
-		{
-			mused.current_sequencetrack = i;
-			break;
-		}
-	
-	if ((mused.flags & SONG_PLAYING) && (mused.flags & FOLLOW_PLAY_POSITION))
-		return;
-	
+	mused.current_sequencetrack = CASTPTR(int,track);
+	mused.current_sequencepos = CASTPTR(int,position);
 	mused.focus = EDITPATTERN;
 }
 
@@ -186,7 +174,7 @@ void play_position(void *unused1, void *unused2, void *unused3)
 		mused.loop_store_length = mused.song.song_length;
 		mused.loop_store_loop = mused.song.loop_point;
 		
-		mused.song.song_length = mused.current_sequencepos + mused.song.pattern[mused.current_pattern].num_steps;
+		mused.song.song_length = mused.current_sequencepos + mused.song.pattern[current_pattern(NULL)].num_steps;
 		mused.song.loop_point = mused.current_sequencepos;
 		
 		play(MAKEPTR(1), 0, 0);
@@ -320,7 +308,7 @@ void select_all(void *unused1, void *unused2, void *unused3)
 	{
 		case EDITPATTERN:
 			mused.selection.start = 0;
-			mused.selection.end = mused.song.pattern[mused.current_pattern].num_steps;
+			mused.selection.end = mused.song.pattern[current_pattern(NULL)].num_steps;
 			break;
 			
 		case EDITPROG:
@@ -472,7 +460,7 @@ void begin_selection_action(void *unused1, void *unused2, void *unused3)
 	switch (mused.focus)
 	{
 		case EDITPATTERN:
-		begin_selection(mused.current_patternstep);
+		begin_selection(current_patternstep());
 		break;
 		
 		case EDITSEQUENCE:
@@ -491,7 +479,7 @@ void end_selection_action(void *unused1, void *unused2, void *unused3)
 	switch (mused.focus)
 	{
 		case EDITPATTERN:
-		select_range(mused.current_patternstep);
+		select_range(current_patternstep());
 		break;
 		
 		case EDITSEQUENCE:
@@ -609,10 +597,9 @@ void do_undo(void *a, void*b, void*c)
 	switch (frame->type)
 	{
 		case UNDO_PATTERN:
-			mused.current_pattern = frame->event.pattern.idx;
-			undo_store_pattern(&mused.undo, mused.current_pattern, &mused.song.pattern[mused.current_pattern], mused.modified);
-			resize_pattern(&mused.song.pattern[mused.current_pattern], frame->event.pattern.n_steps);
-			memcpy(mused.song.pattern[mused.current_pattern].step, frame->event.pattern.step, frame->event.pattern.n_steps * sizeof(frame->event.pattern.step[0]));
+			undo_store_pattern(&mused.undo, frame->event.pattern.idx, &mused.song.pattern[frame->event.pattern.idx], mused.modified);
+			resize_pattern(&mused.song.pattern[frame->event.pattern.idx], frame->event.pattern.n_steps);
+			memcpy(mused.song.pattern[frame->event.pattern.idx].step, frame->event.pattern.step, frame->event.pattern.n_steps * sizeof(frame->event.pattern.step[0]));
 			break;
 			
 		case UNDO_SEQUENCE:
@@ -622,7 +609,6 @@ void do_undo(void *a, void*b, void*c)
 			mused.song.num_sequences[mused.current_sequencetrack] = frame->event.sequence.n_seq;
 			
 			memcpy(mused.song.sequence[mused.current_sequencetrack], frame->event.sequence.seq, frame->event.sequence.n_seq * sizeof(frame->event.sequence.seq[0]));
-			update_ghost_patterns();
 			break;
 			
 		case UNDO_MODE:

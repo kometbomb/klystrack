@@ -42,9 +42,9 @@ void copy()
 		case EDITPATTERN:
 		
 		if (mused.selection.start == mused.selection.end)
-			cp_copy_items(&mused.cp, CP_PATTERN, mused.song.pattern[mused.current_pattern].step, sizeof(mused.song.pattern[mused.current_pattern].step[0]), mused.song.pattern[mused.current_pattern].num_steps);
+			cp_copy_items(&mused.cp, CP_PATTERN, mused.song.pattern[current_pattern()].step, sizeof(mused.song.pattern[current_pattern()].step[0]), mused.song.pattern[current_pattern()].num_steps);
 		else
-			cp_copy_items(&mused.cp, CP_PATTERNSEGMENT, &mused.song.pattern[mused.current_pattern].step[mused.selection.start], sizeof(mused.song.pattern[mused.current_pattern].step[0]), 
+			cp_copy_items(&mused.cp, CP_PATTERNSEGMENT, &mused.song.pattern[current_pattern()].step[mused.selection.start], sizeof(mused.song.pattern[current_pattern()].step[0]), 
 				mused.selection.end-mused.selection.start);
 		
 		break;
@@ -100,9 +100,9 @@ void delete()
 		case EDITPATTERN:
 		snapshot(S_T_PATTERN);
 		if (mused.selection.start == mused.selection.end)
-			clear_pattern(&mused.song.pattern[mused.current_pattern]);
+			clear_pattern(&mused.song.pattern[current_pattern()]);
 		else
-			clear_pattern_range(&mused.song.pattern[mused.current_pattern], mused.selection.start, mused.selection.end + 1);
+			clear_pattern_range(&mused.song.pattern[current_pattern()], mused.selection.start, mused.selection.end + 1);
 		
 		break;
 		
@@ -153,14 +153,14 @@ void paste()
 			if (mused.cp.type == CP_PATTERN)
 			{
 				snapshot(S_T_PATTERN);
-				resize_pattern(&mused.song.pattern[mused.current_pattern], items);
-				cp_paste_items(&mused.cp, CP_PATTERN, mused.song.pattern[mused.current_pattern].step, items, sizeof(mused.song.pattern[mused.current_pattern].step[0]));
+				resize_pattern(&mused.song.pattern[current_pattern()], items);
+				cp_paste_items(&mused.cp, CP_PATTERN, mused.song.pattern[current_pattern()].step, items, sizeof(mused.song.pattern[current_pattern()].step[0]));
 			}
 			else if (mused.cp.type == CP_PATTERNSEGMENT)
 			{
 				snapshot(S_T_PATTERN);
-				cp_paste_items(&mused.cp, CP_PATTERNSEGMENT, &mused.song.pattern[mused.current_pattern].step[mused.current_patternstep], mused.song.pattern[mused.current_pattern].num_steps-mused.current_patternstep, 
-					sizeof(mused.song.pattern[mused.current_pattern].step[0]));
+				cp_paste_items(&mused.cp, CP_PATTERNSEGMENT, &mused.song.pattern[current_pattern()].step[current_patternstep()], mused.song.pattern[current_pattern()].num_steps-current_patternstep(), 
+					sizeof(mused.song.pattern[current_pattern()].step[0]));
 			}
 		}
 		break;
@@ -233,12 +233,12 @@ void join_paste()
 				if (mused.cp.type == CP_PATTERN) 
 					ofs = 0;
 				else
-					ofs = mused.current_patternstep;
+					ofs = current_patternstep();
 				
-				for (int i = 0 ; i < items && i + ofs < mused.song.pattern[mused.current_pattern].num_steps ; ++i)
+				for (int i = 0 ; i < items && i + ofs < mused.song.pattern[current_pattern()].num_steps ; ++i)
 				{
 					const MusStep *s = &((MusStep*)mused.cp.data)[i];
-					MusStep *d = &mused.song.pattern[mused.current_pattern].step[ofs + i];
+					MusStep *d = &mused.song.pattern[current_pattern()].step[ofs + i];
 					if (s->note != MUS_NOTE_NONE)
 						d->note = s->note;
 						
