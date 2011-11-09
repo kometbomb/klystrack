@@ -652,6 +652,7 @@ static void update_pattern_slider(int d)
 	}
 	else */
 	slider_move_position(&mused.current_patternpos, &mused.pattern_position, &mused.pattern_slider_param, d, mused.song.song_length);
+	mused.pattern_position = mused.current_patternpos;
 }
 
 
@@ -909,24 +910,8 @@ void sequence_event(SDL_Event *e)
 
 static void switch_track(int d)
 {
-	int s = mused.current_sequencetrack;
-	
 	mused.current_sequencetrack = (mused.current_sequencetrack + (int)mused.song.num_channels + d) % mused.song.num_channels;
-							
-	/*do
-	{
-		mused.current_sequencetrack = (mused.current_sequencetrack + (int)mused.song.num_channels + d) % mused.song.num_channels;
-	}
-	while (mused.ghost_pattern[mused.current_sequencetrack] == NULL && s != mused.current_sequencetrack); 
-	
-	if (s != mused.current_sequencetrack) current_pattern() = *mused.ghost_pattern[mused.current_sequencetrack];
-	
-	//current_pattern() = *mused.ghost_pattern[mused.current_sequencetrack];*/
-	
 	slider_move_position(&mused.current_sequencetrack, &mused.pattern_horiz_position, &mused.pattern_horiz_slider_param, 0, mused.pattern_horiz_slider_param.last - mused.pattern_horiz_slider_param.first + 1);
-	//slider_move_position(&current_patternstep(), &mused.pattern_position, &mused.pattern_slider_param, 0, mused.song.pattern[current_pattern()].num_steps);
-
-	//current_patternstep() = my_min(my_max(0, current_patternstep()), mused.song.pattern[current_pattern()].num_steps - 1);
 	mused.sequence_digit = 0;
 }
 
@@ -970,10 +955,14 @@ void pattern_event(SDL_Event *e)
 				{
 					int steps = 1;
 					if (e->key.keysym.sym == SDLK_PAGEDOWN) steps = steps * 16;
-					if (e->key.keysym.sym == SDLK_END) steps = mused.song.pattern[current_pattern()].num_steps - current_patternstep() - 1;
 					
-					if (e->key.keysym.mod & KMOD_SHIFT)
-						steps = my_min(steps, mused.song.pattern[current_pattern()].num_steps - current_patternstep() - 1);
+					if (get_current_pattern())
+					{
+						if (e->key.keysym.sym == SDLK_END) steps = get_current_pattern()->num_steps - current_patternstep() - 1;
+						
+						if ((e->key.keysym.mod & KMOD_SHIFT) && get_current_pattern())
+							steps = my_min(steps, get_current_pattern()->num_steps - current_patternstep() - 1);
+					}
 					
 					update_pattern_slider(steps);
 					
@@ -1017,20 +1006,23 @@ void pattern_event(SDL_Event *e)
 			case SDLK_INSERT:
 			{
 				if (!(mused.flags & EDIT_MODE)) break;
-			
-				snapshot(S_T_PATTERN);
-			
-				if ((e->key.keysym.mod & KMOD_ALT)) 
-				{
-					resize_pattern(&mused.song.pattern[current_pattern()], mused.song.pattern[current_pattern()].num_steps + 1);
-					zero_step(&mused.song.pattern[current_pattern()].step[mused.song.pattern[current_pattern()].num_steps - 1]);
-					break;
-				}
-					
-				for (int i = mused.song.pattern[current_pattern()].num_steps-1; i >= current_patternstep() ; --i)
-					memcpy(&mused.song.pattern[current_pattern()].step[i], &mused.song.pattern[current_pattern()].step[i-1], sizeof(mused.song.pattern[current_pattern()].step[0]));
 				
-				zero_step(&mused.song.pattern[current_pattern()].step[current_patternstep()]);
+				if (get_current_step())
+				{
+					snapshot(S_T_PATTERN);
+				
+					if ((e->key.keysym.mod & KMOD_ALT)) 
+					{
+						resize_pattern(get_current_pattern(), get_current_pattern()->num_steps + 1);
+						zero_step(&mused.song.pattern[current_pattern()].step[mused.song.pattern[current_pattern()].num_steps - 1]);
+						break;
+					}
+						
+					for (int i = mused.song.pattern[current_pattern()].num_steps-1; i >= current_patternstep() ; --i)
+						memcpy(&mused.song.pattern[current_pattern()].step[i], &mused.song.pattern[current_pattern()].step[i-1], sizeof(mused.song.pattern[current_pattern()].step[0]));
+					
+					zero_step(&mused.song.pattern[current_pattern()].step[current_patternstep()]);
+				}
 			}
 			break;
 			
@@ -1039,73 +1031,77 @@ void pattern_event(SDL_Event *e)
 			{
 				if (!(mused.flags & EDIT_MODE)) break;
 			
-				if (e->key.keysym.sym == SDLK_BACKSPACE)
+				if (get_current_step())
 				{
-					/*if (current_patternstep() > 0) slider_move_position(&current_patternstep(), &mused.pattern_position, &mused.pattern_slider_param, -1, mused.song.pattern[current_pattern()].num_steps);
-					else break;*/
-				}
 				
-				snapshot(S_T_PATTERN);
-				
-				if ((e->key.keysym.mod & KMOD_ALT)) 
-				{
-					if (mused.song.pattern[current_pattern()].num_steps > 1)
-						resize_pattern(&mused.song.pattern[current_pattern()], mused.song.pattern[current_pattern()].num_steps - 1);
-						
-					//if (current_patternstep() >= mused.song.pattern[current_pattern()].num_steps) --current_patternstep();
-					break;
-				}
-			
-				if (!(mused.flags & DELETE_EMPTIES) || e->key.keysym.sym == SDLK_BACKSPACE)
-				{
-					for (int i = current_patternstep()  ; i < mused.song.pattern[current_pattern()].num_steps ; ++i)
-						memcpy(&mused.song.pattern[current_pattern()].step[i], &mused.song.pattern[current_pattern()].step[i+1], sizeof(mused.song.pattern[current_pattern()].step[0]));
-						
-					zero_step(&mused.song.pattern[current_pattern()].step[mused.song.pattern[current_pattern()].num_steps - 1]);				
-					
-					//if (current_patternstep() >= mused.song.pattern[current_pattern()].num_steps) --current_patternstep();
-				}
-				else
-				{
-					if (e->key.keysym.mod & KMOD_SHIFT)
+					if (e->key.keysym.sym == SDLK_BACKSPACE)
 					{
-						zero_step(&mused.song.pattern[current_pattern()].step[current_patternstep()]);				
+						if (current_patternstep() > 0) update_pattern_slider(-1);
+						else break;
+					}
+					
+					snapshot(S_T_PATTERN);
+					
+					if ((e->key.keysym.mod & KMOD_ALT)) 
+					{
+						if (mused.song.pattern[current_pattern()].num_steps > 1)
+							resize_pattern(&mused.song.pattern[current_pattern()], mused.song.pattern[current_pattern()].num_steps - 1);
+							
+						if (current_patternstep() >= mused.song.pattern[current_pattern()].num_steps) --mused.current_patternpos;
+						break;
+					}
+				
+					if (!(mused.flags & DELETE_EMPTIES) || e->key.keysym.sym == SDLK_BACKSPACE)
+					{
+						for (int i = current_patternstep()  ; i < mused.song.pattern[current_pattern()].num_steps ; ++i)
+							memcpy(&mused.song.pattern[current_pattern()].step[i], &mused.song.pattern[current_pattern()].step[i+1], sizeof(mused.song.pattern[current_pattern()].step[0]));
+							
+						zero_step(&mused.song.pattern[current_pattern()].step[mused.song.pattern[current_pattern()].num_steps - 1]);				
+						
+						if (current_patternstep() >= mused.song.pattern[current_pattern()].num_steps) --mused.current_patternpos;
 					}
 					else
 					{
-						switch (mused.current_patternx)
+						if (e->key.keysym.mod & KMOD_SHIFT)
 						{
-							case PED_NOTE:
-								mused.song.pattern[current_pattern()].step[current_patternstep()].note = MUS_NOTE_NONE;	
-								mused.song.pattern[current_pattern()].step[current_patternstep()].instrument = MUS_NOTE_NO_INSTRUMENT;	
-								break;
-								
-							case PED_INSTRUMENT1:
-							case PED_INSTRUMENT2:
-								mused.song.pattern[current_pattern()].step[current_patternstep()].instrument = MUS_NOTE_NO_INSTRUMENT;	
-								break;
-								
-							case PED_VOLUME1:
-							case PED_VOLUME2:
-								mused.song.pattern[current_pattern()].step[current_patternstep()].volume = MUS_NOTE_NO_VOLUME;	
-								break;
-								
-							case PED_LEGATO:
-							case PED_SLIDE:
-							case PED_VIB:
-								mused.song.pattern[current_pattern()].step[current_patternstep()].ctrl = 0;	
-								break;
-							
-							case PED_COMMAND1:
-							case PED_COMMAND2:
-							case PED_COMMAND3:
-							case PED_COMMAND4:
-								mused.song.pattern[current_pattern()].step[current_patternstep()].command = 0;	
-								break;
+							zero_step(&mused.song.pattern[current_pattern()].step[current_patternstep()]);				
 						}
+						else
+						{
+							switch (mused.current_patternx)
+							{
+								case PED_NOTE:
+									mused.song.pattern[current_pattern()].step[current_patternstep()].note = MUS_NOTE_NONE;	
+									mused.song.pattern[current_pattern()].step[current_patternstep()].instrument = MUS_NOTE_NO_INSTRUMENT;	
+									break;
+									
+								case PED_INSTRUMENT1:
+								case PED_INSTRUMENT2:
+									mused.song.pattern[current_pattern()].step[current_patternstep()].instrument = MUS_NOTE_NO_INSTRUMENT;	
+									break;
+									
+								case PED_VOLUME1:
+								case PED_VOLUME2:
+									mused.song.pattern[current_pattern()].step[current_patternstep()].volume = MUS_NOTE_NO_VOLUME;	
+									break;
+									
+								case PED_LEGATO:
+								case PED_SLIDE:
+								case PED_VIB:
+									mused.song.pattern[current_pattern()].step[current_patternstep()].ctrl = 0;	
+									break;
+								
+								case PED_COMMAND1:
+								case PED_COMMAND2:
+								case PED_COMMAND3:
+								case PED_COMMAND4:
+									mused.song.pattern[current_pattern()].step[current_patternstep()].command = 0;	
+									break;
+							}
+						}
+					
+						update_pattern_slider(mused.note_jump);
 					}
-				
-					slider_move_position(&mused.current_patternpos, &mused.pattern_position, &mused.pattern_slider_param, mused.note_jump, mused.song.song_length);
 				}
 			}
 			break;
@@ -1139,16 +1135,8 @@ void pattern_event(SDL_Event *e)
 						
 					if (mused.current_patternx >= PED_PARAMS)
 					{
-						if (mused.single_pattern_edit)
-						{
-							mused.current_patternx = 0;
-						}
-						else
-						{
-							mused.current_patternx = 0;
-							
-							switch_track(+1);
-						}
+						mused.current_patternx = 0;
+						switch_track(+1);
 					}
 				}
 			}
@@ -1171,16 +1159,9 @@ void pattern_event(SDL_Event *e)
 					
 					if (mused.current_patternx < 0)
 					{
-						if (mused.single_pattern_edit)
-						{
-							mused.current_patternx = last_param;
-						}
-						else
-						{
 							mused.current_patternx = PED_PARAMS - 1;
 							
 							switch_track(-1);
-						}
 					}
 					
 					if (!viscol(VC_COMMAND) && (mused.current_patternx >= PED_COMMAND1 && mused.current_patternx <= PED_COMMAND4))
@@ -1204,7 +1185,6 @@ void pattern_event(SDL_Event *e)
 						else
 						{
 							mused.current_patternx = last_param;
-							
 							switch_track(-1);
 						}
 					}
@@ -1233,194 +1213,197 @@ void pattern_event(SDL_Event *e)
 					break;
 				}
 				
-				if (mused.current_patternx == PED_NOTE)
+				if (get_current_step())
 				{
-					if (e->key.keysym.sym == SDLK_PERIOD)
+					if (mused.current_patternx == PED_NOTE)
 					{
-						mused.song.pattern[current_pattern()].step[current_patternstep()].note = MUS_NOTE_NONE;				
-						
-						snapshot(S_T_PATTERN);
-							
-						slider_move_position(&mused.current_patternpos, &mused.pattern_position, &mused.pattern_slider_param, mused.note_jump, mused.song.song_length);
-					}
-					else if (e->key.keysym.sym == SDLK_1)
-					{
-						mused.song.pattern[current_pattern()].step[current_patternstep()].note = MUS_NOTE_RELEASE;
-						
-						snapshot(S_T_PATTERN);
-							
-						slider_move_position(&mused.current_patternpos, &mused.pattern_position, &mused.pattern_slider_param, mused.note_jump, mused.song.song_length);
-					}
-					else
-					{
-						int note = find_note(e->key.keysym.sym, mused.octave);
-						if (note != -1) 
+						if (e->key.keysym.sym == SDLK_PERIOD)
 						{
-							play_the_jams(e->key.keysym.sym, mused.current_sequencetrack);
+							mused.song.pattern[current_pattern()].step[current_patternstep()].note = MUS_NOTE_NONE;				
 							
 							snapshot(S_T_PATTERN);
+								
+							update_pattern_slider(mused.note_jump);
+						}
+						else if (e->key.keysym.sym == SDLK_1)
+						{
+							mused.song.pattern[current_pattern()].step[current_patternstep()].note = MUS_NOTE_RELEASE;
 							
-							mused.song.pattern[current_pattern()].step[current_patternstep()].note = note;				
-							mused.song.pattern[current_pattern()].step[current_patternstep()].instrument = mused.current_instrument;
-							
-							slider_move_position(&mused.current_patternpos, &mused.pattern_position, &mused.pattern_slider_param, mused.note_jump, mused.song.song_length);
+							snapshot(S_T_PATTERN);
+								
+							update_pattern_slider(mused.note_jump);
+						}
+						else
+						{
+							int note = find_note(e->key.keysym.sym, mused.octave);
+							if (note != -1) 
+							{
+								play_the_jams(e->key.keysym.sym, mused.current_sequencetrack);
+								
+								snapshot(S_T_PATTERN);
+								
+								mused.song.pattern[current_pattern()].step[current_patternstep()].note = note;				
+								mused.song.pattern[current_pattern()].step[current_patternstep()].instrument = mused.current_instrument;
+								
+								update_pattern_slider(mused.note_jump);
+							}
 						}
 					}
-				}
-				else if (mused.current_patternx == PED_INSTRUMENT1 || mused.current_patternx == PED_INSTRUMENT2)
-				{
-					if (e->key.keysym.sym == SDLK_PERIOD)
+					else if (mused.current_patternx == PED_INSTRUMENT1 || mused.current_patternx == PED_INSTRUMENT2)
 					{
-						mused.song.pattern[current_pattern()].step[current_patternstep()].instrument = MUS_NOTE_NO_INSTRUMENT;				
-						
-						snapshot(S_T_PATTERN);
-							
-						slider_move_position(&mused.current_patternpos, &mused.pattern_position, &mused.pattern_slider_param, mused.note_jump, mused.song.song_length);
-					}
-					else if (gethex(e->key.keysym.sym) != -1)
-					{
-						if (mused.song.num_instruments > 0)
+						if (e->key.keysym.sym == SDLK_PERIOD)
 						{
-							Uint8 inst = mused.song.pattern[current_pattern()].step[current_patternstep()].instrument;
-							if ((inst == MUS_NOTE_NO_INSTRUMENT)) inst = 0;
-							
-							switch (mused.current_patternx)
-							{
-								case PED_INSTRUMENT1:
-								inst = (inst & 0x0f) | ((gethex(e->key.keysym.sym) << 4) & 0xf0);
-								break;
-								
-								case PED_INSTRUMENT2:
-								inst = (inst & 0xf0) | gethex(e->key.keysym.sym);
-								break;
-							}
-							
-							if (inst > (mused.song.num_instruments-1)) inst = (mused.song.num_instruments-1);
+							mused.song.pattern[current_pattern()].step[current_patternstep()].instrument = MUS_NOTE_NO_INSTRUMENT;				
 							
 							snapshot(S_T_PATTERN);
-						
-							mused.song.pattern[current_pattern()].step[current_patternstep()].instrument = inst; 
-							mused.current_instrument = inst % mused.song.num_instruments;
+								
+							update_pattern_slider(mused.note_jump);
 						}
-					
-						slider_move_position(&mused.current_patternpos, &mused.pattern_position, &mused.pattern_slider_param, mused.note_jump, mused.song.song_length);
-					}
-				}
-				else if (mused.current_patternx == PED_VOLUME1 || mused.current_patternx == PED_VOLUME2)
-				{
-					switch (e->key.keysym.sym)
-					{
-						case  SDLK_PERIOD:
-							snapshot(S_T_PATTERN);
-							
-							mused.song.pattern[current_pattern()].step[current_patternstep()].volume = MUS_NOTE_NO_VOLUME;				
-								
-							slider_move_position(&mused.current_patternpos, &mused.pattern_position, &mused.pattern_slider_param, mused.note_jump, mused.song.song_length);
-							break;
-						
-						case SDLK_u:						
-						case SDLK_d:
+						else if (gethex(e->key.keysym.sym) != -1)
 						{
-							int cmd = 0;
-						
-							switch (e->key.keysym.sym)
+							if (mused.song.num_instruments > 0)
 							{
-								case SDLK_u: cmd = MUS_NOTE_VOLUME_FADE_UP; break;
-								case SDLK_d: cmd = MUS_NOTE_VOLUME_FADE_DN; break;
-								default: break;
-							}
-							
-							snapshot(S_T_PATTERN);
-							
-							if (mused.song.pattern[current_pattern()].step[current_patternstep()].volume == MUS_NOTE_NO_VOLUME)
-								mused.song.pattern[current_pattern()].step[current_patternstep()].volume = 0;
-						
-							if (mused.current_patternx == PED_VOLUME1)
-								mused.song.pattern[current_pattern()].step[current_patternstep()].volume = 
-									(mused.song.pattern[current_pattern()].step[current_patternstep()].volume & 0xf)
-									| cmd;
-									
-							slider_move_position(&mused.current_patternpos, &mused.pattern_position, &mused.pattern_slider_param, mused.note_jump, mused.song.song_length);
-						}	
-						break;
-					
-						default:
-							if (gethex(e->key.keysym.sym) != -1)
-							{
-								Uint8 vol = mused.song.pattern[current_pattern()].step[current_patternstep()].volume;
-								if ((vol == MUS_NOTE_NO_VOLUME)) vol = 0;
+								Uint8 inst = mused.song.pattern[current_pattern()].step[current_patternstep()].instrument;
+								if ((inst == MUS_NOTE_NO_INSTRUMENT)) inst = 0;
 								
 								switch (mused.current_patternx)
 								{
-									case PED_VOLUME1:
-									vol = (vol & 0x0f) | ((gethex(e->key.keysym.sym) << 4) & 0xf0);
+									case PED_INSTRUMENT1:
+									inst = (inst & 0x0f) | ((gethex(e->key.keysym.sym) << 4) & 0xf0);
 									break;
 									
-									case PED_VOLUME2:
-									vol = (vol & 0xf0) | gethex(e->key.keysym.sym);
+									case PED_INSTRUMENT2:
+									inst = (inst & 0xf0) | gethex(e->key.keysym.sym);
 									break;
+								}
+								
+								if (inst > (mused.song.num_instruments-1)) inst = (mused.song.num_instruments-1);
+								
+								snapshot(S_T_PATTERN);
+							
+								mused.song.pattern[current_pattern()].step[current_patternstep()].instrument = inst; 
+								mused.current_instrument = inst % mused.song.num_instruments;
+							}
+						
+							update_pattern_slider(mused.note_jump);
+						}
+					}
+					else if (mused.current_patternx == PED_VOLUME1 || mused.current_patternx == PED_VOLUME2)
+					{
+						switch (e->key.keysym.sym)
+						{
+							case  SDLK_PERIOD:
+								snapshot(S_T_PATTERN);
+								
+								mused.song.pattern[current_pattern()].step[current_patternstep()].volume = MUS_NOTE_NO_VOLUME;				
+									
+								update_pattern_slider(mused.note_jump);
+								break;
+							
+							case SDLK_u:						
+							case SDLK_d:
+							{
+								int cmd = 0;
+							
+								switch (e->key.keysym.sym)
+								{
+									case SDLK_u: cmd = MUS_NOTE_VOLUME_FADE_UP; break;
+									case SDLK_d: cmd = MUS_NOTE_VOLUME_FADE_DN; break;
+									default: break;
 								}
 								
 								snapshot(S_T_PATTERN);
 								
-								if ((vol & 0xf0) != MUS_NOTE_VOLUME_FADE_UP && (vol & 0xf0) != MUS_NOTE_VOLUME_FADE_DN)
-									mused.song.pattern[current_pattern()].step[current_patternstep()].volume = my_min(MAX_VOLUME, vol); 
-								else mused.song.pattern[current_pattern()].step[current_patternstep()].volume = vol;
+								if (mused.song.pattern[current_pattern()].step[current_patternstep()].volume == MUS_NOTE_NO_VOLUME)
+									mused.song.pattern[current_pattern()].step[current_patternstep()].volume = 0;
 							
-								slider_move_position(&mused.current_patternpos, &mused.pattern_position, &mused.pattern_slider_param, mused.note_jump, mused.song.song_length);
-							}
+								if (mused.current_patternx == PED_VOLUME1)
+									mused.song.pattern[current_pattern()].step[current_patternstep()].volume = 
+										(mused.song.pattern[current_pattern()].step[current_patternstep()].volume & 0xf)
+										| cmd;
+										
+								update_pattern_slider(mused.note_jump);
+							}	
 							break;
-					}
-				}
-				else if (mused.current_patternx >= PED_COMMAND1 && mused.current_patternx <= PED_COMMAND4)
-				{
-					if (gethex(e->key.keysym.sym) != -1)
-					{
-						Uint16 inst = mused.song.pattern[current_pattern()].step[current_patternstep()].command;
 						
-						switch (mused.current_patternx)
-						{
-							case PED_COMMAND1:
-							inst = (inst & 0x0fff) | ((gethex(e->key.keysym.sym) << 12) & 0xf000);
-							break;
-							
-							case PED_COMMAND2:
-							inst = (inst & 0xf0ff) | ((gethex(e->key.keysym.sym) << 8) & 0x0f00);
-							break;
-							
-							case PED_COMMAND3:
-							inst = (inst & 0xff0f) | ((gethex(e->key.keysym.sym) << 4) & 0x00f0);
-							break;
-							
-							case PED_COMMAND4:
-							inst = (inst & 0xfff0) | gethex(e->key.keysym.sym);
-							break;
+							default:
+								if (gethex(e->key.keysym.sym) != -1)
+								{
+									Uint8 vol = mused.song.pattern[current_pattern()].step[current_patternstep()].volume;
+									if ((vol == MUS_NOTE_NO_VOLUME)) vol = 0;
+									
+									switch (mused.current_patternx)
+									{
+										case PED_VOLUME1:
+										vol = (vol & 0x0f) | ((gethex(e->key.keysym.sym) << 4) & 0xf0);
+										break;
+										
+										case PED_VOLUME2:
+										vol = (vol & 0xf0) | gethex(e->key.keysym.sym);
+										break;
+									}
+									
+									snapshot(S_T_PATTERN);
+									
+									if ((vol & 0xf0) != MUS_NOTE_VOLUME_FADE_UP && (vol & 0xf0) != MUS_NOTE_VOLUME_FADE_DN)
+										mused.song.pattern[current_pattern()].step[current_patternstep()].volume = my_min(MAX_VOLUME, vol); 
+									else mused.song.pattern[current_pattern()].step[current_patternstep()].volume = vol;
+								
+									update_pattern_slider(mused.note_jump);
+								}
+								break;
 						}
-						
-						snapshot(S_T_PATTERN);
-						
-						mused.song.pattern[current_pattern()].step[current_patternstep()].command = validate_command(inst) & 0x7fff; 
-						
-						slider_move_position(&mused.current_patternpos, &mused.pattern_position, &mused.pattern_slider_param, mused.note_jump, mused.song.song_length);
 					}
-				}
-				else if (mused.current_patternx >= PED_CTRL && mused.current_patternx < PED_COMMAND1)
-				{
-					if (e->key.keysym.sym == SDLK_PERIOD || e->key.keysym.sym == SDLK_0)
+					else if (mused.current_patternx >= PED_COMMAND1 && mused.current_patternx <= PED_COMMAND4)
 					{
-						snapshot(S_T_PATTERN);
-					
-						mused.song.pattern[current_pattern()].step[current_patternstep()].ctrl &= ~(MUS_CTRL_BIT << (mused.current_patternx - PED_CTRL));				
+						if (gethex(e->key.keysym.sym) != -1)
+						{
+							Uint16 inst = mused.song.pattern[current_pattern()].step[current_patternstep()].command;
 							
-						slider_move_position(&mused.current_patternpos, &mused.pattern_position, &mused.pattern_slider_param, mused.note_jump, mused.song.song_length);
+							switch (mused.current_patternx)
+							{
+								case PED_COMMAND1:
+								inst = (inst & 0x0fff) | ((gethex(e->key.keysym.sym) << 12) & 0xf000);
+								break;
+								
+								case PED_COMMAND2:
+								inst = (inst & 0xf0ff) | ((gethex(e->key.keysym.sym) << 8) & 0x0f00);
+								break;
+								
+								case PED_COMMAND3:
+								inst = (inst & 0xff0f) | ((gethex(e->key.keysym.sym) << 4) & 0x00f0);
+								break;
+								
+								case PED_COMMAND4:
+								inst = (inst & 0xfff0) | gethex(e->key.keysym.sym);
+								break;
+							}
+							
+							snapshot(S_T_PATTERN);
+							
+							mused.song.pattern[current_pattern()].step[current_patternstep()].command = validate_command(inst) & 0x7fff; 
+							
+							update_pattern_slider(mused.note_jump);
+						}
 					}
-					if (e->key.keysym.sym == SDLK_1)
+					else if (mused.current_patternx >= PED_CTRL && mused.current_patternx < PED_COMMAND1)
 					{
-						snapshot(S_T_PATTERN);
-					
-						mused.song.pattern[current_pattern()].step[current_patternstep()].ctrl |= (MUS_CTRL_BIT << (mused.current_patternx - PED_CTRL));				
-							
-						slider_move_position(&mused.current_patternpos, &mused.pattern_position, &mused.pattern_slider_param, mused.note_jump, mused.song.song_length);
+						if (e->key.keysym.sym == SDLK_PERIOD || e->key.keysym.sym == SDLK_0)
+						{
+							snapshot(S_T_PATTERN);
+						
+							mused.song.pattern[current_pattern()].step[current_patternstep()].ctrl &= ~(MUS_CTRL_BIT << (mused.current_patternx - PED_CTRL));				
+								
+							update_pattern_slider(mused.note_jump);
+						}
+						if (e->key.keysym.sym == SDLK_1)
+						{
+							snapshot(S_T_PATTERN);
+						
+							mused.song.pattern[current_pattern()].step[current_patternstep()].ctrl |= (MUS_CTRL_BIT << (mused.current_patternx - PED_CTRL));				
+								
+							update_pattern_slider(mused.note_jump);
+						}
 					}
 				}
 			}

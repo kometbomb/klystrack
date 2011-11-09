@@ -395,6 +395,7 @@ int current_pattern()
 	return p;
 }
 
+
 int current_patternstep()
 {
 	int p = -1;
@@ -407,4 +408,26 @@ int current_patternstep()
 	}
 	
 	return p;
+}
+
+
+MusStep * get_current_step()
+{
+	MusPattern *pat = get_current_pattern();
+	
+	if (!pat)
+		return NULL;
+		
+	return &pat->step[current_patternstep()];
+}
+
+
+MusPattern * get_current_pattern()
+{
+	int p = current_pattern();
+	
+	if (p < 0)
+		return NULL;
+		
+	return &mused.song.pattern[p];
 }

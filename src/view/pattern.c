@@ -44,6 +44,21 @@ const int VOL_CHARS = 2;
 const int CTRL_BITS = 3;
 const int CMD_CHARS = 4;
 
+const struct { bool margin; int w; int id; } pattern_params[] =
+{
+	{false, 3, PED_NOTE},
+	{true, 1, PED_INSTRUMENT1},
+	{false, 1, PED_INSTRUMENT2},
+	{true, 1, PED_VOLUME1},
+	{false, 1, PED_VOLUME2},
+	{true, 1, PED_LEGATO},
+	{false, 1, PED_SLIDE},
+	{false, 1, PED_VIB},
+	{true, 1, PED_COMMAND1},
+	{false, 1, PED_COMMAND2},
+	{false, 1, PED_COMMAND3},
+	{false, 1, PED_COMMAND4},
+};
 
 #define selrow(sel, nor) ((current_patternstep() == i) ? (sel) : (nor))
 #define diszero(e, c) ((!(e)) ? mix_colors(c, colors[COLOR_PATTERN_EMPTY_DATA]) : c)
@@ -631,12 +646,16 @@ void pattern_view2(SDL_Surface *dest_surface, const SDL_Rect *dest, const SDL_Ev
 	
 	slider_set_params(&mused.pattern_slider_param, 0, mused.song.song_length - 1, my_max(0, top), my_min(mused.song.song_length - 1, bottom), &mused.pattern_position, 1, SLIDER_VERTICAL, mused.slider_bevel->surface);
 	
-	const int w = 4 * 8;
+	const int char_width = mused.largefont.w;
+	const int w = NOTE_CHARS * char_width + SPACER + INST_CHARS * char_width + SPACER +
+		VOL_CHARS * char_width + SPACER + CTRL_BITS * char_width + SPACER + CMD_CHARS * char_width;
+		
+	slider_set_params(&mused.pattern_horiz_slider_param, 0, mused.song.num_channels - 1, mused.pattern_horiz_position, my_min(mused.song.num_channels, mused.pattern_horiz_position + dest->w / w) - 1, &mused.pattern_horiz_position, 1, SLIDER_HORIZONTAL, mused.slider_bevel->surface);
 	
-	for (int channel = 0 ; channel < mused.song.num_channels ; ++channel)
+	for (int channel = mused.pattern_horiz_position ; channel < my_min(mused.song.num_channels, mused.pattern_horiz_position + dest->w / w + 1) ; ++channel)
 	{
 		const MusSeqPattern *sp = &mused.song.sequence[channel][0];
-		const int x = channel * w;
+		const int x = (channel - mused.pattern_horiz_position) * w;
 		
 		for (int i = 0 ; i < mused.song.num_sequences[channel] ; ++i, ++sp)
 		{
@@ -658,14 +677,79 @@ void pattern_view2(SDL_Surface *dest_surface, const SDL_Rect *dest, const SDL_Ev
 			
 			for (int step = 0 ; step < len ; ++step)
 			{
-				const char *note = mused.song.pattern[sp->pattern].step[step].note < 0xff ? notename(mused.song.pattern[sp->pattern].step[step].note) : "---";
-				font_write(&mused.largefont, mused.screen, &text, note);
+				MusStep *s = &mused.song.pattern[sp->pattern].step[step];
+				
+				SDL_Rect pos;
+				copy_rect(&pos, &text);
+				pos.h = height;
+				
+				for (int param = PED_NOTE ; param < PED_PARAMS ; ++param)
+				{
+					pos.w = pattern_params[param].w * char_width;
+					
+					if (pattern_params[param].margin)
+						pos.x += SPACER;
+				
+					switch (param)
+					{
+						case PED_NOTE:
+							{
+							const char *note = (s->note < MUS_NOTE_NONE) 
+								? ((s->note == MUS_NOTE_RELEASE) ? "\x08\x09\x0b" : notename(s->note)) : "---";
+								
+							font_write(&mused.largefont, mused.screen, &pos, note);
+							}
+							break;
+						
+						case PED_INSTRUMENT1:
+						case PED_INSTRUMENT2:
+							if (s->volume != MUS_NOTE_NO_INSTRUMENT)
+								font_write_args(&mused.largefont, mused.screen, &pos, "%X", (s->instrument >> (4 - (param - PED_INSTRUMENT1) * 4)) & 0xf);
+							else
+								font_write(&mused.largefont, mused.screen, &pos, "-");
+							break;
+							
+						case PED_VOLUME1:
+						case PED_VOLUME2:
+							if (s->volume != MUS_NOTE_NO_VOLUME)
+								font_write_args(&mused.largefont, mused.screen, &pos, "%X", (s->volume >> (4 - (param - PED_VOLUME1) * 4)) & 0xf);
+							else
+								font_write(&mused.largefont, mused.screen, &pos, "-");
+							break;
+							
+						case PED_LEGATO:
+						case PED_SLIDE:
+						case PED_VIB:
+							font_write_args(&mused.largefont, mused.screen, &pos, "%c", (s->ctrl & (1 << (param - PED_LEGATO))) ? "LSV"[param - PED_LEGATO] : '-');
+							break;
+							
+						case PED_COMMAND1:
+						case PED_COMMAND2:
+						case PED_COMMAND3:
+						case PED_COMMAND4:
+							font_write_args(&mused.largefont, mused.screen, &pos, "%X", (s->command >> (12 - (param - PED_COMMAND1) * 4)) & 0xf);
+							break;
+					}
+					
+					if (mused.focus == EDITPATTERN && mused.current_sequencetrack == channel && mused.current_patternpos == step && mused.current_patternx == param)
+					{
+						SDL_Rect cursor;
+						copy_rect(&cursor, &pos);
+						adjust_rect(&cursor, -2);
+						set_cursor(&cursor);
+					}
+					
+					pos.x += pos.w;
+				}
+				
 				text.y += height;
 			}
 		}
 	}
 	
-	
 	SDL_SetClipRect(mused.screen, NULL);
+	SDL_Rect scrollbar = { dest->x, dest->y + dest->h - SCROLLBAR, dest->w, SCROLLBAR };
+	
+	slider(dest_surface, &scrollbar, event, &mused.pattern_horiz_slider_param); 
 }
 

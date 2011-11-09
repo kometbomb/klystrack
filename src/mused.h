@@ -191,5 +191,7 @@ void post_config_load();
 void enable_callback(bool state);
 int current_pattern();
 int current_patternstep();
+MusStep * get_current_step();
+MusPattern * get_current_pattern();
 
 #endif
