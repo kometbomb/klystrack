@@ -629,7 +629,6 @@ void pattern_view(SDL_Surface *dest_surface, const SDL_Rect *dest, const SDL_Eve
 void pattern_view2(SDL_Surface *dest_surface, const SDL_Rect *dest, const SDL_Event *event, void *param)
 {
 	SDL_SetClipRect(mused.screen, dest);
-	bevel(mused.screen, dest, mused.slider_bevel->surface, BEV_SEQUENCE_BORDER);
 	
 	const int height = 8;
 	const int top = mused.pattern_position - dest->h / height / 2;
@@ -638,8 +637,9 @@ void pattern_view2(SDL_Surface *dest_surface, const SDL_Rect *dest, const SDL_Ev
 	copy_rect(&row, dest);
 	
 	adjust_rect(&row, 1);
+	SDL_FillRect(mused.screen, &row, colors[COLOR_BACKGROUND]);
 	
-	row.y = (row.y + dest->h / 2 - (height + 2) / 2) / height * height;
+	row.y = (bottom - top) / 2 * height + row.y + 1;
 	row.h = height + 2;
 	
 	bevel(mused.screen, &row, mused.slider_bevel->surface, BEV_SELECTED_PATTERN_ROW);
@@ -648,15 +648,25 @@ void pattern_view2(SDL_Surface *dest_surface, const SDL_Rect *dest, const SDL_Ev
 	
 	const int char_width = mused.largefont.w;
 	const int w = NOTE_CHARS * char_width + SPACER + INST_CHARS * char_width + SPACER +
-		VOL_CHARS * char_width + SPACER + CTRL_BITS * char_width + SPACER + CMD_CHARS * char_width;
+		VOL_CHARS * char_width + SPACER + CTRL_BITS * char_width + SPACER + CMD_CHARS * char_width + 4;
 		
 	slider_set_params(&mused.pattern_horiz_slider_param, 0, mused.song.num_channels - 1, mused.pattern_horiz_position, my_min(mused.song.num_channels, mused.pattern_horiz_position + dest->w / w) - 1, &mused.pattern_horiz_position, 1, SLIDER_HORIZONTAL, mused.slider_bevel->surface);
 	
-	for (int channel = mused.pattern_horiz_position ; channel < my_min(mused.song.num_channels, mused.pattern_horiz_position + dest->w / w + 1) ; ++channel)
+	int x = 0;
+	
+	for (int channel = mused.pattern_horiz_position ; channel < my_min(mused.song.num_channels, mused.pattern_horiz_position + dest->w / w + 1) ; ++channel, x += w)
 	{
 		const MusSeqPattern *sp = &mused.song.sequence[channel][0];
-		const int x = (channel - mused.pattern_horiz_position) * w;
 		
+		SDL_Rect track;
+		copy_rect(&track, dest);
+		track.w = w + 2;
+		track.x += x;
+		
+		SDL_SetClipRect(mused.screen, NULL);
+		
+		bevel(mused.screen, &track, mused.slider_bevel->surface, BEV_THIN_FRAME);
+		adjust_rect(&track, 3);
 		for (int i = 0 ; i < mused.song.num_sequences[channel] ; ++i, ++sp)
 		{
 			if (sp->position >= bottom) break;
@@ -668,10 +678,10 @@ void pattern_view2(SDL_Surface *dest_surface, const SDL_Rect *dest, const SDL_Ev
 			if (i < mused.song.num_sequences[channel] - 1)
 				len = my_min(len, (sp + 1)->position - sp->position);
 			
-			SDL_Rect pat = { x + dest->x, (sp->position - top) * height + dest->y, w, len * height };
+			SDL_Rect pat = { track.x, (sp->position - top) * height + track.y, w, len * height };
 			SDL_Rect text;
 			copy_rect(&text, &pat);
-			clip_rect(&pat, dest);
+			clip_rect(&pat, &track);
 			
 			SDL_SetClipRect(mused.screen, &pat);
 			
@@ -731,14 +741,6 @@ void pattern_view2(SDL_Surface *dest_surface, const SDL_Rect *dest, const SDL_Ev
 							break;
 					}
 					
-					if (mused.focus == EDITPATTERN && mused.current_sequencetrack == channel && mused.current_patternpos == step && mused.current_patternx == param)
-					{
-						SDL_Rect cursor;
-						copy_rect(&cursor, &pos);
-						adjust_rect(&cursor, -2);
-						set_cursor(&cursor);
-					}
-					
 					pos.x += pos.w;
 				}
 				
@@ -751,5 +753,16 @@ void pattern_view2(SDL_Surface *dest_surface, const SDL_Rect *dest, const SDL_Ev
 	SDL_Rect scrollbar = { dest->x, dest->y + dest->h - SCROLLBAR, dest->w, SCROLLBAR };
 	
 	slider(dest_surface, &scrollbar, event, &mused.pattern_horiz_slider_param); 
+	
+	if (mused.focus == EDITPATTERN)
+	{
+		int x = 2;
+		for (int param = 1 ; param <= mused.current_patternx ; ++param)
+			x += (pattern_params[param].margin ? SPACER : 0) + pattern_params[param - 1].w * char_width;
+	
+		SDL_Rect cursor = { w * (mused.current_sequencetrack - mused.pattern_horiz_position) + x, row.y, pattern_params[mused.current_patternx].w * char_width, row.h};
+		adjust_rect(&cursor, -2);
+		set_cursor(&cursor);
+	}
 }
 
