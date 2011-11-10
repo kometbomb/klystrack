@@ -854,46 +854,47 @@ void info_line(SDL_Surface *dest_surface, const SDL_Rect *dest, const SDL_Event 
 		} break;
 		
 		case EDITPATTERN:
-		
-			if (mused.current_patternx >= PED_COMMAND1)
+			if (get_current_pattern())
 			{
-				Uint16 inst = mused.song.pattern[current_pattern()].step[current_patternstep()].command;
-				
-				if (inst != 0)
-					get_command_desc(text, inst);
-				else
-					strcpy(text, "Command");
-			}
-			else if (mused.current_patternx == PED_VOLUME1 || mused.current_patternx == PED_VOLUME2)
-			{
-				Uint16 vol = mused.song.pattern[current_pattern()].step[current_patternstep()].volume;
-				
-				if (vol != MUS_NOTE_NO_VOLUME && vol > MAX_VOLUME)
+				if (mused.current_patternx >= PED_COMMAND1)
 				{
-					switch (vol & 0xf0)
+					Uint16 inst = mused.song.pattern[current_pattern()].step[current_patternstep()].command;
+					
+					if (inst != 0)
+						get_command_desc(text, inst);
+					else
+						strcpy(text, "Command");
+				}
+				else if (mused.current_patternx == PED_VOLUME1 || mused.current_patternx == PED_VOLUME2)
+				{
+					Uint16 vol = mused.song.pattern[current_pattern()].step[current_patternstep()].volume;
+					
+					if (vol != MUS_NOTE_NO_VOLUME && vol > MAX_VOLUME)
 					{
-						case MUS_NOTE_VOLUME_FADE_UP:
-							strcpy(text, "Fade volume up");
-							break;
-							
-						case MUS_NOTE_VOLUME_FADE_DN:
-							strcpy(text, "Fade volume down");
-							break;
+						switch (vol & 0xf0)
+						{
+							case MUS_NOTE_VOLUME_FADE_UP:
+								strcpy(text, "Fade volume up");
+								break;
+								
+							case MUS_NOTE_VOLUME_FADE_DN:
+								strcpy(text, "Fade volume down");
+								break;
+						}
 					}
+					else
+						strcpy(text, "Volume");
 				}
 				else
-					strcpy(text, "Volume");
-			}
-			else
-			{
-				static const char *pattern_txt[] =
 				{
-					"Note", "Instrument", "Instrument", "", "", "Legato", "Slide", "Vibrato"
-				};
-				
-				strcpy(text, pattern_txt[mused.current_patternx]);
+					static const char *pattern_txt[] =
+					{
+						"Note", "Instrument", "Instrument", "", "", "Legato", "Slide", "Vibrato"
+					};
+					
+					strcpy(text, pattern_txt[mused.current_patternx]);
+				}
 			}
-		
 		break;
 	}
 	
