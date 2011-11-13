@@ -18,9 +18,11 @@ void sequence_view2(SDL_Surface *dest_surface, const SDL_Rect *_dest, const SDL_
 	
 	slider_set_params(&mused.sequence_slider_param, 0, mused.song.song_length - 1, my_max(0, top), bottom - mused.sequenceview_steps, &mused.sequence_position, mused.sequenceview_steps, SLIDER_VERTICAL, mused.slider_bevel->surface);
 	
-	const int w = dest.w / mused.song.num_channels - 1;
+	const int w = my_max(dest.w / mused.song.num_channels - 1, 99);
 	
-	for (int channel = 0 ; channel < mused.song.num_channels ; ++channel)
+	slider_set_params(&mused.sequence_horiz_slider_param, 0, mused.song.num_channels - 1, mused.sequence_horiz_position, my_min(mused.song.num_channels - 1, mused.sequence_horiz_position + dest.w / w), &mused.sequence_horiz_position, mused.sequenceview_steps, SLIDER_VERTICAL, mused.slider_bevel->surface);
+		
+	for (int channel = mused.sequence_horiz_position ; channel < mused.song.num_channels ; ++channel)
 	{
 		const MusSeqPattern *sp = &mused.song.sequence[channel][0];
 		const int x = channel * (w + 1);

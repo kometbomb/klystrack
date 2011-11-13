@@ -634,7 +634,7 @@ void add_note_offset(int a)
 
 static void update_sequence_slider(int d)
 {
-	slider_move_position(&mused.current_sequencepos, &mused.sequence_position, &mused.sequence_slider_param, d, my_max(0, quant((mused.song.song_length - mused.sequenceview_steps), mused.sequenceview_steps)) + 1);
+	slider_move_position(&mused.current_sequencepos, &mused.sequence_position, &mused.sequence_slider_param, d);
 }
 
 
@@ -651,7 +651,7 @@ static void update_pattern_slider(int d)
 		current_patternstep() = mused.pattern_position;
 	}
 	else */
-	slider_move_position(&mused.current_patternpos, &mused.pattern_position, &mused.pattern_slider_param, d, mused.song.song_length);
+	slider_move_position(&mused.current_patternpos, &mused.pattern_position, &mused.pattern_slider_param, d);
 	mused.pattern_position = mused.current_patternpos;
 }
 
@@ -831,7 +831,7 @@ void sequence_event(SDL_Event *e)
 					if (mused.current_sequencetrack >= mused.song.num_channels)
 						mused.current_sequencetrack = mused.song.num_channels-1;
 						
-					slider_move_position(&mused.current_sequencetrack, &mused.sequence_horiz_position, &mused.sequence_horiz_slider_param, 0, mused.song.num_channels);
+					slider_move_position(&mused.current_sequencetrack, &mused.sequence_horiz_position, &mused.sequence_horiz_slider_param, 0);
 				}
 			}
 			break;
@@ -858,7 +858,7 @@ void sequence_event(SDL_Event *e)
 					if (mused.current_sequencetrack < 0)
 						mused.current_sequencetrack = 0;
 						
-					slider_move_position(&mused.current_sequencetrack, &mused.sequence_horiz_position, &mused.sequence_horiz_slider_param, 0, mused.song.num_channels);
+					slider_move_position(&mused.current_sequencetrack, &mused.sequence_horiz_position, &mused.sequence_horiz_slider_param, 0);
 				}
 			}
 			break;
@@ -911,7 +911,7 @@ void sequence_event(SDL_Event *e)
 static void switch_track(int d)
 {
 	mused.current_sequencetrack = (mused.current_sequencetrack + (int)mused.song.num_channels + d) % mused.song.num_channels;
-	slider_move_position(&mused.current_sequencetrack, &mused.pattern_horiz_position, &mused.pattern_horiz_slider_param, 0, mused.pattern_horiz_slider_param.last - mused.pattern_horiz_slider_param.first + 1);
+	slider_move_position(&mused.current_sequencetrack, &mused.pattern_horiz_position, &mused.pattern_horiz_slider_param, 0);
 	mused.sequence_digit = 0;
 }
 
@@ -1460,7 +1460,7 @@ void edit_program_event(SDL_Event *e)
 				int steps = 1;
 				if (e->key.keysym.sym == SDLK_PAGEDOWN) steps *= 16;
 				
-				slider_move_position(&mused.current_program_step, &mused.program_position, &mused.program_slider_param, steps, MUS_PROG_LEN);
+				slider_move_position(&mused.current_program_step, &mused.program_position, &mused.program_slider_param, steps);
 				
 				if (e->key.keysym.mod & KMOD_SHIFT)
 				{
@@ -1479,7 +1479,7 @@ void edit_program_event(SDL_Event *e)
 				int steps = 1;
 				if (e->key.keysym.sym == SDLK_PAGEUP) steps *= 16;
 				
-				slider_move_position(&mused.current_program_step, &mused.program_position, &mused.program_slider_param, -steps, MUS_PROG_LEN);
+				slider_move_position(&mused.current_program_step, &mused.program_position, &mused.program_slider_param, -steps);
 				
 				if (e->key.keysym.mod & KMOD_SHIFT)
 				{
@@ -1503,7 +1503,7 @@ void edit_program_event(SDL_Event *e)
 				snapshot(S_T_INSTRUMENT);
 				if (e->key.keysym.sym == SDLK_BACKSPACE)
 				{
-					if (mused.current_program_step > 0) slider_move_position(&mused.current_program_step, &mused.program_position, &mused.program_slider_param, -1, MUS_PROG_LEN);
+					if (mused.current_program_step > 0) slider_move_position(&mused.current_program_step, &mused.program_position, &mused.program_slider_param, -1);
 					else break;
 				}
 			

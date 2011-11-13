@@ -644,7 +644,7 @@ void pattern_view2(SDL_Surface *dest_surface, const SDL_Rect *dest, const SDL_Ev
 	
 	bevel(mused.screen, &row, mused.slider_bevel->surface, BEV_SELECTED_PATTERN_ROW);
 	
-	slider_set_params(&mused.pattern_slider_param, 0, mused.song.song_length - 1, my_max(0, top), my_min(mused.song.song_length - 1, bottom), &mused.pattern_position, 1, SLIDER_VERTICAL, mused.slider_bevel->surface);
+	slider_set_params(&mused.pattern_slider_param, 0, mused.song.song_length - 1, mused.pattern_position, mused.pattern_position, &mused.pattern_position, 1, SLIDER_VERTICAL, mused.slider_bevel->surface);
 	
 	const int char_width = mused.largefont.w;
 	const int w = NOTE_CHARS * char_width + SPACER + INST_CHARS * char_width + SPACER +
