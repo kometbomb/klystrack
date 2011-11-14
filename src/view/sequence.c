@@ -46,7 +46,7 @@ void sequence_view2(SDL_Surface *dest_surface, const SDL_Rect *_dest, const SDL_
 			
 			SDL_SetClipRect(mused.screen, &dest);
 			
-			bevel(mused.screen, &pat, mused.slider_bevel->surface, BEV_SEQUENCE_BORDER);
+			bevel(mused.screen, &pat, mused.slider_bevel->surface, BEV_THIN_FRAME);
 			
 			adjust_rect(&text, 2);
 			

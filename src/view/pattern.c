@@ -647,7 +647,7 @@ void pattern_view2(SDL_Surface *dest_surface, const SDL_Rect *dest, const SDL_Ev
 	slider_set_params(&mused.pattern_slider_param, 0, mused.song.song_length - 1, mused.pattern_position, mused.pattern_position, &mused.pattern_position, 1, SLIDER_VERTICAL, mused.slider_bevel->surface);
 	
 	const int char_width = mused.largefont.w;
-	const int w = NOTE_CHARS * char_width + SPACER + INST_CHARS * char_width + SPACER +
+	const int w = 2 * char_width + SPACER + NOTE_CHARS * char_width + SPACER + INST_CHARS * char_width + SPACER +
 		VOL_CHARS * char_width + SPACER + CTRL_BITS * char_width + SPACER + CMD_CHARS * char_width + 4;
 		
 	slider_set_params(&mused.pattern_horiz_slider_param, 0, mused.song.num_channels - 1, mused.pattern_horiz_position, my_min(mused.song.num_channels, mused.pattern_horiz_position + dest->w / w) - 1, &mused.pattern_horiz_position, 1, SLIDER_HORIZONTAL, mused.slider_bevel->surface);
@@ -692,6 +692,11 @@ void pattern_view2(SDL_Surface *dest_surface, const SDL_Rect *dest, const SDL_Ev
 				SDL_Rect pos;
 				copy_rect(&pos, &text);
 				pos.h = height;
+				
+				if (step == 0)
+					font_write_args(&mused.largefont, mused.screen, &pos, "%02X", sp->pattern);
+				
+				pos.x += 2 * char_width + SPACER;
 				
 				for (int param = PED_NOTE ; param < PED_PARAMS ; ++param)
 				{
@@ -756,12 +761,12 @@ void pattern_view2(SDL_Surface *dest_surface, const SDL_Rect *dest, const SDL_Ev
 	
 	if (mused.focus == EDITPATTERN)
 	{
-		int x = 2;
+		int x = 2 + 2 * char_width + SPACER;
 		for (int param = 1 ; param <= mused.current_patternx ; ++param)
 			x += (pattern_params[param].margin ? SPACER : 0) + pattern_params[param - 1].w * char_width;
 	
 		SDL_Rect cursor = { w * (mused.current_sequencetrack - mused.pattern_horiz_position) + x, row.y, pattern_params[mused.current_patternx].w * char_width, row.h};
-		adjust_rect(&cursor, -2);
+		adjust_rect(&cursor, -1);
 		set_cursor(&cursor);
 	}
 }
