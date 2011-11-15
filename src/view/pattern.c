@@ -649,18 +649,19 @@ void pattern_view2(SDL_Surface *dest_surface, const SDL_Rect *dest, const SDL_Ev
 	const int char_width = mused.largefont.w;
 	const int w = 2 * char_width + SPACER + NOTE_CHARS * char_width + SPACER + INST_CHARS * char_width + SPACER +
 		VOL_CHARS * char_width + SPACER + CTRL_BITS * char_width + SPACER + CMD_CHARS * char_width + 4;
+	const int narrow_w = 2 * char_width + SPACER + NOTE_CHARS * char_width + 4;
 		
-	slider_set_params(&mused.pattern_horiz_slider_param, 0, mused.song.num_channels - 1, mused.pattern_horiz_position, my_min(mused.song.num_channels, mused.pattern_horiz_position + dest->w / w) - 1, &mused.pattern_horiz_position, 1, SLIDER_HORIZONTAL, mused.slider_bevel->surface);
+	slider_set_params(&mused.pattern_horiz_slider_param, 0, mused.song.num_channels - 1, mused.pattern_horiz_position, my_min(mused.song.num_channels, mused.pattern_horiz_position + 1 + (dest->w - w) / narrow_w) - 1, &mused.pattern_horiz_position, 1, SLIDER_HORIZONTAL, mused.slider_bevel->surface);
 	
 	int x = 0;
 	
-	for (int channel = mused.pattern_horiz_position ; channel < my_min(mused.song.num_channels, mused.pattern_horiz_position + dest->w / w + 1) ; ++channel, x += w)
+	for (int channel = mused.pattern_horiz_position ; channel < mused.song.num_channels && x < dest->w ; x += ((channel == mused.current_sequencetrack) ? w : narrow_w), ++channel)
 	{
 		const MusSeqPattern *sp = &mused.song.sequence[channel][0];
 		
 		SDL_Rect track;
 		copy_rect(&track, dest);
-		track.w = w + 2;
+		track.w = ((channel == mused.current_sequencetrack) ? w : narrow_w) + 2;
 		track.x += x;
 		
 		SDL_SetClipRect(mused.screen, NULL);
@@ -678,7 +679,7 @@ void pattern_view2(SDL_Surface *dest_surface, const SDL_Rect *dest, const SDL_Ev
 			if (i < mused.song.num_sequences[channel] - 1)
 				len = my_min(len, (sp + 1)->position - sp->position);
 			
-			SDL_Rect pat = { track.x, (sp->position - top) * height + track.y, w, len * height };
+			SDL_Rect pat = { track.x, (sp->position - top) * height + track.y, ((channel == mused.current_sequencetrack) ? w : narrow_w), len * height };
 			SDL_Rect text;
 			copy_rect(&text, &pat);
 			clip_rect(&pat, &track);
@@ -694,8 +695,8 @@ void pattern_view2(SDL_Surface *dest_surface, const SDL_Rect *dest, const SDL_Ev
 				pos.h = height;
 				
 				if (step == 0)
-					font_write_args(&mused.largefont, mused.screen, &pos, "%02X", sp->pattern);
-				
+					font_write_args(&mused.smallfont, mused.screen, &pos, "%02X", sp->pattern);
+					
 				pos.x += 2 * char_width + SPACER;
 				
 				for (int param = PED_NOTE ; param < PED_PARAMS ; ++param)
@@ -704,6 +705,29 @@ void pattern_view2(SDL_Surface *dest_surface, const SDL_Rect *dest, const SDL_Ev
 					
 					if (pattern_params[param].margin)
 						pos.x += SPACER;
+						
+					static const struct { Uint32 bar, beat, normal; } coltab[] =
+					{
+						{COLOR_PATTERN_BAR, COLOR_PATTERN_BEAT, COLOR_PATTERN_NORMAL},
+						{COLOR_PATTERN_INSTRUMENT_BAR, COLOR_PATTERN_INSTRUMENT_BEAT, COLOR_PATTERN_INSTRUMENT},
+						{COLOR_PATTERN_INSTRUMENT_BAR, COLOR_PATTERN_INSTRUMENT_BEAT, COLOR_PATTERN_INSTRUMENT},
+						{COLOR_PATTERN_VOLUME_BAR, COLOR_PATTERN_VOLUME_BEAT, COLOR_PATTERN_VOLUME},
+						{COLOR_PATTERN_VOLUME_BAR, COLOR_PATTERN_VOLUME_BEAT, COLOR_PATTERN_VOLUME},
+						{COLOR_PATTERN_CTRL_BAR, COLOR_PATTERN_CTRL_BEAT, COLOR_PATTERN_CTRL},
+						{COLOR_PATTERN_CTRL_BAR, COLOR_PATTERN_CTRL_BEAT, COLOR_PATTERN_CTRL},
+						{COLOR_PATTERN_CTRL_BAR, COLOR_PATTERN_CTRL_BEAT, COLOR_PATTERN_CTRL},
+						{COLOR_PATTERN_COMMAND_BAR, COLOR_PATTERN_COMMAND_BEAT, COLOR_PATTERN_COMMAND},
+						{COLOR_PATTERN_COMMAND_BAR, COLOR_PATTERN_COMMAND_BEAT, COLOR_PATTERN_COMMAND},
+						{COLOR_PATTERN_COMMAND_BAR, COLOR_PATTERN_COMMAND_BEAT, COLOR_PATTERN_COMMAND},
+						{COLOR_PATTERN_COMMAND_BAR, COLOR_PATTERN_COMMAND_BEAT, COLOR_PATTERN_COMMAND}
+					};
+						
+					Uint32 color;
+					
+					if (sp->position + step != mused.pattern_position)	
+						color = timesig(step, colors[coltab[param].bar], colors[coltab[param].beat], colors[coltab[param].normal]);
+					else
+						console_set_color(mused.console, colors[COLOR_PATTERN_SELECTED], CON_CHARACTER);
 				
 					switch (param)
 					{
@@ -712,41 +736,63 @@ void pattern_view2(SDL_Surface *dest_surface, const SDL_Rect *dest, const SDL_Ev
 							const char *note = (s->note < MUS_NOTE_NONE) 
 								? ((s->note == MUS_NOTE_RELEASE) ? "\x08\x09\x0b" : notename(s->note)) : "---";
 								
-							font_write(&mused.largefont, mused.screen, &pos, note);
+							if (sp->position + step != mused.pattern_position)
+								console_set_color(mused.console, diszero(mused.song.pattern[sp->pattern].step[step].note != MUS_NOTE_NONE, color), CON_CHARACTER);
+								
+							font_write(&mused.console->font, mused.screen, &pos, note);
 							}
 							break;
 						
 						case PED_INSTRUMENT1:
 						case PED_INSTRUMENT2:
-							if (s->volume != MUS_NOTE_NO_INSTRUMENT)
-								font_write_args(&mused.largefont, mused.screen, &pos, "%X", (s->instrument >> (4 - (param - PED_INSTRUMENT1) * 4)) & 0xf);
+						
+							if (sp->position + step != mused.pattern_position)
+								console_set_color(mused.console, diszero(s->instrument != MUS_NOTE_NO_INSTRUMENT, color), CON_CHARACTER);
+						
+							if (s->instrument != MUS_NOTE_NO_INSTRUMENT)
+								font_write_args(&mused.console->font, mused.screen, &pos, "%X", (s->instrument >> (4 - (param - PED_INSTRUMENT1) * 4)) & 0xf);
 							else
-								font_write(&mused.largefont, mused.screen, &pos, "-");
+								font_write(&mused.console->font, mused.screen, &pos, "-");
 							break;
 							
 						case PED_VOLUME1:
 						case PED_VOLUME2:
+						
+							if (sp->position + step != mused.pattern_position)
+								console_set_color(mused.console, diszero(s->volume != MUS_NOTE_NO_VOLUME, color), CON_CHARACTER);
+						
 							if (s->volume != MUS_NOTE_NO_VOLUME)
-								font_write_args(&mused.largefont, mused.screen, &pos, "%X", (s->volume >> (4 - (param - PED_VOLUME1) * 4)) & 0xf);
+								font_write_args(&mused.console->font, mused.screen, &pos, "%X", (s->volume >> (4 - (param - PED_VOLUME1) * 4)) & 0xf);
 							else
-								font_write(&mused.largefont, mused.screen, &pos, "-");
+								font_write(&mused.console->font, mused.screen, &pos, "-");
 							break;
 							
 						case PED_LEGATO:
 						case PED_SLIDE:
 						case PED_VIB:
-							font_write_args(&mused.largefont, mused.screen, &pos, "%c", (s->ctrl & (1 << (param - PED_LEGATO))) ? "LSV"[param - PED_LEGATO] : '-');
+						
+							if (sp->position + step != mused.pattern_position)
+								console_set_color(mused.console, diszero((s->ctrl & (1 << (param - PED_LEGATO))), color), CON_CHARACTER);
+						
+							font_write_args(&mused.console->font, mused.screen, &pos, "%c", (s->ctrl & (1 << (param - PED_LEGATO))) ? "LSV"[param - PED_LEGATO] : '-');
 							break;
 							
 						case PED_COMMAND1:
 						case PED_COMMAND2:
 						case PED_COMMAND3:
 						case PED_COMMAND4:
-							font_write_args(&mused.largefont, mused.screen, &pos, "%X", (s->command >> (12 - (param - PED_COMMAND1) * 4)) & 0xf);
+						
+							if (sp->position + step != mused.pattern_position)
+								console_set_color(mused.console, diszero(s->command != 0, color), CON_CHARACTER);
+						
+							font_write_args(&mused.console->font, mused.screen, &pos, "%X", (s->command >> (12 - (param - PED_COMMAND1) * 4)) & 0xf);
 							break;
 					}
 					
 					pos.x += pos.w;
+					
+					if (channel != mused.current_sequencetrack)
+						break;
 				}
 				
 				text.y += height;
@@ -765,8 +811,8 @@ void pattern_view2(SDL_Surface *dest_surface, const SDL_Rect *dest, const SDL_Ev
 		for (int param = 1 ; param <= mused.current_patternx ; ++param)
 			x += (pattern_params[param].margin ? SPACER : 0) + pattern_params[param - 1].w * char_width;
 	
-		SDL_Rect cursor = { w * (mused.current_sequencetrack - mused.pattern_horiz_position) + x, row.y, pattern_params[mused.current_patternx].w * char_width, row.h};
-		adjust_rect(&cursor, -1);
+		SDL_Rect cursor = { narrow_w * (mused.current_sequencetrack - mused.pattern_horiz_position) + x, row.y, pattern_params[mused.current_patternx].w * char_width, row.h};
+		adjust_rect(&cursor, -2);
 		set_cursor(&cursor);
 	}
 }
