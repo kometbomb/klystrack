@@ -940,7 +940,7 @@ void pattern_event(SDL_Event *e)
 			
 			case SDLK_LSHIFT:
 			case SDLK_RSHIFT:
-				begin_selection(current_patternstep());
+				begin_selection(mused.current_patternpos);
 			break;
 		
 			case SDLK_END:
@@ -968,7 +968,7 @@ void pattern_event(SDL_Event *e)
 					
 					if (e->key.keysym.mod & KMOD_SHIFT)
 					{
-						select_range(current_patternstep());
+						select_range(mused.current_patternpos);
 					}
 				}
 			}
@@ -996,7 +996,7 @@ void pattern_event(SDL_Event *e)
 				
 					if (e->key.keysym.mod & KMOD_SHIFT)
 					{
-						select_range(current_patternstep());
+						select_range(mused.current_patternpos);
 					}
 					
 				}

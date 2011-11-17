@@ -41,10 +41,10 @@ void copy()
 	{
 		case EDITPATTERN:
 		
-		if (mused.selection.start == mused.selection.end)
-			cp_copy_items(&mused.cp, CP_PATTERN, mused.song.pattern[current_pattern()].step, sizeof(mused.song.pattern[current_pattern()].step[0]), mused.song.pattern[current_pattern()].num_steps);
+		if (mused.selection.start == mused.selection.end && get_current_pattern())
+			cp_copy_items(&mused.cp, CP_PATTERN, get_current_pattern()->step, sizeof(MusStep), get_current_pattern()->num_steps);
 		else
-			cp_copy_items(&mused.cp, CP_PATTERNSEGMENT, &mused.song.pattern[current_pattern()].step[mused.selection.start], sizeof(mused.song.pattern[current_pattern()].step[0]), 
+			cp_copy_items(&mused.cp, CP_PATTERNSEGMENT, &mused.song.pattern[get_pattern(mused.selection.start, mused.current_sequencetrack)].step[get_patternstep(mused.selection.start, mused.current_sequencetrack)], sizeof(MusStep), 
 				mused.selection.end-mused.selection.start);
 		
 		break;
@@ -102,7 +102,7 @@ void delete()
 		if (mused.selection.start == mused.selection.end)
 			clear_pattern(&mused.song.pattern[current_pattern()]);
 		else
-			clear_pattern_range(&mused.song.pattern[current_pattern()], mused.selection.start, mused.selection.end + 1);
+			clear_pattern_range(&mused.song.pattern[get_pattern(mused.selection.start, mused.current_sequencetrack)], get_patternstep(mused.selection.start, mused.current_sequencetrack), get_pattern(mused.selection.end, mused.current_sequencetrack) + 1);
 		
 		break;
 		
