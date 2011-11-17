@@ -381,6 +381,36 @@ void enable_callback(bool state)
 }
 
 
+int get_pattern(int abspos, int track)
+{
+	int p = -1;
+	
+	const MusSeqPattern *sp = &mused.song.sequence[track][0];
+	
+	for (int i = 0 ; i < mused.song.num_sequences[track] && sp->position <= abspos ; ++i, ++sp)
+	{
+		if (sp->position <= abspos && sp->position + mused.song.pattern[sp->pattern].num_steps > abspos) p = sp->pattern;
+	}
+	
+	return p;
+}
+
+
+int get_patternstep(int abspos, int track)
+{
+	int p = -1;
+	
+	const MusSeqPattern *sp = &mused.song.sequence[track][0];
+	
+	for (int i = 0 ; i < mused.song.num_sequences[track] && sp->position <= abspos ; ++i, ++sp)
+	{
+		if (sp->position <= abspos && sp->position + mused.song.pattern[sp->pattern].num_steps > abspos) p = abspos - sp->position;
+	}
+	
+	return p;
+}
+
+
 int current_pattern()
 {
 	int p = -1;

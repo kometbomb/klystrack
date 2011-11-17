@@ -189,6 +189,8 @@ void my_open_menu();
 int viscol(int col);
 void post_config_load();
 void enable_callback(bool state);
+int get_pattern(int abspos, int track);
+int get_patternstep(int abspos, int track);
 int current_pattern();
 int current_patternstep();
 MusStep * get_current_step();
