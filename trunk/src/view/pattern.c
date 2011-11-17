@@ -819,7 +819,7 @@ void pattern_view2(SDL_Surface *dest_surface, const SDL_Rect *dest, const SDL_Ev
 		{
 			if (mused.selection.start <= bottom && mused.selection.end >= top)
 			{
-				SDL_Rect selection = { narrow_w * (mused.current_sequencetrack - mused.pattern_horiz_position) + 2 * char_width + SPACER, 
+				SDL_Rect selection = { dest->x + narrow_w * (mused.current_sequencetrack - mused.pattern_horiz_position) + 2 * char_width + SPACER, 
 					row.y + height * (mused.selection.start - mused.pattern_position), w - (2 * char_width + SPACER), height * (mused.selection.end - mused.selection.start)};
 					
 				adjust_rect(&selection, -3);
