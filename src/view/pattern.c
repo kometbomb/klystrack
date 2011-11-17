@@ -800,10 +800,10 @@ void pattern_view2(SDL_Surface *dest_surface, const SDL_Rect *dest, const SDL_Ev
 		}
 	}
 	
-	SDL_SetClipRect(mused.screen, NULL);
-	SDL_Rect scrollbar = { dest->x, dest->y + dest->h - SCROLLBAR, dest->w, SCROLLBAR };
-	
-	slider(dest_surface, &scrollbar, event, &mused.pattern_horiz_slider_param); 
+	SDL_Rect pat;
+	copy_rect(&pat, dest);
+	adjust_rect(&pat, 2);
+	SDL_SetClipRect(mused.screen, &pat);
 	
 	if (mused.focus == EDITPATTERN)
 	{
@@ -811,9 +811,27 @@ void pattern_view2(SDL_Surface *dest_surface, const SDL_Rect *dest, const SDL_Ev
 		for (int param = 1 ; param <= mused.current_patternx ; ++param)
 			x += (pattern_params[param].margin ? SPACER : 0) + pattern_params[param - 1].w * char_width;
 	
-		SDL_Rect cursor = { narrow_w * (mused.current_sequencetrack - mused.pattern_horiz_position) + x, row.y, pattern_params[mused.current_patternx].w * char_width, row.h};
+		SDL_Rect cursor = { dest->x + narrow_w * (mused.current_sequencetrack - mused.pattern_horiz_position) + x, row.y, pattern_params[mused.current_patternx].w * char_width, row.h};
 		adjust_rect(&cursor, -2);
 		set_cursor(&cursor);
+		
+		if (mused.selection.start != mused.selection.end)
+		{
+			if (mused.selection.start <= bottom && mused.selection.end >= top)
+			{
+				SDL_Rect selection = { narrow_w * (mused.current_sequencetrack - mused.pattern_horiz_position) + 2 * char_width + SPACER, 
+					row.y + height * (mused.selection.start - mused.pattern_position), w - (2 * char_width + SPACER), height * (mused.selection.end - mused.selection.start)};
+					
+				adjust_rect(&selection, -3);
+				selection.h += 2;
+				bevel(mused.screen, &selection, mused.slider_bevel->surface, BEV_SELECTION);
+			}
+		}
 	}
+	
+	SDL_SetClipRect(mused.screen, NULL);
+	SDL_Rect scrollbar = { dest->x, dest->y + dest->h - SCROLLBAR, dest->w, SCROLLBAR };
+	
+	slider(dest_surface, &scrollbar, event, &mused.pattern_horiz_slider_param); 
 }
 
