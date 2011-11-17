@@ -520,6 +520,9 @@ int main(int argc, char **argv)
 				}
 				
 				e.type = 0;
+				
+				// agh
+				mused.current_patternpos = mused.pattern_position;
 			}
 			while (mused.mode != prev_mode); // Eliminates the one-frame long black screen
 			
