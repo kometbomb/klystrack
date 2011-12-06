@@ -680,17 +680,10 @@ void sequence_event(SDL_Event *e)
 		
 			case SDLK_RETURN:
 			{
-				for (int i = (int)mused.song.num_sequences[mused.current_sequencetrack] - 1 ; i >= 0 ; --i)
-				{
-					if (mused.current_sequencepos >= mused.song.sequence[mused.current_sequencetrack][i].position && 
-						mused.song.sequence[mused.current_sequencetrack][i].position + mused.song.pattern[mused.song.sequence[mused.current_sequencetrack][i].pattern].num_steps > mused.current_sequencepos)
-					{
-						if (mused.mode != EDITCLASSIC) change_mode(EDITPATTERN);
-						else mused.focus = EDITPATTERN;
-						//current_pattern() = mused.song.sequence[mused.current_sequencetrack][i].pattern;
-						break;
-					}
-				}
+				if (mused.mode != EDITCLASSIC) change_mode(EDITPATTERN);
+				else mused.focus = EDITPATTERN;
+				
+				mused.pattern_position = mused.current_patternpos = mused.current_sequencepos;
 			}
 			break;
 			
@@ -933,8 +926,18 @@ void pattern_event(SDL_Event *e)
 			
 			case SDLK_RETURN:
 			{
-				if (mused.mode != EDITCLASSIC) change_mode(EDITSEQUENCE);
-				else mused.focus = EDITSEQUENCE;
+				if (e->key.keysym.mod & KMOD_CTRL)
+				{
+					Uint8 p = get_pattern_at(mused.current_sequencetrack, mused.current_sequencepos);
+					add_sequence(mused.current_sequencetrack, mused.current_patternpos, p, 0);
+				}
+				else
+				{
+					if (mused.mode != EDITCLASSIC) change_mode(EDITSEQUENCE);
+					else mused.focus = EDITSEQUENCE;
+					
+					mused.current_sequencepos = mused.current_patternpos;
+				}
 			}
 			break;
 			
