@@ -683,7 +683,9 @@ void sequence_event(SDL_Event *e)
 				if (mused.mode != EDITCLASSIC) change_mode(EDITPATTERN);
 				else mused.focus = EDITPATTERN;
 				
-				mused.pattern_position = mused.current_patternpos = mused.current_sequencepos;
+				mused.current_patternpos = mused.current_sequencepos;
+				
+				update_position_sliders();
 			}
 			break;
 			
@@ -937,6 +939,8 @@ void pattern_event(SDL_Event *e)
 					else mused.focus = EDITSEQUENCE;
 					
 					mused.current_sequencepos = mused.current_patternpos;
+					
+					update_position_sliders();
 				}
 			}
 			break;

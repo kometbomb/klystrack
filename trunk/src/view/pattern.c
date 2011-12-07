@@ -812,7 +812,7 @@ void pattern_view2(SDL_Surface *dest_surface, const SDL_Rect *dest, const SDL_Ev
 			x += (pattern_params[param].margin ? SPACER : 0) + pattern_params[param - 1].w * char_width;
 	
 		SDL_Rect cursor = { dest->x + narrow_w * (mused.current_sequencetrack - mused.pattern_horiz_position) + x, row.y, pattern_params[mused.current_patternx].w * char_width, row.h};
-		adjust_rect(&cursor, -2);
+		adjust_rect(&cursor, -1);
 		set_cursor(&cursor);
 		
 		if (mused.selection.start != mused.selection.end)

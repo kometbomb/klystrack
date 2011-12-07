@@ -16,11 +16,15 @@ void sequence_view2(SDL_Surface *dest_surface, const SDL_Rect *_dest, const SDL_
 	
 	const int height = 12;
 	const int top = mused.sequence_position;
-	const int bottom = top + dest.h * mused.sequenceview_steps / height;
+	const int w = my_max(dest.w / mused.song.num_channels - 1, 64);
+	int h = dest.h;
+	
+	if (mused.song.num_channels * (w + 1) > dest.w)
+		h -= SCROLLBAR;
+	
+	const int bottom = top + h * mused.sequenceview_steps / height;
 	
 	slider_set_params(&mused.sequence_slider_param, 0, mused.song.song_length - 1, my_max(0, top), bottom - mused.sequenceview_steps, &mused.sequence_position, mused.sequenceview_steps, SLIDER_VERTICAL, mused.slider_bevel->surface);
-	
-	const int w = my_max(dest.w / mused.song.num_channels - 1, 64);
 	
 	slider_set_params(&mused.sequence_horiz_slider_param, 0, mused.song.num_channels - 1, mused.sequence_horiz_position, my_min(mused.song.num_channels - 1, mused.sequence_horiz_position + (dest.w - (w - 1)) / (w + 1)), 
 		&mused.sequence_horiz_position, 1, SLIDER_HORIZONTAL, mused.slider_bevel->surface);
@@ -89,7 +93,10 @@ void sequence_view2(SDL_Surface *dest_surface, const SDL_Rect *_dest, const SDL_
 	
 	SDL_SetClipRect(mused.screen, NULL);
 	
-	SDL_Rect scrollbar = { _dest->x, _dest->y + _dest->h - SCROLLBAR, _dest->w, SCROLLBAR };
-	
-	slider(dest_surface, &scrollbar, event, &mused.sequence_horiz_slider_param); 
+	if (mused.song.num_channels * (w + 1) > dest.w)
+	{
+		SDL_Rect scrollbar = { _dest->x, _dest->y + _dest->h - SCROLLBAR, _dest->w, SCROLLBAR };
+		
+		slider(dest_surface, &scrollbar, event, &mused.sequence_horiz_slider_param); 
+	}
 }
