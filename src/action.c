@@ -59,6 +59,8 @@ void select_sequence_position(void *channel, void *position, void* unused)
 	if (CASTPTR(int,position) < mused.song.song_length)
 		mused.current_sequencepos = CASTPTR(int,position);
 		
+	mused.pattern_position = mused.current_patternpos = mused.current_sequencepos;
+		
 	mused.focus = EDITSEQUENCE;
 		
 }
