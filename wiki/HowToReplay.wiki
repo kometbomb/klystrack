@@ -2,4 +2,6 @@
 
 klystrack songs and instruments can easily be used in the klystron library. For demos and intros, it is possible to use only the audio routines. See the [http://code.google.com/p/klystrack/source/browse/#svn%2Ftrunk%2Fplayer command line player example].
 
+There is a prebuilt library ([http://code.google.com/p/klystron/wiki/libksnd libksnd]) that is meant for easy playback of klystrack tunes. The library tries to be small so it is usable for e.g. small intros.
+
 Please consult the [http://code.google.com/p/klystron/wiki/MakingNoise klystron manual] for more info.
