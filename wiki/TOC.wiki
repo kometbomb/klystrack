@@ -25,8 +25,8 @@
     * [Tweaks]
     * [FAQ FAQ]
   * *Developers*
+    * [HowToReplay Using music in your projects]
     * [Themes Customizing what klystrack looks like]
     * [Keymaps Custom key mappings]
     * [HowToCompile How to compile klystrack]
     * [ToolsUsed Tools used to create klystrack]
-    * [HowToReplay Using music in your projects]
