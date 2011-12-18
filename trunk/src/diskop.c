@@ -141,6 +141,7 @@ static void save_instrument_inner(FILE *f, MusInstrument *inst, const CydWavetab
 	_VER_WRITE(&inst->vib_shape, 0);
 	_VER_WRITE(&inst->vib_delay, 0);
 	_VER_WRITE(&inst->pwm_shape, 0);
+	_VER_WRITE(&inst->lfsr_type, 0);
 		
 	if (write_wave)
 	{
