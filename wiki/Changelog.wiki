@@ -8,6 +8,7 @@ See [RoadMap the road map] for future plans.
 =1.6.0=
 
   * New pattern editor with exact neighboring patterns and no more single pattern editing
+  * New LFSR waveform for crazy Atari POKEY/TIA sounds
 
 =1.5.4=
 
