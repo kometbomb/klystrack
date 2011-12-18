@@ -126,12 +126,6 @@ void instrument_add_param(int a)
 		
 		break;
 		
-		case P_METAL:
-		
-		flipbit(i->cydflags, CYD_CHN_ENABLE_METAL);
-		
-		break;
-		
 		case P_KEYSYNC:
 		
 		flipbit(i->cydflags, CYD_CHN_ENABLE_KEY_SYNC);
@@ -193,6 +187,19 @@ void instrument_add_param(int a)
 		flipbit(i->cydflags, CYD_CHN_ENABLE_TRIANGLE);
 		
 		break;
+		
+		case P_LFSR:
+		
+		flipbit(i->cydflags, CYD_CHN_ENABLE_LFSR);
+		
+		break;
+		
+		case P_LFSRTYPE:
+		
+		clamp(i->lfsr_type, a, 0, 3);
+		
+		break;
+		
 		
 		case P_NOISE:
 		
