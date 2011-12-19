@@ -779,8 +779,9 @@ void info_line(SDL_Surface *dest_surface, const SDL_Rect *dest, const SDL_Event 
 				"Saw wave",
 				"Triangle wave",
 				"Noise",
-				"LSFR enable",
-				"LSFR type",
+				"Metallic noise",
+				"LFSR enable",
+				"LFSR type",
 				"Quarter frequency",
 				"Wavetable",
 				"Wavetable entry",
@@ -1233,24 +1234,30 @@ void instrument_view(SDL_Surface *dest_surface, const SDL_Rect *dest, const SDL_
 	
 	{
 		int tmp = r.w;
-		r.w = frame.w / 3 - 2;
+		r.w = frame.w / 3 - 2 - 12;
 		my_separator(&frame, &r);
 		inst_flags(event, &r, P_PULSE, "PUL", &inst->cydflags, CYD_CHN_ENABLE_PULSE);
 		update_rect(&frame, &r);
-		r.w = frame.w / 2 - 2;
-		inst_text(event, &r, P_PW, "PW", "%03X", MAKEPTR(inst->pw), 3);
+		r.w = frame.w / 2 - 2 - 18;
+		inst_text(event, &r, P_PW, "", "%03X", MAKEPTR(inst->pw), 3);
 		update_rect(&frame, &r);
-		r.w = frame.w / 3 - 2;
+		r.w = frame.w / 3 - 8;
 		inst_flags(event, &r, P_SAW, "SAW", &inst->cydflags, CYD_CHN_ENABLE_SAW);
 		update_rect(&frame, &r);
+		r.w = frame.w / 3 - 8;
 		inst_flags(event, &r, P_TRIANGLE, "TRI", &inst->cydflags, CYD_CHN_ENABLE_TRIANGLE);
 		update_rect(&frame, &r);
 		inst_flags(event, &r, P_NOISE, "NOI", &inst->cydflags, CYD_CHN_ENABLE_NOISE);
 		update_rect(&frame, &r);
+		r.w = frame.w / 3;
+		inst_flags(event, &r, P_METAL, "METAL", &inst->cydflags, CYD_CHN_ENABLE_METAL);
+		update_rect(&frame, &r);
 		inst_flags(event, &r, P_LFSR, "LFSR", &inst->cydflags, CYD_CHN_ENABLE_LFSR);
 		update_rect(&frame, &r);
-		inst_text(event, &r, P_LFSRTYPE, "", "%01X", MAKEPTR(inst->lfsr_type), 1);
+		r.w = frame.w / 3 - 2;
+		inst_text(event, &r, P_LFSRTYPE, "", "%X", MAKEPTR(inst->lfsr_type), 1);
 		update_rect(&frame, &r);
+		r.w = frame.w / 3 - 2;
 		inst_flags(event, &r, P_1_4TH, "1/4TH", &inst->flags, MUS_INST_QUARTER_FREQ);
 		update_rect(&frame, &r);
 		

@@ -196,16 +196,22 @@ void instrument_add_param(int a)
 		
 		case P_LFSRTYPE:
 		
-		clamp(i->lfsr_type, a, 0, 3);
+		clamp(i->lfsr_type, a, 0, CYD_NUM_LFSR - 1);
 		
 		break;
-		
-		
+				
 		case P_NOISE:
 		
 		flipbit(i->cydflags, CYD_CHN_ENABLE_NOISE);
 		
 		break;
+		
+		case P_METAL:
+		
+		flipbit(i->cydflags, CYD_CHN_ENABLE_METAL);
+		
+		break;
+		
 		
 		case P_FX:
 		

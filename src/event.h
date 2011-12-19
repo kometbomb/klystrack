@@ -84,6 +84,7 @@ enum
 	P_SAW,
 	P_TRIANGLE,
 	P_NOISE,
+	P_METAL,
 	P_LFSR,
 	P_LFSRTYPE,
 	P_1_4TH,
