@@ -1238,7 +1238,7 @@ void instrument_view(SDL_Surface *dest_surface, const SDL_Rect *dest, const SDL_
 		my_separator(&frame, &r);
 		inst_flags(event, &r, P_PULSE, "PUL", &inst->cydflags, CYD_CHN_ENABLE_PULSE);
 		update_rect(&frame, &r);
-		r.w = frame.w / 2 - 2 - 18;
+		r.w = frame.w / 2 - 2 - 25;
 		inst_text(event, &r, P_PW, "", "%03X", MAKEPTR(inst->pw), 3);
 		update_rect(&frame, &r);
 		r.w = frame.w / 3 - 8;
@@ -1252,9 +1252,9 @@ void instrument_view(SDL_Surface *dest_surface, const SDL_Rect *dest, const SDL_
 		r.w = frame.w / 3;
 		inst_flags(event, &r, P_METAL, "METAL", &inst->cydflags, CYD_CHN_ENABLE_METAL);
 		update_rect(&frame, &r);
-		inst_flags(event, &r, P_LFSR, "LFSR", &inst->cydflags, CYD_CHN_ENABLE_LFSR);
+		inst_flags(event, &r, P_LFSR, "POKEY", &inst->cydflags, CYD_CHN_ENABLE_LFSR);
 		update_rect(&frame, &r);
-		r.w = frame.w / 3 - 2;
+		r.w = frame.w / 3 - 16;
 		inst_text(event, &r, P_LFSRTYPE, "", "%X", MAKEPTR(inst->lfsr_type), 1);
 		update_rect(&frame, &r);
 		r.w = frame.w / 3 - 2;
