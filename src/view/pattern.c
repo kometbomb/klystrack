@@ -785,6 +785,8 @@ void pattern_view_inner(SDL_Surface *dest_surface, const SDL_Rect *dest, const S
 			}
 		}
 	}
+	
+	SDL_SetClipRect(mused.screen, NULL);
 }
 
 
@@ -826,6 +828,8 @@ static void pattern_view_stepcounter(SDL_Surface *dest_surface, const SDL_Rect *
 	}
 	
 	bevel(mused.screen,dest, mused.slider_bevel->surface, BEV_THIN_FRAME);
+	
+	SDL_SetClipRect(mused.screen, NULL);
 }
 
 
@@ -835,8 +839,8 @@ void pattern_view2(SDL_Surface *dest_surface, const SDL_Rect *dest, const SDL_Ev
 	copy_rect(&pat, dest);
 	copy_rect(&pos, dest);
 		
-	pat.w -= 32;
-	pat.x += 32;
+	pat.w -= 30;
+	pat.x += 30;
 	
 	pos.w = 32;
 		
