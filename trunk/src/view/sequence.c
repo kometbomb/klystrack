@@ -5,7 +5,7 @@
 #include "action.h"
 #include "gui/mouse.h"
 
-void sequence_view2(SDL_Surface *dest_surface, const SDL_Rect *_dest, const SDL_Event *event, void *param)
+void sequence_view_inner(SDL_Surface *dest_surface, const SDL_Rect *_dest, const SDL_Event *event)
 {
 	SDL_Rect dest;
 	copy_rect(&dest, _dest);
@@ -92,11 +92,54 @@ void sequence_view2(SDL_Surface *dest_surface, const SDL_Rect *_dest, const SDL_
 	}
 	
 	SDL_SetClipRect(mused.screen, NULL);
+}
+
+
+static void sequence_view_stepcounter(SDL_Surface *dest_surface, const SDL_Rect *_dest, const SDL_Event *event)
+{
+	const int height = 12;
+	const int top = mused.sequence_position;
 	
-	if (mused.song.num_channels * (w + 1) > dest.w)
+	bevel(dest_surface, _dest, mused.slider_bevel->surface, BEV_SEQUENCE_BORDER);
+	
+	SDL_Rect dest;
+	copy_rect(&dest, _dest);
+	adjust_rect(&dest, 2);
+	
+	SDL_Rect pos = { dest.x, dest.y, dest.w, height };
+	
+	for (int p = top ; pos.y < dest.y + dest.h ; p += mused.sequenceview_steps, pos.y += height)
+	{
+		clip_rect(&pos, &dest);
+		SDL_SetClipRect(mused.screen, &pos);
+	
+		font_write_args(&mused.largefont, mused.screen, &pos, "%04X", p);
+	}
+	
+	SDL_SetClipRect(mused.screen, NULL);
+}
+
+
+void sequence_view2(SDL_Surface *dest_surface, const SDL_Rect *_dest, const SDL_Event *event, void *param)
+{
+	SDL_Rect seq, pos;
+	copy_rect(&seq, _dest);
+	copy_rect(&pos, _dest);
+		
+	seq.w -= 36;
+	seq.x += 36;
+	
+	pos.w = 36;
+		
+	sequence_view_stepcounter(dest_surface, &pos, event);
+	sequence_view_inner(dest_surface, &seq, event);
+	
+	const int w = my_max(_dest->w / mused.song.num_channels - 1, 64);
+
+	if (mused.song.num_channels * (w + 1) > _dest->w)
 	{
 		SDL_Rect scrollbar = { _dest->x, _dest->y + _dest->h - SCROLLBAR, _dest->w, SCROLLBAR };
 		
 		slider(dest_surface, &scrollbar, event, &mused.sequence_horiz_slider_param); 
-	}
+	}	
 }
