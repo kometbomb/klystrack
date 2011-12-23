@@ -483,8 +483,7 @@ int main(int argc, char **argv)
 			if ((mused.flags & FOLLOW_PLAY_POSITION) && (mused.flags & SONG_PLAYING))
 			{
 				mused.current_sequencepos = mused.stat_song_position - mused.stat_song_position % mused.sequenceview_steps;
-				int tmp = mused.current_patternx;
-				mused.current_patternx = tmp;
+				mused.current_patternpos = mused.stat_song_position;
 				update_position_sliders();
 			}
 		
