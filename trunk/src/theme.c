@@ -370,6 +370,12 @@ void load_theme(const char *name)
 			font_destroy(&mused.menufont_selected);
 			font_load_and_set_color(&mused.menufont_selected, &res, "8x8.fnt", colors[COLOR_MENU_SELECTED]);
 		}
+		
+		if (bnd_exists(&res, "4x6.fnt"))
+		{
+			font_destroy(&mused.tinyfont);
+			font_load_and_set_color(&mused.tinyfont, &res, "4x6.fnt", colors[COLOR_MAIN_TEXT]);
+		}
 				
 		bnd_free(&res);
 		strncpy(mused.themename, tmpname, sizeof(mused.themename));

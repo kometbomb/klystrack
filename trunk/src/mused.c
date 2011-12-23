@@ -325,6 +325,7 @@ void deinit()
 	if (mused.logo) gfx_free_surface(mused.logo);
 	font_destroy(&mused.smallfont);
 	font_destroy(&mused.largefont);
+	font_destroy(&mused.tinyfont);
 	font_destroy(&mused.menufont);
 	font_destroy(&mused.menufont_selected);
 	font_destroy(&mused.shortcutfont);
