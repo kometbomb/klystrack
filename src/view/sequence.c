@@ -14,7 +14,7 @@ void sequence_view_inner(SDL_Surface *dest_surface, const SDL_Rect *_dest, const
 	
 	adjust_rect(&dest, 1);
 	
-	const int height = 12;
+	const int height = 10;
 	const int top = mused.sequence_position;
 	const int w = my_max(dest.w / mused.song.num_channels - 1, 64);
 	int h = dest.h;
@@ -26,10 +26,12 @@ void sequence_view_inner(SDL_Surface *dest_surface, const SDL_Rect *_dest, const
 	
 	slider_set_params(&mused.sequence_slider_param, 0, mused.song.song_length - 1, my_max(0, top), bottom - mused.sequenceview_steps, &mused.sequence_position, mused.sequenceview_steps, SLIDER_VERTICAL, mused.slider_bevel->surface);
 	
-	slider_set_params(&mused.sequence_horiz_slider_param, 0, mused.song.num_channels - 1, mused.sequence_horiz_position, my_min(mused.song.num_channels - 1, mused.sequence_horiz_position + (dest.w - (w - 1)) / (w + 1)), 
+	int vischans = my_min(mused.song.num_channels - 1, mused.sequence_horiz_position + (dest.w - (w - 1)) / (w + 1));
+	
+	slider_set_params(&mused.sequence_horiz_slider_param, 0, mused.song.num_channels - 1, mused.sequence_horiz_position, vischans, 
 		&mused.sequence_horiz_position, 1, SLIDER_HORIZONTAL, mused.slider_bevel->surface);
 		
-	for (int channel = mused.sequence_horiz_position ; channel < mused.song.num_channels ; ++channel)
+	for (int channel = mused.sequence_horiz_position ; channel < mused.song.num_channels && channel <= vischans ; ++channel)
 	{
 		const MusSeqPattern *sp = &mused.song.sequence[channel][0];
 		const int x = (channel - mused.sequence_horiz_position) * (w + 1);
@@ -60,7 +62,7 @@ void sequence_view_inner(SDL_Surface *dest_surface, const SDL_Rect *_dest, const
 			
 			SDL_SetClipRect(mused.screen, &text);
 			
-			font_write_args(&mused.largefont, mused.screen, &text, "%02X+%d", sp->pattern, sp->note_offset);
+			font_write_args(&mused.tinyfont, mused.screen, &text, "%02X+%d", sp->pattern, sp->note_offset);
 		}
 	}
 	
@@ -97,7 +99,7 @@ void sequence_view_inner(SDL_Surface *dest_surface, const SDL_Rect *_dest, const
 
 static void sequence_view_stepcounter(SDL_Surface *dest_surface, const SDL_Rect *_dest, const SDL_Event *event)
 {
-	const int height = 12;
+	const int height = 10;
 	const int top = mused.sequence_position;
 	
 	bevel(dest_surface, _dest, mused.slider_bevel->surface, BEV_SEQUENCE_BORDER);
@@ -113,7 +115,7 @@ static void sequence_view_stepcounter(SDL_Surface *dest_surface, const SDL_Rect 
 		clip_rect(&pos, &dest);
 		SDL_SetClipRect(mused.screen, &pos);
 	
-		font_write_args(&mused.largefont, mused.screen, &pos, "%04X", p);
+		font_write_args(&mused.tinyfont, mused.screen, &pos, "%04X", p);
 	}
 	
 	SDL_SetClipRect(mused.screen, NULL);
@@ -126,10 +128,10 @@ void sequence_view2(SDL_Surface *dest_surface, const SDL_Rect *_dest, const SDL_
 	copy_rect(&seq, _dest);
 	copy_rect(&pos, _dest);
 		
-	seq.w -= 36;
-	seq.x += 36;
+	seq.w -= mused.tinyfont.w * 4 + 4;
+	seq.x += mused.tinyfont.w * 4 + 4;
 	
-	pos.w = 36;
+	pos.w = mused.tinyfont.w * 4 + 4;
 		
 	sequence_view_stepcounter(dest_surface, &pos, event);
 	sequence_view_inner(dest_surface, &seq, event);

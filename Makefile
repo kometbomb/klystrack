@@ -104,7 +104,7 @@ define theme_defs
 
  THEMES := $$(THEMES) res/$(1)
 
-res/$(1): themes/$(1)/* themes/$(1)/font/* themes/$(1)/font7x6/* 
+res/$(1): themes/$(1)/* #themes/$(1)/font/* themes/$(1)/font7x6/* themes/$(1)/tiny/* 
 	@$(ECHO) "Building theme $(1)..."
 	@mkdir -p res
 	@mkdir -p themetemp
@@ -115,6 +115,7 @@ res/$(1): themes/$(1)/* themes/$(1)/font/* themes/$(1)/font7x6/*
 	@-cp -f themes/$(1)/logo.* themetemp
 	@-$(MAKEBUNDLE) themetemp/8x8.fnt themes/$(1)/font
 	@-$(MAKEBUNDLE) themetemp/7x6.fnt themes/$(1)/font7x6
+	@-$(MAKEBUNDLE) themetemp/4x6.fnt themes/$(1)/tiny
 	@-$(MAKEBUNDLE) $$@ themetemp
 	@rm -rf themetemp
 	
