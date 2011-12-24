@@ -8,7 +8,9 @@ See [RoadMap the road map] for future plans.
 =1.6.0=
 
   * New pattern editor with exact neighboring patterns and no more single pattern editing
+  * Sequencer had a facelift
   * New LFSR waveform for crazy Atari POKEY/TIA sounds
+  * Crush effect has a slightly altered algorithm and optional dithering
 
 =1.5.4=
 
