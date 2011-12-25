@@ -35,6 +35,7 @@ OTHER DEALINGS IN THE SOFTWARE.
 #include "mybevdefs.h"
 #include "snd/freqs.h"
 #include "view/visu.h"
+#include "view/sequence.h"
 #include <stdbool.h>
 #include "edit.h"
 #include "mymsg.h"
@@ -1809,7 +1810,7 @@ void sequence_spectrum_view(SDL_Surface *dest_surface, const SDL_Rect *dest, con
 	}
 	else
 	{
-		sequence_view(dest_surface, dest, event, param);
+		sequence_view2(dest_surface, dest, event, param);
 	}
 }
 
