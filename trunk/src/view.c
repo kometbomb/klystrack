@@ -1509,13 +1509,9 @@ void fx_view(SDL_Surface *dest_surface, const SDL_Rect *dest, const SDL_Event *e
 	
 	update_rect(&area, &r);
 	
-	Uint32 tmp = mused.song.fx[mused.fx_bus].crushex.dither;
-	
-	generic_flags(event, &r, EDITFX, R_CRUSHDITHER, "DITHER", &tmp, 1);
+	generic_flags(event, &r, EDITFX, R_CRUSHDITHER, "DITHER", &mused.song.fx[mused.fx_bus].flags, CYDFX_ENABLE_CRUSH_DITHER);
 	update_rect(&area, &r);
 	
-	mused.song.fx[mused.fx_bus].crushex.dither = tmp;
-		
 	update_rect(&area, &r);
 	
 	my_separator(&area, &r);
