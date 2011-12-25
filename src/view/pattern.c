@@ -755,6 +755,17 @@ void pattern_view_inner(SDL_Surface *dest_surface, const SDL_Rect *dest, const S
 				text.y += height;
 			}
 		}
+		
+		if (mused.flags & SONG_PLAYING)
+		{
+			SDL_SetClipRect(mused.screen, &track);
+			const int ah = dest->h + dest->y - row.y;
+			const int w = mused.vu_meter->surface->w;
+			const int h = my_min(mused.vu_meter->surface->h, mused.vis.cyd_env[channel] * ah / MAX_VOLUME);
+			SDL_Rect r = { track.x + track.w / 2 - w / 2 , row.y - h, w, h };
+			SDL_Rect sr = { 0, mused.vu_meter->surface->h - h, mused.vu_meter->surface->w, h };
+			SDL_BlitSurface(mused.vu_meter->surface, &sr, mused.screen, &r);
+		}
 	}
 	
 	SDL_Rect pat;
