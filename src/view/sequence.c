@@ -62,7 +62,7 @@ void sequence_view_inner(SDL_Surface *dest_surface, const SDL_Rect *_dest, const
 			
 			SDL_SetClipRect(mused.screen, &text);
 			
-			font_write_args(&mused.tinyfont, mused.screen, &text, "%02X+%d", sp->pattern, sp->note_offset);
+			font_write_args(&mused.tinyfont, mused.screen, &text, "%02X%+d", sp->pattern, sp->note_offset);
 		}
 	}
 	
