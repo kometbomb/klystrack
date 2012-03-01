@@ -291,6 +291,23 @@ void pattern_view_inner(SDL_Surface *dest_surface, const SDL_Rect *dest, const S
 	}
 	
 	SDL_SetClipRect(mused.screen, NULL);
+	
+	// ach
+	
+	if (event->type == SDL_MOUSEBUTTONDOWN)
+	{
+		switch (event->button.button)
+		{
+			case 4:
+				mused.pattern_position -= 16;
+				break;
+			case 5:
+				mused.pattern_position += 16;
+				break;
+		}
+		
+		mused.pattern_position = my_max(0, my_min(mused.song.song_length - 1, mused.pattern_position));
+	}
 }
 
 

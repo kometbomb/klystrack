@@ -93,7 +93,17 @@ void sequence_view_inner(SDL_Surface *dest_surface, const SDL_Rect *_dest, const
 		}
 	}
 	
+	if (mused.flags & SONG_PLAYING)
+    {
+		SDL_Rect play = { dest.x, (mused.stat_song_position - top) * height / mused.sequenceview_steps + dest.y, dest.w, 2 };
+		clip_rect(&play, &dest);
+        bevel(mused.screen,&play, mused.slider_bevel->surface, BEV_SEQUENCE_PLAY_POS);
+    }
+
+	
 	SDL_SetClipRect(mused.screen, NULL);
+	
+	check_mouse_wheel_event(event, _dest, &mused.sequence_slider_param);
 }
 
 
