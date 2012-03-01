@@ -354,7 +354,21 @@ void mirror_flags()
 
 int viscol(int col)
 {
-	return !(mused.flags & COMPACT_VIEW) || (mused.visible_columns & col);
+	const int tab[PED_PARAMS] = {
+		-1,
+		VC_INSTRUMENT,
+		VC_INSTRUMENT,
+		VC_VOLUME,
+		VC_VOLUME,
+		VC_CTRL,
+		VC_CTRL,
+		VC_CTRL,
+		VC_COMMAND,
+		VC_COMMAND,
+		VC_COMMAND,
+		VC_COMMAND
+	};
+	return !(mused.flags & COMPACT_VIEW) || (mused.visible_columns & tab[col]);
 }
 
 
