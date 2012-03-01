@@ -1141,16 +1141,16 @@ void pattern_event(SDL_Event *e)
 				{
 					++mused.current_patternx;
 					
-					if (!viscol(VC_INSTRUMENT) && (mused.current_patternx == PED_INSTRUMENT1 || mused.current_patternx == PED_INSTRUMENT2))
+					if (!viscol(mused.current_patternx) && (mused.current_patternx == PED_INSTRUMENT1 || mused.current_patternx == PED_INSTRUMENT2))
 						mused.current_patternx = PED_VOLUME1;
 						
-					if (!viscol(VC_VOLUME) && (mused.current_patternx == PED_VOLUME1 || mused.current_patternx == PED_VOLUME2))
+					if (!viscol(mused.current_patternx) && (mused.current_patternx == PED_VOLUME1 || mused.current_patternx == PED_VOLUME2))
 						mused.current_patternx = PED_CTRL;
 						
-					if (!viscol(VC_CTRL) && (mused.current_patternx >= PED_CTRL && mused.current_patternx < PED_COMMAND1))
+					if (!viscol(mused.current_patternx) && (mused.current_patternx >= PED_CTRL && mused.current_patternx < PED_COMMAND1))
 						mused.current_patternx = PED_COMMAND1;
 						
-					if (!viscol(VC_COMMAND) && (mused.current_patternx >= PED_COMMAND1 && mused.current_patternx <= PED_COMMAND4))
+					if (!viscol(mused.current_patternx) && (mused.current_patternx >= PED_COMMAND1 && mused.current_patternx <= PED_COMMAND4))
 						mused.current_patternx = PED_PARAMS;
 						
 					if (mused.current_patternx >= PED_PARAMS)
@@ -1184,16 +1184,16 @@ void pattern_event(SDL_Event *e)
 							switch_track(-1);
 					}
 					
-					if (!viscol(VC_COMMAND) && (mused.current_patternx >= PED_COMMAND1 && mused.current_patternx <= PED_COMMAND4))
+					if (!viscol(mused.current_patternx) && (mused.current_patternx >= PED_COMMAND1 && mused.current_patternx <= PED_COMMAND4))
 						mused.current_patternx = PED_VIB;
 					
-					if (!viscol(VC_CTRL) && (mused.current_patternx < PED_COMMAND1 && mused.current_patternx > PED_VOLUME2))
+					if (!viscol(mused.current_patternx) && (mused.current_patternx < PED_COMMAND1 && mused.current_patternx > PED_VOLUME2))
 						mused.current_patternx = PED_VOLUME2;
 										
-					if (!viscol(VC_VOLUME) && (mused.current_patternx == PED_VOLUME1 || mused.current_patternx == PED_VOLUME2))
+					if (!viscol(mused.current_patternx) && (mused.current_patternx == PED_VOLUME1 || mused.current_patternx == PED_VOLUME2))
 						mused.current_patternx = PED_INSTRUMENT2;
 						
-					if (!viscol(VC_INSTRUMENT) && (mused.current_patternx == PED_INSTRUMENT1 || mused.current_patternx == PED_INSTRUMENT2))
+					if (!viscol(mused.current_patternx) && (mused.current_patternx == PED_INSTRUMENT1 || mused.current_patternx == PED_INSTRUMENT2))
 						mused.current_patternx = PED_NOTE;
 					
 					if (mused.current_patternx < 0)
