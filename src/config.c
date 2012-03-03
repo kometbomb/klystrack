@@ -44,6 +44,7 @@ static const struct { int type; const char *name; void *param; int mask; } confi
 	{ C_INT, "mix_rate", &mused.mix_rate },
 	{ C_INT, "mix_buffer", &mused.mix_buffer },
 	{ C_BOOL, "compact", &mused.flags, COMPACT_VIEW },
+	{ C_BOOL, "track_focus", &mused.flags, EXPAND_ONLY_CURRENT_TRACK },
 	{ C_STR, "theme", mused.themename, sizeof(mused.themename) - 1 },
 	{ C_STR, "keymap", mused.keymapname, sizeof(mused.keymapname) - 1 },
 	{ C_BOOL, "multichannel_instrument_edit", &mused.flags, MULTICHANNEL_PREVIEW },

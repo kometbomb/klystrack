@@ -36,6 +36,7 @@ OTHER DEALINGS IN THE SOFTWARE.
 #include "snd/freqs.h"
 #include <stdbool.h>
 
+#define HEADER_HEIGHT 12
 
 const struct { bool margin; int w; int id; } pattern_params[] =
 {
@@ -57,6 +58,33 @@ const struct { bool margin; int w; int id; } pattern_params[] =
 #define diszero(e, c) ((!(e)) ? mix_colors(c, colors[COLOR_PATTERN_EMPTY_DATA]) : c)
 
 
+void pattern_view_header(SDL_Surface *dest_surface, const SDL_Rect *dest, const SDL_Event *event, int channel)
+{
+	bevel(mused.screen, dest, mused.slider_bevel->surface, BEV_BACKGROUND);
+	
+	SDL_Rect area;
+	copy_rect(&area, dest);
+	adjust_rect(&area, 2);
+	font_write_args(&mused.smallfont, dest_surface, &area, "%02d", channel);
+
+	{	
+		SDL_Rect mute;
+		copy_rect(&mute, dest);
+		mute.w = dest->h;
+		mute.x = dest->x + dest->w - mute.w;
+	
+		void *action = enable_channel;
+                
+        if (SDL_GetModState() & KMOD_SHIFT) action = solo_channel;
+        
+		button_event(dest_surface, event, &mute, mused.slider_bevel->surface, 
+				(mused.mus.channel[channel].flags & MUS_CHN_DISABLED) ? BEV_BUTTON : BEV_BUTTON_ACTIVE, 
+				(mused.mus.channel[channel].flags & MUS_CHN_DISABLED) ? BEV_BUTTON : BEV_BUTTON_ACTIVE, 
+				(mused.mus.channel[channel].flags & MUS_CHN_DISABLED) ? DECAL_AUDIO_DISABLED : DECAL_AUDIO_ENABLED, action, MAKEPTR(channel), 0, 0);
+	}
+}
+
+
 void pattern_view_inner(SDL_Surface *dest_surface, const SDL_Rect *dest, const SDL_Event *event)
 {
 	SDL_SetClipRect(mused.screen, dest);
@@ -70,7 +98,7 @@ void pattern_view_inner(SDL_Surface *dest_surface, const SDL_Rect *dest, const S
 	adjust_rect(&row, 1);
 	SDL_FillRect(mused.screen, &row, colors[COLOR_BACKGROUND]);
 	
-	row.y = (bottom - top) / 2 * height + row.y + 2;
+	row.y = (bottom - top) / 2 * height + row.y + 2 + HEADER_HEIGHT;
 	row.h = height + 1;
 	
 	bevel(mused.screen, &row, mused.slider_bevel->surface, BEV_SELECTED_PATTERN_ROW);
@@ -78,8 +106,8 @@ void pattern_view_inner(SDL_Surface *dest_surface, const SDL_Rect *dest, const S
 	slider_set_params(&mused.pattern_slider_param, 0, mused.song.song_length - 1, mused.pattern_position, mused.pattern_position, &mused.pattern_position, 1, SLIDER_VERTICAL, mused.slider_bevel->surface);
 	
 	const int char_width = mused.largefont.w;
-	int w = 2 * char_width + 2;
-	int narrow_w = 2 * char_width + 8 + 2;
+	int w = 2 * char_width + 4 + 4;
+	int narrow_w = 2 * char_width + 4 + 4;
 	const int SPACER = 4;
 	
 	for (int param = PED_NOTE ; param < PED_PARAMS ; ++param)
@@ -90,7 +118,7 @@ void pattern_view_inner(SDL_Surface *dest_surface, const SDL_Rect *dest, const S
 		if (param == PED_NOTE)
 			narrow_w += pattern_params[param].w * char_width;
 		
-		if (pattern_params[param].margin)
+		if (pattern_params[param].margin && param < PED_PARAMS - 1 && viscol(param + 1))
 		{
 			w += SPACER;
 			
@@ -98,6 +126,9 @@ void pattern_view_inner(SDL_Surface *dest_surface, const SDL_Rect *dest, const S
 				narrow_w += SPACER;
 		}
 	}
+	
+	if (!(mused.flags & EXPAND_ONLY_CURRENT_TRACK))
+		narrow_w = w;
 		
 	slider_set_params(&mused.pattern_horiz_slider_param, 0, mused.song.num_channels - 1, mused.pattern_horiz_position, my_min(mused.song.num_channels, mused.pattern_horiz_position + 1 + (dest->w - w) / narrow_w) - 1, &mused.pattern_horiz_position, 1, SLIDER_HORIZONTAL, mused.slider_bevel->surface);
 	
@@ -113,6 +144,16 @@ void pattern_view_inner(SDL_Surface *dest_surface, const SDL_Rect *dest, const S
 		track.x += x;
 		
 		SDL_SetClipRect(mused.screen, NULL);
+		
+		SDL_Rect header;
+		copy_rect(&header, &track);
+		header.h = HEADER_HEIGHT;
+		header.w -= 2;
+		
+		pattern_view_header(dest_surface, &header, event, channel);
+				
+		track.h -= HEADER_HEIGHT;
+		track.y += HEADER_HEIGHT;
 		
 		bevel(mused.screen, &track, mused.slider_bevel->surface, BEV_THIN_FRAME);
 		adjust_rect(&track, 3);
@@ -241,7 +282,7 @@ void pattern_view_inner(SDL_Surface *dest_surface, const SDL_Rect *dest, const S
 					
 					pos.x += pos.w;
 					
-					if (channel != mused.current_sequencetrack)
+					if (channel != mused.current_sequencetrack && (mused.flags & EXPAND_ONLY_CURRENT_TRACK))
 						break;
 				}
 				
@@ -316,6 +357,25 @@ static void pattern_view_stepcounter(SDL_Surface *dest_surface, const SDL_Rect *
 	SDL_Rect content;
 	copy_rect(&content, dest);
 	
+	SDL_Rect header, frame, compact;
+	copy_rect(&header, dest);
+	header.h = HEADER_HEIGHT;
+	header.w -= 2;
+	
+	copy_rect(&compact, &header);
+	adjust_rect(&compact, 2);
+	
+	bevel(mused.screen, &header, mused.slider_bevel->surface, BEV_BACKGROUND);
+	
+	button_event(mused.screen, event, &compact, mused.slider_bevel->surface, 
+                !(mused.flags & COMPACT_VIEW) ? BEV_BUTTON : BEV_BUTTON_ACTIVE, 
+                !(mused.flags & COMPACT_VIEW) ? BEV_BUTTON : BEV_BUTTON_ACTIVE, 
+                (mused.flags & COMPACT_VIEW) ? DECAL_COMPACT_SELETED : DECAL_COMPACT, flip_bit_action, &mused.flags, MAKEPTR(COMPACT_VIEW), 0);
+	
+	content.y += HEADER_HEIGHT;
+	content.h -= HEADER_HEIGHT;
+	copy_rect(&frame, &content);
+	
 	adjust_rect(&content, 2);
 	console_set_clip(mused.console, &content);
 	console_clear(mused.console);
@@ -348,7 +408,7 @@ static void pattern_view_stepcounter(SDL_Surface *dest_surface, const SDL_Rect *
 			console_write_args(mused.console, "%03X\n", row & 0xfff);
 	}
 	
-	bevel(mused.screen,dest, mused.slider_bevel->surface, BEV_THIN_FRAME);
+	bevel(mused.screen, &frame, mused.slider_bevel->surface, BEV_THIN_FRAME);
 	
 	SDL_SetClipRect(mused.screen, NULL);
 }
