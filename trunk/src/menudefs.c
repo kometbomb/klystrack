@@ -67,6 +67,7 @@ static const Menu showmenu[] =
 	{ 0, mainmenu, "Editor", editormenu, NULL },
 	{ 0, mainmenu, "", NULL, NULL },
 	{ 0, mainmenu, "Compact", NULL, MENU_CHECK, &mused.flags, (void*)COMPACT_VIEW, 0 },
+	{ 0, mainmenu, "Track focus", NULL, MENU_CHECK, &mused.flags, (void*)EXPAND_ONLY_CURRENT_TRACK, 0 },
 	{ 0, mainmenu, "Visible columns", columnsmenu, NULL },
 	{ 0, mainmenu, "Show position offset", NULL, MENU_CHECK, &mused.flags, (void*)SHOW_PATTERN_POS_OFFSET, 0 },
 	{ 0, mainmenu, "Show analyzer", NULL, MENU_CHECK, &mused.flags, (void*)SHOW_ANALYZER, 0 },
