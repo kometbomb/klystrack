@@ -316,6 +316,9 @@ void pattern_view_inner(SDL_Surface *dest_surface, const SDL_Rect *dest, const S
 							break;
 					}
 					
+					if (sp)
+						check_event(event, &pos, select_pattern_param, MAKEPTR(param), MAKEPTR(step), MAKEPTR(sp->pattern));
+					
 					pos.x += pos.w;
 					
 					if (channel != mused.current_sequencetrack && (mused.flags & EXPAND_ONLY_CURRENT_TRACK))
