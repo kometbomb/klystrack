@@ -834,6 +834,7 @@ void info_line(SDL_Surface *dest_surface, const SDL_Rect *dest, const SDL_Event 
 				"Enable bitcrusher",
 				"Drop bits",
 				"Downsample",
+				"Dither",
 				"Enable stereo chorus",
 				"Min. delay",
 				"Max. delay",
