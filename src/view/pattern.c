@@ -64,11 +64,12 @@ void pattern_view_header(SDL_Surface *dest_surface, const SDL_Rect *dest, const 
 	
 	SDL_Rect area;
 	copy_rect(&area, dest);
-	adjust_rect(&area, 2);
+	adjust_rect(&area, 3);
 	font_write_args(&mused.smallfont, dest_surface, &area, "%02d", channel);
-
+	
+	SDL_Rect mute;
+	
 	{	
-		SDL_Rect mute;
 		copy_rect(&mute, dest);
 		mute.w = dest->h;
 		mute.x = dest->x + dest->w - mute.w;
@@ -81,6 +82,41 @@ void pattern_view_header(SDL_Surface *dest_surface, const SDL_Rect *dest, const 
 				(mused.mus.channel[channel].flags & MUS_CHN_DISABLED) ? BEV_BUTTON : BEV_BUTTON_ACTIVE, 
 				(mused.mus.channel[channel].flags & MUS_CHN_DISABLED) ? BEV_BUTTON : BEV_BUTTON_ACTIVE, 
 				(mused.mus.channel[channel].flags & MUS_CHN_DISABLED) ? DECAL_AUDIO_DISABLED : DECAL_AUDIO_ENABLED, action, MAKEPTR(channel), 0, 0);
+	}	
+	
+	if (!(mused.flags & COMPACT_VIEW) && (!(mused.flags & EXPAND_ONLY_CURRENT_TRACK) || channel == mused.current_sequencetrack))
+	{
+			SDL_Rect vol;
+			copy_rect(&vol, &mute);
+	
+			vol.x -= vol.w + 3 + 17;
+			vol.x -= vol.w + 3 + 17 + 4;
+			vol.w = 33;
+			vol.h -= 1;
+			vol.y += 1;
+			
+			int d;
+			
+			char tmp[4]="\xfa\xf9";
+			
+			if (mused.song.default_panning[channel])
+					snprintf(tmp, sizeof(tmp), "%c%X", mused.song.default_panning[channel] < 0 ? '\xf9' : '\xfa', mused.song.default_panning[channel] == 63 ? 8 : ((abs((int)mused.song.default_panning[channel]) >> 3) & 0xf));
+			
+			if ((d = generic_field(event, &vol, 97, channel, "", "%s", tmp, 2)))
+			{
+					snapshot_cascade(S_T_SONGINFO, 97, channel);
+					mused.song.default_panning[channel] = my_max(-64, my_min(63, (int)mused.song.default_panning[channel] + d * 8));
+					if (abs(mused.song.default_panning[channel]) < 8)
+							mused.song.default_panning[channel] = 0;
+			}
+					
+			vol.x += vol.w + 2;
+			
+			if ((d = generic_field(event, &vol, 98, channel, "", "%02X", MAKEPTR(mused.song.default_volume[channel]), 2)))
+			{
+					snapshot_cascade(S_T_SONGINFO, 98, channel);
+					mused.song.default_volume[channel] = my_max(0, my_min(MAX_VOLUME, (int)mused.song.default_volume[channel] + d));
+			}
 	}
 }
 
