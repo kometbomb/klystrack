@@ -113,9 +113,9 @@ res/$(1): themes/$(1)/* #themes/$(1)/font/* themes/$(1)/font7x6/* themes/$(1)/ti
 	@-cp -f themes/$(1)/vu.* themetemp
 	@-cp -f themes/$(1)/analyzor.* themetemp
 	@-cp -f themes/$(1)/logo.* themetemp
-	@-$(MAKEBUNDLE) themetemp/8x8.fnt themes/$(1)/font
-	@-$(MAKEBUNDLE) themetemp/7x6.fnt themes/$(1)/font7x6
-	@-$(MAKEBUNDLE) themetemp/4x6.fnt themes/$(1)/tiny
+	-@if test -d themes/$(1)/font; then $(MAKEBUNDLE) themetemp/8x8.fnt themes/$(1)/font ; fi
+	-@if test -d themes/$(1)/font7x6; then $(MAKEBUNDLE) themetemp/7x6.fnt themes/$(1)/font7x6 ; fi
+	-@if test -d themes/$(1)/tiny; then $(MAKEBUNDLE) themetemp/4x6.fnt themes/$(1)/tiny ; fi
 	@-$(MAKEBUNDLE) $$@ themetemp
 	@rm -rf themetemp
 	
