@@ -127,7 +127,12 @@ static void sequence_view_stepcounter(SDL_Surface *dest_surface, const SDL_Rect 
 		clip_rect(&pos, &dest);
 		SDL_SetClipRect(mused.screen, &pos);
 	
-		font_write_args(&mused.tinyfont, mused.screen, &pos, "%04X", p);
+		if (SHOW_DECIMALS & mused.flags)
+			font_write_args(&mused.tinyfont, mused.screen, &pos, "%04d", p % 10000);
+		else
+			font_write_args(&mused.tinyfont, mused.screen, &pos, "%03X", p & 0xffff);
+	
+		
 	}
 	
 	SDL_SetClipRect(mused.screen, NULL);
