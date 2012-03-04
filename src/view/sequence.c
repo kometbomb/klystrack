@@ -16,11 +16,12 @@ void sequence_view_inner(SDL_Surface *dest_surface, const SDL_Rect *_dest, const
 	const int top = mused.sequence_position;
 	const int w = my_max(dest.w / mused.song.num_channels - 1, 64);
 	int h = dest.h;
+	const int bottom = top + h * mused.sequenceview_steps / height;
 	
 	if (mused.song.num_channels * (w + 1) > dest.w)
 		h -= SCROLLBAR;
 		
-		
+	if (mused.current_sequencepos >= top && mused.current_sequencepos < bottom)
 	{
 		SDL_Rect sel = {dest.x, dest.y + (mused.current_sequencepos * height / mused.sequenceview_steps - top * height / mused.sequenceview_steps) + 1, dest.w, height};
 		
@@ -28,8 +29,6 @@ void sequence_view_inner(SDL_Surface *dest_surface, const SDL_Rect *_dest, const
 		SDL_SetClipRect(mused.screen, &sel);
 		bevel(dest_surface, &sel, mused.slider_bevel->surface, BEV_SELECTED_SEQUENCE_ROW);
 	}
-	
-	const int bottom = top + h * mused.sequenceview_steps / height;
 	
 	slider_set_params(&mused.sequence_slider_param, 0, mused.song.song_length - mused.sequenceview_steps, my_max(0, top), (bottom / mused.sequenceview_steps - 1) * mused.sequenceview_steps, &mused.sequence_position, mused.sequenceview_steps, SLIDER_VERTICAL, mused.slider_bevel->surface);
 	
@@ -83,14 +82,21 @@ void sequence_view_inner(SDL_Surface *dest_surface, const SDL_Rect *_dest, const
 	
 	if (mused.focus == EDITSEQUENCE)
 	{
-		SDL_Rect pat = { (mused.current_sequencetrack - mused.sequence_horiz_position) * (w + 1) + dest.x, (mused.current_sequencepos - top) * height / mused.sequenceview_steps + dest.y, w, height };
+		if (mused.current_sequencepos >= top  && mused.current_sequencepos < bottom) 
+		{
+			SDL_Rect pat = { (mused.current_sequencetrack - mused.sequence_horiz_position) * (w + 1) + dest.x, (mused.current_sequencepos - top) * height / mused.sequenceview_steps + dest.y, w, height };
+				
+			clip_rect(&pat, &dest);
+			adjust_rect(&pat, -2);
+			pat.x += 1;
+			pat.y += 1;
 			
-		clip_rect(&pat, &dest);
-		adjust_rect(&pat, -2);
-		pat.x += 1;
-		pat.y += 1;
-		
-		set_cursor(&pat);
+			set_cursor(&pat);
+		}
+		else
+		{
+			set_cursor(NULL);
+		}
 		
 		if (mused.selection.start != mused.selection.end)
 		{

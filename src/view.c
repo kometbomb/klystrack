@@ -176,6 +176,13 @@ static void label(const char *_label, const SDL_Rect *area)
 
 void set_cursor(const SDL_Rect *location)
 {
+	if (location == NULL)
+	{
+		mused.cursor_target.w = 0;
+		mused.cursor.w = 0;
+		return;
+	}
+
 	if (mused.flags & ANIMATE_CURSOR)
 	{
 		copy_rect(&mused.cursor_target, location);
