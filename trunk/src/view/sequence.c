@@ -24,7 +24,7 @@ void sequence_view_inner(SDL_Surface *dest_surface, const SDL_Rect *_dest, const
 	
 	const int bottom = top + h * mused.sequenceview_steps / height;
 	
-	slider_set_params(&mused.sequence_slider_param, 0, mused.song.song_length - 1, my_max(0, top), bottom - mused.sequenceview_steps, &mused.sequence_position, mused.sequenceview_steps, SLIDER_VERTICAL, mused.slider_bevel->surface);
+	slider_set_params(&mused.sequence_slider_param, 0, mused.song.song_length - mused.sequenceview_steps, my_max(0, top), (bottom / mused.sequenceview_steps) * mused.sequenceview_steps, &mused.sequence_position, mused.sequenceview_steps, SLIDER_VERTICAL, mused.slider_bevel->surface);
 	
 	int vischans = my_min(mused.song.num_channels - 1, mused.sequence_horiz_position + (dest.w - (w - 1)) / (w + 1));
 	
