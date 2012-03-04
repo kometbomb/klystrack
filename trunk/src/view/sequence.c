@@ -55,7 +55,9 @@ void sequence_view_inner(SDL_Surface *dest_surface, const SDL_Rect *_dest, const
 			
 			SDL_SetClipRect(mused.screen, &dest);
 			
-			bevel(mused.screen, &pat, mused.slider_bevel->surface, BEV_PATTERN);
+			int bev = (mused.current_sequencetrack == channel && mused.current_sequencepos >= sp->position && mused.current_sequencepos < sp->position + len) ? BEV_PATTERN_CURRENT : BEV_PATTERN;
+			
+			bevel(mused.screen, &pat, mused.slider_bevel->surface, bev);
 			check_event(event, &pat, select_sequence_position, MAKEPTR(channel), MAKEPTR(sp->position), 0);
 			
 			adjust_rect(&text, 2);
