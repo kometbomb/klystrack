@@ -927,10 +927,10 @@ static void switch_track(int d)
 void pattern_event(SDL_Event *e)
 {
 	int last_param = PED_PARAMS - 1;
-	if (!viscol(VC_COMMAND)) last_param = my_max(PED_COMMAND1 - 1, last_param);
-	else if (!viscol(VC_CTRL)) last_param = my_max(PED_CTRL - 1, last_param);
-	else if (!viscol(VC_VOLUME)) last_param = my_max(PED_VOLUME1 - 1, last_param);
-	else if (!viscol(VC_INSTRUMENT)) last_param = my_max(PED_INSTRUMENT1 - 1, last_param);
+	if (!viscol(PED_COMMAND1)) last_param = my_max(PED_COMMAND1 - 1, last_param);
+	else if (!viscol(PED_CTRL)) last_param = my_max(PED_CTRL - 1, last_param);
+	else if (!viscol(PED_VOLUME1)) last_param = my_max(PED_VOLUME1 - 1, last_param);
+	else if (!viscol(PED_INSTRUMENT1)) last_param = my_max(PED_INSTRUMENT1 - 1, last_param);
 
 	switch (e->type)
 	{
