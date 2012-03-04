@@ -130,7 +130,7 @@ static void sequence_view_stepcounter(SDL_Surface *dest_surface, const SDL_Rect 
 		if (SHOW_DECIMALS & mused.flags)
 			font_write_args(&mused.tinyfont, mused.screen, &pos, "%04d", p % 10000);
 		else
-			font_write_args(&mused.tinyfont, mused.screen, &pos, "%03X", p & 0xffff);
+			font_write_args(&mused.tinyfont, mused.screen, &pos, "%04X", p & 0xffff);
 	
 		
 	}
