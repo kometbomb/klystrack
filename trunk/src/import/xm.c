@@ -94,6 +94,19 @@ int import_xm(FILE *f)
 		fatal("XM version 0x%x not supported", header.version);
 		return 0;
 	}
+	
+	if ((int)header.num_channels * (int)header.num_patterns > NUM_PATTERNS)
+	{
+		fatal("Resulting song would have over %d patterns", NUM_PATTERNS);
+		return 0;
+	}
+	
+	if ((int)header.num_channels * (int)header.song_length > NUM_SEQUENCES)
+	{
+		fatal("Resulting song would have over %d sequence patterns", NUM_SEQUENCES);
+		return 0;
+	}
+		
 
 	int pattern_length[256];
 	
