@@ -170,9 +170,9 @@ typedef struct
 
 extern Mused mused;
 
-#define NUM_PATTERNS 1024
+#define NUM_PATTERNS 4096
 #define NUM_INSTRUMENTS 128
-#define NUM_SEQUENCES 1024
+#define NUM_SEQUENCES 2048
 
 void change_mode(int newmode);
 void clear_pattern(MusPattern *pat);
