@@ -70,7 +70,8 @@ void select_pattern_param(void *id, void *position, void *track)
 {
 	mused.current_patternx = CASTPTR(int,id);
 	mused.current_sequencetrack = CASTPTR(int,track);
-	mused.current_sequencepos = CASTPTR(int,position);
+	mused.pattern_position = mused.current_sequencepos = CASTPTR(int,position);
+	
 	mused.focus = EDITPATTERN;
 }
 
