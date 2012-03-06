@@ -1,7 +1,5 @@
 #summary How to import AHX and Protracker modules
 
-Currently, only Protracker and AHX modules can be imported. klystrack can't save songs in these formats, however.
-
 *Note:* It is strongly suggested that the import feature is used only as a basis for a conversion, manual work will be needed in most cases.
 
 =Protracker=
@@ -24,3 +22,7 @@ klystrack attempts to load AHX modules as perfectly as the differences between A
   * There is no automatic filter modulation in klystrack
   * The same precautions apply to portamento etc. as in Protracker
   * In AHX the pattern commands override the instrument commands while in klystrack it is the other way around (e.g. if an instrument sets the cutoff with a command, a pattern command will might not change the cutoff at all). If the filter commands look like they do not do anything, check the instrument program and remove the filter commands there.
+
+=Organya=
+
+Simple note data import without samples.
