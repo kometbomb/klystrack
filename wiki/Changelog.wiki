@@ -11,6 +11,7 @@ See [RoadMap the road map] for future plans.
   * Sequencer had a facelift
   * New LFSR waveform for crazy Atari POKEY/TIA sounds
   * Crush effect has a slightly altered algorithm and optional dithering
+  * Organya (.org, Cave Story) import
 
 =1.5.4=
 
