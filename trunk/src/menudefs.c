@@ -132,6 +132,7 @@ static const Menu importmenu[] =
 	{ 0, filemenu, "Import .MOD", NULL, import_module, MAKEPTR(IMPORT_MOD) },
 	{ 0, filemenu, "Import .AHX", NULL, import_module, MAKEPTR(IMPORT_AHX) },
 	{ 0, filemenu, "Import .XM", NULL, import_module, MAKEPTR(IMPORT_XM) },
+	{ 0, filemenu, "Import .ORG", NULL, import_module, MAKEPTR(IMPORT_ORG) },
 	{ 0, NULL, NULL }
 };
 
