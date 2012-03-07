@@ -16,7 +16,7 @@ void sequence_view_inner(SDL_Surface *dest_surface, const SDL_Rect *_dest, const
 	const int top = mused.sequence_position;
 	const int w = my_max(dest.w / mused.song.num_channels - 1, 24);
 	int h = dest.h;
-	const int bottom = top + h * mused.sequenceview_steps / height;
+	const int bottom = top + h * mused.sequenceview_steps / height - 1;
 	
 	if (mused.song.num_channels * (w + 1) > dest.w)
 		h -= SCROLLBAR;
@@ -78,7 +78,7 @@ void sequence_view_inner(SDL_Surface *dest_surface, const SDL_Rect *_dest, const
 			
 			SDL_SetClipRect(mused.screen, &text);
 			
-			font_write_args(&mused.tinyfont, mused.screen, &text, "%02X%+d", sp->pattern, sp->note_offset);
+			font_write_args(&mused.tinyfont_sequence_normal, mused.screen, &text, "%02X%+d", sp->pattern, sp->note_offset);
 		}
 	}
 	
@@ -165,9 +165,9 @@ static void sequence_view_stepcounter(SDL_Surface *dest_surface, const SDL_Rect 
 		SDL_SetClipRect(mused.screen, &pos);
 	
 		if (SHOW_DECIMALS & mused.flags)
-			font_write_args(&mused.tinyfont, mused.screen, &pos, "%04d", p % 10000);
+			font_write_args(&mused.tinyfont_sequence_counter, mused.screen, &pos, "%04d", p % 10000);
 		else
-			font_write_args(&mused.tinyfont, mused.screen, &pos, "%04X", p & 0xffff);
+			font_write_args(&mused.tinyfont_sequence_counter, mused.screen, &pos, "%04X", p & 0xffff);
 	
 		
 	}

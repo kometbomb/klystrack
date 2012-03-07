@@ -128,7 +128,7 @@ typedef struct
 	int stat_pattern_number[MUS_MAX_CHANNELS], stat_note[MUS_MAX_CHANNELS];
 	/* ---- */
 	GfxSurface *slider_bevel, *vu_meter, *analyzer, *logo;
-	Font smallfont, largefont, tinyfont;
+	Font smallfont, largefont, tinyfont, tinyfont_sequence_counter, tinyfont_sequence_normal;
 	
 	/* for menu */
 	Font menufont, menufont_selected, headerfont, headerfont_selected, shortcutfont, shortcutfont_selected, buttonfont;
