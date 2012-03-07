@@ -59,8 +59,11 @@ int import_org(FILE *f)
 	FIX_ENDIAN(header.loop_end);
 	
 	mused.song.time_signature = (((Uint16)header.beats_per_step) << 8) | header.steps_per_bar;
-	mused.song.song_length = header.loop_end;
+	mused.song.song_length = header.loop_end + header.steps_per_bar;
 	mused.song.loop_point = header.loop_begin;
+	if (header.tempo > 0) 
+		mused.song.song_rate = my_min(255, (6 * 1000) / header.tempo);
+	mused.sequenceview_steps = header.beats_per_step * header.steps_per_bar;
 	mused.song.num_channels = 16;
 	
 	struct 
@@ -73,6 +76,8 @@ int import_org(FILE *f)
 	
 	if (fread(&instrument, 1, sizeof(instrument), f) != sizeof(instrument)) 
 		return 0;
+		
+	int real_channels = 0;
 	
 	for (int i = 0 ; i < 16 ; ++i)
 	{
@@ -94,15 +99,19 @@ int import_org(FILE *f)
 			fread(panning, sizeof(Uint8), instrument[i].n_notes, f);
 			
 			resize_pattern(&mused.song.pattern[i], header.loop_end);
-			add_sequence(i, 0, i, 0);
+			add_sequence(real_channels, 0, i, 0);
 			
 			Uint8 prev_vol = 0, prev_pan = CYD_PAN_CENTER;
 			
 			for (int n = 0 ; n < instrument[i].n_notes ; ++n)
 			{	
 				MusStep *step = &mused.song.pattern[i].step[position[n]];
-				step->note = note[n];
-				step->instrument = i;
+				
+				if (note[n] != 255)
+				{
+					step->note = note[n];
+					step->instrument = real_channels;
+				}
 				
 				if (volume[n] == 255)
 					step->volume = prev_vol;
@@ -111,19 +120,19 @@ int import_org(FILE *f)
 				
 				Uint8 pan = 0;
 				
-				if (volume[n] == 255)
+				if (panning[n] == 255)
 				{
 					pan = prev_pan;
 				}
 				else
 				{
-					pan = prev_pan = ((Uint16)panning[n]) * CYD_PAN_LEFT / 0xc;
+					pan = prev_pan = ((Uint16)panning[n]) * CYD_PAN_RIGHT / 0xc;
 				}
 				
 				if (pan != CYD_PAN_CENTER)
 					step->command = MUS_FX_SET_PANNING | pan;
 				
-				if (length[n] && !instrument[i].pi && length[n] + position[n] < header.loop_end)
+				if (note[n] != 255 && length[n] && !instrument[i].pi && length[n] + position[n] < header.loop_end)
 				{
 					mused.song.pattern[i].step[length[n] + position[n]].note = MUS_NOTE_RELEASE;
 				}
@@ -133,8 +142,12 @@ int import_org(FILE *f)
 			free(note);
 			free(length);
 			free(panning);
+			
+			++real_channels;
 		}
 	}
+	
+	mused.song.num_channels = real_channels;
 		
 	return 1;
 }
