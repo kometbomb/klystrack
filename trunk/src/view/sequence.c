@@ -89,7 +89,7 @@ void sequence_view_inner(SDL_Surface *dest_surface, const SDL_Rect *_dest, const
 	
 	if (mused.focus == EDITSEQUENCE)
 	{
-		if (mused.current_sequencepos >= top  && mused.current_sequencepos < bottom) 
+		if (mused.current_sequencepos >= top  && mused.current_sequencepos < bottom && mused.current_sequencetrack >= mused.sequence_horiz_position && mused.current_sequencetrack <= vischans) 
 		{
 			SDL_Rect pat = { (mused.current_sequencetrack - mused.sequence_horiz_position) * (w + 1) + dest.x, (mused.current_sequencepos - top) * height / mused.sequenceview_steps + dest.y, w, height };
 				
