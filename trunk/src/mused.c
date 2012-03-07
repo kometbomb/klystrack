@@ -326,6 +326,8 @@ void deinit()
 	font_destroy(&mused.smallfont);
 	font_destroy(&mused.largefont);
 	font_destroy(&mused.tinyfont);
+	font_destroy(&mused.tinyfont_sequence_counter);
+	font_destroy(&mused.tinyfont_sequence_normal);
 	font_destroy(&mused.menufont);
 	font_destroy(&mused.menufont_selected);
 	font_destroy(&mused.shortcutfont);

@@ -71,6 +71,7 @@ static void load_colors(const char *cfg)
 		{
 			static const char *names[NUM_COLORS] =
 			{
+				"sequence_counter",
 				"sequence_selected",
 				"sequence_bar",
 				"sequence_beat",
@@ -375,6 +376,10 @@ void load_theme(const char *name)
 		{
 			font_destroy(&mused.tinyfont);
 			font_load_and_set_color(&mused.tinyfont, &res, "4x6.fnt", colors[COLOR_MAIN_TEXT]);
+			font_destroy(&mused.tinyfont_sequence_counter);
+			font_load_and_set_color(&mused.tinyfont_sequence_counter, &res, "4x6.fnt", colors[COLOR_SEQUENCE_COUNTER]);
+			font_destroy(&mused.tinyfont_sequence_normal);
+			font_load_and_set_color(&mused.tinyfont_sequence_normal, &res, "4x6.fnt", colors[COLOR_SEQUENCE_NORMAL]);
 		}
 				
 		bnd_free(&res);
