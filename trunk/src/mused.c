@@ -154,6 +154,8 @@ void new_song()
 	mused.song.song_length = 0;
 	mused.song.loop_point = 0;
 	mused.song.flags = 0;
+	mused.sequence_position = 0;
+	mused.pattern_position = 0;
 	mused.current_sequencepos = 0;
 	mused.current_sequencetrack = 0;
 	update_position_sliders();
