@@ -123,6 +123,7 @@ const Menu prefsmenu[] =
 	{ 0, mainmenu, "Default pattern length", patternlengthmenu },
 	{ 0, mainmenu, "Reverb length in ticks", NULL, MENU_CHECK, &mused.flags, (void*)SHOW_DELAY_IN_TICKS, 0 },
 	{ 0, mainmenu, "AHX-style sequence edit", NULL, MENU_CHECK, &mused.flags, (void*)EDIT_SEQUENCE_DIGITS, 0 },
+	{ 0, mainmenu, "Disable nostalgy", NULL, MENU_CHECK, &mused.flags, (void*)DISABLE_NOSTALGY, 0 },
 	{ 0, NULL, NULL }
 };
 
