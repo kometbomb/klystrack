@@ -320,8 +320,11 @@ void pattern_view_inner(SDL_Surface *dest_surface, const SDL_Rect *dest, const S
 					copy_rect(&tmp, &pos);
 					clip_rect(&tmp, &track);
 					
-					if (sp)
+					if (sp && event->type == SDL_MOUSEBUTTONDOWN)
+					{
 						check_event(event, &tmp, select_pattern_param, MAKEPTR(param), MAKEPTR(sp->position + step), MAKEPTR(channel));
+						set_repeat_timer(NULL); // ugh
+					}
 					
 					pos.x += pos.w;
 					
