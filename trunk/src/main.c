@@ -50,6 +50,7 @@ OTHER DEALINGS IN THE SOFTWARE.
 #include "view/wavetableview.h"
 #include "mymsg.h"
 #include "key.h"
+#include "nostalgy.h"
 
 #ifdef MIDI
 
@@ -318,6 +319,9 @@ int main(int argc, char **argv)
 #endif
 	
 	int active = 1;
+	
+	if (!(mused.flags & DISABLE_NOSTALGY))
+		nos_decrunch(domain);
 	
 	while (1)
 	{
