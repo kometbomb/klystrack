@@ -648,7 +648,9 @@ void add_note_offset(int a)
 static void update_sequence_slider(int d)
 {
 	slider_move_position(&mused.current_sequencepos, &mused.sequence_position, &mused.sequence_slider_param, d);
-	mused.pattern_position = mused.current_patternpos = mused.current_sequencepos;
+	
+	if (!(mused.flags & SONG_PLAYING))
+		mused.pattern_position = mused.current_patternpos = mused.current_sequencepos;
 }
 
 
@@ -667,7 +669,9 @@ static void update_pattern_slider(int d)
 	else */
 	slider_move_position(&mused.current_patternpos, &mused.pattern_position, &mused.pattern_slider_param, d);
 	mused.pattern_position = mused.current_patternpos;
-	mused.current_sequencepos = mused.current_patternpos - mused.current_patternpos % mused.sequenceview_steps;
+	
+	if (!(mused.flags & SONG_PLAYING))
+		mused.current_sequencepos = mused.current_patternpos - mused.current_patternpos % mused.sequenceview_steps;
 }
 
 
