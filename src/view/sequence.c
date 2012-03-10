@@ -74,14 +74,20 @@ void sequence_view_inner(SDL_Surface *dest_surface, const SDL_Rect *_dest, const
 			clip_rect(&pat, &clip2);
 			bevel(mused.screen, &pat, mused.slider_bevel->surface, bev);
 			
-			check_event(event, &pat, select_sequence_position, MAKEPTR(channel), MAKEPTR(sp->position), 0);
-			
 			adjust_rect(&text, 2);
 			text.h += 1;
 			
 			SDL_SetClipRect(mused.screen, &text);
 			
 			font_write_args(&mused.tinyfont_sequence_normal, mused.screen, &text, "%02X%+d", sp->pattern, sp->note_offset);
+		}
+		
+		int y = dest.y;
+		
+		for (int i = top ; i < bottom ; i += mused.sequenceview_steps, y+=height)
+		{
+			SDL_Rect pos = { dest.x + x, y, w, height };
+			check_event(event, &pos, select_sequence_position, MAKEPTR(channel), MAKEPTR(i), 0);
 		}
 	}
 	
