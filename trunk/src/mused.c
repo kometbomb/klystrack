@@ -106,6 +106,7 @@ void change_mode(int newmode)
 
 	mused.mode = newmode;
 	mused.focus = newmode;
+	
 	if (mused.focus == EDITCLASSIC)
 		mused.focus = EDITPATTERN;
 		

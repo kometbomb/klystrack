@@ -953,6 +953,8 @@ void pattern_event(SDL_Event *e)
 					if (mused.mode != EDITCLASSIC) change_mode(EDITSEQUENCE);
 					else mused.focus = EDITSEQUENCE;
 					
+					mused.flags &= ~SHOW_LOGO; // hide logo when jumping to sequence
+					
 					mused.current_sequencepos = mused.current_patternpos;
 					
 					update_position_sliders();
