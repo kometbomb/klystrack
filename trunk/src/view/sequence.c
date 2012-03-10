@@ -37,10 +37,13 @@ void sequence_view_inner(SDL_Surface *dest_surface, const SDL_Rect *_dest, const
 	slider_set_params(&mused.sequence_horiz_slider_param, 0, mused.song.num_channels - 1, mused.sequence_horiz_position, vischans, 
 		&mused.sequence_horiz_position, 1, SLIDER_HORIZONTAL, mused.slider_bevel->surface);
 		
-	SDL_Rect clip2;
+	SDL_Rect clip2, textclip;
 	copy_rect(&clip2, &dest);
+	copy_rect(&textclip, &dest);
 	clip2.h += 8;
 	clip2.y -= 4;
+	textclip.y += 1;
+	textclip.h -= 1;
 		
 	for (int channel = mused.sequence_horiz_position ; channel < mused.song.num_channels && channel <= vischans ; ++channel)
 	{
@@ -62,7 +65,7 @@ void sequence_view_inner(SDL_Surface *dest_surface, const SDL_Rect *_dest, const
 			SDL_Rect text;
 			
 			copy_rect(&text, &pat);
-			clip_rect(&text, &dest);
+			clip_rect(&text, &textclip);
 			
 			SDL_SetClipRect(mused.screen, &dest);
 			
@@ -91,14 +94,30 @@ void sequence_view_inner(SDL_Surface *dest_surface, const SDL_Rect *_dest, const
 	{
 		if (mused.current_sequencepos >= top  && mused.current_sequencepos < bottom && mused.current_sequencetrack >= mused.sequence_horiz_position && mused.current_sequencetrack <= vischans) 
 		{
-			SDL_Rect pat = { (mused.current_sequencetrack - mused.sequence_horiz_position) * (w + 1) + dest.x, (mused.current_sequencepos - top) * height / mused.sequenceview_steps + dest.y, w, height };
+			if (mused.flags & EDIT_SEQUENCE_DIGITS) 
+			{
+				SDL_Rect pat = { (mused.current_sequencetrack - mused.sequence_horiz_position) * (w + 1) + dest.x, (mused.current_sequencepos - top) * height / mused.sequenceview_steps + dest.y, mused.tinyfont.w, mused.tinyfont.h };
+				pat.x += mused.sequence_digit * pat.w;
+				clip_rect(&pat, &dest);
+				adjust_rect(&pat, -3);
+				pat.x += 3;
+				pat.y += 3;
+				pat.w -= 1;
+				pat.h -= 1;
 				
-			clip_rect(&pat, &dest);
-			adjust_rect(&pat, -2);
-			pat.x += 1;
-			pat.y += 1;
-			
-			set_cursor(&pat);
+				set_cursor(&pat);
+			}
+			else
+			{
+				SDL_Rect pat = { (mused.current_sequencetrack - mused.sequence_horiz_position) * (w + 1) + dest.x, (mused.current_sequencepos - top) * height / mused.sequenceview_steps + dest.y, w, height };
+					
+				clip_rect(&pat, &dest);
+				adjust_rect(&pat, -2);
+				pat.x += 1;
+				pat.y += 1;
+				
+				set_cursor(&pat);
+			}
 		}
 		else
 		{
