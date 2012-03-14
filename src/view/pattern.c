@@ -389,10 +389,10 @@ void pattern_view_inner(SDL_Surface *dest_surface, const SDL_Rect *dest, const S
 		switch (event->button.button)
 		{
 			case 4:
-				mused.pattern_position -= 16;
+				mused.pattern_position -= 1;
 				break;
 			case 5:
-				mused.pattern_position += 16;
+				mused.pattern_position += 1;
 				break;
 		}
 		
