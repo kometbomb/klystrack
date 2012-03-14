@@ -189,7 +189,7 @@ void pattern_view_inner(SDL_Surface *dest_surface, const SDL_Rect *dest, const S
 		pattern_view_header(dest_surface, &header, event, channel);
 				
 		track.h -= HEADER_HEIGHT;
-		track.y += HEADER_HEIGHT;
+		track.y += HEADER_HEIGHT + 1;
 		
 		bevel(mused.screen, &track, mused.slider_bevel->surface, BEV_THIN_FRAME);
 		adjust_rect(&track, 3);
@@ -361,7 +361,7 @@ void pattern_view_inner(SDL_Surface *dest_surface, const SDL_Rect *dest, const S
 	
 		if (mused.current_sequencetrack >= mused.pattern_horiz_position && mused.current_sequencetrack <= my_min(mused.song.num_channels, mused.pattern_horiz_position + 1 + (dest->w - w) / narrow_w) - 1)
 		{
-			SDL_Rect cursor = { dest->x + narrow_w * (mused.current_sequencetrack - mused.pattern_horiz_position) + x, row.y, pattern_params[mused.current_patternx].w * char_width, row.h};
+			SDL_Rect cursor = { 1 + dest->x + narrow_w * (mused.current_sequencetrack - mused.pattern_horiz_position) + x, row.y, pattern_params[mused.current_patternx].w * char_width, row.h};
 			adjust_rect(&cursor, -2);
 			set_cursor(&cursor);
 		}

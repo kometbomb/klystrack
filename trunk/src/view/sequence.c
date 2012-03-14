@@ -171,11 +171,11 @@ static void sequence_view_stepcounter(SDL_Surface *dest_surface, const SDL_Rect 
 	adjust_rect(&dest, 1);
 	dest.w += 1;
 	
-	SDL_Rect pos = { dest.x + 1, dest.y + 2, dest.w - 1, height };
+	SDL_Rect pos = { dest.x + 1, dest.y + 2, dest.w, height };
 	
 	if (mused.current_sequencepos >= top) 
 	{
-		SDL_Rect sel = { dest.x + 1, dest.y + 2 + (mused.current_sequencepos - top) * height / mused.sequenceview_steps , dest.w -1, height };
+		SDL_Rect sel = { dest.x + 1, dest.y + 2 + (mused.current_sequencepos - top) * height / mused.sequenceview_steps , dest.w, height };
 		sel.x -= 1;
 		sel.y -= 2;
 		SDL_SetClipRect(mused.screen, &sel);
