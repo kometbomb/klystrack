@@ -384,7 +384,7 @@ void pattern_view_inner(SDL_Surface *dest_surface, const SDL_Rect *dest, const S
 	
 	// ach
 	
-	if (event->type == SDL_MOUSEBUTTONDOWN)
+	if (event->type == SDL_MOUSEBUTTONDOWN && mused.focus == EDITPATTERN)
 	{
 		switch (event->button.button)
 		{

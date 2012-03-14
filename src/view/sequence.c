@@ -153,7 +153,20 @@ void sequence_view_inner(SDL_Surface *dest_surface, const SDL_Rect *_dest, const
 	
 	SDL_SetClipRect(mused.screen, NULL);
 	
-	check_mouse_wheel_event(event, _dest, &mused.sequence_slider_param);
+	if (event->type == SDL_MOUSEBUTTONDOWN && mused.focus == EDITSEQUENCE)
+	{
+		switch (event->button.button)
+		{
+			case 4:
+				mused.sequence_position -= mused.sequenceview_steps;
+				break;
+			case 5:
+				mused.sequence_position += mused.sequenceview_steps;
+				break;
+		}
+		
+		mused.sequence_position = my_max(0, my_min(mused.song.song_length - mused.sequenceview_steps, mused.sequence_position));
+	}
 }
 
 
