@@ -704,6 +704,7 @@ void program_view(SDL_Surface *dest_surface, const SDL_Rect *dest, const SDL_Eve
 	adjust_rect(&area, 2);
 	copy_rect(&clip, &area);
 	adjust_rect(&area, 1);
+	area.w = 1000;
 	console_set_clip(mused.console, &area);
 	
 	MusInstrument *inst = &mused.song.instrument[mused.current_instrument];
