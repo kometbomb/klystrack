@@ -1158,9 +1158,10 @@ void instrument_list(SDL_Surface *dest_surface, const SDL_Rect *dest, const SDL_
 	
 	for (int i = start ; i < NUM_INSTRUMENTS && y < area.h + area.y ; ++i, y += mused.console->font.h)
 	{
+		SDL_Rect row = { area.x - 1, y - 1, area.w + 2, mused.console->font.h + 1};
+	
 		if (i == mused.current_instrument)
 		{
-			SDL_Rect row = { area.x - 1, y - 1, area.w + 2, mused.console->font.h + 1};
 			bevel(mused.screen,&row, mused.slider_bevel->surface, BEV_SELECTED_PATTERN_ROW);
 			console_set_color(mused.console, colors[COLOR_INSTRUMENT_SELECTED], CON_CHARACTER);
 		}
@@ -1173,8 +1174,10 @@ void instrument_list(SDL_Surface *dest_surface, const SDL_Rect *dest, const SDL_
 		
 		strcpy(temp, mused.song.instrument[i].name);
 		temp[my_min(sizeof(mused.song.instrument[i].name), my_max(0, area.w / mused.console->font.w - 3))] = '\0';
+		
+		console_write_args(mused.console, "%02X %-16s\n", i, temp);
 			
-		check_event(event, console_write_args(mused.console, "%02X %-16s\n", i, temp), select_instrument, MAKEPTR(i), 0, 0);
+		check_event(event, &row, select_instrument, MAKEPTR(i), 0, 0);
 		
 		slider_set_params(&mused.instrument_list_slider_param, 0, NUM_INSTRUMENTS - 1, start, i, &mused.instrument_list_position, 1, SLIDER_VERTICAL, mused.slider_bevel->surface);
 	}
