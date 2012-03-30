@@ -13,9 +13,9 @@ CC := gcc
 CDEP := gcc -E -MM
 ARCHIVE := klystrack
 INSTALLER := klystrack.exe
-MIXERVER := 1.2.11
-SDLVER := 1.2.14
-SDL_IMAGEVER := 1.2.10
+MIXERVER := 1.2.12
+SDLVER := 1.2.15
+SDL_IMAGEVER := 1.2.12
 THEMES :=
 REV := cp -f
 
@@ -221,10 +221,10 @@ zip/data/SDL.dll:
 zip/data/SDL_image.dll:
 	@$(ECHO) "Downloading SDL_image..."
 	@mkdir -p temp
-	@cd temp ; $(WGET) http://www.libsdl.org/projects/SDL_image/release/SDL_image-$(SDL_IMAGEVER)-win32.zip ; $(ZIPEXT) SDL_image-$(SDL_IMAGEVER)-win32.zip SDL_image.dll libpng12-0.dll zlib1.dll ; rm SDL_image-$(SDL_IMAGEVER)-win32.zip
+	@cd temp ; $(WGET) http://www.libsdl.org/projects/SDL_image/release/SDL_image-$(SDL_IMAGEVER)-win32.zip ; $(ZIPEXT) SDL_image-$(SDL_IMAGEVER)-win32.zip SDL_image.dll libpng15-15.dll zlib1.dll ; rm SDL_image-$(SDL_IMAGEVER)-win32.zip
 	@mkdir -p zip/data
 	@mv temp/SDL_image.dll zip/data/SDL_image.dll
-	@mv temp/libpng12-0.dll zip/data/libpng12-0.dll
+	@mv temp/libpng15-15.dll zip/data/libpng15-15.dll
 	@mv temp/zlib1.dll zip/data/zlib1.dll
 
 zip/data/SDL_mixer.dll:
