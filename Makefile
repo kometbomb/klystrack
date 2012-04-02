@@ -194,7 +194,7 @@ endif
 	@rm -f ver.txt
 
 clean:
-	@rm -rf deps objs.$(CFG) bin.$(CFG) zip temp
+	@rm -rf deps objs.$(CFG) bin.$(CFG) zip temp res
 
 bin.$(CFG)/$(TARGET): $(OBJS)
 	@$(ECHO) "Linking $(TARGET)..."
