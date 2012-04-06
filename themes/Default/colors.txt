@@ -33,6 +33,7 @@ pattern_command_beat = 0x009fba
 pattern_command_bar = 0xffffff
 
 pattern_empty_data = 0x80000000
+pattern_seq_number = 0xffffff
 
 program_selected = 0xffffff
 program_even = 0xd0d0e0

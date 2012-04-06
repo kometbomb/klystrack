@@ -113,7 +113,8 @@ static void load_colors(const char *cfg)
 				"pattern_empty_data",
 				"wavetable_sample",
 				"wavetable_background",
-				"progress_bar"
+				"progress_bar",
+				"pattern_seq_number"
 			};
 			
 			int i;

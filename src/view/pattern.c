@@ -220,8 +220,11 @@ void pattern_view_inner(SDL_Surface *dest_surface, const SDL_Rect *dest, const S
 				pos.h = height;
 				
 				if (step == 0)
-					font_write_args(&mused.smallfont, mused.screen, &pos, "%02X", sp->pattern);
-					
+				{
+					console_set_color(mused.console, colors[COLOR_PATTERN_SEQ_NUMBER], CON_CHARACTER);
+					font_write_args(&mused.console->font, mused.screen, &pos, "%02X", sp->pattern);
+				}
+				
 				pos.x += 2 * char_width + SPACER;
 				
 				for (int param = PED_NOTE ; param < PED_PARAMS ; ++param)
