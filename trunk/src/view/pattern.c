@@ -385,6 +385,24 @@ void pattern_view_inner(SDL_Surface *dest_surface, const SDL_Rect *dest, const S
 	
 	SDL_SetClipRect(mused.screen, NULL);
 	
+	if (mused.focus == EDITSEQUENCE)
+	{
+		// hack to display cursor both in sequence editor and here
+		
+		int x = 0;
+		int w = char_width * 2;
+		
+		if (mused.flags & EDIT_SEQUENCE_DIGITS)
+		{
+			x = mused.sequence_digit * char_width;
+			w = char_width;
+		}
+		
+		SDL_Rect cursor = { 3 + dest->x + narrow_w * (mused.current_sequencetrack - mused.pattern_horiz_position) + x, row.y, w, row.h};
+		adjust_rect(&cursor, -2);
+		bevel(mused.screen, &cursor, mused.slider_bevel->surface, (mused.flags & EDIT_MODE) ? BEV_EDIT_CURSOR : BEV_CURSOR);
+	}
+	
 	// ach
 	
 	if (event->type == SDL_MOUSEBUTTONDOWN && mused.focus == EDITPATTERN)
