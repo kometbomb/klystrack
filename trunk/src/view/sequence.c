@@ -79,7 +79,10 @@ void sequence_view_inner(SDL_Surface *dest_surface, const SDL_Rect *_dest, const
 			
 			SDL_SetClipRect(mused.screen, &text);
 			
-			font_write_args(&mused.tinyfont_sequence_normal, mused.screen, &text, "%02X%+d", sp->pattern, sp->note_offset);
+			if (mused.flags & SHOW_PATTERN_POS_OFFSET)
+				font_write_args(&mused.tinyfont_sequence_normal, mused.screen, &text, "%02X%+d +%02x", sp->pattern, sp->note_offset, sp->position % mused.sequenceview_steps);
+			else
+				font_write_args(&mused.tinyfont_sequence_normal, mused.screen, &text, "%02X%+d", sp->pattern, sp->note_offset);
 		}
 		
 		int y = dest.y;
