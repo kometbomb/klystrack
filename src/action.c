@@ -577,8 +577,11 @@ void export_wav_action(void *a, void*b, void*c)
 	char def[1000];
 	snprintf(def, sizeof(def), "%s.wav", mused.song.title);
 	FILE * f = open_dialog("wb", "Export .WAV", "wav", domain, mused.slider_bevel->surface, &mused.largefont, &mused.smallfont, def);
-	export_wav(&mused.song, mused.mus.cyd->wavetable_entries, f);
-	fclose(f);
+	if (f)
+	{
+		export_wav(&mused.song, mused.mus.cyd->wavetable_entries, f);
+		fclose(f);
+	}
 }
 
 
