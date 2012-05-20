@@ -139,11 +139,11 @@ void instrument_add_param(int a)
 		break;
 		
 		case P_SYNCSRC:
-		
-		if (i->sync_source == 0xff && a < 0) break;
-		if ((Uint8)(i->sync_source+a) >= MUS_MAX_CHANNELS && a > 0) break;
-		i->sync_source+=a;
-		
+		{
+			int x = (Uint8)(i->sync_source+1);
+			clamp(x, a, 0, MUS_MAX_CHANNELS);
+			i->sync_source = x-1;
+		}
 		break;
 		
 		case P_WAVE:
@@ -376,11 +376,11 @@ void instrument_add_param(int a)
 		break;
 		
 		case P_RINGMODSRC:
-		
-		if (i->ring_mod == 0xff && a < 0) break;
-		if ((Uint8)(i->ring_mod+a) >= MUS_MAX_CHANNELS && a > 0) break;
-		i->ring_mod+=a;
-		
+		{
+			int x = (Uint8)(i->ring_mod+1);
+			clamp(x, a, 0, MUS_MAX_CHANNELS);
+			i->ring_mod = x-1;
+		}
 		break;
 		
 		case P_CUTOFF:
