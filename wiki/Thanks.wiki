@@ -7,4 +7,4 @@
 || null1024 || example song (obspatial.kt) ||
 || Jeremy D. Landry || example song (hskv03-rygar_trance.kt) ||
 || major Den  || Theme (Golden_Brown) ||
-|| n00bstar/random || example song (dr.happy.kt) ||
+|| n00bstar/random || example songs (dr.happy.kt, smp_dpintro.kt, castlevania.kt) ||
