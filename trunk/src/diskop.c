@@ -156,7 +156,7 @@ static void save_instrument_inner(FILE *f, MusInstrument *inst, const CydWavetab
 }
 
 
-static void write_packed_pattern(FILE *f, const MusPattern *pattern)
+static void write_packed_pattern(FILE *f, const MusPattern *pattern, bool skip)
 {
 	/* 
 	
@@ -169,11 +169,14 @@ static void write_packed_pattern(FILE *f, const MusPattern *pattern)
 	*/
 
 	Uint16 steps = pattern->num_steps;
+	
+	if (skip) steps = 0;
+	
 	FIX_ENDIAN(steps);
 	fwrite(&steps, 1, sizeof(steps), f);
 	
 	Uint8 buffer = 0;
-	for (int i = 0 ; i < pattern->num_steps ; ++i)
+	for (int i = 0 ; i < steps ; ++i)
 	{
 		if (pattern->step[i].note != MUS_NOTE_NONE)
 			buffer |= MUS_PAK_BIT_NOTE;
@@ -187,13 +190,13 @@ static void write_packed_pattern(FILE *f, const MusPattern *pattern)
 		if (pattern->step[i].command != 0)
 			buffer |= MUS_PAK_BIT_CMD;
 			
-		if (i & 1 || i + 1 >= pattern->num_steps)
+		if (i & 1 || i + 1 >= steps)
 			fwrite(&buffer, 1, sizeof(buffer), f);
 			
 		buffer <<= 4;
 	}
 	
-	for (int i = 0 ; i < pattern->num_steps ; ++i)
+	for (int i = 0 ; i < steps ; ++i)
 	{
 		if (pattern->step[i].note != MUS_NOTE_NONE)
 			fwrite(&pattern->step[i].note, 1, sizeof(pattern->step[i].note), f);
@@ -268,6 +271,12 @@ int open_song(FILE *f)
 	mused.time_signature = mused.song.time_signature;
 	
 	mused.flags &= ~EDIT_MODE;
+	
+	unmute_all_action(NULL, NULL, NULL);
+	
+	for (int i = 0 ; i < mused.song.num_patterns ; ++i)
+		if(mused.song.pattern[i].num_steps == 0)
+			resize_pattern(&mused.song.pattern[i], mused.default_pattern_length);
 	
 	return 1;
 }
@@ -404,6 +413,8 @@ int save_song(FILE *f)
 		}
 	}
 	
+	bool *used_pattern = calloc(sizeof(bool), mused.song.num_patterns);
+	
 	for (int i = 0 ; i < mused.song.num_channels; ++i)
 	{
 		for (int s= 0 ; s < mused.song.num_sequences[i] ; ++s)
@@ -411,6 +422,9 @@ int save_song(FILE *f)
 			temp16 = mused.song.sequence[i][s].position;
 			FIX_ENDIAN(temp16);
 			fwrite(&temp16, 1, sizeof(temp16), f);
+			
+			used_pattern[mused.song.sequence[i][s].pattern] = true;
+			
 			temp16 = mused.song.sequence[i][s].pattern;
 			FIX_ENDIAN(temp16);
 			fwrite(&temp16, 1, sizeof(temp16), f);
@@ -420,8 +434,11 @@ int save_song(FILE *f)
 	
 	for (int i = 0 ; i < mused.song.num_patterns; ++i)
 	{
-		write_packed_pattern(f, &mused.song.pattern[i]);
+		debug("%d: %d", i, used_pattern[i]);
+		write_packed_pattern(f, &mused.song.pattern[i], !used_pattern[i]);
 	}
+	
+	free(used_pattern);
 	
 	FIX_ENDIAN(max_wt);
 	
