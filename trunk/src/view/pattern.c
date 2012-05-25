@@ -359,9 +359,16 @@ void pattern_view_inner(SDL_Surface *dest_surface, const SDL_Rect *dest, const S
 	if (mused.focus == EDITPATTERN)
 	{
 		int x = 2 + 2 * char_width + SPACER;
-		for (int param = 1 ; param <= mused.current_patternx ; ++param)
-			if (param == PED_NOTE || viscol(param)) x += (pattern_params[param].margin ? SPACER : 0) + pattern_params[param - 1].w * char_width;
-	
+		for (int param = 0 ; param < mused.current_patternx ; ++param)
+		{
+			if (viscol(param)) 
+			{
+				x += (param > 0 && pattern_params[param].margin ? SPACER : 0) + pattern_params[param].w * char_width;
+			}
+		}
+		
+		if (pattern_params[mused.current_patternx].margin) x += SPACER;
+		
 		if (mused.current_sequencetrack >= mused.pattern_horiz_position && mused.current_sequencetrack <= my_min(mused.song.num_channels, mused.pattern_horiz_position + 1 + (dest->w - w) / narrow_w) - 1)
 		{
 			SDL_Rect cursor = { 1 + dest->x + narrow_w * (mused.current_sequencetrack - mused.pattern_horiz_position) + x, row.y, pattern_params[mused.current_patternx].w * char_width, row.h};
