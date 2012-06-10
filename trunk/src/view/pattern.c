@@ -219,11 +219,42 @@ void pattern_view_inner(SDL_Surface *dest_surface, const SDL_Rect *dest, const S
 				copy_rect(&pos, &text);
 				pos.h = height;
 				
+				static const struct { Uint32 bar, beat, normal; } coltab[] =
+				{
+					{COLOR_PATTERN_BAR, COLOR_PATTERN_BEAT, COLOR_PATTERN_NORMAL},
+					{COLOR_PATTERN_INSTRUMENT_BAR, COLOR_PATTERN_INSTRUMENT_BEAT, COLOR_PATTERN_INSTRUMENT},
+					{COLOR_PATTERN_INSTRUMENT_BAR, COLOR_PATTERN_INSTRUMENT_BEAT, COLOR_PATTERN_INSTRUMENT},
+					{COLOR_PATTERN_VOLUME_BAR, COLOR_PATTERN_VOLUME_BEAT, COLOR_PATTERN_VOLUME},
+					{COLOR_PATTERN_VOLUME_BAR, COLOR_PATTERN_VOLUME_BEAT, COLOR_PATTERN_VOLUME},
+					{COLOR_PATTERN_CTRL_BAR, COLOR_PATTERN_CTRL_BEAT, COLOR_PATTERN_CTRL},
+					{COLOR_PATTERN_CTRL_BAR, COLOR_PATTERN_CTRL_BEAT, COLOR_PATTERN_CTRL},
+					{COLOR_PATTERN_CTRL_BAR, COLOR_PATTERN_CTRL_BEAT, COLOR_PATTERN_CTRL},
+					{COLOR_PATTERN_COMMAND_BAR, COLOR_PATTERN_COMMAND_BEAT, COLOR_PATTERN_COMMAND},
+					{COLOR_PATTERN_COMMAND_BAR, COLOR_PATTERN_COMMAND_BEAT, COLOR_PATTERN_COMMAND},
+					{COLOR_PATTERN_COMMAND_BAR, COLOR_PATTERN_COMMAND_BEAT, COLOR_PATTERN_COMMAND},
+					{COLOR_PATTERN_COMMAND_BAR, COLOR_PATTERN_COMMAND_BEAT, COLOR_PATTERN_COMMAND}
+				};
+				
 				if (step == 0)
 				{
 					console_set_color(mused.console, colors[COLOR_PATTERN_SEQ_NUMBER], CON_CHARACTER);
 					font_write_args(&mused.console->font, mused.screen, &pos, "%02X", sp->pattern);
 				}
+				else
+				{
+					//console_set_color(mused.console, timesig(step, colors[COLOR_PATTERN_BAR], colors[COLOR_PATTERN_BEAT], colors[COLOR_PATTERN_NORMAL]), CON_CHARACTER);
+					SDL_Rect cpos;
+					copy_rect(&cpos, &pos);
+					
+					cpos.y += (mused.console->font.h - mused.tinyfont.h) / 2;
+					cpos.x += (mused.console->font.w * 2 - mused.tinyfont.w * 2) / 2;
+					
+					if (SHOW_DECIMALS & mused.flags)
+						font_write_args(&mused.tinyfont, mused.screen, &cpos, "%02d\n", (step + 100) % 100); // so we don't get negative numbers
+					else
+						font_write_args(&mused.tinyfont, mused.screen, &cpos, "%02X\n", step & 0xff);
+				}
+				
 				
 				pos.x += 2 * char_width + SPACER;
 				
@@ -235,22 +266,6 @@ void pattern_view_inner(SDL_Surface *dest_surface, const SDL_Rect *dest, const S
 					
 					if (pattern_params[param].margin)
 						pos.x += SPACER;
-						
-					static const struct { Uint32 bar, beat, normal; } coltab[] =
-					{
-						{COLOR_PATTERN_BAR, COLOR_PATTERN_BEAT, COLOR_PATTERN_NORMAL},
-						{COLOR_PATTERN_INSTRUMENT_BAR, COLOR_PATTERN_INSTRUMENT_BEAT, COLOR_PATTERN_INSTRUMENT},
-						{COLOR_PATTERN_INSTRUMENT_BAR, COLOR_PATTERN_INSTRUMENT_BEAT, COLOR_PATTERN_INSTRUMENT},
-						{COLOR_PATTERN_VOLUME_BAR, COLOR_PATTERN_VOLUME_BEAT, COLOR_PATTERN_VOLUME},
-						{COLOR_PATTERN_VOLUME_BAR, COLOR_PATTERN_VOLUME_BEAT, COLOR_PATTERN_VOLUME},
-						{COLOR_PATTERN_CTRL_BAR, COLOR_PATTERN_CTRL_BEAT, COLOR_PATTERN_CTRL},
-						{COLOR_PATTERN_CTRL_BAR, COLOR_PATTERN_CTRL_BEAT, COLOR_PATTERN_CTRL},
-						{COLOR_PATTERN_CTRL_BAR, COLOR_PATTERN_CTRL_BEAT, COLOR_PATTERN_CTRL},
-						{COLOR_PATTERN_COMMAND_BAR, COLOR_PATTERN_COMMAND_BEAT, COLOR_PATTERN_COMMAND},
-						{COLOR_PATTERN_COMMAND_BAR, COLOR_PATTERN_COMMAND_BEAT, COLOR_PATTERN_COMMAND},
-						{COLOR_PATTERN_COMMAND_BAR, COLOR_PATTERN_COMMAND_BEAT, COLOR_PATTERN_COMMAND},
-						{COLOR_PATTERN_COMMAND_BAR, COLOR_PATTERN_COMMAND_BEAT, COLOR_PATTERN_COMMAND}
-					};
 						
 					Uint32 color;
 					

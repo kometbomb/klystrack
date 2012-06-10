@@ -42,11 +42,11 @@ ifdef COMSPEC
 	CFLAGS += -DRESOURCES_IN_BINARY_DIR
 	CONFIG_PATH := ~/.klystrack
 else
-	RES_PATH := $(DESTDIR)/lib/klystrack
+	RES_PATH ?= $(DESTDIR)/lib/klystrack
 	CONFIG_PATH := ~/.klystrack
 endif
 
-EXTFLAGS := -DUSESDLMUTEXES -DENABLEAUDIODUMP -DSTEREOOUTPUT -DUSESDL_IMAGE
+EXTFLAGS := -DUSESDLMUTEXES -DENABLEAUDIODUMP -DSTEREOOUTPUT -DUSESDL_IMAGE $(EXTFLAGS)
 LDFLAGS :=  -L ../klystron/bin.$(CFG) -lengine_gfx -lengine_util -lengine_snd -lengine_gui -lm $(SDLLIBS)
 INCLUDEFLAGS := -I src $(SDLFLAGS) -I ../klystron/src -L../klystron/bin.$(CFG) -DRES_PATH="$(RES_PATH)" -DCONFIG_PATH="$(CONFIG_PATH)" $(EXTFLAGS)
 
@@ -176,7 +176,7 @@ ifdef COMSPEC
 	@cp -f zip/klystrack.zip zip/klystrack-`cat src/version`-win32.zip
 else
 	-@rm -f zip/data/Makefile
-	@cd zip; cp -r data klystrack-`cat src/version` ; rm -f $(ARCHIVE); $(ZIP) klystrack-`cat src/version`.tar.gz klystrack-`cat src/version` ; rm -rf klystrack-`cat src/version`
+	@cd zip; cp -r data klystrack-`cat ../src/version` ; rm -f $(ARCHIVE); $(ZIP) klystrack-`cat ../src/version`.tar.gz klystrack-`cat ../src/version` ; rm -rf klystrack-`cat ../src/version`
 	@cp -f linux/Makefile zip/data
 endif
 	
