@@ -102,7 +102,7 @@ void delete()
 		if (mused.selection.start == mused.selection.end)
 			clear_pattern(&mused.song.pattern[current_pattern()]);
 		else
-			clear_pattern_range(&mused.song.pattern[get_pattern(mused.selection.start, mused.current_sequencetrack)], get_patternstep(mused.selection.start, mused.current_sequencetrack), get_pattern(mused.selection.end, mused.current_sequencetrack) + 1);
+			clear_pattern_range(&mused.song.pattern[get_pattern(mused.selection.start, mused.current_sequencetrack)], get_patternstep(mused.selection.start, mused.current_sequencetrack), get_patternstep(mused.selection.end, mused.current_sequencetrack));
 		
 		break;
 		
