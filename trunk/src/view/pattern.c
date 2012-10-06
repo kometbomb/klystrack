@@ -329,8 +329,11 @@ void pattern_view_inner(SDL_Surface *dest_surface, const SDL_Rect *dest, const S
 						
 							if (sp->position + step != mused.pattern_position)
 								console_set_color(mused.console, diszero(s->command != 0, color), CON_CHARACTER);
-						
-							font_write_args(&mused.console->font, mused.screen, &pos, "%X", (s->command >> (12 - (param - PED_COMMAND1) * 4)) & 0xf);
+							
+							if ((mused.flags & HIDE_ZEROS) && s->command == 0)
+								font_write_args(&mused.console->font, mused.screen, &pos, "-");
+							else
+								font_write_args(&mused.console->font, mused.screen, &pos, "%X", (s->command >> (12 - (param - PED_COMMAND1) * 4)) & 0xf);
 							break;
 					}
 					
