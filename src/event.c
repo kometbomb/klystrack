@@ -647,10 +647,12 @@ void add_note_offset(int a)
 
 static void update_sequence_slider(int d)
 {
+	int o = mused.current_sequencepos - mused.current_patternpos;
+
 	slider_move_position(&mused.current_sequencepos, &mused.sequence_position, &mused.sequence_slider_param, d);
 	
 	if (!(mused.flags & SONG_PLAYING))
-		mused.pattern_position = mused.current_patternpos = mused.current_sequencepos;
+		mused.pattern_position = mused.current_patternpos = mused.current_sequencepos - o;
 }
 
 
@@ -702,7 +704,7 @@ void sequence_event(SDL_Event *e)
 				if (mused.mode != EDITCLASSIC) change_mode(EDITPATTERN);
 				else mused.focus = EDITPATTERN;
 				
-				mused.current_patternpos = mused.current_sequencepos;
+				//mused.current_patternpos = mused.current_sequencepos;
 				
 				update_position_sliders();
 			}
