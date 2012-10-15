@@ -256,6 +256,8 @@ void load_keymap(const char *name)
 
 	if (strcmp(name, "Default") == 0)
 	{
+		strncpy(mused.keymapname, tmpname, sizeof(mused.themename));
+		update_keymap_menu();
 		return;
 	}	
 
