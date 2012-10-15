@@ -270,5 +270,11 @@ void wavetable_tools_view(SDL_Surface *dest_surface, const SDL_Rect *dest, const
 	adjust_rect(&frame, 4);
 	copy_rect(&r, &frame);
 	
+	r.h = 12;
+	
 	button_text_event(dest_surface, event, &r, mused.slider_bevel->surface, &mused.buttonfont, BEV_BUTTON, BEV_BUTTON_ACTIVE, "DROP LOWEST BIT", wavetable_drop_lowest_bit, NULL, NULL, NULL);
+	
+	r.y += r.h;
+	
+	button_text_event(dest_surface, event, &r, mused.slider_bevel->surface, &mused.buttonfont, BEV_BUTTON, BEV_BUTTON_ACTIVE, "HALVE RATE", wavetable_halve_samplerate, NULL, NULL, NULL);
 }
