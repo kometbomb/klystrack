@@ -68,6 +68,8 @@ typedef union
 		int idx;
 		void *data;
 		size_t length;
+		Uint32 sample_rate;
+		Uint32 samples, loop_begin, loop_end;
 	} wave_data;
 } UndoEvent;
 
