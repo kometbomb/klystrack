@@ -677,6 +677,10 @@ void do_undo(void *a, void*b, void*c)
 			entry->data = realloc(entry->data, frame->event.wave_data.length * sizeof(entry->data[0]));
 			memcpy(entry->data, frame->event.wave_data.data, frame->event.wave_data.length * sizeof(entry->data[0]));
 			entry->samples = frame->event.wave_data.length;
+			entry->sample_rate = frame->event.wave_data.sample_rate;
+			entry->samples = frame->event.wave_data.samples; 
+			entry->loop_begin = frame->event.wave_data.loop_begin;
+			entry->loop_end = frame->event.wave_data.loop_end;
 			invalidate_wavetable_view();
 		}
 		break;
