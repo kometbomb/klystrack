@@ -33,6 +33,7 @@ OTHER DEALINGS IN THE SOFTWARE.
 #include "theme.h"
 #include "mybevdefs.h"
 #include "action.h"
+#include "wave_action.h"
 
 extern Mused mused;
 
@@ -199,13 +200,15 @@ static void update_sample_preview(const SDL_Surface *dest, const SDL_Rect* area)
 
 	const CydWavetableEntry *w = &mused.mus.cyd->wavetable_entries[mused.selected_wavetable];
 	
+	mused.wavetable_bits = 0;
+	
 	if (w->samples > 0)
 	{
 		const int res = 4096;
 		const int dadd = my_max(res, w->samples * res / area->w);
 		const int gadd = my_max(res, (Uint32)area->w * res / w->samples);
 		int c = 0, d = 0;
-		
+				
 		for (int x = 0 ; x < area->w * res ; )
 		{
 			int min = 32768;
@@ -215,6 +218,7 @@ static void update_sample_preview(const SDL_Surface *dest, const SDL_Rect* area)
 			{
 				min = my_min(min, w->data[d]);
 				max = my_max(max, w->data[d]);
+				mused.wavetable_bits |= w->data[d];
 			}
 			
 			c -= dadd;
@@ -235,6 +239,8 @@ static void update_sample_preview(const SDL_Surface *dest, const SDL_Rect* area)
 			
 			SDL_FillRect(mused.wavetable_preview, &r, colors[COLOR_WAVETABLE_SAMPLE]);
 		}
+		
+		debug("Wavetable item bitmask = %x, lowest bit = %d", mused.wavetable_bits, __builtin_ffs(mused.wavetable_bits) - 1);
 	}
 }
 
@@ -252,4 +258,17 @@ void wavetable_sample_view(SDL_Surface *dest_surface, const SDL_Rect *dest, cons
 void invalidate_wavetable_view()
 {
 	mused.wavetable_preview_idx = -1;
+	mused.wavetable_bits = 0;
+}
+
+
+void wavetable_tools_view(SDL_Surface *dest_surface, const SDL_Rect *dest, const SDL_Event *event, void *param)
+{
+	SDL_Rect r, frame;
+	copy_rect(&frame, dest);
+	bevel(mused.screen,&frame, mused.slider_bevel->surface, BEV_BACKGROUND);
+	adjust_rect(&frame, 4);
+	copy_rect(&r, &frame);
+	
+	button_text_event(dest_surface, event, &r, mused.slider_bevel->surface, &mused.buttonfont, BEV_BUTTON, BEV_BUTTON_ACTIVE, "DROP LOWEST BIT", wavetable_drop_lowest_bit, NULL, NULL, NULL);
 }
