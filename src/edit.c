@@ -27,6 +27,7 @@ OTHER DEALINGS IN THE SOFTWARE.
 #include "event.h"
 #include "mused.h"
 #include "gui/msgbox.h"
+#include "view/wavetableview.h"
 
 extern Mused mused;
 extern GfxDomain *domain;
