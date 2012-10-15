@@ -157,7 +157,7 @@ typedef struct
 	bool modified;
 	/*------------*/
 	SDL_Surface *wavetable_preview;
-	
+	Uint16 wavetable_bits;
 	
 #ifdef MIDI
 	Uint32 midi_device;
