@@ -53,3 +53,34 @@ void wavetable_halve_samplerate(void *unused1, void *unused2, void *unused3)
 	}
 }
 
+
+void wavetable_normalize(void *unused1, void *unused2, void *unused3)
+{
+	snapshot(S_T_WAVE_DATA);
+		
+	CydWavetableEntry *w = &mused.mus.cyd->wavetable_entries[mused.selected_wavetable];
+	
+	if (w->samples > 0)
+	{
+		int m = 0;
+				
+		for (int s = 0 ; s < w->samples ; ++s)
+		{
+			m = my_max(m, abs(w->data[s]));
+		}
+		
+		debug("Peak = %d", m);
+		
+		if (m != 0)
+		{
+			for (int s = 0 ; s < w->samples ; ++s)
+			{
+				w->data[s] = (Sint32)w->data[s] * 32768 / m;
+			}
+		}
+		
+		invalidate_wavetable_view();
+	}
+}
+
+
