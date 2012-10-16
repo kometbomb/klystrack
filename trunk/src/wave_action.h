@@ -3,5 +3,6 @@
 
 void wavetable_drop_lowest_bit(void *unused1, void *unused2, void *unused3);
 void wavetable_halve_samplerate(void *unused1, void *unused2, void *unused3);
+void wavetable_normalize(void *unused1, void *unused2, void *unused3);
 
 #endif
