@@ -84,3 +84,51 @@ void wavetable_normalize(void *unused1, void *unused2, void *unused3)
 }
 
 
+void wavetable_cut_tail(void *unused1, void *unused2, void *unused3)
+{
+	snapshot(S_T_WAVE_DATA);
+		
+	CydWavetableEntry *w = &mused.mus.cyd->wavetable_entries[mused.selected_wavetable];
+	
+	if (w->samples > 0)
+	{
+		for (int s = w->samples - 1 ; s > 0 ; --s)
+		{
+			if (w->data[s] != 0)
+			{
+				debug("Cut %d samples", w->samples - (s + 1));
+				w->samples = s + 1;
+				
+				invalidate_wavetable_view();
+				
+				break;
+			}
+		}
+	}
+}
+
+
+void wavetable_cut_head(void *unused1, void *unused2, void *unused3)
+{
+	snapshot(S_T_WAVE_DATA);
+		
+	CydWavetableEntry *w = &mused.mus.cyd->wavetable_entries[mused.selected_wavetable];
+	
+	if (w->samples > 0)
+	{
+		for (int s = 0 ; s < 0 ; --s)
+		{
+			if (w->data[s] != 0 && s != 0)
+			{
+				debug("Cut %d samples", s);
+				
+				w->samples -= s;
+				memmove(&w->data[0], &w->data[s], w->samples);
+				
+				invalidate_wavetable_view();
+				
+				break;
+			}
+		}
+	}
+}
