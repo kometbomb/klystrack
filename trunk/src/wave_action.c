@@ -98,6 +98,8 @@ void wavetable_cut_tail(void *unused1, void *unused2, void *unused3)
 			{
 				debug("Cut %d samples", w->samples - (s + 1));
 				w->samples = s + 1;
+				w->loop_end = my_min(w->samples, w->loop_end);
+				w->loop_begin = my_min(w->samples, w->loop_begin);
 				
 				invalidate_wavetable_view();
 				
@@ -125,6 +127,9 @@ void wavetable_cut_head(void *unused1, void *unused2, void *unused3)
 				w->samples -= s;
 				memmove(&w->data[0], &w->data[s], w->samples);
 				
+				w->loop_end = my_min(w->samples, w->loop_end);
+				w->loop_begin = my_min(w->samples, w->loop_begin);
+				
 				invalidate_wavetable_view();
 				
 				break;
@@ -132,3 +137,51 @@ void wavetable_cut_head(void *unused1, void *unused2, void *unused3)
 		}
 	}
 }
+
+
+void wavetable_chord(void *transpose, void *unused2, void *unused3)
+{
+	snapshot(S_T_WAVE_DATA);
+		
+	CydWavetableEntry *w = &mused.mus.cyd->wavetable_entries[mused.selected_wavetable];
+	
+	if (w->samples > 0)
+	{
+		int denom = 1, nom = 1;
+			
+		// too lazy to add a LCM function so here's a table
+			
+		switch (CASTPTR(int, transpose))
+		{
+			case 4: // perfect 4th
+				denom = 4; nom = 3;
+				break;
+				
+			case 5: // perfect 5th
+				denom = 3; nom = 2;
+				break;
+				
+			default:
+			case 12: // perfect octave
+				denom = 2; nom = 1;
+				break;
+		}
+		
+		int new_length = nom * w->samples;
+		Sint16 *new_data = malloc(sizeof(Sint16) * new_length);
+		
+		for (int s = 0 ; s < new_length ; ++s)
+		{
+			new_data[s] = ((int)w->data[s % w->samples] + (int)w->data[(s * denom / nom) % w->samples]) / 2;
+		}
+		
+		free(w->data);
+		w->data = new_data;
+		w->samples = new_length;
+		w->loop_begin *= nom;
+		w->loop_end *= nom;
+		
+		invalidate_wavetable_view();
+	}
+}
+

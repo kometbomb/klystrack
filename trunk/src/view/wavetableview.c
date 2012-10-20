@@ -289,4 +289,12 @@ void wavetable_tools_view(SDL_Surface *dest_surface, const SDL_Rect *dest, const
 	r.y += r.h;
 	
 	button_text_event(dest_surface, event, &r, mused.slider_bevel->surface, &mused.buttonfont, BEV_BUTTON, BEV_BUTTON_ACTIVE, "CUT HEAD", wavetable_cut_head, NULL, NULL, NULL);
+	
+	r.y += r.h;
+	
+	button_text_event(dest_surface, event, &r, mused.slider_bevel->surface, &mused.buttonfont, BEV_BUTTON, BEV_BUTTON_ACTIVE, "5TH", wavetable_chord, MAKEPTR(5), NULL, NULL);
+	
+	r.y += r.h;
+	
+	button_text_event(dest_surface, event, &r, mused.slider_bevel->surface, &mused.buttonfont, BEV_BUTTON, BEV_BUTTON_ACTIVE, "OCTAVE", wavetable_chord, MAKEPTR(12), NULL, NULL);
 }
