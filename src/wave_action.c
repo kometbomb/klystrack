@@ -127,8 +127,8 @@ void wavetable_cut_head(void *unused1, void *unused2, void *unused3)
 				w->samples -= s;
 				memmove(&w->data[0], &w->data[s], w->samples);
 				
-				w->loop_end = my_min(w->samples, w->loop_end);
-				w->loop_begin = my_min(w->samples, w->loop_begin);
+				w->loop_end = my_min(w->samples, w->loop_end - s);
+				w->loop_begin = my_max(0, (int)w->loop_begin - s);
 				
 				invalidate_wavetable_view();
 				
