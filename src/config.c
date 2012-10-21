@@ -58,6 +58,7 @@ static const struct { int type; const char *name; void *param; int mask; } confi
 	{ C_BOOL, "show_decimals", &mused.flags, SHOW_DECIMALS },
 	{ C_BOOL, "show_reverb_ticks", &mused.flags, SHOW_DELAY_IN_TICKS },
 	{ C_INT, "pattern_length", &mused.default_pattern_length },
+	{ C_INT, "analyzer", &mused.current_visualizer },
 #ifdef MIDI
 	{ C_INT, "midi_device", &mused.midi_device },
 	{ C_INT, "midi_channel", &mused.midi_channel },

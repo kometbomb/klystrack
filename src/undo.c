@@ -230,6 +230,8 @@ void undo_store_wave_data(UndoStack *stack, int idx, const CydWavetableEntry *en
 	frame->wave_data.samples = entry->samples; 
 	frame->wave_data.loop_begin = entry->loop_begin;
 	frame->wave_data.loop_end = entry->loop_end;
+	frame->wave_data.flags = entry->flags;
+	frame->wave_data.base_note = entry->base_note;
 	frame->wave_data.data = malloc(entry->samples * sizeof(entry->data[0]));
 	memcpy(frame->wave_data.data, entry->data, entry->samples * sizeof(entry->data[0]));
 }

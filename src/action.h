@@ -75,5 +75,6 @@ void kill_wavetable_entry(void *a, void*b, void*c);
 void open_menu_action(void*,void*,void*);
 void flip_bit_action(void *bits, void *mask, void *);
 void set_note_jump(void *steps, void *, void *);
+void change_visualizer_action(void *vis, void *unused1, void *unused2);
 
 #endif

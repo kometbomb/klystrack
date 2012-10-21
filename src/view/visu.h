@@ -26,3 +26,4 @@ OTHER DEALINGS IN THE SOFTWARE.
 #include "../view.h"
 
 void spectrum_analyzer_view(SDL_Surface *dest_surface, const SDL_Rect *dest, const SDL_Event *event, void *param);
+void catometer_view(SDL_Surface *dest_surface, const SDL_Rect *dest, const SDL_Event *event, void *param);
