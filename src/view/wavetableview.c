@@ -280,9 +280,14 @@ void wavetable_tools_view(SDL_Surface *dest_surface, const SDL_Rect *dest, const
 	
 	r.y += r.h;
 	
-	button_text_event(dest_surface, event, &r, mused.slider_bevel->surface, &mused.buttonfont, BEV_BUTTON, BEV_BUTTON_ACTIVE, "NORMALIZE", wavetable_normalize, NULL, NULL, NULL);
+	button_text_event(dest_surface, event, &r, mused.slider_bevel->surface, &mused.buttonfont, BEV_BUTTON, BEV_BUTTON_ACTIVE, "NORMALIZE", wavetable_normalize, MAKEPTR(32768), NULL, NULL);
 	
 	r.y += r.h;
+	
+	button_text_event(dest_surface, event, &r, mused.slider_bevel->surface, &mused.buttonfont, BEV_BUTTON, BEV_BUTTON_ACTIVE, "NORMALIZE 1/4", wavetable_normalize, MAKEPTR(32768 / 4), NULL, NULL);
+	
+	r.y += r.h;
+	
 	
 	button_text_event(dest_surface, event, &r, mused.slider_bevel->surface, &mused.buttonfont, BEV_BUTTON, BEV_BUTTON_ACTIVE, "CUT TAIL", wavetable_cut_tail, NULL, NULL, NULL);
 	

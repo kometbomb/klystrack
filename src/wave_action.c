@@ -55,7 +55,7 @@ void wavetable_halve_samplerate(void *unused1, void *unused2, void *unused3)
 }
 
 
-void wavetable_normalize(void *unused1, void *unused2, void *unused3)
+void wavetable_normalize(void *vol, void *unused2, void *unused3)
 {
 	snapshot(S_T_WAVE_DATA);
 		
@@ -76,7 +76,7 @@ void wavetable_normalize(void *unused1, void *unused2, void *unused3)
 		{
 			for (int s = 0 ; s < w->samples ; ++s)
 			{
-				w->data[s] = my_max(my_min((Sint32)w->data[s] * 32768 / m, 32767), -32768);
+				w->data[s] = my_max(my_min((Sint32)w->data[s] * CASTPTR(int, vol) / m, 32767), -32768);
 			}
 		}
 		
