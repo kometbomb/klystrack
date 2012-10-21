@@ -28,6 +28,7 @@ OTHER DEALINGS IN THE SOFTWARE.
 #include "mybevdefs.h"
 #include "mused.h"
 #include "snd/freqs.h"
+#include "gfx/gfx.h"
 
 void spectrum_analyzer_view(SDL_Surface *dest_surface, const SDL_Rect *dest, const SDL_Event *event, void *param)
 {
@@ -95,6 +96,34 @@ void spectrum_analyzer_view(SDL_Surface *dest_surface, const SDL_Rect *dest, con
 			SDL_BlitSurface(mused.analyzer->surface, &src, mused.screen, &temp);
 		}
 	}
+	
+	SDL_SetClipRect(mused.screen, &clip);
+}
+
+
+void catometer_view(SDL_Surface *dest_surface, const SDL_Rect *dest, const SDL_Event *event, void *param)
+{
+	SDL_Rect content;
+	copy_rect(&content, dest);
+	
+	SDL_Rect clip;
+	SDL_GetClipRect(mused.screen, &clip);
+	SDL_SetClipRect(mused.screen, &content);
+	
+	int v = 0;
+	
+	for (int i = 0 ; i < MUS_MAX_CHANNELS ; ++i)
+	{
+		v += mused.vis.cyd_env[i];
+	}
+	
+	float a = ((float)v * M_PI * 2 / (MAX_VOLUME * 4)) * 0.75 + mused.vis.prev_a * 0.75;
+	mused.vis.prev_a = a;
+	
+	int ax = cos(a) * 64;
+	int ay = sin(a) * 64;
+	
+	gfx_line(dest_surface, dest->x + dest->w / 2, dest->y + dest->h / 2, dest->x + dest->w / 2 + ax, dest->y + dest->h / 2 + ay, 0xffffff);
 	
 	SDL_SetClipRect(mused.screen, &clip);
 }

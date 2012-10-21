@@ -37,6 +37,7 @@ OTHER DEALINGS IN THE SOFTWARE.
 
 extern Mused mused;
 extern Menu editormenu[];
+extern Menu analyzermenu[];
 
 void set_edit_buffer(char *buffer, size_t size)
 { 
@@ -383,6 +384,7 @@ void post_config_load()
 	mused.default_pattern_length = 16;
 	
 	change_default_pattern_length(MAKEPTR(new_val), 0, 0);
+	change_visualizer(mused.current_visualizer);
 }
 
 
@@ -480,4 +482,13 @@ MusPattern * get_current_pattern()
 		return NULL;
 		
 	return &mused.song.pattern[p];
+}
+
+
+void change_visualizer(int vis)
+{
+	mused.current_visualizer = vis;
+
+	for (int i = 0 ; analyzermenu[i].parent ; ++i)
+		analyzermenu[i].flags = (analyzermenu[i].flags & ~MENU_BULLET) | (mused.current_visualizer == CASTPTR(int, analyzermenu[i].p1) ? MENU_BULLET : 0);
 }

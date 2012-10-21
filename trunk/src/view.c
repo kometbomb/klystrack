@@ -1561,7 +1561,19 @@ void sequence_spectrum_view(SDL_Surface *dest_surface, const SDL_Rect *dest, con
 		copy_rect(&a, dest);
 		a.w += SCROLLBAR;
 		SDL_SetClipRect(dest_surface, &a);
-		spectrum_analyzer_view(dest_surface, &a, event, param);
+		
+		switch (mused.current_visualizer)
+		{
+			default:
+			case VIS_SPECTRUM:
+				spectrum_analyzer_view(dest_surface, &a, event, param);
+				break;
+				
+			case VIS_CATOMETER:
+				catometer_view(dest_surface, &a, event, param);
+				break;
+		}
+		
 		SDL_SetClipRect(mused.screen, NULL);
 	}
 	else

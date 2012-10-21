@@ -1,6 +1,7 @@
 #include "wave_action.h"
 #include "mused.h"
 #include "view/wavetableview.h"
+#include "snd/freqs.h"
 
 void wavetable_drop_lowest_bit(void *unused1, void *unused2, void *unused3)
 {
@@ -183,5 +184,35 @@ void wavetable_chord(void *transpose, void *unused2, void *unused3)
 		
 		invalidate_wavetable_view();
 	}
+}
+
+
+void wavetable_create_one_cycle(void *unused1, void *unused2, void *unused3)
+{
+	CydWavetableEntry *w = &mused.mus.cyd->wavetable_entries[mused.selected_wavetable];
+	
+	if (w->samples > 0)
+	{
+		snapshot(S_T_WAVE_DATA);
+	}
+	
+	int new_length = 256;
+	Sint16 *new_data = malloc(sizeof(Sint16) * new_length);
+	
+	for (int s = 0 ; s < new_length ; ++s)
+	{
+		new_data[s] = sin(s * M_PI * 2 / new_length) * 8192;
+	}
+	
+	if (w->data) free(w->data);
+	w->data = new_data;
+	w->sample_rate = new_length * 220;
+	w->samples = new_length;
+	w->loop_begin = 0;
+	w->loop_end = new_length;
+	w->flags = CYD_WAVE_LOOP;
+	w->base_note = (MIDDLE_C + 9 - 12) << 8;
+	
+	invalidate_wavetable_view();
 }
 

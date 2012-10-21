@@ -96,6 +96,12 @@ enum
 	VC_COMMAND = 8
 };
 
+enum
+{
+	VIS_SPECTRUM = 0,
+	VIS_CATOMETER = 1
+};
+
 typedef struct
 {
 	Uint32 flags, visible_columns;
@@ -141,10 +147,12 @@ typedef struct
 	int window_w, window_h;
 	int fx_bus, fx_room_size, fx_room_vol, fx_room_dec;
 	/*---vis---*/
+	int current_visualizer;
 	struct 
 	{
 		int cyd_env[MUS_MAX_CHANNELS];
 		int spec_peak[96], spec_peak_decay[96];
+		float prev_a;
 	} vis;
 	
 	/*---*/
@@ -197,5 +205,6 @@ int current_pattern();
 int current_patternstep();
 MusStep * get_current_step();
 MusPattern * get_current_pattern();
+void change_visualizer(int vis);
 
 #endif

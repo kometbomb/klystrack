@@ -51,6 +51,12 @@ Menu editormenu[] =
 	{ 0, NULL, NULL }
 };
 
+Menu analyzermenu[] =
+{
+	{ 0, showmenu, "Spectrum",  NULL, change_visualizer_action, (void*)VIS_SPECTRUM, 0, 0 },
+	{ 0, showmenu, "CATOMETER!",  NULL, change_visualizer_action, (void*)VIS_CATOMETER, 0, 0 },
+	{ 0, NULL, NULL }
+};
 
 static const Menu columnsmenu[] =
 {
@@ -71,6 +77,7 @@ static const Menu showmenu[] =
 	{ 0, mainmenu, "Visible columns", columnsmenu, NULL },
 	{ 0, mainmenu, "Show position offset", NULL, MENU_CHECK, &mused.flags, (void*)SHOW_PATTERN_POS_OFFSET, 0 },
 	{ 0, mainmenu, "Show analyzer", NULL, MENU_CHECK, &mused.flags, (void*)SHOW_ANALYZER, 0 },
+	{ 0, mainmenu, "Analyzer", analyzermenu, NULL },
 	{ 0, mainmenu, "Show logo", NULL, MENU_CHECK, &mused.flags, (void*)SHOW_LOGO, 0 },
 	{ 0, NULL, NULL }
 };

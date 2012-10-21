@@ -681,6 +681,9 @@ void do_undo(void *a, void*b, void*c)
 			entry->samples = frame->event.wave_data.samples; 
 			entry->loop_begin = frame->event.wave_data.loop_begin;
 			entry->loop_end = frame->event.wave_data.loop_end;
+			entry->flags = frame->event.wave_data.flags;
+			entry->base_note = frame->event.wave_data.base_note;
+			
 			invalidate_wavetable_view();
 		}
 		break;
@@ -751,4 +754,10 @@ void change_default_pattern_length(void *length, void *unused1, void *unused2)
 		else
 			m->flags &= ~MENU_BULLET;
 	}
+}
+
+
+void change_visualizer_action(void *vis, void *unused1, void *unused2)
+{
+	change_visualizer(CASTPTR(int,vis));
 }
