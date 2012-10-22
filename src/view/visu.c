@@ -106,9 +106,12 @@ void catometer_view(SDL_Surface *dest_surface, const SDL_Rect *dest, const SDL_E
 	SDL_Rect content;
 	copy_rect(&content, dest);
 	
-	SDL_Rect clip;
+	SDL_Rect clip, cat;
+	copy_rect(&cat, &content);
+	cat.x = cat.x + content.w / 2 - mused.catometer->surface->w / 2;
 	SDL_GetClipRect(mused.screen, &clip);
 	SDL_SetClipRect(mused.screen, &content);
+	SDL_BlitSurface(mused.catometer->surface, NULL, mused.screen, &cat);
 	
 	int v = 0;
 	
@@ -117,13 +120,15 @@ void catometer_view(SDL_Surface *dest_surface, const SDL_Rect *dest, const SDL_E
 		v += mused.vis.cyd_env[i];
 	}
 	
-	float a = ((float)v * M_PI * 2 / (MAX_VOLUME * 4)) * 0.75 + mused.vis.prev_a * 0.75;
+	float a = ((float)v * M_PI / (MAX_VOLUME * 4) + M_PI) * 0.25 + mused.vis.prev_a * 0.75;
 	mused.vis.prev_a = a;
 	
-	int ax = cos(a) * 64;
-	int ay = sin(a) * 64;
+	int ax = cos(a) * 20;
+	int ay = sin(a) * 20;
+	int eye = 32;
 	
-	gfx_line(dest_surface, dest->x + dest->w / 2, dest->y + dest->h / 2, dest->x + dest->w / 2 + ax, dest->y + dest->h / 2 + ay, 0xffffff);
+	gfx_line(dest_surface, dest->x + dest->w / 2 - eye, dest->y + dest->h / 2 + 4, dest->x + dest->w / 2 + ax - eye, dest->y + dest->h / 2 + ay + 4, 0x0);
+	gfx_line(dest_surface, dest->x + dest->w / 2 + eye, dest->y + dest->h / 2 + 4, dest->x + dest->w / 2 + ax + eye, dest->y + dest->h / 2 + ay + 4, 0x0);
 	
 	SDL_SetClipRect(mused.screen, &clip);
 }
