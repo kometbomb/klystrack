@@ -256,14 +256,15 @@ void wavetable_sample_view(SDL_Surface *dest_surface, const SDL_Rect *dest, cons
 	
 	int mx, my;
 	
-	if (SDL_GetMouseState(&mx, &my))
+	if (mused.mode == EDITWAVETABLE && (SDL_GetMouseState(&mx, &my) & SDL_BUTTON(1)))
 	{
 		mx /= mused.pixel_scale;
 		my /= mused.pixel_scale;
+		
 		if (mx >= area.x && my >= area.y
 			&& mx < area.x + area.w && my < area.y + area.h)
 		{
-			wavetable_draw((float)(mx - area.x) / area.w, (float)(my - area.y) / area.h, 1.0f / area.h);
+			wavetable_draw((float)(mx - area.x) / area.w, (float)(my - area.y) / area.h, 1.0f / area.w);
 		}
 	}
 }
