@@ -244,6 +244,7 @@ static void update_sample_preview(const SDL_Surface *dest, const SDL_Rect* area)
 	}
 }
 
+
 void wavetable_sample_view(SDL_Surface *dest_surface, const SDL_Rect *dest, const SDL_Event *event, void *param)
 {
 	SDL_Rect area;
@@ -252,6 +253,19 @@ void wavetable_sample_view(SDL_Surface *dest_surface, const SDL_Rect *dest, cons
 	adjust_rect(&area, 3);
 	update_sample_preview(dest_surface, &area);
 	SDL_BlitSurface(mused.wavetable_preview, NULL, dest_surface, &area);
+	
+	int mx, my;
+	
+	if (SDL_GetMouseState(&mx, &my))
+	{
+		mx /= mused.pixel_scale;
+		my /= mused.pixel_scale;
+		if (mx >= area.x && my >= area.y
+			&& mx < area.x + area.w && my < area.y + area.h)
+		{
+			wavetable_draw((float)(mx - area.x) / area.w, (float)(my - area.y) / area.h, 1.0f / area.h);
+		}
+	}
 }
 
 

@@ -216,3 +216,24 @@ void wavetable_create_one_cycle(void *unused1, void *unused2, void *unused3)
 	invalidate_wavetable_view();
 }
 
+
+void wavetable_draw(float x, float y, float width)
+{
+	snapshot_cascade(S_T_WAVE_DATA, mused.selected_wavetable, 0);
+	
+	CydWavetableEntry *w = &mused.mus.cyd->wavetable_entries[mused.selected_wavetable];
+
+	if (w->samples > 0)
+	{
+		debug("draw %f,%f w = %f", x, y, width);
+		int s = w->samples * x;
+		int e = my_max(w->samples * (x + width), s + 1);
+		
+		for ( ; s < e && s < w->samples ; ++s)
+		{
+			w->data[s] = y * 65535 - 32768;
+		}
+		
+		invalidate_wavetable_view();
+	}
+}
