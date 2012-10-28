@@ -589,9 +589,11 @@ void do_undo(void *a, void*b, void*c)
 {
 	UndoFrame *frame = a ? undo(&mused.redo) : undo(&mused.undo);
 	
+	debug("%s frame %p", a ? "Redo" : "Undo", frame);
+	
 	if (!frame) return;
 	
-	debug("%s frame %p", a ? "Redo" : "Undo", frame);
+	
 
 	if (!a)
 	{
@@ -604,12 +606,14 @@ void do_undo(void *a, void*b, void*c)
 	{
 		case UNDO_PATTERN:
 			undo_store_pattern(&mused.undo, frame->event.pattern.idx, &mused.song.pattern[frame->event.pattern.idx], mused.modified);
+			
 			resize_pattern(&mused.song.pattern[frame->event.pattern.idx], frame->event.pattern.n_steps);
 			memcpy(mused.song.pattern[frame->event.pattern.idx].step, frame->event.pattern.step, frame->event.pattern.n_steps * sizeof(frame->event.pattern.step[0]));
 			break;
 			
 		case UNDO_SEQUENCE:
 			mused.current_sequencetrack = frame->event.sequence.channel;
+			
 			undo_store_sequence(&mused.undo, mused.current_sequencetrack, mused.song.sequence[mused.current_sequencetrack], mused.song.num_sequences[mused.current_sequencetrack], mused.modified);
 			
 			mused.song.num_sequences[mused.current_sequencetrack] = frame->event.sequence.n_seq;
@@ -624,6 +628,7 @@ void do_undo(void *a, void*b, void*c)
 		
 		case UNDO_INSTRUMENT:
 			mused.current_instrument = frame->event.instrument.idx;
+			
 			undo_store_instrument(&mused.undo, mused.current_instrument, &mused.song.instrument[mused.current_instrument], mused.modified);
 			
 			memcpy(&mused.song.instrument[mused.current_instrument], &frame->event.instrument.instrument, sizeof(frame->event.instrument.instrument));
@@ -632,7 +637,9 @@ void do_undo(void *a, void*b, void*c)
 			
 		case UNDO_FX:
 			mused.fx_bus = frame->event.fx.idx;
+			
 			undo_store_fx(&mused.undo, mused.fx_bus, &mused.song.fx[mused.fx_bus], mused.song.multiplex_period, mused.modified);
+			
 			memcpy(&mused.song.fx[mused.fx_bus], &frame->event.fx.fx, sizeof(frame->event.fx.fx));
 			mused.song.multiplex_period = frame->event.fx.multiplex_period;
 			mus_set_fx(&mused.mus, &mused.song);
@@ -640,6 +647,8 @@ void do_undo(void *a, void*b, void*c)
 			
 		case UNDO_SONGINFO:
 		{
+			undo_store_songinfo(&mused.undo, &mused.song, mused.modified);
+		
 			MusSong *song = &mused.song;
 			song->song_length = frame->event.songinfo.song_length;  
 			mused.sequenceview_steps = song->sequence_step = frame->event.songinfo.sequence_step;  
@@ -660,6 +669,9 @@ void do_undo(void *a, void*b, void*c)
 		case UNDO_WAVE_PARAM:
 		{
 			mused.selected_wavetable = frame->event.wave_param.idx;
+			
+			undo_store_wave_param(&mused.undo, mused.selected_wavetable, &mused.mus.cyd->wavetable_entries[mused.selected_wavetable], mused.modified);
+			
 			CydWavetableEntry *entry = &mused.mus.cyd->wavetable_entries[mused.selected_wavetable];
 			entry->flags = frame->event.wave_param.flags;
 			entry->sample_rate = frame->event.wave_param.sample_rate;
@@ -673,6 +685,9 @@ void do_undo(void *a, void*b, void*c)
 		case UNDO_WAVE_DATA:
 		{
 			mused.selected_wavetable = frame->event.wave_param.idx;
+			
+			undo_store_wave_data(&mused.undo, mused.selected_wavetable, &mused.mus.cyd->wavetable_entries[mused.selected_wavetable], mused.modified);
+			
 			CydWavetableEntry *entry = &mused.mus.cyd->wavetable_entries[mused.selected_wavetable];
 			entry->data = realloc(entry->data, frame->event.wave_data.length * sizeof(entry->data[0]));
 			memcpy(entry->data, frame->event.wave_data.data, frame->event.wave_data.length * sizeof(entry->data[0]));
@@ -700,6 +715,8 @@ void do_undo(void *a, void*b, void*c)
 		mused.undo = tmp;
 	}
 	
+	
+	mused.last_snapshot_a = -1;
 	
 /*#ifdef DEBUG
 	undo_show_stack(&mused.undo);
