@@ -11,6 +11,8 @@
 		002F3A0009D0884600EBEB88 /* SDL.framework in Copy Frameworks into .app bundle */ = {isa = PBXBuildFile; fileRef = 002F39F909D0881F00EBEB88 /* SDL.framework */; };
 		002F3A2E09D0888800EBEB88 /* SDLMain.m in Sources */ = {isa = PBXBuildFile; fileRef = 002F3A2C09D0888800EBEB88 /* SDLMain.m */; };
 		8329AF8F12ECE929006497E9 /* pack.c in Sources */ = {isa = PBXBuildFile; fileRef = 8329AF8D12ECE929006497E9 /* pack.c */; };
+		83722ED8167A9EC900336AFC /* wave_action.c in Sources */ = {isa = PBXBuildFile; fileRef = 83722ED6167A9EC900336AFC /* wave_action.c */; };
+		83722F13167AAA8F00336AFC /* key in Resources */ = {isa = PBXBuildFile; fileRef = 83722F0F167AAA8F00336AFC /* key */; };
 		838D906913DAE89000E3C165 /* xm.c in Sources */ = {isa = PBXBuildFile; fileRef = 838D906713DAE89000E3C165 /* xm.c */; };
 		83C0076414F9C41F006A54CD /* ksnd.c in Sources */ = {isa = PBXBuildFile; fileRef = 83C0076114F9C41F006A54CD /* ksnd.c */; };
 		83C0076914F9C476006A54CD /* sequence.c in Sources */ = {isa = PBXBuildFile; fileRef = 83C0076714F9C476006A54CD /* sequence.c */; };
@@ -111,6 +113,9 @@
 		8329AF8C12ECE929006497E9 /* cydtypes.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = cydtypes.h; path = ../../klystron/src/snd/cydtypes.h; sourceTree = SOURCE_ROOT; };
 		8329AF8D12ECE929006497E9 /* pack.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = pack.c; path = ../../klystron/src/snd/pack.c; sourceTree = SOURCE_ROOT; };
 		8329AF8E12ECE929006497E9 /* pack.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = pack.h; path = ../../klystron/src/snd/pack.h; sourceTree = SOURCE_ROOT; };
+		83722ED6167A9EC900336AFC /* wave_action.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = wave_action.c; path = ../src/wave_action.c; sourceTree = SOURCE_ROOT; };
+		83722ED7167A9EC900336AFC /* wave_action.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = wave_action.h; path = ../src/wave_action.h; sourceTree = SOURCE_ROOT; };
+		83722F0F167AAA8F00336AFC /* key */ = {isa = PBXFileReference; lastKnownFileType = folder; name = key; path = ../key; sourceTree = SOURCE_ROOT; };
 		838D906713DAE89000E3C165 /* xm.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = xm.c; path = ../src/import/xm.c; sourceTree = SOURCE_ROOT; };
 		838D906813DAE89000E3C165 /* xm.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = xm.h; path = ../src/import/xm.h; sourceTree = SOURCE_ROOT; };
 		83C0076114F9C41F006A54CD /* ksnd.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = ksnd.c; sourceTree = "<group>"; };
@@ -326,6 +331,7 @@
 		29B97317FDCFA39411CA2CEA /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				83722F0F167AAA8F00336AFC /* key */,
 				83C75C6B12BBF9D80067F040 /* res */,
 				83C75C6712BBF7B20067F040 /* 256x256.icns */,
 				8D1107310486CEB800E47090 /* Info.plist */,
@@ -356,6 +362,8 @@
 		83C759F612BB70CA0067F040 /* Klystrack */ = {
 			isa = PBXGroup;
 			children = (
+				83722ED6167A9EC900336AFC /* wave_action.c */,
+				83722ED7167A9EC900336AFC /* wave_action.h */,
 				83FE0A2615319C0B00103637 /* org.c */,
 				83FE0A2715319C0B00103637 /* org.h */,
 				83FE0A2315319BDE00103637 /* nostalgy.c */,
@@ -609,6 +617,7 @@
 				83C75A4412BB71060067F040 /* version in Resources */,
 				83C75C6812BBF7B20067F040 /* 256x256.icns in Resources */,
 				83C75C7212BBF9D80067F040 /* res in Resources */,
+				83722F13167AAA8F00336AFC /* key in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -704,6 +713,7 @@
 				83C0076914F9C476006A54CD /* sequence.c in Sources */,
 				83FE0A2515319BDE00103637 /* nostalgy.c in Sources */,
 				83FE0A2815319C0B00103637 /* org.c in Sources */,
+				83722ED8167A9EC900336AFC /* wave_action.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
