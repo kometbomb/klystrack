@@ -460,12 +460,21 @@ static void pattern_view_stepcounter(SDL_Surface *dest_surface, const SDL_Rect *
 	copy_rect(&compact, &header);
 	adjust_rect(&compact, 2);
 	
+	compact.w /= 2;
+	
 	bevel(mused.screen, &header, mused.slider_bevel->surface, BEV_BACKGROUND);
 	
 	button_event(mused.screen, event, &compact, mused.slider_bevel->surface, 
                 !(mused.flags & COMPACT_VIEW) ? BEV_BUTTON : BEV_BUTTON_ACTIVE, 
                 !(mused.flags & COMPACT_VIEW) ? BEV_BUTTON : BEV_BUTTON_ACTIVE, 
                 (mused.flags & COMPACT_VIEW) ? DECAL_COMPACT_SELETED : DECAL_COMPACT, flip_bit_action, &mused.flags, MAKEPTR(COMPACT_VIEW), 0);
+	
+	compact.x += compact.w;
+	
+	button_event(mused.screen, event, &compact, mused.slider_bevel->surface, 
+                !(mused.flags & EXPAND_ONLY_CURRENT_TRACK) ? BEV_BUTTON : BEV_BUTTON_ACTIVE, 
+                !(mused.flags & EXPAND_ONLY_CURRENT_TRACK) ? BEV_BUTTON : BEV_BUTTON_ACTIVE, 
+                (mused.flags & EXPAND_ONLY_CURRENT_TRACK) ? DECAL_FOCUS_SELETED : DECAL_FOCUS, flip_bit_action, &mused.flags, MAKEPTR(EXPAND_ONLY_CURRENT_TRACK), 0);
 	
 	content.y += HEADER_HEIGHT;
 	content.h -= HEADER_HEIGHT;
