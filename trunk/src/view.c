@@ -529,7 +529,7 @@ void info_line(SDL_Surface *dest_surface, const SDL_Rect *dest, const SDL_Event 
 				"Reverse vibrato bit",
 				"Set PW on keydown",
 				"Set cutoff on keydown",
-				"Send signal to FX chain",
+				"Slide speed",
 				"Pulse wave",
 				"Pulse width",
 				"Saw wave",
@@ -561,8 +561,8 @@ void info_line(SDL_Surface *dest_surface, const SDL_Rect *dest, const SDL_Event 
 				"Filter type",
 				"Filter cutoff frequency",
 				"Filter resonance",
-				"Slide speed",
-				"Program period",
+				"Send signal to FX chain",
+				"FX bus",
 				"Vibrato speed",
 				"Vibrato depth",
 				"Vibrato shape",
@@ -570,7 +570,7 @@ void info_line(SDL_Surface *dest_surface, const SDL_Rect *dest, const SDL_Event 
 				"Pulse width modulation speed",
 				"Pulse width modulation depth",
 				"Pulse width modulation shape",
-				"FX bus",
+				"Program period",
 				"Don't restart program on keydown"
 			};
 			strcpy(text, param_desc[mused.selected_param]);
@@ -986,7 +986,8 @@ void instrument_view(SDL_Surface *dest_surface, const SDL_Rect *dest, const SDL_
 		update_rect(&frame, &r);
 		inst_flags(event, &r, P_SETCUTOFF, "SET CUT", &inst->flags, MUS_INST_SET_CUTOFF);
 		update_rect(&frame, &r);
-		inst_flags(event, &r, P_FX, "FX", &inst->cydflags, CYD_CHN_ENABLE_FX);
+		
+		inst_text(event, &r, P_SLIDESPEED, "SLIDE", "%02X", MAKEPTR(inst->slide_speed), 2);
 		update_rect(&frame, &r);
 	}
 	
@@ -1110,9 +1111,9 @@ void instrument_view2(SDL_Surface *dest_surface, const SDL_Rect *dest, const SDL
 	r.w = r.w / 2 - 2;
 	r.h = 10;
 	
-	inst_text(event, &r, P_SLIDESPEED, "SLIDE", "%02X", MAKEPTR(inst->slide_speed), 2);
+	inst_flags(event, &r, P_FX, "FX", &inst->cydflags, CYD_CHN_ENABLE_FX);
 	update_rect(&frame, &r);
-	inst_text(event, &r, P_PROGPERIOD, "P.PRD", "%02X", MAKEPTR(inst->prog_period), 2);
+	inst_text(event, &r, P_FXBUS,   "FXBUS", "%02X", MAKEPTR(inst->fx_bus), 2);
 	update_rect(&frame, &r);
 	inst_text(event, &r, P_VIBSPEED,   "VIB.S", "%02X", MAKEPTR(inst->vibrato_speed), 2);
 	update_rect(&frame, &r);
@@ -1128,7 +1129,7 @@ void instrument_view2(SDL_Surface *dest_surface, const SDL_Rect *dest, const SDL
 	update_rect(&frame, &r);
 	inst_text(event, &r, P_PWMSHAPE,   "PWM.SH", "%c", MAKEPTR(inst->pwm_shape + 0xf4), 1);
 	update_rect(&frame, &r);
-	inst_text(event, &r, P_FXBUS,   "FXBUS", "%02X", MAKEPTR(inst->fx_bus), 2);
+	inst_text(event, &r, P_PROGPERIOD, "P.PRD", "%02X", MAKEPTR(inst->prog_period), 2);
 	update_rect(&frame, &r);
 	r.w = frame.w;
 	inst_flags(event, &r, P_NORESTART, "NO PROG RESTART", &inst->flags, MUS_INST_NO_PROG_RESTART);
