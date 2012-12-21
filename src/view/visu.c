@@ -123,12 +123,16 @@ void catometer_view(SDL_Surface *dest_surface, const SDL_Rect *dest, const SDL_E
 	float a = ((float)v * M_PI / (MAX_VOLUME * 4) + M_PI) * 0.25 + mused.vis.prev_a * 0.75;
 	mused.vis.prev_a = a;
 	
-	int ax = cos(a) * 20;
-	int ay = sin(a) * 20;
-	int eye = 32;
+	int ax = cos(a) * 12;
+	int ay = sin(a) * 12;
+	int eye1 = 31;
+	int eye2 = -30;
 	
-	gfx_line(dest_surface, dest->x + dest->w / 2 - eye, dest->y + dest->h / 2 + 4, dest->x + dest->w / 2 + ax - eye, dest->y + dest->h / 2 + ay + 4, 0x0);
-	gfx_line(dest_surface, dest->x + dest->w / 2 + eye, dest->y + dest->h / 2 + 4, dest->x + dest->w / 2 + ax + eye, dest->y + dest->h / 2 + ay + 4, 0x0);
+	for (int w = -3 ; w <= 3 ; ++w)
+	{
+		gfx_line(dest_surface, dest->x + dest->w / 2 + eye1 + w, dest->y + dest->h / 2 + 6, dest->x + dest->w / 2 + ax + eye1, dest->y + dest->h / 2 + ay + 6, 0x0);
+		gfx_line(dest_surface, dest->x + dest->w / 2 + eye2 + w, dest->y + dest->h / 2 + 6, dest->x + dest->w / 2 + ax + eye2, dest->y + dest->h / 2 + ay + 6, 0x0);
+	}
 	
 	SDL_SetClipRect(mused.screen, &clip);
 }
