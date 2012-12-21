@@ -121,6 +121,13 @@ void catometer_view(SDL_Surface *dest_surface, const SDL_Rect *dest, const SDL_E
 	}
 	
 	float a = ((float)v * M_PI / (MAX_VOLUME * 4) + M_PI) * 0.25 + mused.vis.prev_a * 0.75;
+	
+	if (a < M_PI)
+		a = M_PI;
+		
+	if (a > M_PI * 2)
+		a = M_PI * 2;
+	
 	mused.vis.prev_a = a;
 	
 	int ax = cos(a) * 12;
