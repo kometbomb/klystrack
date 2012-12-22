@@ -40,7 +40,7 @@ SectionIn RO
   File zip\data\SDL_mixer.dll
   File zip\data\SDL_image.dll
   File zip\data\zlib1.dll
-  File zip\data\libpng12-0.dll
+  File zip\data\libpng15-15.dll
   
   SetOutPath $INSTDIR\res
   
