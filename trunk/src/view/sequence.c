@@ -14,7 +14,7 @@ void sequence_view_inner(SDL_Surface *dest_surface, const SDL_Rect *_dest, const
 
 	const int height = 10;
 	const int top = mused.sequence_position;
-	const int w = my_max(dest.w / mused.song.num_channels - 1, 24);
+	const int w = my_max(dest.w / mused.song.num_channels - 1, (mused.flags & SHOW_PATTERN_POS_OFFSET) ? 40 : 24);
 	int h = dest.h;
 	const int bottom = top + h * mused.sequenceview_steps / height - 1;
 	
