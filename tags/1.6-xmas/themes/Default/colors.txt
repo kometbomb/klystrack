@@ -1,0 +1,54 @@
+background = 0x0
+main_text = 0xffffff
+small_text = 0xffffff
+button_text = 0xffffff
+
+sequence_counter = 0xffffff
+sequence_selected = 0xffffff
+sequence_bar = 0x1c2426
+sequence_beat = 0x4a6165
+sequence_normal = 0x000000
+sequence_disabled = 0xa4bcd2
+
+pattern_normal = 0xa0c9d0
+pattern_beat = 0x619fac
+pattern_bar = 0xffffff
+pattern_selected = 0xffffff
+pattern_disabled = 0x808080
+
+pattern_instrument = 0x00c8e8
+pattern_instrument_beat = 0x009fba
+pattern_instrument_bar = 0xffffff
+
+pattern_volume = 0xa0c9d0
+pattern_volume_beat = 0x619fac
+pattern_volume_bar = 0xffffff
+
+pattern_ctrl = 0xa0c9d0
+pattern_ctrl_beat = 0x619fac
+pattern_ctrl_bar = 0xffffff
+
+pattern_command = 0x00c8e8
+pattern_command_beat = 0x009fba
+pattern_command_bar = 0xffffff
+
+pattern_empty_data = 0x80000000
+pattern_seq_number = 0xffffff
+
+program_selected = 0xffffff
+program_even = 0xd0d0e0
+program_odd = 0xb0a0b0
+
+instrument_selected = 0xffffff
+instrument_normal = 0xc0c0c0
+
+menu = 0xffffff
+menu_selected = 0xffffff
+menu_header = 0xffffff
+menu_header_selected = 0xffffff
+menu_shortcut = 0xffffff
+menu_shortcut_selected = 0xffffff
+
+wavetable_sample = 0xffffff
+wavetable_background = 0x0
+progress_bar = 0xffffff

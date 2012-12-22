@@ -1,0 +1,7 @@
+# Fix problems with AZERTY keyboards 
+[pattern]
+K_A = K_Q
+K_Q = K_A
+K_W = K_Z
+K_Z = K_W
+K_WORLD_34 = K_2
