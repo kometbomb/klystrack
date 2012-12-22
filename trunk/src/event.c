@@ -684,6 +684,13 @@ void update_position_sliders()
 }
 
 
+void update_horiz_sliders()
+{
+	slider_move_position(&mused.current_sequencetrack, &mused.sequence_horiz_position, &mused.sequence_horiz_slider_param, 0);
+	slider_move_position(&mused.current_sequencetrack, &mused.pattern_horiz_position, &mused.pattern_horiz_slider_param, 0);
+}
+
+
 void sequence_event(SDL_Event *e)
 {
 	switch (e->type)
@@ -847,7 +854,7 @@ void sequence_event(SDL_Event *e)
 					if (mused.current_sequencetrack >= mused.song.num_channels)
 						mused.current_sequencetrack = mused.song.num_channels-1;
 						
-					slider_move_position(&mused.current_sequencetrack, &mused.sequence_horiz_position, &mused.sequence_horiz_slider_param, 0);
+					update_horiz_sliders();
 				}
 			}
 			break;
@@ -874,7 +881,7 @@ void sequence_event(SDL_Event *e)
 					if (mused.current_sequencetrack < 0)
 						mused.current_sequencetrack = 0;
 						
-					slider_move_position(&mused.current_sequencetrack, &mused.sequence_horiz_position, &mused.sequence_horiz_slider_param, 0);
+					update_horiz_sliders();
 				}
 			}
 			break;
@@ -927,7 +934,7 @@ void sequence_event(SDL_Event *e)
 static void switch_track(int d)
 {
 	mused.current_sequencetrack = (mused.current_sequencetrack + (int)mused.song.num_channels + d) % mused.song.num_channels;
-	slider_move_position(&mused.current_sequencetrack, &mused.pattern_horiz_position, &mused.pattern_horiz_slider_param, 0);
+	update_horiz_sliders();
 	mused.sequence_digit = 0;
 }
 
