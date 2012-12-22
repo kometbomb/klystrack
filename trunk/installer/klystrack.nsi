@@ -86,12 +86,17 @@ SectionIn RO
   
   SetOutPath $INSTDIR\examples\songs
   
-  File zip\data\examples\songs\ringmod.kt
+  File "zip\data\examples\songs\ringmod.kt"
   File "zip\data\examples\songs\Sprock'n'Sprawl.kt"
-  File zip\data\examples\songs\phonkeh.kt
-  File zip\data\examples\songs\obspatial.kt
+  File "zip\data\examples\songs\phonkeh.kt"
+  File "zip\data\examples\songs\obspatial.kt"
   File "zip\data\examples\songs\Paranoimia (Suntronic).kt"
   File "zip\data\examples\songs\hskv03-rygar_trance.kt"
+  File "zip\data\examples\songs\castlevania.kt" 
+  File "zip\data\examples\songs\dr.happy.kt"
+  File "zip\data\examples\songs\hwv 437.kt" 
+  File "zip\data\examples\songs\smp_dpintro.kt"
+  File "zip\data\examples\songs\smp_dingleberries_fix.kt"
   
   ; For CreateShortCut
   
@@ -178,12 +183,17 @@ Section Uninstall
   
   SetOutPath $INSTDIR\examples\songs
   
-  Delete ringmod.kt
-  Delete obspatial.kt
+  Delete "ringmod.kt"
   Delete "Sprock'n'Sprawl.kt"
+  Delete "phonkeh.kt"
+  Delete "obspatial.kt"
   Delete "Paranoimia (Suntronic).kt"
-  Delete phonkeh.kt
-  Delete hskv03-rygar_trance.kt
+  Delete "hskv03-rygar_trance.kt"
+  Delete "castlevania.kt"
+  Delete "dr.happy.kt"
+  Delete "hwv 437.kt" 
+  Delete "smp_dpintro.kt"
+  Delete "smp_dingleberries_fix.kt"
   
   SetOutPath $TEMP
   
