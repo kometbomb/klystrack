@@ -62,7 +62,8 @@ void select_sequence_position(void *channel, void *position, void* unused)
 	mused.pattern_position = mused.current_patternpos = mused.current_sequencepos;
 		
 	mused.focus = EDITSEQUENCE;
-		
+	
+	update_horiz_sliders();
 }
 
 
@@ -73,6 +74,8 @@ void select_pattern_param(void *id, void *position, void *track)
 	mused.pattern_position = mused.current_sequencepos = CASTPTR(int,position);
 	
 	mused.focus = EDITPATTERN;
+	
+	update_horiz_sliders();
 }
 
 
