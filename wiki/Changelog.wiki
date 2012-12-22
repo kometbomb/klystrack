@@ -13,6 +13,8 @@ See [RoadMap the road map] for future plans.
   * Crush effect has a slightly altered algorithm and optional dithering
   * Oscillator oversampling for much better sound quality
   * Organya (.org, Cave Story) import
+  * Sample data editor/mangler
+  * CAT-O-METER!
 
 =1.5.4=
 
