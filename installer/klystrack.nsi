@@ -138,7 +138,7 @@ Section Uninstall
   Delete SDL_mixer.dll
   Delete SDL_image.dll
   Delete zlib1.dll
-  Delete libpng12-0.dll
+  Delete libpng15-15.dll
   Delete klystrack.exe
   
   SetOutPath $INSTDIR\res
