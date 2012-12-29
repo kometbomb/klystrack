@@ -50,6 +50,7 @@ SectionIn RO
   File zip\data\res\Gameboy
   File zip\data\res\Classic
   File "zip\data\res\Golden_Brown"
+  File zip\data\res\Blacklyst
   
   SetOutPath $INSTDIR\key
   
@@ -149,6 +150,7 @@ Section Uninstall
   Delete Gameboy
   Delete Classic
   Delete "Golden_Brown"
+  Delete Blacklyst
   
   SetOutPath $TEMP\key
   
