@@ -6,7 +6,7 @@ NSIS := C:/program\ files\ \(x86\)/nsis/makensis.exe /V2 /NOCD
 WGET := wget --quiet
 MAKEBUNDLE := ../klystron/tools/bin/makebundle.exe
 UPLOAD := cmd.exe /c upload.bat
-DLLS := zip/data/SDL.dll zip/data/SDL_mixer.dll zip/data/SDL_image.dll
+DLLS := zip/data/SDL.dll zip/data/SDL_image.dll
 DESTDIR ?= /usr
 EXT := .c
 CC := gcc
@@ -25,7 +25,7 @@ ifdef COMSPEC
 	TARGET := $(TARGET).exe
 	ARCHIVE := $(ARCHIVE).zip
 	SDLFLAGS := -I /mingw/include/sdl
-	SDLLIBS :=  -lSDLmain -lSDL -lSDL_mixer -lSDL_image -lwinmm
+	SDLLIBS :=  -lSDLmain -lSDL -lSDL_image -lwinmm
 	CFLAGS += -mthreads -DMIDI
 	ZIP := pkzipc -exclude=.* -zipdate=newest -path=relative -silent -rec -dir -add
 	ZIPEXT := pkzipc -ext -silent
@@ -34,7 +34,7 @@ else
 	DLLS = 
 	ARCHIVE := $(ARCHIVE).tar.gz
 	SDLFLAGS := `sdl-config --cflags` -U_FORTIFY_SOURCE
-	SDLLIBS := `sdl-config --libs` -lSDL_mixer -lSDL_image
+	SDLLIBS := `sdl-config --libs` -lSDL_image
 endif
 
 ifdef COMSPEC
@@ -46,7 +46,7 @@ else
 	CONFIG_PATH := ~/.klystrack
 endif
 
-EXTFLAGS := -DUSESDLMUTEXES -DENABLEAUDIODUMP -DSTEREOOUTPUT -DUSESDL_IMAGE $(EXTFLAGS)
+EXTFLAGS := -DNOSDL_MIXER -DUSESDLMUTEXES -DENABLEAUDIODUMP -DSTEREOOUTPUT -DUSESDL_IMAGE $(EXTFLAGS)
 LDFLAGS :=  -L ../klystron/bin.$(CFG) -lengine_gfx -lengine_util -lengine_snd -lengine_gui -lm $(SDLLIBS)
 INCLUDEFLAGS := -I src $(SDLFLAGS) -I ../klystron/src -L../klystron/bin.$(CFG) -DRES_PATH="$(RES_PATH)" -DCONFIG_PATH="$(CONFIG_PATH)" $(EXTFLAGS)
 
@@ -227,13 +227,6 @@ zip/data/SDL_image.dll:
 	@mv temp/SDL_image.dll zip/data/SDL_image.dll
 	@mv temp/libpng15-15.dll zip/data/libpng15-15.dll
 	@mv temp/zlib1.dll zip/data/zlib1.dll
-
-zip/data/SDL_mixer.dll:
-	@$(ECHO) "Downloading SDL_mixer..."
-	@mkdir -p temp
-	@cd temp ; $(WGET) http://www.libsdl.org/projects/SDL_mixer/release/SDL_mixer-$(MIXERVER)-win32.zip ; $(ZIPEXT) SDL_mixer-$(MIXERVER)-win32.zip SDL_mixer.dll ; rm SDL_mixer-$(MIXERVER)-win32.zip
-	@mkdir -p zip/data
-	@mv temp/SDL_mixer.dll zip/data/SDL_mixer.dll
 
 objs.$(CFG)/windres.o: windres/* icon/*
 	windres -i windres/resource.rc -o $@

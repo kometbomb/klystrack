@@ -24,7 +24,6 @@ OTHER DEALINGS IN THE SOFTWARE.
 */
 
 #include "SDL.h"
-#include "SDL_mixer.h"
 #include "gfx/gfx.h"
 #include "snd/music.h"
 #include "gui/toolutil.h"
@@ -281,14 +280,6 @@ int main(int argc, char **argv)
 	
 	init_scrollbars();
 	
-	if (Mix_OpenAudio(mused.mix_rate, AUDIO_S16SYS, 2, mused.mix_buffer))
-	{	
-		fatal("Mix_OpenAudio failed: %s", Mix_GetError());
-		return 1;
-	}
-	
-	Mix_AllocateChannels(1);
-	
 	cyd_init(&mused.cyd, mused.mix_rate, MUS_MAX_CHANNELS);
 	mus_init_engine(&mused.mus, &mused.cyd);
 	enable_callback(true);
@@ -301,7 +292,7 @@ int main(int argc, char **argv)
 	if (argc > 1 && strcmp(argv[1], "-dump") == 0) cyd_enable_audio_dump(&mused.cyd);
 #endif
 	
-	cyd_register(&mused.cyd);
+	cyd_register(&mused.cyd, mused.mix_buffer);
 	
 	if (argc > 1)
 	{
@@ -560,7 +551,7 @@ int main(int argc, char **argv)
 	midi_deinit();
 #endif
 	
-	Mix_CloseAudio();
+	//Mix_CloseAudio();
 	
 	cyd_unregister(&mused.cyd);
 	cyd_deinit(&mused.cyd);

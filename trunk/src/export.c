@@ -121,7 +121,7 @@ void export_wav(MusSong *song, CydWavetableEntry * entry, FILE *f)
 	for (;;)
 	{
 		memset(buffer, 0, sizeof(buffer)); // Zero the input to cyd
-		cyd_output_buffer_stereo(0, buffer, sizeof(buffer), &cyd);
+		cyd_output_buffer_stereo(&cyd, (Uint8*)buffer, sizeof(buffer));
 		
 		if (cyd.samples_output > 0)
 			fwrite(buffer, cyd.samples_output * channels * sizeof(buffer[0]), 1, f);
