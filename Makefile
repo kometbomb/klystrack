@@ -13,7 +13,6 @@ CC := gcc
 CDEP := gcc -E -MM
 ARCHIVE := klystrack
 INSTALLER := klystrack.exe
-MIXERVER := 1.2.12
 SDLVER := 1.2.15
 SDL_IMAGEVER := 1.2.12
 THEMES :=
