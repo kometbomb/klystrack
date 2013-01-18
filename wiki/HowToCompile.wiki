@@ -13,4 +13,4 @@
 
 klystrack compiles at least on on MinGW (Win32) and Ubuntu (i386). On Windows, you might need the standard UNIX tools like sed, cat and so on.
 
-[http://code.google.com/p/klystrack/issues/detail?id=94 Issue 94] contains some Linux specific compilation help.
+[http://code.google.com/p/klystrack/issues/detail?id=93 Issue 93] contains some Linux specific compilation help.
