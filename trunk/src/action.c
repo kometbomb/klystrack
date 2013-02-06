@@ -169,6 +169,7 @@ void play(void *from_cursor, void *unused1, void *unused2)
 	enable_callback(true);
 	mus_set_song(&mused.mus, &mused.song, from_cursor ? mused.current_sequencepos : 0);
 	mused.flags |= SONG_PLAYING;
+	mused.flags &= ~EDIT_MODE;
 }
 
 
