@@ -702,7 +702,7 @@ void sequence_event(SDL_Event *e)
 			case SDLK_SPACE:
 			{
 				if (mused.flags & SONG_PLAYING) stop(0, 0, 0);
-				mused.flags ^= EDIT_MODE;
+				else mused.flags ^= EDIT_MODE;
 			}
 			break;
 		
@@ -1234,7 +1234,7 @@ void pattern_event(SDL_Event *e)
 				if (e->key.keysym.sym == SDLK_SPACE)
 				{
 					if (mused.flags & SONG_PLAYING) stop(0, 0, 0);
-					mused.flags ^= EDIT_MODE;
+					else mused.flags ^= EDIT_MODE;
 					play_the_jams(e->key.keysym.sym, -1);
 				}
 			
