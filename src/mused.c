@@ -173,6 +173,7 @@ void new_song()
 		mused.song.fx[fx].flags = 0;
 		mused.song.fx[fx].crushex.downsample = 0;
 		mused.song.fx[fx].crush.bit_drop = 4;
+		mused.song.fx[fx].crushex.gain = 128;
 		mused.song.fx[fx].chr.min_delay = 0;
 		mused.song.fx[fx].chr.rate = 40;
 		mused.song.fx[fx].chr.max_delay = 20;

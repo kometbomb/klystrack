@@ -590,6 +590,7 @@ void info_line(SDL_Surface *dest_surface, const SDL_Rect *dest, const SDL_Event 
 				"Drop bits",
 				"Downsample",
 				"Dither",
+				"Crush gain",
 				"Enable stereo chorus",
 				"Min. delay",
 				"Max. delay",
@@ -1250,11 +1251,13 @@ void fx_view(SDL_Surface *dest_surface, const SDL_Rect *dest, const SDL_Event *e
 	
 	my_separator(&area, &r);
 	
+	r.w = 48;
+	
 	generic_flags(event, &r, EDITFX, R_CRUSH, "CRUSH", &mused.song.fx[mused.fx_bus].flags, CYDFX_ENABLE_CRUSH);
 	update_rect(&area, &r);
 	
-	r.x = 100;
-	r.w = 64;
+	r.x = 56;
+	r.w = 56;
 	
 	if ((d = generic_field(event, &r, EDITFX, R_CRUSHBITS, "BITS", "%01X", MAKEPTR(mused.song.fx[mused.fx_bus].crush.bit_drop), 1)))
 	{
@@ -1262,6 +1265,8 @@ void fx_view(SDL_Surface *dest_surface, const SDL_Rect *dest, const SDL_Event *e
 	}
 	
 	update_rect(&area, &r);
+	
+	r.w = 64;
 	
 	if ((d = generic_field(event, &r, EDITFX, R_CRUSHDOWNSAMPLE, "DSMP", "%02d", MAKEPTR(mused.song.fx[mused.fx_bus].crushex.downsample), 2)))
 	{
@@ -1273,6 +1278,12 @@ void fx_view(SDL_Surface *dest_surface, const SDL_Rect *dest, const SDL_Event *e
 	generic_flags(event, &r, EDITFX, R_CRUSHDITHER, "DITHER", &mused.song.fx[mused.fx_bus].flags, CYDFX_ENABLE_CRUSH_DITHER);
 	update_rect(&area, &r);
 	
+	r.w = 56;
+	
+	if ((d = generic_field(event, &r, EDITFX, R_CRUSHGAIN, "VOL", "%02X", MAKEPTR(mused.song.fx[mused.fx_bus].crushex.gain), 2)))
+	{
+		fx_add_param(d);
+	}
 	update_rect(&area, &r);
 	
 	my_separator(&area, &r);
