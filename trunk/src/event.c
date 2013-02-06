@@ -1648,6 +1648,19 @@ void fx_add_param(int d)
 		}
 		break;
 		
+		case R_CRUSHDITHER:
+		{
+			flipbit(mused.song.fx[mused.fx_bus].flags, CYDFX_ENABLE_CRUSH);
+		}
+		break;
+		
+		case R_CRUSHGAIN:
+		{
+			clamp(mused.song.fx[mused.fx_bus].crushex.gain, d, 0, 128);
+			mus_set_fx(&mused.mus, &mused.song);
+		}
+		break;
+		
 		case R_CRUSHBITS:
 		{
 			clamp(mused.song.fx[mused.fx_bus].crush.bit_drop, d, 0, 15);
