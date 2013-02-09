@@ -125,7 +125,7 @@ const Menu prefsmenu[] =
 	{ 0, mainmenu, "Animate cursor", NULL, MENU_CHECK, &mused.flags, (void*)ANIMATE_CURSOR, 0 },
 	{ 0, mainmenu, "Hide zeros", NULL, MENU_CHECK, &mused.flags, (void*)HIDE_ZEROS, 0 },
 	{ 0, mainmenu, "Protracker style delete", NULL, MENU_CHECK, &mused.flags, (void*)DELETE_EMPTIES, 0 },
-	{ 0, mainmenu, "Toggle edit on play", NULL, MENU_CHECK, &mused.flags, (void*)TOGGLE_EDIT_ON_STOP, 0 },
+	{ 0, mainmenu, "Toggle edit on stop", NULL, MENU_CHECK, &mused.flags, (void*)TOGGLE_EDIT_ON_STOP, 0 },
 	{ 0, mainmenu, "Center pattern editor", NULL, MENU_CHECK, &mused.flags, (void*)CENTER_PATTERN_EDITOR, 0 },
 	{ 0, mainmenu, "Decimal numbers", NULL, MENU_CHECK, &mused.flags, (void*)SHOW_DECIMALS, 0 },
 	{ 0, mainmenu, "Default pattern length", patternlengthmenu },
