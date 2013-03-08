@@ -85,5 +85,7 @@ void enum_themes();
 void free_themes();
 void update_theme_menu();
 Uint32 mix_colors(Uint32 a, Uint32 b); // result = a * (1.0-b_alpha) + b*(b_alpha)
+void init_resources_dir(void);
+char * query_resource_directory(void);
 
 #endif

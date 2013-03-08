@@ -241,6 +241,55 @@ char *query_resource_directory( void )
 
 	return buffer;
 }
+
+void init_resources_dir(void)
+{
+}
+
+
+#elif WIN32
+
+static char cwd[1000] = "";
+
+void init_resources_dir(void)
+{
+#if RESOURCES_IN_BINARY_DIR
+	if (GetModuleFileName(NULL, cwd, sizeof(cwd)))
+	{
+		// Get the path component
+		
+		for (int i = strlen(cwd) - 1 ; i >= 0 && cwd[i] != '\\' && cwd[i] != '/' ; --i)
+		{
+			cwd[i] = '\0';
+		}
+	}
+#else
+	strncpy(cwd, TOSTRING(RES_PATH), sizeof(cwd));
+#endif	
+}
+
+char * query_resource_directory(void)
+{
+	return cwd;
+}
+
+#else
+
+void init_resources_dir(void)
+{
+#if RESOURCES_IN_BINARY_DIR
+	getcwd(cwd, sizeof(cwd));
+#else
+	strncpy(cwd, TOSTRING(RES_PATH), sizeof(cwd));
+#endif
+}
+
+char * query_resource_directory(void)
+{
+	return cwd;
+}
+
+
 #endif
 
 
@@ -255,31 +304,7 @@ void load_theme(const char *name)
 	Bundle res;
 	char fullpath[1000];
 	
-#ifdef RESOURCES_IN_BINARY_DIR
-	// RES_PATH is relative to klystrack.exe
-#ifdef WIN32
-	char path[1000] = "";
-
-	if (GetModuleFileName(NULL, path, sizeof(path)))
-	{
-		// Get the path component
-		
-		for (int i = strlen(path) - 1 ; i >= 0 && path[i] != '\\' && path[i] != '/' ; --i)
-		{
-			path[i] = '\0';
-		}
-	}
-	
-	snprintf(fullpath, sizeof(fullpath) - 1, "%s" TOSTRING(RES_PATH) "/res/%s", path, tmpname);
-#else
-	snprintf(fullpath, sizeof(fullpath) - 1, "/proc/self/res/%s", tmpname);
-#endif
-	
-#elif __APPLE__
 	snprintf(fullpath, sizeof(fullpath) - 1, "%s/res/%s", query_resource_directory(), tmpname);
-#else
-	snprintf(fullpath, sizeof(fullpath) - 1, TOSTRING(RES_PATH) "/res/%s", tmpname);
-#endif
 	
 	debug("Loading theme '%s'", fullpath);
 	
@@ -409,36 +434,14 @@ void enum_themes()
 {
 	memset(thememenu, 0, sizeof(thememenu));
 	
-#ifdef WIN32
-// RES_PATH is relative to klystrack.exe
-	char path[1000] = "", fullpath[1000];
-	
-	if (GetModuleFileName(NULL, path, sizeof(path)))
-	{
-		// Get the path component (this should be functionized and used by load_theme() and enum_theme()
-		
-		for (int i = strlen(path) - 1 ; i >= 0 && path[i] != '\\' && path[i] != '/' ; --i)
-		{
-			path[i] = '\0';
-		}
-	}
-	
-	snprintf(fullpath, sizeof(fullpath) - 1, "%s" TOSTRING(RES_PATH) "/res", path);
-	DIR *dir = opendir(fullpath);
-	debug("Enumerating themes at " "%s" TOSTRING(RES_PATH) "/res", path);
-#elif __APPLE__
 	char path[1000];
 	snprintf(path, sizeof(path) - 1, "%s/res", query_resource_directory());
 	DIR *dir = opendir(path);
 	debug("Enumerating themes at %s", path);
-#else
-	DIR *dir = opendir(TOSTRING(RES_PATH) "/res");
-	debug("Enumerating themes at " TOSTRING(RES_PATH) "/res");
-#endif
 	
 	if (!dir)
 	{
-		warning("Could not enumerate themes at " TOSTRING(RES_PATH) "/res");
+		warning("Could not enumerate themes at %s", path);
 		return;
 	}
 	
@@ -449,13 +452,8 @@ void enum_themes()
 	{
 		char fullpath[1000];
 	
-#ifdef WIN32
-		snprintf(fullpath, sizeof(fullpath) - 1, "%s" TOSTRING(RES_PATH) "/res/%s", path, de->d_name);
-#elif __APPLE__
 		snprintf(fullpath, sizeof(fullpath) - 1, "%s/res/%s", query_resource_directory(), de->d_name);
-#else
-		snprintf(fullpath, sizeof(fullpath) - 1, TOSTRING(RES_PATH) "/res/%s", de->d_name);
-#endif
+		
 		struct stat attribute;
 		
 		if (stat(fullpath, &attribute) != -1 && !(attribute.st_mode & S_IFDIR))

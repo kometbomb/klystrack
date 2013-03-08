@@ -33,24 +33,9 @@ OTHER DEALINGS IN THE SOFTWARE.
 #include "mused.h"
 #include "keytab.h"
 #include <string.h>
+#include "theme.h"
 
 extern Mused mused;
-
-#ifdef __APPLE__
-#include <CoreFoundation/CoreFoundation.h>
-#endif
-
-#ifdef WIN32
-
-#include "windows.h"
-
-#endif
-
-
-#if __APPLE__
-char *query_resource_directory( void );
-#endif
-
 
 #define MAX_KEYMAPS 64
 #define MAX_KEYTRANS 500
@@ -84,36 +69,14 @@ void enum_keymaps()
 
 	// TODO: remove copypastecode and write enum_dir() function that takes a handler
 	
-#ifdef WIN32
-// RES_PATH is relative to klystrack.exe
-	char path[1000] = "", fullpath[1000];
-	
-	if (GetModuleFileName(NULL, path, sizeof(path)))
-	{
-		// Get the path component (this should be functionized and used by load_theme() and enum_theme()
-		
-		for (int i = strlen(path) - 1 ; i >= 0 && path[i] != '\\' && path[i] != '/' ; --i)
-		{
-			path[i] = '\0';
-		}
-	}
-	
-	snprintf(fullpath, sizeof(fullpath) - 1, "%s" TOSTRING(RES_PATH) "/key", path);
-	DIR *dir = opendir(fullpath);
-	debug("Enumerating keymaps at " "%s" TOSTRING(RES_PATH) "/key", path);
-#elif __APPLE__
 	char path[1000];
 	snprintf(path, sizeof(path) - 1, "%s/key", query_resource_directory());
 	DIR *dir = opendir(path);
 	debug("Enumerating keymaps at %s", path);
-#else
-	DIR *dir = opendir(TOSTRING(RES_PATH) "/key");
-	debug("Enumerating keymaps at " TOSTRING(RES_PATH) "/key");
-#endif
 	
 	if (!dir)
 	{
-		warning("Could not enumerate keymaps at " TOSTRING(RES_PATH) "/key");
+		warning("Could not enumerate keymaps at %s", path);
 		return;
 	}
 	
@@ -130,13 +93,7 @@ void enum_keymaps()
 	{
 		char fullpath[1000];
 	
-#ifdef WIN32
-		snprintf(fullpath, sizeof(fullpath) - 1, "%s" TOSTRING(RES_PATH) "/key/%s", path, de->d_name);
-#elif __APPLE__
 		snprintf(fullpath, sizeof(fullpath) - 1, "%s/key/%s", query_resource_directory(), de->d_name);
-#else
-		snprintf(fullpath, sizeof(fullpath) - 1, TOSTRING(RES_PATH) "/key/%s", de->d_name);
-#endif
 		struct stat attribute;
 		
 		if (stat(fullpath, &attribute) != -1 && !(attribute.st_mode & S_IFDIR))
@@ -262,32 +219,7 @@ void load_keymap(const char *name)
 	}	
 
 	char fullpath[1000];
-	
-#ifdef RESOURCES_IN_BINARY_DIR
-	// RES_PATH is relative to klystrack.exe
-#ifdef WIN32
-	char path[1000] = "";
-
-	if (GetModuleFileName(NULL, path, sizeof(path)))
-	{
-		// Get the path component
-		
-		for (int i = strlen(path) - 1 ; i >= 0 && path[i] != '\\' && path[i] != '/' ; --i)
-		{
-			path[i] = '\0';
-		}
-	}
-	
-	snprintf(fullpath, sizeof(fullpath) - 1, "%s" TOSTRING(RES_PATH) "/key/%s", path, tmpname);
-#else
-	snprintf(fullpath, sizeof(fullpath) - 1, "/proc/self/key/%s", tmpname);
-#endif
-	
-#elif __APPLE__
 	snprintf(fullpath, sizeof(fullpath) - 1, "%s/key/%s", query_resource_directory(), tmpname);
-#else
-	snprintf(fullpath, sizeof(fullpath) - 1, TOSTRING(RES_PATH) "/key/%s", tmpname);
-#endif
 
 	strncpy(mused.keymapname, tmpname, sizeof(mused.themename));
 	update_keymap_menu();
