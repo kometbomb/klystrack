@@ -50,6 +50,7 @@ OTHER DEALINGS IN THE SOFTWARE.
 #include "mymsg.h"
 #include "key.h"
 #include "nostalgy.h"
+#include "theme.h"
 
 #ifdef MIDI
 
@@ -240,6 +241,7 @@ void deinit_icon()
 int main(int argc, char **argv)
 {
 	init_genrand(time(NULL));
+	init_resources_dir();
 	debug("Starting %s", VERSION_STRING);
 
 #ifdef DEBUG
