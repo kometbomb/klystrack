@@ -275,6 +275,8 @@ char * query_resource_directory(void)
 
 #else
 
+static char cwd[1000] = "";
+
 void init_resources_dir(void)
 {
 #if RESOURCES_IN_BINARY_DIR
