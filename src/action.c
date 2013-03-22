@@ -169,7 +169,7 @@ void play(void *from_cursor, void *unused1, void *unused2)
 	enable_callback(true);
 	mus_set_song(&mused.mus, &mused.song, from_cursor ? mused.current_sequencepos : 0);
 	mused.flags |= SONG_PLAYING;
-	mused.flags &= ~EDIT_MODE;
+	if (mused.flags & STOP_EDIT_ON_PLAY) mused.flags &= ~EDIT_MODE;
 }
 
 
@@ -197,6 +197,7 @@ void stop(void *unused1, void *unused2, void *unused3)
 		mused.song.song_length = mused.loop_store_length;
 		mused.song.loop_point = mused.loop_store_loop;
 	}
+	
 	mused.flags &= ~(SONG_PLAYING | LOOP_POSITION);
 }
 
