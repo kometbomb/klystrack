@@ -389,6 +389,7 @@ int main(int argc, char **argv)
 				}
 				break;
 				
+				case SDL_KEYUP:
 				case SDL_KEYDOWN:
 				{
 #ifdef DUMPKEYS
@@ -399,7 +400,7 @@ int main(int argc, char **argv)
 
 					// Special multimedia keys look like a-z keypresses but the unicode value is zero
 					// We don't care about the special keys and don't want fake keypresses either
-					if (e.key.keysym.unicode == 0 && e.key.keysym.sym >= SDLK_a && e.key.keysym.sym <= SDLK_z)
+					if (e.type == SDL_KEYDOWN && e.key.keysym.unicode == 0 && e.key.keysym.sym >= SDLK_a && e.key.keysym.sym <= SDLK_z)
 						break;
 						
 					// key events should go only to the edited text field

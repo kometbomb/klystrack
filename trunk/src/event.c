@@ -414,9 +414,9 @@ void instrument_add_param(int a)
 }
 
 
-static void play_the_jams(int sym, int chn)
+static void play_the_jams(int sym, int chn, int state)
 {
-	if (sym == SDLK_SPACE)
+	if (sym == SDLK_SPACE && state == 0)
 	{
 		for (int i = 0 ; i < MUS_MAX_CHANNELS ; ++i)
 			cyd_enable_gate(mused.mus.cyd, &mused.mus.cyd->channel[i], 0);
@@ -426,12 +426,19 @@ static void play_the_jams(int sym, int chn)
 		int note = find_note(sym, mused.octave);
 		if (note != -1) 
 		{
-			if (chn == -1 && !(mused.flags & MULTICHANNEL_PREVIEW))
+			/*if (chn == -1 && !(mused.flags & MULTICHANNEL_PREVIEW))
 				chn = 0;
 				
-			mus_trigger_instrument(&mused.mus, chn, &mused.song.instrument[mused.current_instrument], note);
+			mus_trigger_instrument(&mused.mus, chn, &mused.song.instrument[mused.current_instrument], note);*/
+			
+			SDL_Event e;
+			e.type = state ? MSG_NOTEON : MSG_NOTEOFF;
+			e.user.code = note;
+			e.user.data1 = NULL;
+			SDL_PushEvent(&e);
 		}
 	}
+	
 }
 
 
@@ -515,11 +522,17 @@ void edit_instrument_event(SDL_Event *e)
 		
 			default:
 			{
-				play_the_jams(e->key.keysym.sym, -1);
+				play_the_jams(e->key.keysym.sym, -1, 1);
 			}
 			break;
 		}
 		
+		break;
+		
+		case SDL_KEYUP:
+		
+			play_the_jams(e->key.keysym.sym, -1, 0);
+			
 		break;
 	}
 }
@@ -1240,7 +1253,7 @@ void pattern_event(SDL_Event *e)
 					
 					if (mused.flags & SONG_PLAYING) stop(0, 0, 0);
 					
-					play_the_jams(e->key.keysym.sym, -1);
+					play_the_jams(e->key.keysym.sym, -1, 1);
 				}
 			
 				if (!(mused.flags & EDIT_MODE)) 
@@ -1249,7 +1262,7 @@ void pattern_event(SDL_Event *e)
 				
 					if (mused.current_patternx == PED_NOTE)
 					{
-						play_the_jams(e->key.keysym.sym, mused.current_sequencetrack);
+						play_the_jams(e->key.keysym.sym, mused.current_sequencetrack, 1);
 					}
 					
 					break;
@@ -1280,7 +1293,7 @@ void pattern_event(SDL_Event *e)
 							int note = find_note(e->key.keysym.sym, mused.octave);
 							if (note != -1) 
 							{
-								play_the_jams(e->key.keysym.sym, mused.current_sequencetrack);
+								play_the_jams(e->key.keysym.sym, mused.current_sequencetrack, 1);
 								
 								snapshot(S_T_PATTERN);
 								
@@ -1453,6 +1466,12 @@ void pattern_event(SDL_Event *e)
 		}
 		
 		break;
+		
+		case SDL_KEYUP:
+		
+			play_the_jams(e->key.keysym.sym, -1, 0);
+			
+		break;
 	}
 }
 
@@ -1591,6 +1610,12 @@ void edit_program_event(SDL_Event *e)
 			break;
 		}
 		
+		break;
+		
+		case SDL_KEYUP:
+		
+			play_the_jams(e->key.keysym.sym, -1, 0);
+			
 		break;
 	}
 }
@@ -1817,10 +1842,16 @@ void fx_event(SDL_Event *e)
 			break;
 		
 			default: 
-				play_the_jams(e->key.keysym.sym, -1);
+				play_the_jams(e->key.keysym.sym, -1, 1);
 			break;
 		}
 		
+		break;
+		
+		case SDL_KEYUP:
+		
+			play_the_jams(e->key.keysym.sym, -1, 0);
+			
 		break;
 	}
 }
@@ -2040,13 +2071,16 @@ void songinfo_event(SDL_Event *e)
 }
 
 
+static int note_playing[MUS_MAX_CHANNELS] = {-1};
+
+
 static int find_playing_note(int n)
 {
 	cyd_lock(&mused.cyd, 1);
 	
 	for (int i = 0 ; i < MUS_MAX_CHANNELS && i < mused.cyd.n_channels ; ++i)
 	{
-		if ((mused.cyd.channel[i].flags & CYD_CHN_ENABLE_GATE) && mused.mus.channel[i].last_note == (n << 8) && mused.mus.channel[i].instrument == &mused.song.instrument[mused.current_instrument])
+		if (note_playing[i] == n && mused.mus.channel[i].instrument == &mused.song.instrument[mused.current_instrument])
 		{
 			cyd_lock(&mused.cyd, 0);
 			return i;
@@ -2066,7 +2100,8 @@ void note_event(SDL_Event *e)
 		case MSG_NOTEON:
 			if (find_playing_note(e->user.code) == -1 && e->user.code < FREQ_TAB_SIZE)
 			{
-				mus_trigger_instrument(&mused.mus, -1, &mused.song.instrument[mused.current_instrument], e->user.code);
+				int c = mus_trigger_instrument(&mused.mus, -1, &mused.song.instrument[mused.current_instrument], e->user.code);
+				note_playing[c] = e->user.code;
 			}
 			break;
 			
@@ -2076,6 +2111,7 @@ void note_event(SDL_Event *e)
 			if ((c = find_playing_note(e->user.code)) != -1)
 			{
 				mus_release(&mused.mus, c);
+				note_playing[c] = -1;
 			}
 		}
 		break;
