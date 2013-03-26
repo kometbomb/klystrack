@@ -201,7 +201,7 @@ void wavetable_create_one_cycle(void *unused1, void *unused2, void *unused3)
 	
 	for (int s = 0 ; s < new_length ; ++s)
 	{
-		new_data[s] = sin(s * M_PI * 2 / new_length) * 8192;
+		new_data[s] = sin(s * M_PI * 2 / new_length) * 32767;
 	}
 	
 	if (w->data) free(w->data);
