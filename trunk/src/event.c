@@ -426,16 +426,24 @@ static void play_the_jams(int sym, int chn, int state)
 		int note = find_note(sym, mused.octave);
 		if (note != -1) 
 		{
-			/*if (chn == -1 && !(mused.flags & MULTICHANNEL_PREVIEW))
-				chn = 0;
+			if (mused.flags & MULTIKEY_JAMMING)
+			{
+				SDL_Event e;
+				e.type = state ? MSG_NOTEON : MSG_NOTEOFF;
+				e.user.code = note;
+				e.user.data1 = NULL;
+				SDL_PushEvent(&e);
+			}
+			else
+			{
+				if (state == 1)
+				{
+					if (chn == -1 && !(mused.flags & MULTICHANNEL_PREVIEW))
+						chn = 0;
 				
-			mus_trigger_instrument(&mused.mus, chn, &mused.song.instrument[mused.current_instrument], note);*/
-			
-			SDL_Event e;
-			e.type = state ? MSG_NOTEON : MSG_NOTEOFF;
-			e.user.code = note;
-			e.user.data1 = NULL;
-			SDL_PushEvent(&e);
+					mus_trigger_instrument(&mused.mus, chn, &mused.song.instrument[mused.current_instrument], note);
+				}
+			}
 		}
 	}
 	
