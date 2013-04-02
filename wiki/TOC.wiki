@@ -23,6 +23,7 @@
     * [ModuleImport Importing modules]
     * [Commands]
     * [Tweaks]
+    * [Tutorials]
     * [FAQ FAQ]
   * *Developers*
     * [HowToReplay Using music in your projects]
