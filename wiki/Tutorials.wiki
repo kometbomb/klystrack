@@ -3,4 +3,4 @@
 
 = Tutorials =
 
-n00bstar has written [http://n00bstar.blogspot.ca/search/label/klystrack excellent tutorials] on how to use klystrack that also explain basics chiptune concepts.
+n00bstar has written [http://n00bstar.blogspot.ca/p/klystrack-tutorials.html excellent tutorials] that also explain how to create nice instruments, how that relates to music theory, mixing and basic chiptune concepts!
