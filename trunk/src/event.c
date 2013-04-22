@@ -114,6 +114,12 @@ void instrument_add_param(int a)
 		
 		break;
 		
+		case P_FINETUNE:
+		
+		clamp(i->finetune, a, -128, 127);
+		
+		break;
+		
 		case P_LOCKNOTE:
 		
 		flipbit(i->flags, MUS_INST_LOCK_NOTE);

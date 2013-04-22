@@ -974,9 +974,12 @@ void instrument_view(SDL_Surface *dest_surface, const SDL_Rect *dest, const SDL_
 		
 		inst_text(event, &note, P_BASENOTE, "BASE", "%s", notename(inst->base_note), 3);
 		note.x += note.w + 2;
+		note.w = frame.w / 3;
+		inst_text(event, &note, P_FINETUNE, "", "%+4d", MAKEPTR(inst->finetune), 4);
+		note.x += note.w + 2;
 		note.w = frame.w - note.x;
 		
-		inst_flags(event, &note, P_LOCKNOTE, "LOCK", &inst->flags, MUS_INST_LOCK_NOTE);
+		inst_flags(event, &note, P_LOCKNOTE, "L", &inst->flags, MUS_INST_LOCK_NOTE);
 		inst_flags(event, &r, P_DRUM, "DRUM", &inst->flags, MUS_INST_DRUM);
 		update_rect(&frame, &r);
 		inst_flags(event, &r, P_KEYSYNC, "KSYNC", &inst->cydflags, CYD_CHN_ENABLE_KEY_SYNC);

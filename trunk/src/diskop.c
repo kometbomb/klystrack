@@ -124,6 +124,7 @@ static void save_instrument_inner(FILE *f, MusInstrument *inst, const CydWavetab
 	_VER_WRITE(&inst->pwm_depth, 0); 
 	_VER_WRITE(&inst->slide_speed, 0);
 	_VER_WRITE(&inst->base_note, 0);
+	_VER_WRITE(&inst->finetune, 0);
 	Uint8 len = strlen(inst->name);
 	_VER_WRITE(&len, 0);
 	if (len)
