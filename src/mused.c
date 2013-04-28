@@ -353,7 +353,7 @@ void mirror_flags()
 	// We need to mirror the flags to the corresponding Cyd flags
 	for (int fx = 0 ; fx < CYD_MAX_FX_CHANNELS ; ++fx)
 	{
-		mused.cyd.fx[0].flags = mused.song.fx[0].flags;
+		mused.cyd.fx[fx].flags = mused.song.fx[fx].flags;
 	}
 	
 	mused.mus.volume = mused.song.master_volume;
