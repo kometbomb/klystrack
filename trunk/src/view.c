@@ -523,6 +523,7 @@ void info_line(SDL_Surface *dest_surface, const SDL_Rect *dest, const SDL_Event 
 				"Select instrument",
 				"Edit instrument name",
 				"Base note",
+				"Finetune",
 				"Lock to base note",
 				"Drum",
 				"Sync oscillator on keydown",
