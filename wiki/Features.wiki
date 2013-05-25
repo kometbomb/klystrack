@@ -13,4 +13,4 @@
   * Envelope, ring modulation, filter and more for each channel
   * Stereo output with wave export
   * Reverb, distortion, chorus and other [Effects effects]
-  * [ModuleImport Song import] for Protracker (with samples) and AHX (including instruments)
+  * [ModuleImport Song import] for Protracker, Fasttracker II (with samples), AHX (including instruments) and the Cave Story music format (note data only)
