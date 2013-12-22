@@ -136,6 +136,7 @@ typedef struct
 	MusPattern *stat_pattern[MUS_MAX_CHANNELS];
 	MusChannel *channel;
 	int stat_pattern_number[MUS_MAX_CHANNELS], stat_note[MUS_MAX_CHANNELS];
+	Uint32 time_played;
 	/* ---- */
 	GfxSurface *slider_bevel, *vu_meter, *analyzer, *logo, *catometer;
 	Font smallfont, largefont, tinyfont, tinyfont_sequence_counter, tinyfont_sequence_normal;

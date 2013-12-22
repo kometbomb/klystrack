@@ -47,6 +47,7 @@ OTHER DEALINGS IN THE SOFTWARE.
 #include "view/pattern.h"
 #include "view/sequence.h"
 #include "view/wavetableview.h"
+#include "view/timer.h"
 #include "mymsg.h"
 #include "key.h"
 #include "nostalgy.h"
@@ -111,6 +112,8 @@ static const View pattern_view_tab[] =
 #define SONG_INFO3_H (15+10)
 #define TOOLBAR_H 12
 #define CLASSIC_SONG_INFO_H (SONG_INFO1_H+SONG_INFO2_H+SONG_INFO3_H+TOOLBAR_H)
+#define TIMER_W (5*7+4)
+#define SEQ_VIEW_INFO_H (24+10)
 
 static const View classic_view_tab[] =
 {
@@ -122,15 +125,14 @@ static const View classic_view_tab[] =
 	{{0-SCROLLBAR, 0, SCROLLBAR, CLASSIC_SONG_INFO_H - 25}, slider, &mused.sequence_slider_param, EDITSEQUENCE},
 	{{CLASSIC_SONG_INFO, 0, 0-SCROLLBAR, CLASSIC_SONG_INFO_H - 25}, sequence_spectrum_view, NULL, EDITSEQUENCE},
 	{{CLASSIC_SONG_INFO, CLASSIC_SONG_INFO_H-25, - PLAYSTOP_INFO_W, 25}, bevel_view, (void*)BEV_BACKGROUND, -1},
-	{{CLASSIC_SONG_INFO + 2, CLASSIC_SONG_INFO_H - 25 + 2, -2 - PLAYSTOP_INFO_W, 10}, song_name_view, NULL, -1},
+	{{CLASSIC_SONG_INFO + 2, CLASSIC_SONG_INFO_H - 25 + 2, -2 - PLAYSTOP_INFO_W - TIMER_W - 1, 10}, song_name_view, NULL, -1},
+	{{-2 - PLAYSTOP_INFO_W - TIMER_W, CLASSIC_SONG_INFO_H - 25 + 2, TIMER_W, 12}, timer_view, NULL, -1},
 	{{CLASSIC_SONG_INFO + 2, CLASSIC_SONG_INFO_H - 25 + 2 + 10 + 1, -2 - PLAYSTOP_INFO_W, 10}, instrument_name_view, (void*)1, -1},
 	{{0, CLASSIC_SONG_INFO_H, 0-SCROLLBAR, -INFO}, pattern_view2, NULL, EDITPATTERN},
 	{{0 - SCROLLBAR, CLASSIC_SONG_INFO_H, SCROLLBAR, -INFO}, slider, &mused.pattern_slider_param, EDITPATTERN},
 	{{0, 0 - INFO, 0, INFO }, info_line, NULL, -1},
 	{{0, 0, 0, 0}, NULL}
 };
-
-#define SEQ_VIEW_INFO_H (24+10)
 
 static const View sequence_view_tab[] =
 {
@@ -139,7 +141,8 @@ static const View sequence_view_tab[] =
 	{{CLASSIC_SONG_INFO*2,0,CLASSIC_SONG_INFO,SEQ_VIEW_INFO_H}, songinfo3_view, NULL, EDITSONGINFO},
 	{{CLASSIC_SONG_INFO*3,0,0,SEQ_VIEW_INFO_H}, playstop_view, NULL, EDITSONGINFO},
 	{{0, SEQ_VIEW_INFO_H, -130, 14}, bevel_view, (void*)BEV_BACKGROUND, -1},
-	{{2, SEQ_VIEW_INFO_H+2, -130-2, 10}, song_name_view, NULL, -1},
+	{{2, SEQ_VIEW_INFO_H+2, -130-2-(TIMER_W+1), 10}, song_name_view, NULL, -1},
+	{{-130-2-TIMER_W, SEQ_VIEW_INFO_H+2, TIMER_W, 10}, timer_view, NULL, -1},
 	{{-130, SEQ_VIEW_INFO_H, 130, 14}, instrument_disk_view, MAKEPTR(OD_T_SONG), -1},
 	{{0, SEQ_VIEW_INFO_H+14, 0-SCROLLBAR, -INFO}, sequence_view2, NULL, EDITSEQUENCE},
 	{{0-SCROLLBAR, SEQ_VIEW_INFO_H+14, SCROLLBAR, -INFO}, slider, &mused.sequence_slider_param, EDITSEQUENCE},
@@ -235,7 +238,7 @@ void deinit_icon()
 
 // mingw kludge for console output
 #if defined(DEBUG) && defined(WIN32)
-#undef main
+//#undef main
 #endif
 
 int main(int argc, char **argv)
@@ -475,7 +478,7 @@ int main(int argc, char **argv)
 		
 		int prev_position = mused.stat_song_position;
 		
-		if (active) mus_poll_status(&mused.mus, &mused.stat_song_position, mused.stat_pattern_position, mused.stat_pattern, channel, mused.vis.cyd_env, mused.stat_note);
+		if (active) mus_poll_status(&mused.mus, &mused.stat_song_position, mused.stat_pattern_position, mused.stat_pattern, channel, mused.vis.cyd_env, mused.stat_note, &mused.time_played);
 		
 		if (active && (got_event || gfx_domain_is_next_frame(domain) || prev_position != mused.stat_song_position))
 		{
@@ -557,12 +560,14 @@ int main(int argc, char **argv)
 	//Mix_CloseAudio();
 	
 	cyd_unregister(&mused.cyd);
+	debug("cyd_deinit");
 	cyd_deinit(&mused.cyd);
 	
 	gfx_domain_free(domain);
 	
 	save_config(TOSTRING(CONFIG_PATH));
 	
+	debug("deinit");
 	deinit();
 	
 #ifdef WIN32
