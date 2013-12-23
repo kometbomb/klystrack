@@ -507,156 +507,161 @@ void info_line(SDL_Surface *dest_surface, const SDL_Rect *dest, const SDL_Event 
 	
 	char text[200]="";
 	
-	switch (mused.focus)
+	if (mused.info_message[0] != '\0')
+		strncpy(text, mused.info_message, sizeof text);
+	else
 	{
-		case EDITPROG:
+		switch (mused.focus)
 		{
-			Uint16 inst = mused.song.instrument[mused.current_instrument].program[mused.current_program_step];
-			get_command_desc(text, inst);
-		}
-		break;
-		
-		case EDITINSTRUMENT:
-		{
-			static const char * param_desc[] = 
+			case EDITPROG:
 			{
-				"Select instrument",
-				"Edit instrument name",
-				"Base note",
-				"Finetune",
-				"Lock to base note",
-				"Drum",
-				"Sync oscillator on keydown",
-				"Reverse vibrato bit",
-				"Set PW on keydown",
-				"Set cutoff on keydown",
-				"Slide speed",
-				"Pulse wave",
-				"Pulse width",
-				"Saw wave",
-				"Triangle wave",
-				"Noise",
-				"Metallic noise",
-				"LFSR enable",
-				"LFSR type",
-				"Quarter frequency",
-				"Wavetable",
-				"Wavetable entry",
-				"Override volume envelope for wavetable",
-				"Lock wave to base note",
-				"Volume",
-				"Relative volume commands",
-				"Envelope attack",
-				"Envelope decay",
-				"Envelope sustain",
-				"Envelope release",
-				"Buzz",
-				"Buzz semi",
-				"Buzz fine",
-				"Buzz shape",
-				"Sync channel",
-				"Sync master channel",
-				"Ring modulation",
-				"Ring modulation source",
-				"Enable filter",
-				"Filter type",
-				"Filter cutoff frequency",
-				"Filter resonance",
-				"Send signal to FX chain",
-				"FX bus",
-				"Vibrato speed",
-				"Vibrato depth",
-				"Vibrato shape",
-				"Vibrato delay",
-				"Pulse width modulation speed",
-				"Pulse width modulation depth",
-				"Pulse width modulation shape",
-				"Program period",
-				"Don't restart program on keydown"
-			};
-			strcpy(text, param_desc[mused.selected_param]);
-		}
-		
-		break;
-		
-		case EDITFX:
-		{
-			static const char * param_desc[] = 
+				Uint16 inst = mused.song.instrument[mused.current_instrument].program[mused.current_program_step];
+				get_command_desc(text, inst);
+			}
+			break;
+			
+			case EDITINSTRUMENT:
 			{
-				"Enable multiplex",
-				"Multiplex period",
-				"Pitch inaccuracy",
-				"FX bus",
-				"Enable bitcrusher",
-				"Drop bits",
-				"Downsample",
-				"Dither",
-				"Crush gain",
-				"Enable stereo chorus",
-				"Min. delay",
-				"Max. delay",
-				"Phase separation",
-				"Modulation frequency",
-				"Enable reverb",
-				"Room size",
-				"Reverb volume",
-				"Decay",
-				"Stereo spread",
-				"Tap delay",
-				"Tap gain"
-			};
-			
-			int i = mused.edit_reverb_param;
-			
-			if (i >= R_DELAY)
-				i = (i - R_DELAY) % 2 + R_DELAY;
-			
-			strcpy(text, param_desc[i]);
-		} break;
-		
-		case EDITPATTERN:
-			if (get_current_pattern())
-			{
-				if (mused.current_patternx >= PED_COMMAND1)
+				static const char * param_desc[] = 
 				{
-					Uint16 inst = mused.song.pattern[current_pattern()].step[current_patternstep()].command;
-					
-					if (inst != 0)
-						get_command_desc(text, inst);
-					else
-						strcpy(text, "Command");
-				}
-				else if (mused.current_patternx == PED_VOLUME1 || mused.current_patternx == PED_VOLUME2)
+					"Select instrument",
+					"Edit instrument name",
+					"Base note",
+					"Finetune",
+					"Lock to base note",
+					"Drum",
+					"Sync oscillator on keydown",
+					"Reverse vibrato bit",
+					"Set PW on keydown",
+					"Set cutoff on keydown",
+					"Slide speed",
+					"Pulse wave",
+					"Pulse width",
+					"Saw wave",
+					"Triangle wave",
+					"Noise",
+					"Metallic noise",
+					"LFSR enable",
+					"LFSR type",
+					"Quarter frequency",
+					"Wavetable",
+					"Wavetable entry",
+					"Override volume envelope for wavetable",
+					"Lock wave to base note",
+					"Volume",
+					"Relative volume commands",
+					"Envelope attack",
+					"Envelope decay",
+					"Envelope sustain",
+					"Envelope release",
+					"Buzz",
+					"Buzz semi",
+					"Buzz fine",
+					"Buzz shape",
+					"Sync channel",
+					"Sync master channel",
+					"Ring modulation",
+					"Ring modulation source",
+					"Enable filter",
+					"Filter type",
+					"Filter cutoff frequency",
+					"Filter resonance",
+					"Send signal to FX chain",
+					"FX bus",
+					"Vibrato speed",
+					"Vibrato depth",
+					"Vibrato shape",
+					"Vibrato delay",
+					"Pulse width modulation speed",
+					"Pulse width modulation depth",
+					"Pulse width modulation shape",
+					"Program period",
+					"Don't restart program on keydown"
+				};
+				strcpy(text, param_desc[mused.selected_param]);
+			}
+			
+			break;
+			
+			case EDITFX:
+			{
+				static const char * param_desc[] = 
 				{
-					Uint16 vol = mused.song.pattern[current_pattern()].step[current_patternstep()].volume;
-					
-					if (vol != MUS_NOTE_NO_VOLUME && vol > MAX_VOLUME)
+					"Enable multiplex",
+					"Multiplex period",
+					"Pitch inaccuracy",
+					"FX bus",
+					"Enable bitcrusher",
+					"Drop bits",
+					"Downsample",
+					"Dither",
+					"Crush gain",
+					"Enable stereo chorus",
+					"Min. delay",
+					"Max. delay",
+					"Phase separation",
+					"Modulation frequency",
+					"Enable reverb",
+					"Room size",
+					"Reverb volume",
+					"Decay",
+					"Stereo spread",
+					"Tap delay",
+					"Tap gain"
+				};
+				
+				int i = mused.edit_reverb_param;
+				
+				if (i >= R_DELAY)
+					i = (i - R_DELAY) % 2 + R_DELAY;
+				
+				strcpy(text, param_desc[i]);
+			} break;
+			
+			case EDITPATTERN:
+				if (get_current_pattern())
+				{
+					if (mused.current_patternx >= PED_COMMAND1)
 					{
-						switch (vol & 0xf0)
+						Uint16 inst = mused.song.pattern[current_pattern()].step[current_patternstep()].command;
+						
+						if (inst != 0)
+							get_command_desc(text, inst);
+						else
+							strcpy(text, "Command");
+					}
+					else if (mused.current_patternx == PED_VOLUME1 || mused.current_patternx == PED_VOLUME2)
+					{
+						Uint16 vol = mused.song.pattern[current_pattern()].step[current_patternstep()].volume;
+						
+						if (vol != MUS_NOTE_NO_VOLUME && vol > MAX_VOLUME)
 						{
-							case MUS_NOTE_VOLUME_FADE_UP:
-								strcpy(text, "Fade volume up");
-								break;
-								
-							case MUS_NOTE_VOLUME_FADE_DN:
-								strcpy(text, "Fade volume down");
-								break;
+							switch (vol & 0xf0)
+							{
+								case MUS_NOTE_VOLUME_FADE_UP:
+									strcpy(text, "Fade volume up");
+									break;
+									
+								case MUS_NOTE_VOLUME_FADE_DN:
+									strcpy(text, "Fade volume down");
+									break;
+							}
 						}
+						else
+							strcpy(text, "Volume");
 					}
 					else
-						strcpy(text, "Volume");
-				}
-				else
-				{
-					static const char *pattern_txt[] =
 					{
-						"Note", "Instrument", "Instrument", "", "", "Legato", "Slide", "Vibrato"
-					};
-					
-					strcpy(text, pattern_txt[mused.current_patternx]);
+						static const char *pattern_txt[] =
+						{
+							"Note", "Instrument", "Instrument", "", "", "Legato", "Slide", "Vibrato"
+						};
+						
+						strcpy(text, pattern_txt[mused.current_patternx]);
+					}
 				}
-			}
-		break;
+			break;
+		}
 	}
 	
 	console_write(mused.console,text);

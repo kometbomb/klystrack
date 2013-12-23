@@ -34,6 +34,7 @@ OTHER DEALINGS IN THE SOFTWARE.
 #include "edit.h"
 #include "key.h"
 #include "view/wavetableview.h"
+#include <stdarg.h>
 
 extern Mused mused;
 extern Menu editormenu[];
@@ -239,6 +240,8 @@ void init(MusInstrument *instrument, MusPattern *pattern, MusSeqPattern sequence
 	debug("init");
 	
 	memset(&mused, 0, sizeof(mused));
+	
+	set_info_message("Welcome to klystrack!");
 	
 	mused.flags = MULTICHANNEL_PREVIEW|ANIMATE_CURSOR|EDIT_MODE|SHOW_LOGO|CENTER_PATTERN_EDITOR|FOLLOW_PLAY_POSITION;
 	mused.visible_columns = VC_INSTRUMENT | VC_COMMAND;
@@ -493,4 +496,26 @@ void change_visualizer(int vis)
 
 	for (int i = 0 ; analyzermenu[i].parent ; ++i)
 		analyzermenu[i].flags = (analyzermenu[i].flags & ~MENU_BULLET) | (mused.current_visualizer == CASTPTR(int, analyzermenu[i].p1) ? MENU_BULLET : 0);
+}
+
+
+static Uint32 info_message_cb(Uint32 interval, void *param)
+{
+	strcpy(mused.info_message, "");
+	SDL_RemoveTimer(mused.info_message_timer);
+	mused.info_message_timer = 0;
+	return 0;
+}
+
+void set_info_message(const char *message, ...)
+{
+	if (mused.info_message_timer) 
+		SDL_RemoveTimer(mused.info_message_timer);
+		
+	va_list args;
+	va_start(args, message);
+	vsnprintf(mused.info_message, sizeof(mused.info_message), message, args);
+	va_end(args);
+	
+	mused.info_message_timer = SDL_AddTimer(5000, info_message_cb, NULL);
 }
