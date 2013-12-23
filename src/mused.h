@@ -138,6 +138,8 @@ typedef struct
 	int stat_pattern_number[MUS_MAX_CHANNELS], stat_note[MUS_MAX_CHANNELS];
 	Uint32 time_played;
 	/* ---- */
+	char info_message[256];
+	SDL_TimerID info_message_timer;
 	GfxSurface *slider_bevel, *vu_meter, *analyzer, *logo, *catometer;
 	Font smallfont, largefont, tinyfont, tinyfont_sequence_counter, tinyfont_sequence_normal;
 	
@@ -210,5 +212,6 @@ int current_patternstep();
 MusStep * get_current_step();
 MusPattern * get_current_pattern();
 void change_visualizer(int vis);
+void set_info_message(const char *string, ...)  __attribute__ ((format (printf, 1, 2)));
 
 #endif

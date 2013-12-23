@@ -82,6 +82,7 @@ void select_pattern_param(void *id, void *position, void *track)
 void select_instrument_page(void *page, void *unused1, void *unused2)
 {
 	mused.instrument_page = CASTPTR(int,page) * 10;
+	set_info_message("Selected instrument bank %d-%d", mused.instrument_page, mused.instrument_page + 9);
 }
 
 
@@ -754,6 +755,8 @@ void flip_bit_action(void *a, void *b, void *c)
 void set_note_jump(void *steps, void *unused1, void *unused2)
 {
 	mused.note_jump = CASTPTR(int, steps);
+	
+	set_info_message("Note jump set to %d", mused.note_jump);
 }
 
 
