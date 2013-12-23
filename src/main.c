@@ -187,10 +187,12 @@ static void menu_close_hook(void)
 }
 
 
-void my_open_menu()
+void my_open_menu(const Menu *menu, const Menu *action)
 {
+	debug("Menu opened");
+	
 	change_mode(MENU);
-	open_menu(mainmenu, menu_close_hook, shortcuts, &mused.headerfont, &mused.headerfont_selected, &mused.menufont, &mused.menufont_selected, &mused.shortcutfont, &mused.shortcutfont_selected, mused.slider_bevel->surface);
+	open_menu(menu, action, menu_close_hook, shortcuts, &mused.headerfont, &mused.headerfont_selected, &mused.menufont, &mused.menufont_selected, &mused.shortcutfont, &mused.shortcutfont_selected, mused.slider_bevel->surface);
 }
 
 
@@ -238,7 +240,7 @@ void deinit_icon()
 
 // mingw kludge for console output
 #if defined(DEBUG) && defined(WIN32)
-//#undef main
+#undef main
 #endif
 
 int main(int argc, char **argv)
@@ -370,7 +372,7 @@ int main(int argc, char **argv)
 					e.button.y /= domain->scale;
 					if (e.button.button == SDL_BUTTON_RIGHT)
 					{
-						my_open_menu();
+						my_open_menu(mainmenu, NULL);
 					}
 					else if (e.button.button == SDL_BUTTON_LEFT && mused.mode == MENU)
 					{
@@ -512,7 +514,13 @@ int main(int argc, char **argv)
 					
 					if (menu_closed) 
 					{
+						const Menu *cm = get_current_menu();
+						const Menu *cm_action = get_current_menu_action();
+					
 						close_menu();
+						
+						if (SDL_GetModState() & KMOD_SHIFT)
+							my_open_menu(cm, cm_action);
 					}
 				}
 				else

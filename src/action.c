@@ -43,6 +43,7 @@ OTHER DEALINGS IN THE SOFTWARE.
 
 extern Mused mused;
 extern GfxDomain *domain;
+extern const Menu mainmenu[];
 extern Menu pixelmenu[];
 extern Menu patternlengthmenu[];
 
@@ -742,7 +743,7 @@ void kill_wavetable_entry(void *a, void*b, void*c)
 
 void open_menu_action(void*a,void*b,void*c)
 {
-	my_open_menu();
+	my_open_menu(mainmenu, NULL);
 }
 
 
