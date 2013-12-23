@@ -64,6 +64,7 @@ static const InstructionDesc instruction_desc[] =
 	{MUS_FX_SET_SPEED, 0x7f00, "Set speed", "Speed", -1, -1},
 	{MUS_FX_SET_RATE, 0x7f00, "Set rate", "Rate", -1, -1},
 	{MUS_FX_LOOP_PATTERN, 0x7f00, "Loop pattern", "PatLoop", -1, -1},
+	{MUS_FX_SKIP_PATTERN, 0x7f00, "Skip pattern", "PatSkip", -1, -1},
 	{MUS_FX_TRIGGER_RELEASE, 0x7f00, "Trigger release", "Release", -1, -1},
 	{MUS_FX_RESTART_PROGRAM, 0x7f00, "Restart program", "Restart", 0, 0},
 	{MUS_FX_FADE_VOLUME, 0x7f00, "Fade volume", "VolFade", -1, -1},
