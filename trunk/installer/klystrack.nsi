@@ -37,7 +37,6 @@ SectionIn RO
   File zip\data\SDL.dll
   File zip\data\SDL.txt
   File zip\data\SDL_image.txt
-  File zip\data\SDL_mixer.dll
   File zip\data\SDL_image.dll
   File zip\data\zlib1.dll
   File zip\data\libpng15-15.dll
@@ -137,7 +136,6 @@ Section Uninstall
   Delete SDL.dll
   Delete SDL.txt
   Delete SDL_image.txt
-  Delete SDL_mixer.dll
   Delete SDL_image.dll
   Delete zlib1.dll
   Delete libpng15-15.dll
