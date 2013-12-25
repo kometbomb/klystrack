@@ -176,7 +176,7 @@ ifdef COMSPEC
 	@cp -f zip/klystrack.zip zip/klystrack-`cat src/version`-win32.zip
 else
 	-@rm -f zip/data/Makefile
-	@cd zip; cp -r data klystrack-`cat ../src/version` ; rm -f $(ARCHIVE); $(ZIP) klystrack-`cat ../src/version`.tar.gz klystrack-`cat ../src/version` ; rm -rf klystrack-`cat ../src/version`
+	cd zip; cp -r data klystrack-`cat ../src/version` ; rm -f $(ARCHIVE); $(ZIP) klystrack-`cat ../src/version`.tar.gz klystrack-`cat ../src/version` ; rm -rf klystrack-`cat ../src/version`
 	@cp -f linux/Makefile zip/data
 endif
 	
