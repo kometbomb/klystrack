@@ -394,7 +394,23 @@ int save_song(FILE *f)
 			FIX_ENDIAN(temp.rvb.tap[i].delay);
 		}
 		
-		fwrite(&temp, 1, sizeof(temp), f);
+		_VER_WRITE(&temp.flags, 0);
+		_VER_WRITE(&temp.crush.bit_drop, 0);
+		_VER_WRITE(&temp.chr.rate, 0);
+		_VER_WRITE(&temp.chr.min_delay, 0);
+		_VER_WRITE(&temp.chr.max_delay, 0);
+		_VER_WRITE(&temp.chr.sep, 0);
+		
+		_VER_WRITE(&temp.rvb.spread, 0);
+		
+		for (int i = 0 ; i < CYDRVB_TAPS ; ++i)	
+		{
+			_VER_WRITE(&temp.rvb.tap[i].delay, 0);
+			_VER_WRITE(&temp.rvb.tap[i].gain, 0);
+		}
+
+		_VER_WRITE(&temp.crushex.downsample, 0); 
+		_VER_WRITE(&temp.crushex.gain, 0);
 	}
 	
 	fwrite(&mused.song.default_volume[0], sizeof(mused.song.default_volume[0]), mused.song.num_channels, f);
