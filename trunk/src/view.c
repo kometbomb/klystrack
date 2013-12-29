@@ -587,10 +587,11 @@ void info_line(SDL_Surface *dest_surface, const SDL_Rect *dest, const SDL_Event 
 			{
 				static const char * param_desc[] = 
 				{
+					"FX bus",
+					"FX bus name",
 					"Enable multiplex",
 					"Multiplex period",
 					"Pitch inaccuracy",
-					"FX bus",
 					"Enable bitcrusher",
 					"Drop bits",
 					"Downsample",
@@ -1197,6 +1198,59 @@ void instrument_list(SDL_Surface *dest_surface, const SDL_Rect *dest, const SDL_
 }
 
 
+static void fx_text(const SDL_Event *e, const SDL_Rect *area, int p, const char *_label, const char *format, void *value, int width)
+{
+	//check_event(e, area, select_instrument_param, (void*)p, 0, 0);
+	
+	int d = generic_field(e, area, EDITFX, p, _label, format, value, width);
+	if (d) 
+	{
+		if (p >= 0) mused.selected_param = p;
+		if (p != R_FX_BUS) snapshot_cascade(S_T_FX, mused.fx_bus, p);
+		if (d < 0) mused.fx_bus = my_max(0, mused.fx_bus - 1);
+		else if (d >0) mused.fx_bus = my_min(CYD_MAX_FX_CHANNELS -1, mused.fx_bus + 1);
+	}
+	
+	/*if (p == mused.selected_param && mused.focus == EDITINSTRUMENT)
+	{
+		SDL_Rect r;
+		copy_rect(&r, area);
+		adjust_rect(&r, -1);
+		bevel(mused.screen,&r, mused.slider_bevel->surface, BEV_CURSOR);
+	}*/
+}
+
+
+void fx_name_view(SDL_Surface *dest_surface, const SDL_Rect *dest, const SDL_Event *event, void *param)
+{
+	SDL_Rect farea, larea, tarea;
+	copy_rect(&farea,dest);
+	copy_rect(&larea,dest);
+	copy_rect(&tarea,dest);
+	
+	farea.w = 2 * mused.console->font.w + 2 + 16;
+	
+	larea.w = 16;
+	
+	label("FX", &larea);
+	
+	tarea.w = dest->w - farea.w - larea.w;
+	farea.x = larea.w + dest->x;
+	tarea.x = farea.x + farea.w;
+	
+	fx_text(event, &farea, R_FX_BUS, "FX", "%02X", MAKEPTR(mused.fx_bus), 2);
+	inst_field(event, &tarea, R_FX_BUS_NAME, sizeof(mused.song.fx[mused.fx_bus].name), mused.song.fx[mused.fx_bus].name);
+	
+	if ((mused.mode == EDITFX && (mused.edit_buffer == mused.song.fx[mused.fx_bus].name && mused.focus == EDITBUFFER)))
+	{
+		SDL_Rect r;
+		copy_rect(&r, &tarea);
+		adjust_rect(&r, -2);
+		set_cursor(&r);
+	}
+}
+
+
 void fx_view(SDL_Surface *dest_surface, const SDL_Rect *dest, const SDL_Event *event, void *param)
 {
 	SDL_Rect area;
@@ -1239,24 +1293,6 @@ void fx_view(SDL_Surface *dest_surface, const SDL_Rect *dest, const SDL_Event *e
 	}
 	
 	update_rect(&area, &r);
-	
-	my_separator(&area, &r);
-	
-	r.w = 320 / (CYD_MAX_FX_CHANNELS) - 5;
-	
-	for (int i = 0 ; i < CYD_MAX_FX_CHANNELS ; ++i)
-	{
-		char txt[10];
-		sprintf(txt, "FX%d", i);
-		if (button_text_event(dest_surface, event, &r, mused.slider_bevel->surface, &mused.buttonfont, i == mused.fx_bus ? BEV_BUTTON_ACTIVE : BEV_BUTTON, BEV_BUTTON_ACTIVE, txt, NULL, MAKEPTR(R_FX_BUS), MAKEPTR(i), NULL) & 1)
-		{
-			mused.edit_reverb_param = R_FX_BUS;
-			mused.fx_bus = i;
-			fx_add_param(0);
-		}
-		
-		update_rect(&area, &r);
-	}
 	
 	my_separator(&area, &r);
 	

@@ -394,6 +394,11 @@ int save_song(FILE *f)
 			FIX_ENDIAN(temp.rvb.tap[i].delay);
 		}
 		
+		Uint8 len = strlen(temp.name);
+		_VER_WRITE(&len, 0);
+		if (len)
+			_VER_WRITE(temp.name, len);
+		
 		_VER_WRITE(&temp.flags, 0);
 		_VER_WRITE(&temp.crush.bit_drop, 0);
 		_VER_WRITE(&temp.chr.rate, 0);
@@ -451,7 +456,6 @@ int save_song(FILE *f)
 	
 	for (int i = 0 ; i < mused.song.num_patterns; ++i)
 	{
-		debug("%d: %d", i, used_pattern[i]);
 		write_packed_pattern(f, &mused.song.pattern[i], !used_pattern[i]);
 	}
 	
