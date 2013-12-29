@@ -65,6 +65,7 @@ void playstop_view(SDL_Surface *dest_surface, const SDL_Rect *dest, const SDL_Ev
 void instrument_view(SDL_Surface *dest_surface, const SDL_Rect *dest, const SDL_Event *event, void *param);
 void instrument_view2(SDL_Surface *dest_surface, const SDL_Rect *dest, const SDL_Event *event, void *param);
 void instrument_list(SDL_Surface *dest_surface, const SDL_Rect *dest, const SDL_Event *event, void *param);
+void fx_name_view(SDL_Surface *dest_surface, const SDL_Rect *dest, const SDL_Event *event, void *param);
 void fx_view(SDL_Surface *dest_surface, const SDL_Rect *dest, const SDL_Event *event, void *param);
 void bevel_view(SDL_Surface *dest_surface, const SDL_Rect *dest, const SDL_Event *event, void *param);
 void toolbar_view(SDL_Surface *dest_surface, const SDL_Rect *dest, const SDL_Event *event, void *param);
