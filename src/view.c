@@ -1251,18 +1251,18 @@ void fx_name_view(SDL_Surface *dest_surface, const SDL_Rect *dest, const SDL_Eve
 }
 
 
-void fx_view(SDL_Surface *dest_surface, const SDL_Rect *dest, const SDL_Event *event, void *param)
+void fx_global_view(SDL_Surface *dest_surface, const SDL_Rect *dest, const SDL_Event *event, void *param)
 {
 	SDL_Rect area;
 	copy_rect(&area, dest);
 	console_set_clip(mused.console, &area);
 	console_clear(mused.console);
 	bevel(mused.screen,&area, mused.slider_bevel->surface, BEV_BACKGROUND);
-	adjust_rect(&area, 4);
+	adjust_rect(&area, 2);
 	console_set_clip(mused.console, &area);
 	SDL_Rect r;
 	copy_rect(&r, &area);
-	
+	r.x += 2;
 	r.h = 10;
 	
 	r.w = 96;
@@ -1274,7 +1274,7 @@ void fx_view(SDL_Surface *dest_surface, const SDL_Rect *dest, const SDL_Event *e
 	
 	r.x = 100;
 	r.w = 80;
-		
+	
 	if ((d = generic_field(event, &r, EDITFX, R_MULTIPLEX_PERIOD, "PERIOD", "%2X", MAKEPTR(mused.song.multiplex_period), 2))) 
 	{
 		mused.edit_reverb_param = R_MULTIPLEX_PERIOD;
@@ -1291,11 +1291,24 @@ void fx_view(SDL_Surface *dest_surface, const SDL_Rect *dest, const SDL_Event *e
 		mused.edit_reverb_param = R_PITCH_INACCURACY;
 		fx_add_param(d);
 	}
+}
+
+
+void fx_view(SDL_Surface *dest_surface, const SDL_Rect *dest, const SDL_Event *event, void *param)
+{
+	SDL_Rect area;
+	copy_rect(&area, dest);
+	console_set_clip(mused.console, &area);
+	console_clear(mused.console);
+	bevel(mused.screen,&area, mused.slider_bevel->surface, BEV_BACKGROUND);
+	adjust_rect(&area, 4);
+	console_set_clip(mused.console, &area);
+	SDL_Rect r;
+	copy_rect(&r, &area);
 	
-	update_rect(&area, &r);
+	int d;
 	
-	my_separator(&area, &r);
-	
+	r.h = 10;
 	r.w = 48;
 	
 	generic_flags(event, &r, EDITFX, R_CRUSH, "CRUSH", &mused.song.fx[mused.fx_bus].flags, CYDFX_ENABLE_CRUSH);
@@ -1451,12 +1464,12 @@ void fx_view(SDL_Surface *dest_surface, const SDL_Rect *dest, const SDL_Event *e
 		r.w = tmp;
 	}
 	
-	my_separator(&area, &r);
-	
 	int p = R_DELAY;
 	
 	for (int i = 0 ; i < CYDRVB_TAPS ; ++i)
 	{
+		my_separator(&area, &r);
+		
 		char label[20], value[20];
 		
 		sprintf(label, "TAP %d", i);
@@ -1537,8 +1550,6 @@ void fx_view(SDL_Surface *dest_surface, const SDL_Rect *dest, const SDL_Event *e
 		}
 		
 		update_rect(&area, &r);
-		
-		my_separator(&area, &r);
 		
 		++p;
 	}
