@@ -40,6 +40,7 @@ OTHER DEALINGS IN THE SOFTWARE.
 #include <stdbool.h>
 #include "gui/mouse.h"
 #include "view/wavetableview.h"
+#include "help.h"
 
 extern Mused mused;
 extern GfxDomain *domain;
@@ -786,4 +787,10 @@ void change_default_pattern_length(void *length, void *unused1, void *unused2)
 void change_visualizer_action(void *vis, void *unused1, void *unused2)
 {
 	change_visualizer(CASTPTR(int,vis));
+}
+
+
+void open_help(void *unused0, void *unused1, void *unused2)
+{
+	helpbox("Help", domain, mused.slider_bevel->surface, &mused.largefont, &mused.smallfont);
 }
