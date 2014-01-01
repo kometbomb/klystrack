@@ -35,5 +35,6 @@ const InstructionDesc * get_instruction_desc(Uint16 command);
 bool is_valid_command(Uint16 command);
 void get_command_desc(char *text, Uint16 inst);
 Uint16 validate_command(Uint16 command);
+const InstructionDesc* list_all_commands();
 
 #endif

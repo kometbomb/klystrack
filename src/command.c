@@ -159,3 +159,9 @@ Uint16 validate_command(Uint16 command)
 	
 	return command;
 }
+
+
+const InstructionDesc* list_all_commands()
+{
+	return instruction_desc;
+}
