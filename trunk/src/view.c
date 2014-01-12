@@ -576,7 +576,18 @@ void info_line(SDL_Surface *dest_surface, const SDL_Rect *dest, const SDL_Event 
 					"Pulse width modulation depth",
 					"Pulse width modulation shape",
 					"Program period",
-					"Don't restart program on keydown"
+					"Don't restart program on keydown",
+					"FM enable",
+					"FM modulation",
+					"FM feedback",
+					"FM harmonic",
+					"FM attack",
+					"FM decay",
+					"FM sustain",
+					"FM release",
+					"FM triangle",
+					"FM wavetable",
+					"FM wavetable entry"
 				};
 				strcpy(text, param_desc[mused.selected_param]);
 			}
@@ -1142,8 +1153,36 @@ void instrument_view2(SDL_Surface *dest_surface, const SDL_Rect *dest, const SDL
 	update_rect(&frame, &r);
 	inst_text(event, &r, P_PROGPERIOD, "P.PRD", "%02X", MAKEPTR(inst->prog_period), 2);
 	update_rect(&frame, &r);
+	int tmp = r.w;
 	r.w = frame.w;
 	inst_flags(event, &r, P_NORESTART, "NO PROG RESTART", &inst->flags, MUS_INST_NO_PROG_RESTART);
+	update_rect(&frame, &r);
+	r.w = tmp;
+	my_separator(&frame, &r);
+	inst_flags(event, &r, P_FM_TRIANGLE, "FM", &inst->cydflags, CYD_CHN_ENABLE_FM);
+	update_rect(&frame, &r);
+	inst_text(event, &r, P_FM_MODULATION, "MOD", "%02X", MAKEPTR(inst->fm_modulation), 2);
+	update_rect(&frame, &r);
+	inst_text(event, &r, P_FM_FEEDBACK, "FEEDBACK", "%01X", MAKEPTR(inst->fm_feedback), 1);
+	update_rect(&frame, &r);
+	inst_text(event, &r, P_FM_HARMONIC, "HARMONIC", "%01X", MAKEPTR(inst->fm_harmonic), 1);
+	update_rect(&frame, &r);
+	inst_text(event, &r, P_FM_ATTACK, "ATK", "%02X", MAKEPTR(inst->fm_adsr.a), 2);
+	update_rect(&frame, &r);
+	inst_text(event, &r, P_FM_DECAY, "DEC", "%02X", MAKEPTR(inst->fm_adsr.d), 2);
+	update_rect(&frame, &r);
+	inst_text(event, &r, P_FM_SUSTAIN, "SUS", "%02X", MAKEPTR(inst->fm_adsr.s), 2);
+	update_rect(&frame, &r);
+	inst_text(event, &r, P_FM_RELEASE, "REL", "%02X", MAKEPTR(inst->fm_adsr.r), 2);
+	update_rect(&frame, &r);
+	inst_flags(event, &r, P_FM_TRIANGLE, "TRIANGLE", &inst->fm_flags, CYD_FM_ENABLE_TRIANGLE);
+	update_rect(&frame, &r);
+	tmp = r.w;
+	r.w = 42;
+	inst_flags(event, &r, P_FM_WAVE, "WAVE", &inst->fm_flags, CYD_FM_ENABLE_WAVE);
+	r.x += 44;
+	r.w = 32;
+	inst_text(event, &r, P_FM_WAVE_ENTRY, "", "%02X", MAKEPTR(inst->fm_wave), 2);
 	update_rect(&frame, &r);
 }
 

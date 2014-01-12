@@ -412,6 +412,74 @@ void instrument_add_param(int a)
 		flipbit(i->flags, MUS_INST_NO_PROG_RESTART);
 		
 		break;
+		
+		case P_FM_MODULATION:
+		
+		clamp(i->fm_modulation, a, 0, 0x7f);
+			
+		break;
+		
+		case P_FM_FEEDBACK:
+		
+		clamp(i->fm_feedback, a, 0, 0x7);
+			
+		break;
+		
+		case P_FM_ATTACK:
+		
+		clamp(i->fm_adsr.a, a, 0, 31);
+			
+		break;
+		
+		case P_FM_DECAY:
+		
+		clamp(i->fm_adsr.d, a, 0, 31);
+			
+		break;
+		
+		case P_FM_SUSTAIN:
+		
+		clamp(i->fm_adsr.s, a, 0, 31);
+			
+		break;
+		
+		case P_FM_RELEASE:
+		
+		clamp(i->fm_adsr.r, a, 0, 31);
+			
+		break;
+		
+		case P_FM_TRIANGLE:
+		
+		flipbit(i->fm_flags, CYD_FM_ENABLE_TRIANGLE);
+		
+		break;
+		
+		case P_FM_WAVE:
+		
+		flipbit(i->fm_flags, CYD_FM_ENABLE_WAVE);
+		
+		break;
+		
+		case P_FM_ENABLE:
+		
+		flipbit(i->cydflags, CYD_CHN_ENABLE_FM);
+		
+		break;
+		
+		case P_FM_HARMONIC:
+		
+		clamp(i->fm_harmonic, a, 0, 15);
+		
+		break;
+		
+		
+		case P_FM_WAVE_ENTRY:
+		
+		clamp(i->fm_wave, a, 0, CYD_WAVE_MAX_ENTRIES - 1);
+		
+		break;
+		
 	
 		default:
 		break;

@@ -92,7 +92,7 @@ static void write_wavetable_entry(FILE *f, const CydWavetableEntry *write_wave, 
 }
 
 	
-static void save_instrument_inner(FILE *f, MusInstrument *inst, const CydWavetableEntry *write_wave)
+static void save_instrument_inner(FILE *f, MusInstrument *inst, const CydWavetableEntry *write_wave, const CydWavetableEntry *write_wave_fm)
 {
 	Uint32 temp32 = inst->flags;
 	FIX_ENDIAN(temp32);
@@ -143,16 +143,42 @@ static void save_instrument_inner(FILE *f, MusInstrument *inst, const CydWavetab
 	_VER_WRITE(&inst->vib_delay, 0);
 	_VER_WRITE(&inst->pwm_shape, 0);
 	_VER_WRITE(&inst->lfsr_type, 0);
-		
+	
 	if (write_wave)
 	{
 		Uint8 temp = 0xff;
 		_VER_WRITE(&temp, 0);
-		write_wavetable_entry(f, write_wave, true);
 	}
 	else
 	{
 		_VER_WRITE(&inst->wavetable_entry, 0);
+	}
+	
+	_VER_WRITE(&inst->fm_flags, 0);
+	_VER_WRITE(&inst->fm_modulation, 0);
+	_VER_WRITE(&inst->fm_feedback, 0);
+	_VER_WRITE(&inst->fm_harmonic, 0);
+	_VER_WRITE(&inst->fm_adsr, 0);
+	
+	if (write_wave_fm)
+	{
+		Uint8 temp = (inst->wavetable_entry == inst->fm_wave) ? 0xfe : 0xff;
+		_VER_WRITE(&temp, 0);
+	}
+	else
+	{
+		_VER_WRITE(&inst->fm_wave, 0);
+	}
+	
+	if (write_wave)
+	{
+		write_wavetable_entry(f, write_wave, true);
+	}
+	
+	if (write_wave_fm)
+	{
+		if (inst->wavetable_entry != inst->fm_wave)
+			write_wavetable_entry(f, write_wave_fm, true);
 	}
 }
 
@@ -291,7 +317,7 @@ int save_instrument(FILE *f)
 	
 	fwrite(&version, 1, sizeof(version), f);
 	
-	save_instrument_inner(f, &mused.song.instrument[mused.current_instrument], &mused.mus.cyd->wavetable_entries[mused.song.instrument[mused.current_instrument].wavetable_entry]);
+	save_instrument_inner(f, &mused.song.instrument[mused.current_instrument], &mused.mus.cyd->wavetable_entries[mused.song.instrument[mused.current_instrument].wavetable_entry], &mused.mus.cyd->wavetable_entries[mused.song.instrument[mused.current_instrument].fm_wave]);
 	
 	return 1;
 }
@@ -426,7 +452,7 @@ int save_song(FILE *f)
 	debug("Saving %d instruments", n_inst);
 	for (int i = 0 ; i < n_inst ; ++i)
 	{
-		save_instrument_inner(f, &mused.song.instrument[i], NULL);
+		save_instrument_inner(f, &mused.song.instrument[i], NULL, NULL);
 		
 		if (kill_unused_things)
 		{
