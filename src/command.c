@@ -84,6 +84,9 @@ static const InstructionDesc instruction_desc[] =
 	{MUS_FX_BUZZ_SET, 0x7f00, "Set buzz finetune", "BuzzFine", -1, -1},
 	{MUS_FX_CUTOFF_FINE_SET, 0x7000, "Set filter cutoff (fine)", "CutFine", 0, CYD_CUTOFF_MAX - 1},
 	{MUS_FX_BUZZ_SET_SEMI, 0x7f00, "Set buzz semitone", "BuzzSemi", -1, -1},
+	{MUS_FX_FM_SET_MODULATION, 0x7f00, "Set FM modulation", "FMMod", 0, 0x7f},
+	{MUS_FX_FM_SET_FEEDBACK, 0x7ff0, "Set FM feedback", "FMFB", 0, 7},
+	{MUS_FX_FM_SET_HARMONIC, 0x7f00, "Set FM harmonic", "Harmonic", 0, 15},
 	{0, 0, NULL}
 };
 
