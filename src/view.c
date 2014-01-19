@@ -580,7 +580,7 @@ void info_line(SDL_Surface *dest_surface, const SDL_Rect *dest, const SDL_Event 
 					"FM enable",
 					"FM modulation",
 					"FM feedback",
-					"FM harmonic",
+					"FM multiplier",
 					"FM attack",
 					"FM decay",
 					"FM sustain",
