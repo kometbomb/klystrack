@@ -1161,11 +1161,11 @@ void instrument_view2(SDL_Surface *dest_surface, const SDL_Rect *dest, const SDL
 	my_separator(&frame, &r);
 	inst_flags(event, &r, P_FM_TRIANGLE, "FM", &inst->cydflags, CYD_CHN_ENABLE_FM);
 	update_rect(&frame, &r);
-	inst_text(event, &r, P_FM_MODULATION, "MOD", "%02X", MAKEPTR(inst->fm_modulation), 2);
+	inst_text(event, &r, P_FM_MODULATION, "VOL", "%02X", MAKEPTR(inst->fm_modulation), 2);
 	update_rect(&frame, &r);
 	inst_text(event, &r, P_FM_FEEDBACK, "FEEDBACK", "%01X", MAKEPTR(inst->fm_feedback), 1);
 	update_rect(&frame, &r);
-	inst_text(event, &r, P_FM_HARMONIC, "HARMONIC", "%01X", MAKEPTR(inst->fm_harmonic), 1);
+	inst_text(event, &r, P_FM_HARMONIC, "MULT", "%02X", MAKEPTR(inst->fm_harmonic), 2);
 	update_rect(&frame, &r);
 	inst_text(event, &r, P_FM_ATTACK, "ATK", "%02X", MAKEPTR(inst->fm_adsr.a), 2);
 	update_rect(&frame, &r);
