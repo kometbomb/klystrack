@@ -469,7 +469,7 @@ void instrument_add_param(int a)
 		
 		case P_FM_HARMONIC:
 		
-		clamp(i->fm_harmonic, a, 0, 15);
+		clamp(i->fm_harmonic, a, 0, 255);
 		
 		break;
 		
