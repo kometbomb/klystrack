@@ -180,11 +180,19 @@ void play_position(void *unused1, void *unused2, void *unused3)
 {
 	if (!(mused.flags & LOOP_POSITION))
 	{
+		int p = current_pattern(NULL), len;
+		
+		if (p < 0)
+			len = mused.sequenceview_steps;
+		else
+			len = mused.song.pattern[p].num_steps;
+		
+	
 		mused.flags |= LOOP_POSITION;
 		mused.loop_store_length = mused.song.song_length;
 		mused.loop_store_loop = mused.song.loop_point;
 		
-		mused.song.song_length = mused.current_sequencepos + mused.song.pattern[current_pattern(NULL)].num_steps;
+		mused.song.song_length = mused.current_sequencepos + len;
 		mused.song.loop_point = mused.current_sequencepos;
 		
 		play(MAKEPTR(1), 0, 0);
@@ -792,5 +800,7 @@ void change_visualizer_action(void *vis, void *unused1, void *unused2)
 
 void open_help(void *unused0, void *unused1, void *unused2)
 {
+	cyd_lock(&mused.cyd, 0);
 	helpbox("Help", domain, mused.slider_bevel->surface, &mused.largefont, &mused.smallfont);
+	cyd_lock(&mused.cyd, 1);
 }

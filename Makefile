@@ -1,7 +1,7 @@
 TARGET := klystrack
 ECHO := echo
 CFG := debug
-MACHINE := -march=pentium2 
+MACHINE := 
 NSIS := C:/program\ files\ \(x86\)/nsis/makensis.exe /V2 /NOCD
 WGET := wget --quiet
 MAKEBUNDLE := ../klystron/tools/bin/makebundle.exe

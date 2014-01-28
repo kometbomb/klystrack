@@ -1003,7 +1003,11 @@ void sequence_event(SDL_Event *e)
 						add_sequence(mused.current_sequencetrack, mused.current_sequencepos, p, 0);
 						
 						if (mused.song.song_length > mused.current_sequencepos + mused.sequenceview_steps)
+						{
 							mused.current_sequencepos += mused.sequenceview_steps;
+							mused.current_patternpos += mused.sequenceview_steps;
+							update_position_sliders();
+						}
 					}
 				}
 				else
@@ -1014,7 +1018,11 @@ void sequence_event(SDL_Event *e)
 						snapshot(S_T_SEQUENCE);
 						add_sequence(mused.current_sequencetrack, mused.current_sequencepos, p, 0);
 						if (mused.song.song_length > mused.current_sequencepos + mused.sequenceview_steps)
+						{
 							mused.current_sequencepos += mused.sequenceview_steps;
+							mused.current_patternpos += mused.sequenceview_steps;
+							update_position_sliders();
+						}
 					}
 				}
 			}
