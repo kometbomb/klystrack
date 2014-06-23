@@ -241,6 +241,8 @@ static void update_sample_preview(const SDL_Surface *dest, const SDL_Rect* area)
 		}
 		
 		debug("Wavetable item bitmask = %x, lowest bit = %d", mused.wavetable_bits, __builtin_ffs(mused.wavetable_bits) - 1);
+		
+		set_info_message("Sample quality %d bits", 16 - (__builtin_ffs(mused.wavetable_bits) - 1));
 	}
 }
 
