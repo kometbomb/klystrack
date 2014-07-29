@@ -51,5 +51,6 @@ void get_unused_pattern(void*, void*, void*);
 void expand_pattern(void *factor, void *, void *);
 void shrink_pattern(void *factor, void *, void *);
 void interpolate(void *, void *, void *);
+void transpose_note_data(void *semitones, void *unused1, void *unused2);
 
 #endif

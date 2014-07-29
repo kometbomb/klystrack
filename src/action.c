@@ -804,3 +804,4 @@ void open_help(void *unused0, void *unused1, void *unused2)
 	helpbox("Help", domain, mused.slider_bevel->surface, &mused.largefont, &mused.smallfont);
 	cyd_lock(&mused.cyd, 1);
 }
+

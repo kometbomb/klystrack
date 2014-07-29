@@ -269,3 +269,25 @@ void snapshot_cascade(SHType type, int a, int b)
 	if (type != S_T_MODE)
 		mused.modified = true;
 }
+
+
+void transpose_note_data(void *semitones, void *unused1, void *unused2)
+{
+	if (mused.focus != EDITPATTERN || mused.selection.start >= mused.selection.end - 1) return;
+	
+	MusPattern *pat = &mused.song.pattern[current_pattern()];
+	
+	snapshot(S_T_PATTERN);
+	
+	for (int i = mused.selection.start, p = 0 ; i < mused.selection.end ; ++i, ++p)
+	{
+		if (pat->step[i].note != MUS_NOTE_NONE)
+		{
+			int semi = CASTPTR(int,semitones);
+			int note = (int)pat->step[i].note + semi;
+			
+			if (note >= 0 && note < 12 * 8)
+				pat->step[i].note = note;
+		}
+	}
+}
