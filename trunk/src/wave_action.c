@@ -142,8 +142,6 @@ void wavetable_cut_head(void *unused1, void *unused2, void *unused3)
 
 void wavetable_chord(void *transpose, void *unused2, void *unused3)
 {
-	snapshot(S_T_WAVE_DATA);
-		
 	CydWavetableEntry *w = &mused.mus.cyd->wavetable_entries[mused.selected_wavetable];
 	
 	if (w->samples > 0)
@@ -169,20 +167,37 @@ void wavetable_chord(void *transpose, void *unused2, void *unused3)
 		}
 		
 		int new_length = nom * w->samples;
-		Sint16 *new_data = malloc(sizeof(Sint16) * new_length);
 		
-		for (int s = 0 ; s < new_length ; ++s)
+		if (new_length < 100000000)
 		{
-			new_data[s] = ((int)w->data[s % w->samples] + (int)w->data[(s * denom / nom) % w->samples]) / 2;
+			Sint16 *new_data = malloc(sizeof(Sint16) * new_length);
+			
+			if (new_data)
+			{
+				snapshot(S_T_WAVE_DATA);
+				
+				for (int s = 0 ; s < new_length ; ++s)
+				{
+					new_data[s] = ((int)w->data[s % w->samples] + (int)w->data[(s * denom / nom) % w->samples]) / 2;
+				}
+				
+				free(w->data);
+				w->data = new_data;
+				w->samples = new_length;
+				w->loop_begin *= nom;
+				w->loop_end *= nom;
+				
+				invalidate_wavetable_view();
+			}
+			else
+			{
+				set_info_message("Out of memory!");
+			}
 		}
-		
-		free(w->data);
-		w->data = new_data;
-		w->samples = new_length;
-		w->loop_begin *= nom;
-		w->loop_end *= nom;
-		
-		invalidate_wavetable_view();
+		else
+		{
+			set_info_message("Resulting wave was too big");
+		}
 	}
 }
 
