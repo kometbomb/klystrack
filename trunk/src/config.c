@@ -69,6 +69,7 @@ static const struct { int type; const char *name; void *param; int mask; } confi
 	{ C_BOOL, "lock_pattern_length", &mused.flags, LOCK_SEQUENCE_STEP_AND_PATTERN_LENGTH },
 	{ C_BOOL, "edit_sequence_digits", &mused.flags, EDIT_SEQUENCE_DIGITS },
 	{ C_BOOL, "disable_nostalgy", &mused.flags, DISABLE_NOSTALGY },
+	{ C_BOOL, "disable_vu_meters", &mused.flags, DISABLE_VU_METERS },
 	{ C_END }
 };
 

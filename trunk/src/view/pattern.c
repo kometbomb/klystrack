@@ -359,7 +359,7 @@ void pattern_view_inner(SDL_Surface *dest_surface, const SDL_Rect *dest, const S
 			}
 		}
 		
-		if (mused.flags & SONG_PLAYING)
+		if ((mused.flags & SONG_PLAYING) && !(mused.flags & DISABLE_VU_METERS))
 		{
 			SDL_SetClipRect(mused.screen, &track);
 			const int ah = dest->h + dest->y - row.y;
