@@ -35,6 +35,7 @@ OTHER DEALINGS IN THE SOFTWARE.
 #include "key.h"
 #include "view/wavetableview.h"
 #include <stdarg.h>
+#include <string.h>
 
 extern Mused mused;
 extern Menu editormenu[];
@@ -55,10 +56,14 @@ void set_edit_buffer(char *buffer, size_t size)
 
 void change_mode(int newmode)
 {
+	if (newmode == EDITBUFFER)
+		SDL_StartTextInput();
+	else
+		SDL_StopTextInput();
+
 	if (newmode < VIRTUAL_MODE && mused.mode != MENU) 
 	{
-		SDL_FillRect(mused.screen, NULL, 0);
-		clear_selection(0,0,0);
+		gfx_clear(domain, 0);
 	}
 
 	if (mused.mode < VIRTUAL_MODE)
@@ -235,7 +240,7 @@ void resize_pattern(MusPattern * pattern, Uint16 new_size)
 }
 
 
-void init(MusInstrument *instrument, MusPattern *pattern, MusSeqPattern sequence[MUS_MAX_CHANNELS][NUM_SEQUENCES], MusChannel *channel, SDL_Surface *screen)
+void init(MusInstrument *instrument, MusPattern *pattern, MusSeqPattern sequence[MUS_MAX_CHANNELS][NUM_SEQUENCES], MusChannel *channel)
 {
 	debug("init");
 	
@@ -243,9 +248,8 @@ void init(MusInstrument *instrument, MusPattern *pattern, MusSeqPattern sequence
 	
 	set_info_message("Welcome to klystrack!");
 	
-	mused.flags = MULTICHANNEL_PREVIEW|ANIMATE_CURSOR|EDIT_MODE|SHOW_LOGO|CENTER_PATTERN_EDITOR|FOLLOW_PLAY_POSITION;
+	mused.flags = MULTICHANNEL_PREVIEW|ANIMATE_CURSOR|EDIT_MODE|SHOW_LOGO|CENTER_PATTERN_EDITOR|FOLLOW_PLAY_POSITION|MULTIKEY_JAMMING;
 	mused.visible_columns = VC_INSTRUMENT | VC_COMMAND;
-	mused.screen = screen;
 	mused.done = 0;
 	mused.octave = 4;
 	mused.note_jump = 1;
@@ -311,13 +315,13 @@ void init(MusInstrument *instrument, MusPattern *pattern, MusSeqPattern sequence
 
 void init_scrollbars()
 {
-	slider_set_params(&mused.sequence_slider_param, 0, 0, 0, 0, &mused.sequence_position, 1, SLIDER_VERTICAL, mused.slider_bevel->surface);
-	slider_set_params(&mused.pattern_slider_param, 0, 0, 0, 0, &mused.sequence_position, 1, SLIDER_VERTICAL, mused.slider_bevel->surface);
-	slider_set_params(&mused.instrument_list_slider_param, 0, 0, 0, 0, &mused.sequence_position, 1, SLIDER_VERTICAL, mused.slider_bevel->surface);
-	slider_set_params(&mused.pattern_horiz_slider_param, 0, 0, 0, 0, &mused.sequence_position, 1, SLIDER_HORIZONTAL, mused.slider_bevel->surface);
-	slider_set_params(&mused.sequence_horiz_slider_param, 0, 0, 0, 0, &mused.sequence_position, 1, SLIDER_HORIZONTAL, mused.slider_bevel->surface);
-	slider_set_params(&mused.program_slider_param, 0, 0, 0, 0, &mused.sequence_position, 1, SLIDER_VERTICAL, mused.slider_bevel->surface);
-	slider_set_params(&mused.wavetable_list_slider_param, 0, 0, 0, 0, &mused.sequence_position, 1, SLIDER_VERTICAL, mused.slider_bevel->surface);
+	slider_set_params(&mused.sequence_slider_param, 0, 0, 0, 0, &mused.sequence_position, 1, SLIDER_VERTICAL, mused.slider_bevel);
+	slider_set_params(&mused.pattern_slider_param, 0, 0, 0, 0, &mused.sequence_position, 1, SLIDER_VERTICAL, mused.slider_bevel);
+	slider_set_params(&mused.instrument_list_slider_param, 0, 0, 0, 0, &mused.sequence_position, 1, SLIDER_VERTICAL, mused.slider_bevel);
+	slider_set_params(&mused.pattern_horiz_slider_param, 0, 0, 0, 0, &mused.sequence_position, 1, SLIDER_HORIZONTAL, mused.slider_bevel);
+	slider_set_params(&mused.sequence_horiz_slider_param, 0, 0, 0, 0, &mused.sequence_position, 1, SLIDER_HORIZONTAL, mused.slider_bevel);
+	slider_set_params(&mused.program_slider_param, 0, 0, 0, 0, &mused.sequence_position, 1, SLIDER_VERTICAL, mused.slider_bevel);
+	slider_set_params(&mused.wavetable_list_slider_param, 0, 0, 0, 0, &mused.sequence_position, 1, SLIDER_VERTICAL, mused.slider_bevel);
 }
 
 
@@ -347,7 +351,7 @@ void deinit()
 	free_themes();
 	
 	if (mused.wavetable_preview)
-		SDL_FreeSurface(mused.wavetable_preview);
+		gfx_free_surface(mused.wavetable_preview);
 }
 
 

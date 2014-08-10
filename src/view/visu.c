@@ -30,14 +30,14 @@ OTHER DEALINGS IN THE SOFTWARE.
 #include "snd/freqs.h"
 #include "gfx/gfx.h"
 
-void spectrum_analyzer_view(SDL_Surface *dest_surface, const SDL_Rect *dest, const SDL_Event *event, void *param)
+void spectrum_analyzer_view(GfxDomain *dest_surface, const SDL_Rect *dest, const SDL_Event *event, void *param)
 {
 	SDL_Rect content;
 	copy_rect(&content, dest);
 	
 	SDL_Rect clip;
-	SDL_GetClipRect(mused.screen, &clip);
-	SDL_SetClipRect(mused.screen, &content);
+	gfx_domain_get_clip(domain, &clip);
+	gfx_domain_set_clip(domain, &content);
 	
 	int spec[255] = { 0 };
 	
@@ -81,7 +81,7 @@ void spectrum_analyzer_view(SDL_Surface *dest_surface, const SDL_Rect *dest, con
 			SDL_Rect temp;
 			copy_rect(&temp, &bar);
 			
-			SDL_BlitSurface(mused.analyzer->surface, &src, mused.screen, &temp);
+			my_BlitSurface(mused.analyzer, &src, dest_surface, &temp);
 			
 			bar.h = mused.vis.spec_peak[i] * content.h / MAX_VOLUME;
 			bar.y = content.y + content.h - bar.h;
@@ -93,15 +93,15 @@ void spectrum_analyzer_view(SDL_Surface *dest_surface, const SDL_Rect *dest, con
 			
 			copy_rect(&temp, &bar);
 			
-			SDL_BlitSurface(mused.analyzer->surface, &src, mused.screen, &temp);
+			my_BlitSurface(mused.analyzer, &src, dest_surface, &temp);
 		}
 	}
 	
-	SDL_SetClipRect(mused.screen, &clip);
+	gfx_domain_set_clip(dest_surface, &clip);
 }
 
 
-void catometer_view(SDL_Surface *dest_surface, const SDL_Rect *dest, const SDL_Event *event, void *param)
+void catometer_view(GfxDomain *dest_surface, const SDL_Rect *dest, const SDL_Event *event, void *param)
 {
 	SDL_Rect content;
 	copy_rect(&content, dest);
@@ -109,9 +109,9 @@ void catometer_view(SDL_Surface *dest_surface, const SDL_Rect *dest, const SDL_E
 	SDL_Rect clip, cat;
 	copy_rect(&cat, &content);
 	cat.x = cat.x + content.w / 2 - mused.catometer->surface->w / 2;
-	SDL_GetClipRect(mused.screen, &clip);
-	SDL_SetClipRect(mused.screen, &content);
-	SDL_BlitSurface(mused.catometer->surface, NULL, mused.screen, &cat);
+	gfx_domain_set_clip(domain, &clip);
+	gfx_domain_set_clip(domain, &content);
+	my_BlitSurface(mused.catometer, NULL, dest_surface, &cat);
 	
 	int v = 0;
 	
@@ -130,16 +130,16 @@ void catometer_view(SDL_Surface *dest_surface, const SDL_Rect *dest, const SDL_E
 	
 	mused.vis.prev_a = a;
 	
-	int ax = cos(a) * 12;
+	/*int ax = cos(a) * 12;
 	int ay = sin(a) * 12;
 	int eye1 = 31;
-	int eye2 = -30;
+	int eye2 = -30;*/
 	
 	for (int w = -3 ; w <= 3 ; ++w)
 	{
-		gfx_line(dest_surface, dest->x + dest->w / 2 + eye1 + w, dest->y + dest->h / 2 + 6, dest->x + dest->w / 2 + ax + eye1, dest->y + dest->h / 2 + ay + 6, 0x0);
-		gfx_line(dest_surface, dest->x + dest->w / 2 + eye2 + w, dest->y + dest->h / 2 + 6, dest->x + dest->w / 2 + ax + eye2, dest->y + dest->h / 2 + ay + 6, 0x0);
+		//gfx_line(dest_surface, dest->x + dest->w / 2 + eye1 + w, dest->y + dest->h / 2 + 6, dest->x + dest->w / 2 + ax + eye1, dest->y + dest->h / 2 + ay + 6, 0x0);
+		//gfx_line(dest_surface, dest->x + dest->w / 2 + eye2 + w, dest->y + dest->h / 2 + 6, dest->x + dest->w / 2 + ax + eye2, dest->y + dest->h / 2 + ay + 6, 0x0);
 	}
 	
-	SDL_SetClipRect(mused.screen, &clip);
+	gfx_domain_set_clip(dest_surface, &clip);
 }

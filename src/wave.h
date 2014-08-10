@@ -27,6 +27,7 @@ OTHER DEALINGS IN THE SOFTWARE.
 */
 
 #include "SDL.h"
+#include <stdio.h>
 
 enum
 {

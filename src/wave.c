@@ -25,6 +25,8 @@ OTHER DEALINGS IN THE SOFTWARE.
 
 #include "wave.h"
 #include "macros.h"
+#include <stdlib.h>
+#include <string.h>
 
 typedef struct
 {

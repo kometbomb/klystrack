@@ -27,11 +27,12 @@ OTHER DEALINGS IN THE SOFTWARE.
 */
 
 #include "SDL.h"
+#include "gfx/gfx.h"
 
-void wavetable_view(SDL_Surface *dest_surface, const SDL_Rect *dest, const SDL_Event *event, void *param);
-void wavetablelist_view(SDL_Surface *dest_surface, const SDL_Rect *dest, const SDL_Event *event, void *param);
-void wavetable_sample_view(SDL_Surface *dest_surface, const SDL_Rect *dest, const SDL_Event *event, void *param);
-void wavetable_tools_view(SDL_Surface *dest_surface, const SDL_Rect *dest, const SDL_Event *event, void *param);
+void wavetable_view(GfxDomain *dest_surface, const SDL_Rect *dest, const SDL_Event *event, void *param);
+void wavetablelist_view(GfxDomain *dest_surface, const SDL_Rect *dest, const SDL_Event *event, void *param);
+void wavetable_sample_view(GfxDomain *dest_surface, const SDL_Rect *dest, const SDL_Event *event, void *param);
+void wavetable_tools_view(GfxDomain *dest_surface, const SDL_Rect *dest, const SDL_Event *event, void *param);
 void invalidate_wavetable_view();
 
 #endif

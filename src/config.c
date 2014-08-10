@@ -29,6 +29,7 @@ OTHER DEALINGS IN THE SOFTWARE.
 #include "gui/filebox.h"
 #include "action.h"
 #include "gfx/gfx.h"
+#include <strings.h>
 
 extern Mused mused;
 extern GfxDomain *domain;
@@ -70,11 +71,12 @@ static const struct { int type; const char *name; void *param; int mask; } confi
 	{ C_BOOL, "edit_sequence_digits", &mused.flags, EDIT_SEQUENCE_DIGITS },
 	{ C_BOOL, "disable_nostalgy", &mused.flags, DISABLE_NOSTALGY },
 	{ C_BOOL, "disable_vu_meters", &mused.flags, DISABLE_VU_METERS },
+	{ C_BOOL, "maximized", &mused.flags, WINDOW_MAXIMIZED },
 	{ C_END }
 };
 
 
-static void apply_config()
+void apply_config()
 {
 	change_fullscreen(0, 0, 0);
 	change_pixel_scale(CASTTOPTR(void,mused.pixel_scale), 0, 0);
@@ -83,7 +85,7 @@ static void apply_config()
 }
 
 
-void load_config(const char *path)
+void load_config(const char *path, bool apply)
 {
 	char *e = expand_tilde(path);
 	FILE *f = fopen(e ? e : path, "rt");
@@ -154,7 +156,7 @@ void load_config(const char *path)
 		fclose(f);
 	}
 	
-	apply_config();
+	if (apply) apply_config();
 	
 	e = expand_tilde("~/.klystrackfavorites");
 	

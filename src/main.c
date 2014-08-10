@@ -195,7 +195,7 @@ void my_open_menu(const Menu *menu, const Menu *action)
 	debug("Menu opened");
 	
 	change_mode(MENU);
-	open_menu(menu, action, menu_close_hook, shortcuts, &mused.headerfont, &mused.headerfont_selected, &mused.menufont, &mused.menufont_selected, &mused.shortcutfont, &mused.shortcutfont_selected, mused.slider_bevel->surface);
+	open_menu(menu, action, menu_close_hook, shortcuts, &mused.headerfont, &mused.headerfont_selected, &mused.menufont, &mused.menufont_selected, &mused.shortcutfont, &mused.shortcutfont_selected, mused.slider_bevel);
 }
 
 
@@ -215,7 +215,7 @@ static HICON icon;
 
 void init_icon()
 {
-	HWND hwnd;
+	/*HWND hwnd;
 	HINSTANCE handle = GetModuleHandle(NULL);
 	icon = LoadIcon(handle, MAKEINTRESOURCE(IDI_MAINICON));
 
@@ -230,7 +230,7 @@ void init_icon()
 
 	hwnd = wminfo.window;
 
-	SetClassLong(hwnd, GCL_HICON, (LONG) icon);
+	SetClassLong(hwnd, GCL_HICON, (LONG) icon);*/
 }
 
 void deinit_icon()
@@ -252,12 +252,6 @@ int main(int argc, char **argv)
 	init_resources_dir();
 	debug("Starting %s", VERSION_STRING);
 
-#ifdef DEBUG
-	SDL_putenv("SDL_DEBUG=1");
-#endif
-
-	SDL_putenv("SDL_VIDEO_CENTERED=1");
-
 	SDL_Init(SDL_INIT_VIDEO|SDL_INIT_AUDIO|SDL_INIT_NOPARACHUTE|SDL_INIT_TIMER);
 	atexit(SDL_Quit);
 	
@@ -265,26 +259,21 @@ int main(int argc, char **argv)
 	init_icon();
 #endif
 	
-	domain = gfx_create_domain();
-	domain->screen_w = SCREEN_WIDTH;
-	domain->screen_h = SCREEN_HEIGHT;
-	domain->fps = 30;
-	domain->scale = 1;
-	domain->flags = SDL_RESIZABLE;
-	gfx_domain_update(domain);
+	load_config(TOSTRING(CONFIG_PATH), false);
 	
-	SDL_EnableKeyRepeat(SDL_DEFAULT_REPEAT_DELAY, SDL_DEFAULT_REPEAT_INTERVAL);
-	SDL_EnableUNICODE(1);
-	SDL_WM_SetCaption(VERSION_STRING, NULL);
+	domain = gfx_create_domain(SDL_WINDOW_RESIZABLE|SDL_WINDOW_OPENGL|((mused.flags & WINDOW_MAXIMIZED)?SDL_WINDOW_MAXIMIZED:0), mused.window_w, mused.window_h, mused.pixel_scale);
+	domain->fps = 30;
+	domain->scale = mused.pixel_scale;
+	gfx_domain_update(domain, false);
 	
 	MusInstrument instrument[NUM_INSTRUMENTS];
 	MusPattern pattern[NUM_PATTERNS];
 	MusSeqPattern sequence[MUS_MAX_CHANNELS][NUM_SEQUENCES];
 	MusChannel channel[CYD_MAX_CHANNELS];
 	
-	init(instrument, pattern, sequence, channel, gfx_domain_get_surface(domain));
+	init(instrument, pattern, sequence, channel);
 	
-	load_config(TOSTRING(CONFIG_PATH));
+	load_config(TOSTRING(CONFIG_PATH), true);
 	
 	post_config_load();
 	
@@ -296,11 +285,6 @@ int main(int argc, char **argv)
 	
 	for (int i = 0 ; i < CYD_MAX_FX_CHANNELS ; ++i)
 		cydfx_set(&mused.cyd.fx[i], &mused.song.fx[i]);
-	
-#ifdef DEBUG
-	/* This is because I couldn't get my soundcard to record stereo mix for demo videos */
-	if (argc > 1 && strcmp(argv[1], "-dump") == 0) cyd_enable_audio_dump(&mused.cyd);
-#endif
 	
 	cyd_register(&mused.cyd, mused.mix_buffer);
 	
@@ -324,7 +308,7 @@ int main(int argc, char **argv)
 	
 	if (!(mused.flags & DISABLE_NOSTALGY))
 		nos_decrunch(domain);
-	
+		
 	while (1)
 	{
 		SDL_Event e = { 0 };
@@ -342,22 +326,35 @@ int main(int argc, char **argv)
 				quit_action(0,0,0);
 				break;
 				
-				case SDL_VIDEORESIZE:
-					domain->screen_w = my_max(320, e.resize.w / domain->scale);
-					domain->screen_h = my_max(240, e.resize.h / domain->scale);
-					mused.window_w = e.resize.w;
-					mused.window_h = e.resize.h;
-					gfx_domain_update(domain);
-					mused.screen = gfx_domain_get_surface(domain);
-				break;
+				case SDL_WINDOWEVENT:
+					switch (e.window.event) {
+						case SDL_WINDOWEVENT_MINIMIZED:
+						case SDL_WINDOWEVENT_RESTORED:
+							mused.flags &= ~WINDOW_MAXIMIZED;
+							break;
+							
+						case SDL_WINDOWEVENT_MAXIMIZED:
+							mused.flags |= WINDOW_MAXIMIZED;
+							break;
+							
+						case SDL_WINDOWEVENT_RESIZED:
+							domain->screen_w = my_max(320, e.window.data1 / domain->scale);
+							domain->screen_h = my_max(240, e.window.data2 / domain->scale);
+							mused.window_w = domain->screen_w * domain->scale;
+							mused.window_h = domain->screen_h * domain->scale;
+							gfx_domain_update(domain, !(mused.flags & WINDOW_MAXIMIZED));
+							break;
+					}
+					break;
+					
 				
-				case SDL_ACTIVEEVENT:
+				/*case SDL_ACTIVEEVENT:
 				if (e.active.state & SDL_APPACTIVE)
 				{	
 					active = e.active.gain;
 					debug("Window %s focus", active ? "gained" : "lost");
 				}
-				break;
+				break;*/
 				
 				case SDL_USEREVENT:
 					e.type = SDL_MOUSEBUTTONDOWN;
@@ -397,19 +394,29 @@ int main(int argc, char **argv)
 				}
 				break;
 				
+				case SDL_TEXTEDITING:
+				case SDL_TEXTINPUT:
+					switch (mused.focus)
+					{
+						case EDITBUFFER:
+						edit_text(&e);
+						break;
+					}
+					break;
+				
 				case SDL_KEYUP:
 				case SDL_KEYDOWN:
 				{
-#ifdef DUMPKEYS
+/*#ifdef DUMPKEYS
 					debug("SDL_KEYDOWN: time = %.1f sym = %x mod = %x unicode = %x scancode = %x", (double)SDL_GetTicks() / 1000.0, e.key.keysym.sym, e.key.keysym.mod, e.key.keysym.unicode, e.key.keysym.scancode);
-#endif
+#endif*/
 					// Translate F12 into SDLK_INSERT (Issue 37)
 					if (e.key.keysym.sym == SDLK_F12) e.key.keysym.sym = SDLK_INSERT;
 
 					// Special multimedia keys look like a-z keypresses but the unicode value is zero
 					// We don't care about the special keys and don't want fake keypresses either
-					if (e.type == SDL_KEYDOWN && e.key.keysym.unicode == 0 && e.key.keysym.sym >= SDLK_a && e.key.keysym.sym <= SDLK_z)
-						break;
+					/*if (e.type == SDL_KEYDOWN && e.key.keysym.sym >= SDLK_a && e.key.keysym.sym <= SDLK_z)
+						break;*/
 						
 					// key events should go only to the edited text field
 									
@@ -511,9 +518,9 @@ int main(int argc, char **argv)
 				{
 					SDL_Event foo = {0};
 					
-					my_draw_view(tab[m], &foo, mused.screen);
+					my_draw_view(tab[m], &foo, domain);
 					
-					draw_menu(mused.screen, &e);
+					draw_menu(domain, &e);
 					
 					if (menu_closed) 
 					{
@@ -528,7 +535,7 @@ int main(int argc, char **argv)
 				}
 				else
 				{
-					my_draw_view(tab[m], &e, mused.screen);
+					my_draw_view(tab[m], &e, domain);
 				}
 				
 				e.type = 0;
@@ -547,7 +554,7 @@ int main(int argc, char **argv)
 		{
 			int r;
 			if (mused.modified) 
-				r = confirm_ync(domain, mused.slider_bevel->surface, &mused.largefont, "Save song?");
+				r = confirm_ync(domain, mused.slider_bevel, &mused.largefont, "Save song?");
 			else
 				break;
 			

@@ -26,7 +26,10 @@ FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 OTHER DEALINGS IN THE SOFTWARE.
 */
 
-void load_config(const char *path);
+#include <stdbool.h>
+
+void load_config(const char *path, bool apply);
 void save_config(const char *path);
+void apply_config();
 
 #endif

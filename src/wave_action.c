@@ -2,6 +2,7 @@
 #include "mused.h"
 #include "view/wavetableview.h"
 #include "snd/freqs.h"
+#include <string.h>
 
 void wavetable_drop_lowest_bit(void *unused1, void *unused2, void *unused3)
 {

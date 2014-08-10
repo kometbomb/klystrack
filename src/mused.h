@@ -90,6 +90,7 @@ enum
 	STOP_EDIT_ON_PLAY = 65536 << 6,
 	MULTIKEY_JAMMING = 65536 << 7,
 	DISABLE_VU_METERS = 65536 << 8,
+	WINDOW_MAXIMIZED = 65536 << 9,
 };
 
 enum
@@ -147,7 +148,6 @@ typedef struct
 	/* for menu */
 	Font menufont, menufont_selected, headerfont, headerfont_selected, shortcutfont, shortcutfont_selected, buttonfont;
 	
-	SDL_Surface *screen;
 	char themename[100], keymapname[100];
 	int pixel_scale;
 	int mix_rate, mix_buffer;
@@ -171,7 +171,7 @@ typedef struct
 	int last_snapshot_a, last_snapshot_b;
 	bool modified;
 	/*------------*/
-	SDL_Surface *wavetable_preview;
+	GfxSurface *wavetable_preview;
 	Uint16 wavetable_bits;
 	
 #ifdef MIDI
@@ -185,6 +185,7 @@ typedef struct
 } Mused;
 
 extern Mused mused;
+extern GfxDomain *domain;
 
 #define NUM_PATTERNS 4096
 #define NUM_INSTRUMENTS 128
@@ -193,7 +194,7 @@ extern Mused mused;
 void change_mode(int newmode);
 void clear_pattern(MusPattern *pat);
 void clear_pattern_range(MusPattern *pat, int first, int last);
-void init(MusInstrument *instrument, MusPattern *pattern, MusSeqPattern sequence[MUS_MAX_CHANNELS][NUM_SEQUENCES], MusChannel *channel, SDL_Surface *screen);
+void init(MusInstrument *instrument, MusPattern *pattern, MusSeqPattern sequence[MUS_MAX_CHANNELS][NUM_SEQUENCES], MusChannel *channel);
 void deinit();
 void new_song();
 void kt_default_instrument(MusInstrument *instrument);

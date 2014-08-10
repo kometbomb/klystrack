@@ -8,12 +8,13 @@ Usage: player.exe <song>
 /* SDL stuff */
 
 #include "SDL.h"
-#include "SDL_mixer.h"
 
 /* klystron stuff */
 
 #include "snd/cyd.h"
 #include "snd/music.h"
+
+#include <string.h>
 
 #undef main
 
@@ -43,19 +44,14 @@ int main(int argc, char **argv)
 	}
 
 	SDL_Init(SDL_INIT_AUDIO);
-	Mix_OpenAudio(44100, AUDIO_S16SYS, 2, 4096);
 		
-	/* We need only one channel since Cyd does the mixing */
-	
-	Mix_AllocateChannels(1);
-			
 	/* Notify the music engine about Cyd */
 	
 	mus_init_engine(&mus, &cyd);
 	
 	/* Add Cyd in SDL_Mixer audio output queue */ 
 	
-	cyd_register(&cyd);     
+	cyd_register(&cyd, 2000);     
 	
 	/* Start updating the music engine at the rate set in the song */
 	
@@ -86,7 +82,7 @@ int main(int argc, char **argv)
 		
 		int song_position;
 		
-		mus_poll_status(&mus, &song_position, NULL, NULL, NULL, NULL, NULL);
+		mus_poll_status(&mus, &song_position, NULL, NULL, NULL, NULL, NULL, NULL);
 		
 		printf("Position: %4d/%d\r", song_position, song.song_length);
 		
@@ -98,8 +94,6 @@ int main(int argc, char **argv)
 	cyd_unregister(&cyd); 
 	
 	cyd_deinit(&cyd);
-	
-	Mix_CloseAudio();
 	
 	cyd_unregister(&cyd);
 	cyd_deinit(&cyd);

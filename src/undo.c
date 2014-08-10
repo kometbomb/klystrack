@@ -27,6 +27,7 @@ OTHER DEALINGS IN THE SOFTWARE.
 #include "macros.h"
 #include "mused.h"
 #include <stdbool.h>
+#include <string.h>
 
 extern bool inside_undo;
 

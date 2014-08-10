@@ -4,6 +4,6 @@
 #include "mused.h"
 #include "gfx/gfx.h"
 
-int helpbox(const char *title, GfxDomain *domain, SDL_Surface *gfx, const Font *largefont, const Font *smallfont);
+int helpbox(const char *title, GfxDomain *domain, GfxSurface *gfx, const Font *largefont, const Font *smallfont);
 
 #endif

@@ -27,6 +27,7 @@ OTHER DEALINGS IN THE SOFTWARE.
 #include "util/bundle.h"
 #include "mused.h"
 #include "theme.h"
+#include <string.h>
 
 extern Mused mused;
 extern Uint32 colors[];
@@ -34,25 +35,19 @@ extern Uint32 colors[];
 void console_set_background(Console * c, int enabled)
 {
 	c->background = enabled;
-	c->font.surface->surface = c->fontsurface[enabled];
+	/*c->font.surface->surface = c->fontsurface[enabled];
 	
 	int l = strlen(c->font.charmap);
 			
 	for (int i = 0 ; i < l ; ++i)
-		c->font.tiledescriptor[i].surface = c->font.surface;
+		c->font.tiledescriptor[i].surface = c->font.surface;*/
 }
 
 
-void console_set_color(Console* console, Uint32 color, int idx)
+void console_set_color(Console* console, Uint32 color)
 {
-	if (console->current_color[idx] == color) return;
-
-	SDL_Color rgb = { color >> 16, color >> 8, color };
-	
-	for (int i = 0 ; i < CON_N_COLORS ; ++i)
-		SDL_SetColors(console->fontsurface[i], &rgb, idx, 1);
-	
-	console->current_color[idx] = color;
+	console->current_color = color;
+	font_set_color(&console->font, console->current_color);
 }
 
 
@@ -60,7 +55,7 @@ const SDL_Rect * console_write(Console* console, const char *string)
 {
 	static SDL_Rect bounds;
 	bounds.w = bounds.h = 0;
-	font_write_cursor(&console->font, mused.screen, &console->clip, &console->cursor, &bounds, string);
+	font_write_cursor(&console->font, domain, &console->clip, &console->cursor, &bounds, string);
 	return &bounds;
 }
 
@@ -71,7 +66,7 @@ const SDL_Rect * console_write_args(Console* console, const char *string, ...)
 	bounds.w = bounds.h = 0;
 	va_list va;
 	va_start(va, string);
-	font_write_va(&console->font, mused.screen, &console->clip, &console->cursor, &bounds, string, va);
+	font_write_va(&console->font, domain, &console->clip, &console->cursor, &bounds, string, va);
 	va_end(va);
 	return &bounds;
 }
@@ -79,7 +74,7 @@ const SDL_Rect * console_write_args(Console* console, const char *string, ...)
 
 void console_clear(Console *console)
 {
-	SDL_FillRect(mused.screen, &console->clip, colors[COLOR_BACKGROUND]);
+	gfx_rect(domain, &console->clip, colors[COLOR_BACKGROUND]);
 	console->cursor = 0;
 }
 
@@ -90,42 +85,14 @@ Console * console_create(Bundle *b)
 	
 	c->cursor = 0;
 		
-	font_load(&c->font, b, "8x8.fnt");
-	
-	// let's use a 8-bit surface so we can change the text color using the per surface palette
-	
-	for (int i = 0 ; i < CON_N_COLORS ; ++i)
-	{
-		SDL_Surface * paletted = SDL_CreateRGBSurface(SDL_SWSURFACE, c->font.surface->surface->w, c->font.surface->surface->h, 8, 0, 0, 0, 0);
-		
-		if (paletted)
-		{
-			{
-				SDL_Color palette[2] = {{0, 0, 0}, { 255, 255, 255 }};
-				SDL_SetColors(paletted, palette, 0, 2);
-			}
-		
-			SDL_BlitSurface(c->font.surface->surface, NULL, paletted, NULL);
-			
-			if (i == 0) SDL_SetColorKey(paletted, SDL_SRCCOLORKEY, SDL_MapRGB(paletted->format, 0, 0, 0));
-			
-			c->fontsurface[i] = paletted;
-		}
-		else
-		{
-			fatal("Could not create console surface %d", i);
-			exit(1);
-		}
-	}
-	
-	SDL_FreeSurface(c->font.surface->surface);
+	font_load(domain, &c->font, b, "8x8.fnt");
 	
 	console_set_background(c, 0);
 	
 	c->clip.x = 0;
 	c->clip.y = 0;
-	c->clip.w = mused.screen->w;
-	c->clip.h = mused.screen->h;
+	c->clip.w = domain->screen_w;
+	c->clip.h = domain->screen_h;
 	
 	return c;
 }
@@ -133,12 +100,8 @@ Console * console_create(Bundle *b)
 
 void console_destroy(Console *c)
 {
-	c->font.surface->surface = c->fontsurface[0];
 	font_destroy(&c->font);
 	
-	for (int i = 1 ; i < CON_N_COLORS ; ++i)
-		SDL_FreeSurface(c->fontsurface[1]);
-		
 	free(c);
 }
 

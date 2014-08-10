@@ -27,6 +27,8 @@ OTHER DEALINGS IN THE SOFTWARE.
 #include "optimize.h"
 #include "edit.h"
 #include "macros.h"
+#include "mused.h"
+#include <string.h>
 
 static bool is_pattern_used(const MusSong *song, int p)
 {
@@ -142,7 +144,7 @@ void optimize_duplicate_patterns(MusSong *song)
 			++a;
 	}
 	
-	debug("Reduced number of patterns from %d to %d", orig_count, song->num_patterns);
+	set_info_message("Reduced number of patterns from %d to %d", orig_count, song->num_patterns);
 }
 
 

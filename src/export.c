@@ -33,6 +33,7 @@ OTHER DEALINGS IN THE SOFTWARE.
 #include "mybevdefs.h"
 #include "gfx/font.h"
 #include "theme.h"
+#include <string.h>
 
 extern GfxDomain *domain;
 
@@ -137,24 +138,24 @@ void export_wav(MusSong *song, CydWavetableEntry * entry, FILE *f)
 				last_percentage = percentage;
 				
 				SDL_Rect area = {domain->screen_w / 2 - 140, domain->screen_h / 2 - 24, 280, 48};
-				bevel(gfx_domain_get_surface(domain), &area, mused.slider_bevel->surface, BEV_MENU);
+				bevel(domain, &area, mused.slider_bevel, BEV_MENU);
 				
 				adjust_rect(&area, 8);
 				area.h = 16;
 				
-				bevel(gfx_domain_get_surface(domain), &area, mused.slider_bevel->surface, BEV_FIELD);
+				bevel(domain, &area, mused.slider_bevel, BEV_FIELD);
 				
 				adjust_rect(&area, 2);
 				
 				int t = area.w;
 				area.w = area.w * percentage / 100;
 				
-				SDL_FillRect(gfx_domain_get_surface(domain), &area, colors[COLOR_PROGRESS_BAR]);
+				gfx_rect(domain, &area, colors[COLOR_PROGRESS_BAR]);
 				
 				area.y += 16 + 4 + 4;
 				area.w = t;
 				
-				font_write_args(&mused.smallfont, gfx_domain_get_surface(domain), &area, "Exporting... Press ESC to abort.");
+				font_write_args(&mused.smallfont, domain, &area, "Exporting... Press ESC to abort.");
 				
 				SDL_Event e;
 				

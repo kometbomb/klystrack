@@ -11,6 +11,7 @@
 #include "gui/slider.h"
 #include "command.h"
 #include "shortcutdefs.h"
+#include <string.h>
 
 #define SCROLLBAR 10
 #define TOP_LEFT 0
@@ -35,16 +36,16 @@ static struct
 	int list_position;
 	int quit;
 	const Font *largefont, *smallfont;
-	SDL_Surface *gfx;
+	GfxSurface *gfx;
 	int elemwidth, list_width;
 } data;
 
 extern const KeyShortcut shortcuts[];
 
-static void help_list_view(SDL_Surface *dest_surface, const SDL_Rect *area, const SDL_Event *event, void *param);
-static void title_view(SDL_Surface *dest_surface, const SDL_Rect *area, const SDL_Event *event, void *param);
-static void window_view(SDL_Surface *dest_surface, const SDL_Rect *area, const SDL_Event *event, void *param);
-static void buttons_view(SDL_Surface *dest_surface, const SDL_Rect *area, const SDL_Event *event, void *param);
+static void help_list_view(GfxDomain *dest_surface, const SDL_Rect *area, const SDL_Event *event, void *param);
+static void title_view(GfxDomain *dest_surface, const SDL_Rect *area, const SDL_Event *event, void *param);
+static void window_view(GfxDomain *dest_surface, const SDL_Rect *area, const SDL_Event *event, void *param);
+static void buttons_view(GfxDomain *dest_surface, const SDL_Rect *area, const SDL_Event *event, void *param);
 
 static const View filebox_view[] =
 {
@@ -141,7 +142,7 @@ static void init_lines(void * section, void * unused1, void * unused2)
 }
 
 
-static void buttons_view(SDL_Surface *dest_surface, const SDL_Rect *area, const SDL_Event *event, void *param)
+static void buttons_view(GfxDomain *dest_surface, const SDL_Rect *area, const SDL_Event *event, void *param)
 {
 	SDL_Rect button;
 	
@@ -158,13 +159,13 @@ static void buttons_view(SDL_Surface *dest_surface, const SDL_Rect *area, const 
 }
 
 
-void window_view(SDL_Surface *dest_surface, const SDL_Rect *area, const SDL_Event *event, void *param)
+void window_view(GfxDomain *dest_surface, const SDL_Rect *area, const SDL_Event *event, void *param)
 {
 	bevel(dest_surface, area, data.gfx, BEV_MENU);
 }
 
 
-void title_view(SDL_Surface *dest_surface, const SDL_Rect *area, const SDL_Event *event, void *param)
+void title_view(GfxDomain *dest_surface, const SDL_Rect *area, const SDL_Event *event, void *param)
 {
 	const char* title = data.title;
 	SDL_Rect titlearea, button;
@@ -180,7 +181,7 @@ void title_view(SDL_Surface *dest_surface, const SDL_Rect *area, const SDL_Event
 }
 
 
-void help_list_view(SDL_Surface *dest_surface, const SDL_Rect *area, const SDL_Event *event, void *param)
+void help_list_view(GfxDomain *dest_surface, const SDL_Rect *area, const SDL_Event *event, void *param)
 {
 	SDL_Rect content, pos;
 	copy_rect(&content, area);
@@ -189,7 +190,7 @@ void help_list_view(SDL_Surface *dest_surface, const SDL_Rect *area, const SDL_E
 	pos.h = data.largefont->h;
 	bevel(dest_surface,area, data.gfx, BEV_FIELD);
 	
-	SDL_SetClipRect(dest_surface, &content);
+	gfx_domain_set_clip(dest_surface, &content);
 	
 	for (int i = data.list_position ; i < data.n_lines && pos.y < content.h + content.y ; ++i)
 	{
@@ -207,13 +208,13 @@ void help_list_view(SDL_Surface *dest_surface, const SDL_Rect *area, const SDL_E
 		update_rect(&content, &pos);
 	}
 	
-	SDL_SetClipRect(dest_surface, NULL);
+	gfx_domain_set_clip(dest_surface, NULL);
 	
 	check_mouse_wheel_event(event, area, &data.scrollbar);
 }
 
 
-int helpbox(const char *title, GfxDomain *domain, SDL_Surface *gfx, const Font *largefont, const Font *smallfont)
+int helpbox(const char *title, GfxDomain *domain, GfxSurface *gfx, const Font *largefont, const Font *smallfont)
 {
 	set_repeat_timer(NULL);
 	
@@ -226,6 +227,8 @@ int helpbox(const char *title, GfxDomain *domain, SDL_Surface *gfx, const Font *
 	data.list_width = domain->screen_w - SCREENMARGIN * 2 - MARGIN * 2 - SCROLLBAR - 2;
 	
 	init_lines(0, 0, 0);
+	
+	slider_set_params(&data.scrollbar, 0, data.n_lines - 1, data.list_position, 0, &data.list_position, 1, SLIDER_VERTICAL, data.gfx);
 	
 	/*for (int i = 0 ; i < data.n_files ; ++i)
 	{
@@ -334,7 +337,7 @@ int helpbox(const char *title, GfxDomain *domain, SDL_Surface *gfx, const Font *
 		
 		if (got_event || gfx_domain_is_next_frame(domain))
 		{
-			draw_view(gfx_domain_get_surface(domain), filebox_view, &e);
+			draw_view(domain, filebox_view, &e);
 			gfx_domain_flip(domain);
 		}
 		else

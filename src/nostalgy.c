@@ -1,4 +1,5 @@
 #include "nostalgy.h"
+#include <stdlib.h>
 
 void nos_decrunch(GfxDomain *domain)
 {
@@ -29,7 +30,7 @@ void nos_decrunch(GfxDomain *domain)
 			int h = rand() & 15;
 			{
 				SDL_Rect line = {0, y, domain->screen_w, h};
-				SDL_FillRect(gfx_domain_get_surface(domain), &line, palette[rand() & 15]);
+				gfx_rect(domain, &line, palette[rand() & 15]);
 			}
 			
 			y += h;

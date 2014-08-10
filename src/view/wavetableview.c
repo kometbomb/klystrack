@@ -37,11 +37,11 @@ OTHER DEALINGS IN THE SOFTWARE.
 
 extern Mused mused;
 
-void wavetable_view(SDL_Surface *dest_surface, const SDL_Rect *dest, const SDL_Event *event, void *param)
+void wavetable_view(GfxDomain *dest_surface, const SDL_Rect *dest, const SDL_Event *event, void *param)
 {
 	SDL_Rect r, frame;
 	copy_rect(&frame, dest);
-	bevel(mused.screen,&frame, mused.slider_bevel->surface, BEV_BACKGROUND);
+	bevel(domain, &frame, mused.slider_bevel, BEV_BACKGROUND);
 	adjust_rect(&frame, 4);
 	copy_rect(&r, &frame);
 	
@@ -133,19 +133,19 @@ void wavetable_view(SDL_Surface *dest_surface, const SDL_Rect *dest, const SDL_E
 }
 
 
-void wavetablelist_view(SDL_Surface *dest_surface, const SDL_Rect *dest, const SDL_Event *event, void *param)
+void wavetablelist_view(GfxDomain *dest_surface, const SDL_Rect *dest, const SDL_Event *event, void *param)
 {
 	SDL_Rect area;
 	copy_rect(&area, dest);
 	console_set_clip(mused.console, &area);
 	const int chars = area.w / mused.console->font.w - 3;
 	console_clear(mused.console);
-	bevel(mused.screen,&area, mused.slider_bevel->surface, BEV_THIN_FRAME);
+	bevel(dest_surface, &area, mused.slider_bevel, BEV_THIN_FRAME);
 	adjust_rect(&area, 3);
 	console_set_clip(mused.console, &area);
 	SDL_Rect tmp;
-	SDL_GetClipRect(dest_surface, &tmp);
-	SDL_SetClipRect(dest_surface, &area);
+	gfx_domain_get_clip(dest_surface, &tmp);
+	gfx_domain_set_clip(dest_surface, &area);
 
 	int y = area.y;
 	
@@ -156,12 +156,12 @@ void wavetablelist_view(SDL_Surface *dest_surface, const SDL_Rect *dest, const S
 		SDL_Rect row = { area.x - 1, y - 1, area.w + 2, mused.console->font.h + 1};
 		if (i == mused.selected_wavetable)
 		{
-			bevel(mused.screen,&row, mused.slider_bevel->surface, BEV_SELECTED_PATTERN_ROW);
-			console_set_color(mused.console, colors[COLOR_INSTRUMENT_SELECTED], CON_CHARACTER);
+			bevel(dest_surface, &row, mused.slider_bevel, BEV_SELECTED_PATTERN_ROW);
+			console_set_color(mused.console, colors[COLOR_INSTRUMENT_SELECTED]);
 		}
 		else
 		{
-			console_set_color(mused.console, colors[COLOR_INSTRUMENT_NORMAL], CON_CHARACTER);
+			console_set_color(mused.console, colors[COLOR_INSTRUMENT_NORMAL]);
 		}
 			
 		const CydWavetableEntry *w = &mused.mus.cyd->wavetable_entries[i];
@@ -174,29 +174,28 @@ void wavetablelist_view(SDL_Surface *dest_surface, const SDL_Rect *dest, const S
 		
 		check_event(event, &row, select_wavetable, MAKEPTR(i), 0, 0);
 		
-		slider_set_params(&mused.wavetable_list_slider_param, 0, CYD_WAVE_MAX_ENTRIES - 1, start, i, &mused.wavetable_list_position, 1, SLIDER_VERTICAL, mused.slider_bevel->surface);
+		slider_set_params(&mused.wavetable_list_slider_param, 0, CYD_WAVE_MAX_ENTRIES - 1, start, i, &mused.wavetable_list_position, 1, SLIDER_VERTICAL, mused.slider_bevel);
 	}
 	
-	SDL_SetClipRect(dest_surface, &tmp);
+	gfx_domain_set_clip(dest_surface, &tmp);
 	
 	check_mouse_wheel_event(event, dest, &mused.wavetable_list_slider_param);	
 }
 
 
-static void update_sample_preview(const SDL_Surface *dest, const SDL_Rect* area)
+static void update_sample_preview(GfxDomain *dest, const SDL_Rect* area)
 {
-	if (!mused.wavetable_preview || (mused.wavetable_preview->w != area->w || mused.wavetable_preview->h != area->h))
+	if (!mused.wavetable_preview || (mused.wavetable_preview->surface->w != area->w || mused.wavetable_preview->surface->h != area->h))
 	{
-		if (mused.wavetable_preview) SDL_FreeSurface(mused.wavetable_preview);
+		if (mused.wavetable_preview) gfx_free_surface(mused.wavetable_preview);
 		
-		mused.wavetable_preview = SDL_CreateRGBSurface(SDL_SWSURFACE, area->w, area->h, dest->format->BitsPerPixel, 
-                                  dest->format->Rmask, dest->format->Gmask, dest->format->Bmask, 0);
+		mused.wavetable_preview = gfx_create_surface(dest, area->w, area->h);	
 	}
 	else if (mused.wavetable_preview_idx == mused.selected_wavetable) return;
 	
 	mused.wavetable_preview_idx = mused.selected_wavetable;
 	
-	SDL_FillRect(mused.wavetable_preview, NULL, colors[COLOR_WAVETABLE_BACKGROUND]);
+	SDL_FillRect(mused.wavetable_preview->surface, NULL, SDL_MapRGB(mused.wavetable_preview->surface->format, (colors[COLOR_WAVETABLE_BACKGROUND] >> 16) & 255, (colors[COLOR_WAVETABLE_BACKGROUND] >> 8) & 255, colors[COLOR_WAVETABLE_BACKGROUND] & 255));
 
 	const CydWavetableEntry *w = &mused.mus.cyd->wavetable_entries[mused.selected_wavetable];
 	
@@ -237,8 +236,10 @@ static void update_sample_preview(const SDL_Surface *dest, const SDL_Rect* area)
 			
 			SDL_Rect r = { prev_x / res, min, my_max(1, x / res - prev_x / res), max + 1 };
 			
-			SDL_FillRect(mused.wavetable_preview, &r, colors[COLOR_WAVETABLE_SAMPLE]);
+			SDL_FillRect(mused.wavetable_preview->surface, &r, SDL_MapRGB(mused.wavetable_preview->surface->format, (colors[COLOR_WAVETABLE_SAMPLE] >> 16) & 255, (colors[COLOR_WAVETABLE_SAMPLE] >> 8) & 255, colors[COLOR_WAVETABLE_SAMPLE] & 255));
 		}
+		
+		gfx_update_texture(dest, mused.wavetable_preview);
 		
 		debug("Wavetable item bitmask = %x, lowest bit = %d", mused.wavetable_bits, __builtin_ffs(mused.wavetable_bits) - 1);
 		
@@ -247,14 +248,14 @@ static void update_sample_preview(const SDL_Surface *dest, const SDL_Rect* area)
 }
 
 
-void wavetable_sample_view(SDL_Surface *dest_surface, const SDL_Rect *dest, const SDL_Event *event, void *param)
+void wavetable_sample_view(GfxDomain *dest_surface, const SDL_Rect *dest, const SDL_Event *event, void *param)
 {
 	SDL_Rect area;
 	copy_rect(&area, dest);
-	bevel(mused.screen,&area, mused.slider_bevel->surface, BEV_THIN_FRAME);
+	bevel(domain, &area, mused.slider_bevel, BEV_THIN_FRAME);
 	adjust_rect(&area, 3);
 	update_sample_preview(dest_surface, &area);
-	SDL_BlitSurface(mused.wavetable_preview, NULL, dest_surface, &area);
+	my_BlitSurface(mused.wavetable_preview, NULL, dest_surface, &area);
 	
 	int mx, my;
 	
@@ -279,48 +280,48 @@ void invalidate_wavetable_view()
 }
 
 
-void wavetable_tools_view(SDL_Surface *dest_surface, const SDL_Rect *dest, const SDL_Event *event, void *param)
+void wavetable_tools_view(GfxDomain *dest_surface, const SDL_Rect *dest, const SDL_Event *event, void *param)
 {
 	SDL_Rect r, frame;
 	copy_rect(&frame, dest);
-	bevel(mused.screen,&frame, mused.slider_bevel->surface, BEV_BACKGROUND);
+	bevel(domain, &frame, mused.slider_bevel, BEV_BACKGROUND);
 	adjust_rect(&frame, 4);
 	copy_rect(&r, &frame);
 	
 	r.h = 12;
 	
-	button_text_event(dest_surface, event, &r, mused.slider_bevel->surface, &mused.buttonfont, BEV_BUTTON, BEV_BUTTON_ACTIVE, "DROP LOWEST BIT", wavetable_drop_lowest_bit, NULL, NULL, NULL);
+	button_text_event(domain, event, &r, mused.slider_bevel, &mused.buttonfont, BEV_BUTTON, BEV_BUTTON_ACTIVE, "DROP LOWEST BIT", wavetable_drop_lowest_bit, NULL, NULL, NULL);
 	
 	r.y += r.h;
 	
-	button_text_event(dest_surface, event, &r, mused.slider_bevel->surface, &mused.buttonfont, BEV_BUTTON, BEV_BUTTON_ACTIVE, "HALVE RATE", wavetable_halve_samplerate, NULL, NULL, NULL);
+	button_text_event(domain, event, &r, mused.slider_bevel, &mused.buttonfont, BEV_BUTTON, BEV_BUTTON_ACTIVE, "HALVE RATE", wavetable_halve_samplerate, NULL, NULL, NULL);
 	
 	r.y += r.h;
 	
-	button_text_event(dest_surface, event, &r, mused.slider_bevel->surface, &mused.buttonfont, BEV_BUTTON, BEV_BUTTON_ACTIVE, "NORMALIZE", wavetable_normalize, MAKEPTR(32768), NULL, NULL);
+	button_text_event(domain, event, &r, mused.slider_bevel, &mused.buttonfont, BEV_BUTTON, BEV_BUTTON_ACTIVE, "NORMALIZE", wavetable_normalize, MAKEPTR(32768), NULL, NULL);
 	
 	r.y += r.h;
 	
-	button_text_event(dest_surface, event, &r, mused.slider_bevel->surface, &mused.buttonfont, BEV_BUTTON, BEV_BUTTON_ACTIVE, "NORMALIZE 1/4", wavetable_normalize, MAKEPTR(32768 / 4), NULL, NULL);
+	button_text_event(domain, event, &r, mused.slider_bevel, &mused.buttonfont, BEV_BUTTON, BEV_BUTTON_ACTIVE, "NORMALIZE 1/4", wavetable_normalize, MAKEPTR(32768 / 4), NULL, NULL);
 	
 	r.y += r.h;
 	
 	
-	button_text_event(dest_surface, event, &r, mused.slider_bevel->surface, &mused.buttonfont, BEV_BUTTON, BEV_BUTTON_ACTIVE, "CUT TAIL", wavetable_cut_tail, NULL, NULL, NULL);
+	button_text_event(domain, event, &r, mused.slider_bevel, &mused.buttonfont, BEV_BUTTON, BEV_BUTTON_ACTIVE, "CUT TAIL", wavetable_cut_tail, NULL, NULL, NULL);
 	
 	r.y += r.h;
 	
-	button_text_event(dest_surface, event, &r, mused.slider_bevel->surface, &mused.buttonfont, BEV_BUTTON, BEV_BUTTON_ACTIVE, "CUT HEAD", wavetable_cut_head, NULL, NULL, NULL);
+	button_text_event(domain, event, &r, mused.slider_bevel, &mused.buttonfont, BEV_BUTTON, BEV_BUTTON_ACTIVE, "CUT HEAD", wavetable_cut_head, NULL, NULL, NULL);
 	
 	r.y += r.h;
 	
-	button_text_event(dest_surface, event, &r, mused.slider_bevel->surface, &mused.buttonfont, BEV_BUTTON, BEV_BUTTON_ACTIVE, "5TH", wavetable_chord, MAKEPTR(5), NULL, NULL);
+	button_text_event(domain, event, &r, mused.slider_bevel, &mused.buttonfont, BEV_BUTTON, BEV_BUTTON_ACTIVE, "5TH", wavetable_chord, MAKEPTR(5), NULL, NULL);
 	
 	r.y += r.h;
 	
-	button_text_event(dest_surface, event, &r, mused.slider_bevel->surface, &mused.buttonfont, BEV_BUTTON, BEV_BUTTON_ACTIVE, "OCTAVE", wavetable_chord, MAKEPTR(12), NULL, NULL);
+	button_text_event(domain, event, &r, mused.slider_bevel, &mused.buttonfont, BEV_BUTTON, BEV_BUTTON_ACTIVE, "OCTAVE", wavetable_chord, MAKEPTR(12), NULL, NULL);
 	
 	r.y += r.h;
 	
-	button_text_event(dest_surface, event, &r, mused.slider_bevel->surface, &mused.buttonfont, BEV_BUTTON, BEV_BUTTON_ACTIVE, "GENERATE A", wavetable_create_one_cycle, MAKEPTR(12), NULL, NULL);
+	button_text_event(domain, event, &r, mused.slider_bevel, &mused.buttonfont, BEV_BUTTON, BEV_BUTTON_ACTIVE, "GENERATE A", wavetable_create_one_cycle, MAKEPTR(12), NULL, NULL);
 }
