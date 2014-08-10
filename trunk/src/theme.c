@@ -145,22 +145,9 @@ static void load_colors(const char *cfg)
 
 int font_load_and_set_color(Font *font, Bundle *b, char *name, Uint32 color)
 {
-	if (font_load(font, b, name))
+	if (font_load(domain, font, b, name))
 	{
-		SDL_Surface *temp = SDL_CreateRGBSurface(SDL_SWSURFACE, font->surface->surface->w, font->surface->surface->h, 8, 0xFF0000, 0x00FF00, 0x0000FF, 0xFF000000);
-		
-		SDL_Color palette[] = {{ 255, 0, 255 }, { 255, 255, 255 }, {0, 0, 0}};
-		SDL_SetColors(temp, palette, 0, 3);
-		SDL_SetColorKey(temp, SDL_SRCCOLORKEY, 0);
-		
-		SDL_BlitSurface(font->surface->surface, NULL, temp, NULL);
-		
-		SDL_Color rgb[] = {{ color >> 16, color >> 8, color }, {(colors[COLOR_TEXT_SHADOW] >> 16) & 255, (colors[COLOR_TEXT_SHADOW] >> 8) & 255,colors[COLOR_TEXT_SHADOW] & 255}};
-		SDL_SetColors(temp, rgb, 1, 2);
-		
-		SDL_BlitSurface(temp, NULL, font->surface->surface, NULL);
-		
-		SDL_FreeSurface(temp);
+		font_set_color(font, color);
 		return 1;
 	}
 	else
@@ -318,44 +305,44 @@ void load_theme(const char *name)
 		if (rw)
 		{
 			if (mused.slider_bevel) gfx_free_surface(mused.slider_bevel);
-			mused.slider_bevel = gfx_load_surface_RW(rw, GFX_KEYED);
+			mused.slider_bevel = gfx_load_surface_RW(domain, rw, GFX_KEYED);
 					
 			/* TODO: do we need to store the surface in the params? */
 	
-			mused.sequence_slider_param.gfx = mused.slider_bevel->surface; 
-			mused.pattern_slider_param.gfx = mused.slider_bevel->surface; 
-			mused.program_slider_param.gfx = mused.slider_bevel->surface; 
-			mused.instrument_list_slider_param.gfx = mused.slider_bevel->surface;
-			mused.pattern_horiz_slider_param.gfx = mused.slider_bevel->surface; 
-			mused.sequence_horiz_slider_param.gfx = mused.slider_bevel->surface;
+			mused.sequence_slider_param.gfx = mused.slider_bevel; 
+			mused.pattern_slider_param.gfx = mused.slider_bevel; 
+			mused.program_slider_param.gfx = mused.slider_bevel; 
+			mused.instrument_list_slider_param.gfx = mused.slider_bevel;
+			mused.pattern_horiz_slider_param.gfx = mused.slider_bevel; 
+			mused.sequence_horiz_slider_param.gfx = mused.slider_bevel;
 		}
 		
 		rw = load_img_if_exists(&res, "vu");
 		if (rw)
 		{
 			if (mused.vu_meter) gfx_free_surface(mused.vu_meter);
-			mused.vu_meter = gfx_load_surface_RW(rw, GFX_KEYED);
+			mused.vu_meter = gfx_load_surface_RW(domain, rw, GFX_KEYED);
 		}
 		
 		rw = load_img_if_exists(&res, "analyzor");
 		if (rw)
 		{
 			if (mused.analyzer) gfx_free_surface(mused.analyzer);
-			mused.analyzer = gfx_load_surface_RW(rw, GFX_KEYED);
+			mused.analyzer = gfx_load_surface_RW(domain, rw, GFX_KEYED);
 		}
 		
 		rw = load_img_if_exists(&res, "catometer");
 		if (rw)
 		{
 			if (mused.catometer) gfx_free_surface(mused.catometer);
-			mused.catometer = gfx_load_surface_RW(rw, GFX_KEYED);
+			mused.catometer = gfx_load_surface_RW(domain, rw, GFX_KEYED);
 		}
 		
 		rw = load_img_if_exists(&res, "logo");
 		if (rw)
 		{
 			if (mused.logo) gfx_free_surface(mused.logo);
-			mused.logo = gfx_load_surface_RW(rw, GFX_KEYED);
+			mused.logo = gfx_load_surface_RW(domain, rw, GFX_KEYED);
 		}
 	
 		if (bnd_exists(&res, "colors.txt"))

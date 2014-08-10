@@ -34,6 +34,7 @@ OTHER DEALINGS IN THE SOFTWARE.
 #include "snd/freqs.h"
 #include "snd/pack.h"
 #include "view/wavetableview.h"
+#include <string.h>
 
 extern Mused mused;
 extern GfxDomain *domain;
@@ -328,7 +329,7 @@ int save_song(FILE *f)
 	bool kill_unused_things = false;
 
 	Uint8 n_inst = mused.song.num_instruments;
-	if (!confirm(domain, mused.slider_bevel->surface, &mused.largefont, "Save unused song elements?"))
+	if (!confirm(domain, mused.slider_bevel, &mused.largefont, "Save unused song elements?"))
 	{
 		int maxpat = -1;
 		for (int c = 0 ; c < mused.song.num_channels ; ++c)
@@ -600,7 +601,7 @@ void open_data(void *type, void *action, void *_ret)
 	if (a == OD_A_OPEN && t == OD_T_SONG)
 	{
 		int r = -1;
-		if (mused.modified) r = confirm_ync(domain, mused.slider_bevel->surface, &mused.largefont, "Save song?");
+		if (mused.modified) r = confirm_ync(domain, mused.slider_bevel, &mused.largefont, "Save song?");
 		int ret_val;
 				
 		if (r == 0) 
@@ -665,7 +666,7 @@ void open_data(void *type, void *action, void *_ret)
 		def = _def;
 	}
 	
-	FILE * f = open_dialog(mode[a], str, open_stuff[t].ext, domain, mused.slider_bevel->surface, &mused.largefont, &mused.smallfont, def);
+	FILE * f = open_dialog(mode[a], str, open_stuff[t].ext, domain, mused.slider_bevel, &mused.largefont, &mused.smallfont, def);
 	
 	if (f)
 	{
@@ -680,7 +681,7 @@ void open_data(void *type, void *action, void *_ret)
 			if (!r)
 			{
 				snprintf(str, sizeof(str), "Could not open %s!", open_stuff[t].name);
-				msgbox(domain, mused.slider_bevel->surface, &mused.largefont, str, MB_OK);
+				msgbox(domain, mused.slider_bevel, &mused.largefont, str, MB_OK);
 				
 				return_val = 0;
 			}

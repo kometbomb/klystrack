@@ -30,6 +30,7 @@ OTHER DEALINGS IN THE SOFTWARE.
 #include "SDL_endian.h"
 #include "snd/freqs.h"
 #include <assert.h>
+#include <string.h>
 
 extern Mused mused;
 

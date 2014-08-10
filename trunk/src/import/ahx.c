@@ -30,6 +30,7 @@ OTHER DEALINGS IN THE SOFTWARE.
 #include "SDL_endian.h"
 #include <math.h>
 #include "snd/freqs.h"
+#include <string.h>
 
 extern Mused mused;
 
@@ -214,15 +215,11 @@ int import_ahx(FILE *f)
 	
 	fread(sig, 1, 4, f);
 	
-	int ver = 0;
-	
 	if (memcmp("THX\0", sig, 4) == 0)
 	{
-		ver = 0;
 	}
 	else if (memcmp("THX\1", sig, 4) == 0)
 	{
-		ver = 1;
 	}
 	else return 0;
 	

@@ -41,6 +41,7 @@ OTHER DEALINGS IN THE SOFTWARE.
 #include "gui/mouse.h"
 #include "view/wavetableview.h"
 #include "help.h"
+#include <string.h>
 
 extern Mused mused;
 extern GfxDomain *domain;
@@ -243,7 +244,7 @@ void select_program_step(void *idx, void *digit, void *unused2)
 
 void new_song_action(void *unused1, void *unused2, void *unused3)
 {
-	if (confirm(domain, mused.slider_bevel->surface, &mused.largefont, "Clear song and data?"))
+	if (confirm(domain, mused.slider_bevel, &mused.largefont, "Clear song and data?"))
 	{
 		stop(0,0,0);
 		new_song();
@@ -444,7 +445,7 @@ void change_seq_steps(void *delta, void *unused1, void *unused2)
 
 void show_about_box(void *unused1, void *unused2, void *unused3)
 {
-	msgbox(domain, mused.slider_bevel->surface, &mused.largefont, VERSION_STRING "\n" KLYSTRON_VERSION_STRING, MB_OK);
+	msgbox(domain, mused.slider_bevel, &mused.largefont, VERSION_STRING "\n" KLYSTRON_VERSION_STRING, MB_OK);
 }
 
 
@@ -524,8 +525,7 @@ void change_pixel_scale(void *scale, void*b, void*c)
 	domain->screen_w = my_max(320, mused.window_w / mused.pixel_scale);
 	domain->screen_h = my_max(240, mused.window_h / mused.pixel_scale);
 	domain->scale = mused.pixel_scale;
-	gfx_domain_update(domain);
-	mused.screen = gfx_domain_get_surface(domain);
+	gfx_domain_update(domain, true);
 	
 	for (int i = 0 ; i < 4; ++i)
 	{
@@ -550,8 +550,7 @@ void toggle_fullscreen(void *a, void*b, void*c)
 void change_fullscreen(void *a, void*b, void*c)
 {
 	domain->fullscreen = (mused.flags & FULLSCREEN) != 0;
-	gfx_domain_update(domain);
-	mused.screen = gfx_domain_get_surface(domain);
+	gfx_domain_update(domain, true);
 }
 
 
@@ -592,7 +591,7 @@ void export_wav_action(void *a, void*b, void*c)
 {
 	char def[1000];
 	snprintf(def, sizeof(def), "%s.wav", mused.song.title);
-	FILE * f = open_dialog("wb", "Export .WAV", "wav", domain, mused.slider_bevel->surface, &mused.largefont, &mused.smallfont, def);
+	FILE * f = open_dialog("wb", "Export .WAV", "wav", domain, mused.slider_bevel, &mused.largefont, &mused.smallfont, def);
 	if (f)
 	{
 		export_wav(&mused.song, mused.mus.cyd->wavetable_entries, f);
@@ -801,7 +800,7 @@ void change_visualizer_action(void *vis, void *unused1, void *unused2)
 void open_help(void *unused0, void *unused1, void *unused2)
 {
 	cyd_lock(&mused.cyd, 0);
-	helpbox("Help", domain, mused.slider_bevel->surface, &mused.largefont, &mused.smallfont);
+	helpbox("Help", domain, mused.slider_bevel, &mused.largefont, &mused.smallfont);
 	cyd_lock(&mused.cyd, 1);
 }
 

@@ -44,7 +44,7 @@ extern GfxDomain *domain;
 void import_module(void *type, void* unused1, void* unused2)
 {
 	int r;
-	if (mused.modified) r = confirm_ync(domain, mused.slider_bevel->surface, &mused.largefont, "Save song?");
+	if (mused.modified) r = confirm_ync(domain, mused.slider_bevel, &mused.largefont, "Save song?");
 	else r = -1;
 				
 	if (r == 0) return;
@@ -63,7 +63,7 @@ void import_module(void *type, void* unused1, void* unused2)
 	char buffer[100];
 	snprintf(buffer, sizeof(buffer), "Import %s song", mod_name[(int)type]);
 
-	FILE * f = open_dialog("rb", buffer, mod_ext[(int)type], domain, mused.slider_bevel->surface, &mused.largefont, &mused.smallfont, NULL);
+	FILE * f = open_dialog("rb", buffer, mod_ext[(int)type], domain, mused.slider_bevel, &mused.largefont, &mused.smallfont, NULL);
 	
 	if (!f) return;
 	
@@ -81,7 +81,7 @@ void import_module(void *type, void* unused1, void* unused2)
 	if (!r) 
 	{
 		snprintf(buffer, sizeof(buffer), "Not %s song", mod_name[(int)type]);
-		msgbox(domain, mused.slider_bevel->surface, &mused.largefont, buffer, MB_OK);
+		msgbox(domain, mused.slider_bevel, &mused.largefont, buffer, MB_OK);
 	}
 	else
 	{

@@ -28,7 +28,7 @@ OTHER DEALINGS IN THE SOFTWARE.
 
 #include "SDL.h"
 
-void pattern_view(SDL_Surface *dest_surface, const SDL_Rect *dest, const SDL_Event *event, void *param);
-void pattern_view2(SDL_Surface *dest_surface, const SDL_Rect *dest, const SDL_Event *event, void *param);
+void pattern_view(GfxDomain *dest_surface, const SDL_Rect *dest, const SDL_Event *event, void *param);
+void pattern_view2(GfxDomain *dest_surface, const SDL_Rect *dest, const SDL_Event *event, void *param);
 
 #endif

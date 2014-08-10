@@ -40,6 +40,7 @@ OTHER DEALINGS IN THE SOFTWARE.
 #include "edit.h"
 #include "mymsg.h"
 #include "command.h"
+#include <string.h>
 
 extern Mused mused;
 
@@ -74,14 +75,14 @@ bool is_selected_param(int focus, int p)
 
 void my_separator(const SDL_Rect *parent, SDL_Rect *rect)
 {
-	separator(mused.screen, parent, rect, mused.slider_bevel->surface, BEV_SEPARATOR);
+	separator(domain, parent, rect, mused.slider_bevel, BEV_SEPARATOR);
 }
 
 // note: since we need to handle the focus this piece of code is duplicated from gui/view.c
 
-void my_draw_view(const View* views, const SDL_Event *_event, const SDL_Surface *screen)
+void my_draw_view(const View* views, const SDL_Event *_event, GfxDomain *domain)
 {
-	SDL_FillRect(mused.screen, NULL, colors[COLOR_BACKGROUND]);
+	gfx_rect(domain, NULL, colors[COLOR_BACKGROUND]);
 
 	SDL_Event event;
 	memcpy(&event, _event, sizeof(event));
@@ -92,17 +93,17 @@ void my_draw_view(const View* views, const SDL_Event *_event, const SDL_Surface 
 	{
 		const View *view = &views[i];
 		SDL_Rect area;
-		area.x = view->position.x >= 0 ? view->position.x : screen->w + view->position.x;
-		area.y = view->position.y >= 0 ? view->position.y : screen->h + view->position.y;
-		area.w = *(Sint16*)&view->position.w > 0 ? *(Sint16*)&view->position.w : screen->w + *(Sint16*)&view->position.w - view->position.x;
-		area.h = *(Sint16*)&view->position.h > 0 ? *(Sint16*)&view->position.h : screen->h + *(Sint16*)&view->position.h - view->position.y;
+		area.x = view->position.x >= 0 ? view->position.x : domain->screen_w + view->position.x;
+		area.y = view->position.y >= 0 ? view->position.y : domain->screen_h + view->position.y;
+		area.w = *(Sint16*)&view->position.w > 0 ? *(Sint16*)&view->position.w : domain->screen_w + *(Sint16*)&view->position.w - view->position.x;
+		area.h = *(Sint16*)&view->position.h > 0 ? *(Sint16*)&view->position.h : domain->screen_h + *(Sint16*)&view->position.h - view->position.y;
 
 		memcpy(&mused.console->clip, &area, sizeof(view->position));
 		int iter = 0;
 		do
 		{
 			event_hit = 0;
-			view->handler(mused.screen, &area, &event, view->param);
+			view->handler(domain, &area, &event, view->param);
 			if (event_hit) 
 			{
 				event.type = MSG_EVENTHIT;
@@ -145,7 +146,7 @@ void my_draw_view(const View* views, const SDL_Event *_event, const SDL_Surface 
 	if (mused.cursor.y < mused.cursor_target.y) ++mused.cursor.y;
 	if (mused.cursor.y > mused.cursor_target.y) --mused.cursor.y;
 	
-	if (mused.cursor.w > 0) bevel(mused.screen, &mused.cursor, mused.slider_bevel->surface, (mused.flags & EDIT_MODE) ? BEV_EDIT_CURSOR : BEV_CURSOR);
+	if (mused.cursor.w > 0) bevel(domain, &mused.cursor, mused.slider_bevel, (mused.flags & EDIT_MODE) ? BEV_EDIT_CURSOR : BEV_CURSOR);
 }
 
 
@@ -170,7 +171,7 @@ static void label(const char *_label, const SDL_Rect *area)
 	
 	r.y = r.y + area->h / 2 - mused.smallfont.h / 2;
 	
-	font_write(&mused.smallfont, mused.screen, &r, _label);
+	font_write(&mused.smallfont, domain, &r, _label);
 }
 
 
@@ -248,13 +249,13 @@ int generic_field(const SDL_Event *e, const SDL_Rect *area, int focus, int param
 	field.x -= spinner_area.w;
 	spinner_area.x -= spinner_area.w;
 	
-	bevel(mused.screen,&field, mused.slider_bevel->surface, BEV_FIELD);
+	bevel(domain, &field, mused.slider_bevel, BEV_FIELD);
 	
 	adjust_rect(&field, 1);
 	
-	font_write_args(&mused.largefont, mused.screen, &field, format, value);
+	font_write_args(&mused.largefont, domain, &field, format, value);
 
-	int r =  spinner(mused.screen, e, &spinner_area, mused.slider_bevel->surface, (Uint32)area->x << 16 | area->y);
+	int r =  spinner(domain, e, &spinner_area, mused.slider_bevel, (Uint32)area->x << 16 | area->y);
 	
 	check_mouse_hit(e, area, focus, param);
 	
@@ -280,7 +281,7 @@ void generic_flags(const SDL_Event *e, const SDL_Rect *_area, int focus, int p, 
 	int hit = check_mouse_hit(e, _area, focus, p);
 	Uint32 flags = *_flags;
 	
-	if (checkbox(mused.screen, e, &area, mused.slider_bevel->surface, &mused.smallfont, BEV_BUTTON, BEV_BUTTON_ACTIVE, DECAL_TICK,label, &flags, mask)) 
+	if (checkbox(domain, e, &area, mused.slider_bevel, &mused.smallfont, BEV_BUTTON, BEV_BUTTON_ACTIVE, DECAL_TICK,label, &flags, mask)) 
 	{
 		
 	}
@@ -312,13 +313,13 @@ void generic_flags(const SDL_Event *e, const SDL_Rect *_area, int focus, int p, 
 }
 
 
-void songinfo1_view(SDL_Surface *dest_surface, const SDL_Rect *dest, const SDL_Event *event, void *param)
+void songinfo1_view(GfxDomain *dest_surface, const SDL_Rect *dest, const SDL_Event *event, void *param)
 {
 	SDL_Rect area;
 	copy_rect(&area, dest);
 	console_set_clip(mused.console, &area);
 	console_clear(mused.console);
-	bevel(mused.screen,&area, mused.slider_bevel->surface, BEV_BACKGROUND);
+	bevel(domain,&area, mused.slider_bevel, BEV_BACKGROUND);
 	
 	area.w = my_min(320, area.w);
 	
@@ -355,13 +356,13 @@ void songinfo1_view(SDL_Surface *dest_surface, const SDL_Rect *dest, const SDL_E
 }
 
 
-void songinfo2_view(SDL_Surface *dest_surface, const SDL_Rect *dest, const SDL_Event *event, void *param)
+void songinfo2_view(GfxDomain *dest_surface, const SDL_Rect *dest, const SDL_Event *event, void *param)
 {
 	SDL_Rect area;
 	copy_rect(&area, dest);
 	console_set_clip(mused.console, &area);
 	console_clear(mused.console);
-	bevel(mused.screen,&area, mused.slider_bevel->surface, BEV_BACKGROUND);
+	bevel(domain,&area, mused.slider_bevel, BEV_BACKGROUND);
 	
 	area.w = my_min(320, area.w);
 	
@@ -411,13 +412,13 @@ void songinfo2_view(SDL_Surface *dest_surface, const SDL_Rect *dest, const SDL_E
 }
 
 
-void songinfo3_view(SDL_Surface *dest_surface, const SDL_Rect *dest, const SDL_Event *event, void *param)
+void songinfo3_view(GfxDomain *dest_surface, const SDL_Rect *dest, const SDL_Event *event, void *param)
 {
 	SDL_Rect area;
 	copy_rect(&area, dest);
 	console_set_clip(mused.console, &area);
 	console_clear(mused.console);
-	bevel(mused.screen,&area, mused.slider_bevel->surface, BEV_BACKGROUND);
+	bevel(domain,&area, mused.slider_bevel, BEV_BACKGROUND);
 	
 	area.w = my_min(320, area.w);
 	
@@ -450,13 +451,13 @@ void songinfo3_view(SDL_Surface *dest_surface, const SDL_Rect *dest, const SDL_E
 }
 
 
-void playstop_view(SDL_Surface *dest_surface, const SDL_Rect *dest, const SDL_Event *event, void *param)
+void playstop_view(GfxDomain *dest_surface, const SDL_Rect *dest, const SDL_Event *event, void *param)
 {
 	SDL_Rect area;
 	copy_rect(&area, dest);
 	console_set_clip(mused.console, &area);
 	console_clear(mused.console);
-	bevel(mused.screen,&area, mused.slider_bevel->surface, BEV_BACKGROUND);
+	bevel(domain,&area, mused.slider_bevel, BEV_BACKGROUND);
 	
 	area.w = my_min(PLAYSTOP_INFO_W * 2, area.w);
 	
@@ -473,10 +474,10 @@ void playstop_view(SDL_Surface *dest_surface, const SDL_Rect *dest, const SDL_Ev
 	SDL_Rect button;
 	copy_rect(&button, &r);
 	button.w = my_max(button.w / 2, PLAYSTOP_INFO_W/2 - 4);
-	button_text_event(dest_surface, event, &button, mused.slider_bevel->surface, &mused.buttonfont, (mused.flags & SONG_PLAYING) ? BEV_BUTTON_ACTIVE : BEV_BUTTON, BEV_BUTTON_ACTIVE, "PLAY", play, NULL, NULL, NULL);
+	button_text_event(domain, event, &button, mused.slider_bevel, &mused.buttonfont, (mused.flags & SONG_PLAYING) ? BEV_BUTTON_ACTIVE : BEV_BUTTON, BEV_BUTTON_ACTIVE, "PLAY", play, NULL, NULL, NULL);
 	button.x -= ELEMENT_MARGIN;
 	update_rect(&area, &button);
-	button_text_event(dest_surface, event, &button, mused.slider_bevel->surface, &mused.buttonfont, BEV_BUTTON, BEV_BUTTON_ACTIVE, "STOP", stop, NULL, NULL, NULL);
+	button_text_event(domain, event, &button, mused.slider_bevel, &mused.buttonfont, BEV_BUTTON, BEV_BUTTON_ACTIVE, "STOP", stop, NULL, NULL, NULL);
 	
 	r.y = button.y + button.h;
 	
@@ -491,17 +492,17 @@ void playstop_view(SDL_Surface *dest_surface, const SDL_Rect *dest, const SDL_Ev
 }
 
 
-void info_line(SDL_Surface *dest_surface, const SDL_Rect *dest, const SDL_Event *event, void *param)
+void info_line(GfxDomain *dest_surface, const SDL_Rect *dest, const SDL_Event *event, void *param)
 {
 	SDL_Rect area;
 	copy_rect(&area, dest);
 	area.w -= N_VIEWS * dest->h;
 	console_set_clip(mused.console, &area);
 	console_clear(mused.console);
-	bevel(mused.screen,&area, mused.slider_bevel->surface, BEV_THIN_FRAME);
+	bevel(domain,&area, mused.slider_bevel, BEV_THIN_FRAME);
 	adjust_rect(&area, 3);
 	console_set_clip(mused.console, &area);
-	console_set_color(mused.console,colors[COLOR_MAIN_TEXT],CON_CHARACTER);
+	console_set_color(mused.console, colors[COLOR_MAIN_TEXT]);
 	
 	console_clear(mused.console);
 	
@@ -682,7 +683,7 @@ void info_line(SDL_Surface *dest_surface, const SDL_Rect *dest, const SDL_Event 
 	
 	for (int i = 0 ; i < N_VIEWS ; ++i)
 	{
-		button_event(dest_surface, event, &button, mused.slider_bevel->surface, 
+		button_event(domain, event, &button, mused.slider_bevel, 
 			(mused.mode != i) ? BEV_BUTTON : BEV_BUTTON_ACTIVE, 
 			(mused.mode != i) ? BEV_BUTTON : BEV_BUTTON_ACTIVE, 
 			DECAL_MODE_PATTERN + i + (mused.mode == i ? DECAL_MODE_PATTERN_SELECTED -  DECAL_MODE_PATTERN : 0), (mused.mode != i) ? change_mode_action : NULL, (mused.mode != i) ? MAKEPTR(i) : 0, 0, 0);
@@ -713,13 +714,13 @@ static void write_command(const SDL_Event *event, const char *text, int cmd_idx,
 }
 
 
-void program_view(SDL_Surface *dest_surface, const SDL_Rect *dest, const SDL_Event *event, void *param)
+void program_view(GfxDomain *dest_surface, const SDL_Rect *dest, const SDL_Event *event, void *param)
 {
 	SDL_Rect area, clip;
 	copy_rect(&area, dest);
 	console_set_clip(mused.console, &area);
 	console_clear(mused.console);
-	bevel(mused.screen,&area, mused.slider_bevel->surface, BEV_THIN_FRAME);
+	bevel(domain,&area, mused.slider_bevel, BEV_THIN_FRAME);
 	adjust_rect(&area, 2);
 	copy_rect(&clip, &area);
 	adjust_rect(&area, 1);
@@ -741,7 +742,7 @@ void program_view(SDL_Surface *dest_surface, const SDL_Rect *dest, const SDL_Eve
 		if (!(inst->program[i] & 0x8000) || (inst->program[i] & 0xf000) == 0xf000) ++pos;
 	}
 	
-	SDL_SetClipRect(mused.screen, &clip);
+	gfx_domain_set_clip(domain, &clip);
 	
 	for (int i = start, s = 0, y = 0 ; i < MUS_PROG_LEN && y < area.h; ++i, ++s, y += mused.console->font.h)
 	{
@@ -749,11 +750,11 @@ void program_view(SDL_Surface *dest_surface, const SDL_Rect *dest, const SDL_Eve
 	
 		if (mused.current_program_step == i && mused.focus == EDITPROG)
 		{
-			bevel(mused.screen,&row, mused.slider_bevel->surface, BEV_SELECTED_PATTERN_ROW);
-			console_set_color(mused.console, colors[COLOR_PROGRAM_SELECTED], CON_CHARACTER);
+			bevel(domain,&row, mused.slider_bevel, BEV_SELECTED_PATTERN_ROW);
+			console_set_color(mused.console, colors[COLOR_PROGRAM_SELECTED]);
 		}
 		else
-			console_set_color(mused.console,pos & 1 ? colors[COLOR_PROGRAM_ODD] : colors[COLOR_PROGRAM_EVEN],CON_CHARACTER);
+			console_set_color(mused.console,pos & 1 ? colors[COLOR_PROGRAM_ODD] : colors[COLOR_PROGRAM_EVEN]);
 			
 		if (i <= mused.selection.start)
 		{
@@ -815,7 +816,7 @@ void program_view(SDL_Surface *dest_surface, const SDL_Rect *dest, const SDL_Eve
 		console_write_args(mused.console, "\n");
 			
 		if (row.y + row.h < area.y + area.h)
-			slider_set_params(&mused.program_slider_param, 0, MUS_PROG_LEN - 1, start, i, &mused.program_position, 1, SLIDER_VERTICAL, mused.slider_bevel->surface);
+			slider_set_params(&mused.program_slider_param, 0, MUS_PROG_LEN - 1, start, i, &mused.program_position, 1, SLIDER_VERTICAL, mused.slider_bevel);
 		
 		prev_pos = pos;
 		
@@ -832,12 +833,13 @@ void program_view(SDL_Surface *dest_surface, const SDL_Rect *dest, const SDL_Eve
 		
 		SDL_Rect selection = { area.x, selection_begin - 1, area.w, selection_end - selection_begin + 1 };
 		adjust_rect(&selection, -4);
-		bevel(mused.screen,&selection, mused.slider_bevel->surface, BEV_SELECTION);
+		bevel(domain,&selection, mused.slider_bevel, BEV_SELECTION);
 	}
 	
-	SDL_SetClipRect(mused.screen, NULL);
+	gfx_domain_set_clip(domain, NULL);
 	
-	check_mouse_wheel_event(event, dest, &mused.program_slider_param);
+	if (mused.focus == EDITPROG) 
+		check_mouse_wheel_event(event, dest, &mused.program_slider_param);
 }
 
 
@@ -865,18 +867,18 @@ static void inst_text(const SDL_Event *e, const SDL_Rect *area, int p, const cha
 		SDL_Rect r;
 		copy_rect(&r, area);
 		adjust_rect(&r, -1);
-		bevel(mused.screen,&r, mused.slider_bevel->surface, BEV_CURSOR);
+		bevel(domain,&r, mused.slider_bevel, BEV_CURSOR);
 	}*/
 }
 
 
 static void inst_field(const SDL_Event *e, const SDL_Rect *area, int p, int length, char *text)
 {
-	console_set_color(mused.console,colors[COLOR_MAIN_TEXT],CON_CHARACTER);
+	console_set_color(mused.console,colors[COLOR_MAIN_TEXT]);
 	console_set_clip(mused.console, area);
 	console_clear(mused.console);
 	
-	bevel(mused.screen,area, mused.slider_bevel->surface, BEV_FIELD);
+	bevel(domain,area, mused.slider_bevel, BEV_FIELD);
 	
 	SDL_Rect field;
 	copy_rect(&field, area);
@@ -932,7 +934,7 @@ static void inst_field(const SDL_Event *e, const SDL_Rect *area, int p, int leng
 
 
 
-void instrument_name_view(SDL_Surface *dest_surface, const SDL_Rect *dest, const SDL_Event *event, void *param)
+void instrument_name_view(GfxDomain *dest_surface, const SDL_Rect *dest, const SDL_Event *event, void *param)
 {
 	SDL_Rect farea, larea, tarea;
 	copy_rect(&farea,dest);
@@ -968,13 +970,13 @@ void instrument_name_view(SDL_Surface *dest_surface, const SDL_Rect *dest, const
 }
 
 
-void instrument_view(SDL_Surface *dest_surface, const SDL_Rect *dest, const SDL_Event *event, void *param)
+void instrument_view(GfxDomain *dest_surface, const SDL_Rect *dest, const SDL_Event *event, void *param)
 {
 	MusInstrument *inst = &mused.song.instrument[mused.current_instrument];
 	
 	SDL_Rect r, frame;
 	copy_rect(&frame, dest);
-	bevel(mused.screen,&frame, mused.slider_bevel->surface, BEV_BACKGROUND);
+	bevel(domain,&frame, mused.slider_bevel, BEV_BACKGROUND);
 	adjust_rect(&frame, 4);
 	copy_rect(&r, &frame);
 	r.w = r.w / 2 - 2;
@@ -1121,13 +1123,13 @@ void instrument_view(SDL_Surface *dest_surface, const SDL_Rect *dest, const SDL_
 }
 
 
-void instrument_view2(SDL_Surface *dest_surface, const SDL_Rect *dest, const SDL_Event *event, void *param)
+void instrument_view2(GfxDomain *dest_surface, const SDL_Rect *dest, const SDL_Event *event, void *param)
 {
 	MusInstrument *inst = &mused.song.instrument[mused.current_instrument];
 	
 	SDL_Rect r, frame;
 	copy_rect(&frame, dest);
-	bevel(mused.screen,&frame, mused.slider_bevel->surface, BEV_BACKGROUND);
+	bevel(domain,&frame, mused.slider_bevel, BEV_BACKGROUND);
 	adjust_rect(&frame, 4);
 	copy_rect(&r, &frame);
 	r.w = r.w / 2 - 2;
@@ -1188,13 +1190,13 @@ void instrument_view2(SDL_Surface *dest_surface, const SDL_Rect *dest, const SDL
 
 
 
-void instrument_list(SDL_Surface *dest_surface, const SDL_Rect *dest, const SDL_Event *event, void *param)
+void instrument_list(GfxDomain *dest_surface, const SDL_Rect *dest, const SDL_Event *event, void *param)
 {
 	SDL_Rect area;
 	copy_rect(&area, dest);
 	console_set_clip(mused.console, &area);
 	console_clear(mused.console);
-	bevel(mused.screen,&area, mused.slider_bevel->surface, BEV_THIN_FRAME);
+	bevel(domain,&area, mused.slider_bevel, BEV_THIN_FRAME);
 	adjust_rect(&area, 3);
 	console_set_clip(mused.console, &area);
 	
@@ -1213,12 +1215,12 @@ void instrument_list(SDL_Surface *dest_surface, const SDL_Rect *dest, const SDL_
 	
 		if (i == mused.current_instrument)
 		{
-			bevel(mused.screen,&row, mused.slider_bevel->surface, BEV_SELECTED_PATTERN_ROW);
-			console_set_color(mused.console, colors[COLOR_INSTRUMENT_SELECTED], CON_CHARACTER);
+			bevel(domain,&row, mused.slider_bevel, BEV_SELECTED_PATTERN_ROW);
+			console_set_color(mused.console, colors[COLOR_INSTRUMENT_SELECTED]);
 		}
 		else
 		{
-			console_set_color(mused.console, colors[COLOR_INSTRUMENT_NORMAL], CON_CHARACTER);
+			console_set_color(mused.console, colors[COLOR_INSTRUMENT_NORMAL]);
 		}
 			
 		char temp[sizeof(mused.song.instrument[i].name) + 1];
@@ -1230,10 +1232,11 @@ void instrument_list(SDL_Surface *dest_surface, const SDL_Rect *dest, const SDL_
 			
 		check_event(event, &row, select_instrument, MAKEPTR(i), 0, 0);
 		
-		slider_set_params(&mused.instrument_list_slider_param, 0, NUM_INSTRUMENTS - 1, start, i, &mused.instrument_list_position, 1, SLIDER_VERTICAL, mused.slider_bevel->surface);
+		slider_set_params(&mused.instrument_list_slider_param, 0, NUM_INSTRUMENTS - 1, start, i, &mused.instrument_list_position, 1, SLIDER_VERTICAL, mused.slider_bevel);
 	}
 	
-	check_mouse_wheel_event(event, dest, &mused.instrument_list_slider_param);
+	if (mused.focus == EDITINSTRUMENT) 
+		check_mouse_wheel_event(event, dest, &mused.instrument_list_slider_param);
 }
 
 
@@ -1255,12 +1258,12 @@ static void fx_text(const SDL_Event *e, const SDL_Rect *area, int p, const char 
 		SDL_Rect r;
 		copy_rect(&r, area);
 		adjust_rect(&r, -1);
-		bevel(mused.screen,&r, mused.slider_bevel->surface, BEV_CURSOR);
+		bevel(domain,&r, mused.slider_bevel, BEV_CURSOR);
 	}*/
 }
 
 
-void fx_name_view(SDL_Surface *dest_surface, const SDL_Rect *dest, const SDL_Event *event, void *param)
+void fx_name_view(GfxDomain *dest_surface, const SDL_Rect *dest, const SDL_Event *event, void *param)
 {
 	SDL_Rect farea, larea, tarea;
 	copy_rect(&farea,dest);
@@ -1290,13 +1293,13 @@ void fx_name_view(SDL_Surface *dest_surface, const SDL_Rect *dest, const SDL_Eve
 }
 
 
-void fx_global_view(SDL_Surface *dest_surface, const SDL_Rect *dest, const SDL_Event *event, void *param)
+void fx_global_view(GfxDomain *dest_surface, const SDL_Rect *dest, const SDL_Event *event, void *param)
 {
 	SDL_Rect area;
 	copy_rect(&area, dest);
 	console_set_clip(mused.console, &area);
 	console_clear(mused.console);
-	bevel(mused.screen,&area, mused.slider_bevel->surface, BEV_BACKGROUND);
+	bevel(domain,&area, mused.slider_bevel, BEV_BACKGROUND);
 	adjust_rect(&area, 2);
 	console_set_clip(mused.console, &area);
 	SDL_Rect r;
@@ -1333,13 +1336,13 @@ void fx_global_view(SDL_Surface *dest_surface, const SDL_Rect *dest, const SDL_E
 }
 
 
-void fx_view(SDL_Surface *dest_surface, const SDL_Rect *dest, const SDL_Event *event, void *param)
+void fx_view(GfxDomain *dest_surface, const SDL_Rect *dest, const SDL_Event *event, void *param)
 {
 	SDL_Rect area;
 	copy_rect(&area, dest);
 	console_set_clip(mused.console, &area);
 	console_clear(mused.console);
-	bevel(mused.screen,&area, mused.slider_bevel->surface, BEV_BACKGROUND);
+	bevel(domain,&area, mused.slider_bevel, BEV_BACKGROUND);
 	adjust_rect(&area, 4);
 	console_set_clip(mused.console, &area);
 	SDL_Rect r;
@@ -1493,7 +1496,7 @@ void fx_view(SDL_Surface *dest_surface, const SDL_Rect *dest, const SDL_Event *e
 		
 		r.w = 32;
 		
-		if (button_text_event(dest_surface, event, &r, mused.slider_bevel->surface, &mused.buttonfont, BEV_BUTTON, BEV_BUTTON_ACTIVE, "SET", NULL, NULL, NULL, NULL) & 1)
+		if (button_text_event(domain, event, &r, mused.slider_bevel, &mused.buttonfont, BEV_BUTTON, BEV_BUTTON_ACTIVE, "SET", NULL, NULL, NULL, NULL) & 1)
 		{
 			set_room_size(mused.fx_bus, mused.fx_room_size, mused.fx_room_vol, mused.fx_room_dec);
 		}
@@ -1543,7 +1546,7 @@ void fx_view(SDL_Surface *dest_surface, const SDL_Rect *dest, const SDL_Event *e
 		char tmp[10];
 		snprintf(tmp, sizeof(tmp), "%d", (int)((float)(mused.song.fx[mused.fx_bus].rvb.tap[i].delay / (int)spd * (int)spd) / spd));
 		
-		if (button_text_event(dest_surface, event, &r, mused.slider_bevel->surface, &mused.buttonfont, BEV_BUTTON, BEV_BUTTON_ACTIVE, tmp, NULL, NULL, NULL, NULL) & 1)
+		if (button_text_event(domain, event, &r, mused.slider_bevel, &mused.buttonfont, BEV_BUTTON, BEV_BUTTON_ACTIVE, tmp, NULL, NULL, NULL, NULL) & 1)
 		{
 			mused.song.fx[mused.fx_bus].rvb.tap[i].delay = (mused.song.fx[mused.fx_bus].rvb.tap[i].delay) / (int)spd * (int)spd;
 			mused.edit_reverb_param = p;
@@ -1572,7 +1575,7 @@ void fx_view(SDL_Surface *dest_surface, const SDL_Rect *dest, const SDL_Event *e
 		
 		r.w = 32;
 		
-		if (button_text_event(dest_surface, event, &r, mused.slider_bevel->surface, &mused.buttonfont, BEV_BUTTON, BEV_BUTTON_ACTIVE, "-INF", NULL, NULL, NULL, NULL) & 1)
+		if (button_text_event(domain, event, &r, mused.slider_bevel, &mused.buttonfont, BEV_BUTTON, BEV_BUTTON_ACTIVE, "-INF", NULL, NULL, NULL, NULL) & 1)
 		{
 			mused.song.fx[mused.fx_bus].rvb.tap[i].gain = CYDRVB_LOW_LIMIT;
 			mused.edit_reverb_param = p;
@@ -1581,7 +1584,7 @@ void fx_view(SDL_Surface *dest_surface, const SDL_Rect *dest, const SDL_Event *e
 		
 		update_rect(&area, &r);
 		
-		if (button_text_event(dest_surface, event, &r, mused.slider_bevel->surface, &mused.buttonfont, BEV_BUTTON, BEV_BUTTON_ACTIVE, "0", NULL, NULL, NULL, NULL) & 1)
+		if (button_text_event(domain, event, &r, mused.slider_bevel, &mused.buttonfont, BEV_BUTTON, BEV_BUTTON_ACTIVE, "0", NULL, NULL, NULL, NULL) & 1)
 		{
 			mused.song.fx[mused.fx_bus].rvb.tap[i].gain = 0;
 			mused.edit_reverb_param = p;
@@ -1597,20 +1600,20 @@ void fx_view(SDL_Surface *dest_surface, const SDL_Rect *dest, const SDL_Event *e
 }
 
 
-void instrument_disk_view(SDL_Surface *dest_surface, const SDL_Rect *dest, const SDL_Event *event, void *param)
+void instrument_disk_view(GfxDomain *dest_surface, const SDL_Rect *dest, const SDL_Event *event, void *param)
 {
 	SDL_Rect area;
 	copy_rect(&area, dest);
 	console_set_clip(mused.console, &area);
 	console_clear(mused.console);
-	bevel(mused.screen,&area, mused.slider_bevel->surface, BEV_BACKGROUND);
+	bevel(domain,&area, mused.slider_bevel, BEV_BACKGROUND);
 	adjust_rect(&area, 2);
 	
 	SDL_Rect button = { area.x + 2, area.y, area.w / 2 - 4, area.h };
 	
-	int open = button_text_event(dest_surface, event, &button, mused.slider_bevel->surface, &mused.buttonfont, BEV_BUTTON, BEV_BUTTON_ACTIVE, "LOAD", NULL, MAKEPTR(1), NULL, NULL);
+	int open = button_text_event(domain, event, &button, mused.slider_bevel, &mused.buttonfont, BEV_BUTTON, BEV_BUTTON_ACTIVE, "LOAD", NULL, MAKEPTR(1), NULL, NULL);
 	update_rect(&area, &button);
-	int save = button_text_event(dest_surface, event, &button, mused.slider_bevel->surface, &mused.buttonfont, BEV_BUTTON, BEV_BUTTON_ACTIVE, "SAVE", NULL, MAKEPTR(2), NULL, NULL);
+	int save = button_text_event(domain, event, &button, mused.slider_bevel, &mused.buttonfont, BEV_BUTTON, BEV_BUTTON_ACTIVE, "SAVE", NULL, MAKEPTR(2), NULL, NULL);
 	update_rect(&area, &button);
 	
 	if (open & 1) open_data(param, MAKEPTR(OD_A_OPEN), 0);
@@ -1618,7 +1621,7 @@ void instrument_disk_view(SDL_Surface *dest_surface, const SDL_Rect *dest, const
 }
 
 
-void song_name_view(SDL_Surface *dest_surface, const SDL_Rect *dest, const SDL_Event *event, void *param)
+void song_name_view(GfxDomain *dest_surface, const SDL_Rect *dest, const SDL_Event *event, void *param)
 {
 	SDL_Rect larea, farea;
 	copy_rect(&larea, dest);
@@ -1632,13 +1635,13 @@ void song_name_view(SDL_Surface *dest_surface, const SDL_Rect *dest, const SDL_E
 }
 
 
-void bevel_view(SDL_Surface *dest_surface, const SDL_Rect *dest, const SDL_Event *event, void *param)
+void bevel_view(GfxDomain *dest_surface, const SDL_Rect *dest, const SDL_Event *event, void *param)
 {
-	bevel(mused.screen,dest, mused.slider_bevel->surface, CASTPTR(int,param));
+	bevel(domain,dest, mused.slider_bevel, CASTPTR(int,param));
 }
 
 
-void sequence_spectrum_view(SDL_Surface *dest_surface, const SDL_Rect *dest, const SDL_Event *event, void *param)
+void sequence_spectrum_view(GfxDomain *dest_surface, const SDL_Rect *dest, const SDL_Event *event, void *param)
 {
 	if (mused.flags & SHOW_LOGO)
 	{
@@ -1647,13 +1650,14 @@ void sequence_spectrum_view(SDL_Surface *dest_surface, const SDL_Rect *dest, con
 			SDL_Rect a;
 			copy_rect(&a, dest);
 			a.w += SCROLLBAR;
-			SDL_FillRect(dest_surface, &a, colors[COLOR_BACKGROUND]);
+			gfx_rect(dest_surface, &a, colors[COLOR_BACKGROUND]);
 			SDL_Rect d, s = {0,0,a.w,a.h};
-			SDL_SetClipRect(mused.screen, &a);
+			gfx_domain_set_clip(domain, &a);
 			copy_rect(&d, &a);
 			d.x = d.w / 2 - mused.logo->surface->w / 2 + d.x;
-			SDL_BlitSurface(mused.logo->surface, &s, dest_surface, &d);
-			SDL_SetClipRect(mused.screen, NULL);
+			d.w = mused.logo->surface->w;
+			my_BlitSurface(mused.logo, &s, dest_surface, &d);
+			gfx_domain_set_clip(domain, NULL);
 			if (check_event(event, &a, NULL, NULL, NULL, NULL))
 				mused.flags &= ~SHOW_LOGO;
 		}
@@ -1667,7 +1671,7 @@ void sequence_spectrum_view(SDL_Surface *dest_surface, const SDL_Rect *dest, con
 		SDL_Rect a;
 		copy_rect(&a, dest);
 		a.w += SCROLLBAR;
-		SDL_SetClipRect(dest_surface, &a);
+		gfx_domain_set_clip(dest_surface, &a);
 		
 		switch (mused.current_visualizer)
 		{
@@ -1681,7 +1685,7 @@ void sequence_spectrum_view(SDL_Surface *dest_surface, const SDL_Rect *dest, con
 				break;
 		}
 		
-		SDL_SetClipRect(mused.screen, NULL);
+		gfx_domain_set_clip(domain, NULL);
 	}
 	else
 	{
@@ -1690,19 +1694,19 @@ void sequence_spectrum_view(SDL_Surface *dest_surface, const SDL_Rect *dest, con
 }
 
 
-void toolbar_view(SDL_Surface *dest_surface, const SDL_Rect *dest, const SDL_Event *event, void *param)
+void toolbar_view(GfxDomain *dest_surface, const SDL_Rect *dest, const SDL_Event *event, void *param)
 {
 	SDL_Rect button;
 	copy_rect(&button, dest);
 	button.w = dest->w - 3 * (dest->h + 2);
 	
-	button_text_event(dest_surface, event, &button, mused.slider_bevel->surface, &mused.buttonfont,
+	button_text_event(domain, event, &button, mused.slider_bevel, &mused.buttonfont,
 		BEV_BUTTON, BEV_BUTTON_ACTIVE, 	"MENU", open_menu_action, 0, 0, 0);
 		
 	button.x += button.w;
 	button.w = button.h + 2;
 	
-	if (button_event(dest_surface, event, &button, mused.slider_bevel->surface, 
+	if (button_event(domain, event, &button, mused.slider_bevel, 
 		!(mused.flags & SHOW_ANALYZER) ? BEV_BUTTON : BEV_BUTTON_ACTIVE, 
 		!(mused.flags & SHOW_ANALYZER) ? BEV_BUTTON : BEV_BUTTON_ACTIVE, 
 		DECAL_TOOLBAR_VISUALIZATIONS, flip_bit_action, &mused.flags, MAKEPTR(SHOW_ANALYZER), 0))
@@ -1710,7 +1714,7 @@ void toolbar_view(SDL_Surface *dest_surface, const SDL_Rect *dest, const SDL_Eve
 		
 	button.x += button.w;
 	
-	if (button_event(dest_surface, event, &button, mused.slider_bevel->surface, 
+	if (button_event(domain, event, &button, mused.slider_bevel, 
 		!(mused.flags & FULLSCREEN) ? BEV_BUTTON : BEV_BUTTON_ACTIVE, 
 		!(mused.flags & FULLSCREEN) ? BEV_BUTTON : BEV_BUTTON_ACTIVE, 
 		DECAL_TOOLBAR_FULLSCREEN, NULL, 0, 0, 0)) 
@@ -1721,7 +1725,7 @@ void toolbar_view(SDL_Surface *dest_surface, const SDL_Rect *dest, const SDL_Eve
 		
 	button.x += button.w;
 	
-	button_event(dest_surface, event, &button, mused.slider_bevel->surface, 
+	button_event(domain, event, &button, mused.slider_bevel, 
 		BEV_BUTTON, BEV_BUTTON_ACTIVE, DECAL_TOOLBAR_QUIT, quit_action, 0, 0, 0);
 		
 	button.x += button.w;

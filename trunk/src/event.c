@@ -626,9 +626,9 @@ static int gethex(int key)
 	{
 		return key - SDLK_0;
 	}
-	else if (key >= SDLK_KP0 && key <= SDLK_KP9)
+	else if (key >= SDLK_KP_0 && key <= SDLK_KP_9)
 	{
-		return key - SDLK_KP0;
+		return key - SDLK_KP_0;
 	}
 	else if (key >= SDLK_a && key <= SDLK_f)
 	{
@@ -638,7 +638,7 @@ static int gethex(int key)
 }
 
 
-static int getalphanum(const SDL_keysym *keysym)
+static int getalphanum(const SDL_Keysym *keysym)
 {
 	int key = keysym->sym;
 
@@ -646,9 +646,9 @@ static int getalphanum(const SDL_keysym *keysym)
 	{
 		return key - SDLK_0;
 	}
-	else if (key >= SDLK_KP0 && key <= SDLK_KP9)
+	else if (key >= SDLK_KP_0 && key <= SDLK_KP_9)
 	{
-		return key - SDLK_KP0;
+		return key - SDLK_KP_0;
 	}
 	else if (!(keysym->mod & KMOD_SHIFT) && key >= SDLK_a && key <= SDLK_z)
 	{

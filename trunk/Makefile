@@ -6,15 +6,15 @@ NSIS := C:/program\ files\ \(x86\)/nsis/makensis.exe /V2 /NOCD
 WGET := wget --quiet
 MAKEBUNDLE := ../klystron/tools/bin/makebundle.exe
 UPLOAD := cmd.exe /c upload.bat
-DLLS := zip/data/SDL.dll zip/data/SDL_image.dll
+DLLS := zip/data/SDL2_image.dll zip/data/SDL2.dll
 DESTDIR ?= /usr
 EXT := .c
-CC := gcc
+CC := gcc -Werror 
 CDEP := gcc -E -MM
 ARCHIVE := klystrack
 INSTALLER := klystrack.exe
-SDLVER := 1.2.15
-SDL_IMAGEVER := 1.2.12
+SDL_VER := 2.0.3
+SDL_IMAGEVER := 2.0.0
 THEMES :=
 REV := cp -f
 
@@ -23,8 +23,8 @@ CFLAGS := $(MACHINE) -ftree-vectorize -std=gnu99 --no-strict-aliasing
 ifdef COMSPEC
 	TARGET := $(TARGET).exe
 	ARCHIVE := $(ARCHIVE).zip
-	SDLFLAGS := -I /mingw/include/sdl
-	SDLLIBS :=  -lSDLmain -lSDL -lSDL_image -lwinmm
+	SDLFLAGS := -I c:/mingw/include/SDL2
+	SDLLIBS :=  -lSDL2main -lSDL2 -lSDL2_image -lwinmm
 	CFLAGS += -mthreads -DMIDI
 	ZIP := pkzipc -exclude=.* -zipdate=newest -path=relative -silent -rec -dir -add
 	ZIPEXT := pkzipc -ext -silent
@@ -33,7 +33,7 @@ else
 	DLLS = 
 	ARCHIVE := $(ARCHIVE).tar.gz
 	SDLFLAGS := `sdl-config --cflags` -U_FORTIFY_SOURCE
-	SDLLIBS := `sdl-config --libs` -lSDL_image
+	SDLLIBS := `sdl-config --libs` -lSDL2_image
 endif
 
 ifdef COMSPEC
@@ -46,7 +46,7 @@ else
 endif
 
 EXTFLAGS := -DNOSDL_MIXER -DUSESDLMUTEXES -DENABLEAUDIODUMP -DSTEREOOUTPUT -DUSESDL_IMAGE $(EXTFLAGS)
-LDFLAGS :=  -L ../klystron/bin.$(CFG) -lengine_gfx -lengine_util -lengine_snd -lengine_gui -lm $(SDLLIBS)
+LDFLAGS :=  -L ../klystron/bin.$(CFG) -lengine_gfx -lengine_util -lengine_snd -lengine_gui -lm -lmingw32 $(SDLLIBS) 
 INCLUDEFLAGS := -I src $(SDLFLAGS) -I ../klystron/src -L../klystron/bin.$(CFG) -DRES_PATH="$(RES_PATH)" -DCONFIG_PATH="$(CONFIG_PATH)" $(EXTFLAGS)
 
 ifdef COMSPEC
@@ -211,22 +211,23 @@ ifneq ($(MAKECMDGOALS),clean)
 -include $(DEPS)
 endif
 
-zip/data/SDL.dll:
-	@$(ECHO) "Downloading SDL..."
+zip/data/SDL2_image.dll:
+	@$(ECHO) "Downloading "$<"..."
 	@mkdir -p temp
-	@cd temp ; $(WGET) http://www.libsdl.org/release/SDL-$(SDLVER)-win32.zip ; $(ZIPEXT) SDL-$(SDLVER)-win32.zip SDL.dll ; rm SDL-$(SDLVER)-win32.zip
+	@cd temp ; $(WGET) http://www.libsdl.org/projects/SDL_image/release/SDL2_image-$(SDL_IMAGEVER)-win32-x86.zip ; $(ZIPEXT) SDL2_image-$(SDL_IMAGEVER)-win32-x86.zip SDL2_image.dll libpng16-16.dll zlib1.dll ; rm SDL2_image-$(SDL_IMAGEVER)-win32-x86.zip
 	@mkdir -p zip/data
-	@mv temp/SDL.dll zip/data/SDL.dll
-
-zip/data/SDL_image.dll:
-	@$(ECHO) "Downloading SDL_image..."
-	@mkdir -p temp
-	@cd temp ; $(WGET) http://www.libsdl.org/projects/SDL_image/release/SDL_image-$(SDL_IMAGEVER)-win32.zip ; $(ZIPEXT) SDL_image-$(SDL_IMAGEVER)-win32.zip SDL_image.dll libpng15-15.dll zlib1.dll ; rm SDL_image-$(SDL_IMAGEVER)-win32.zip
-	@mkdir -p zip/data
-	@mv temp/SDL_image.dll zip/data/SDL_image.dll
-	@mv temp/libpng15-15.dll zip/data/libpng15-15.dll
+	@mv temp/SDL2_image.dll zip/data/SDL2_image.dll
+	@mv temp/libpng16-16.dll zip/data/libpng16-16.dll
 	@mv temp/zlib1.dll zip/data/zlib1.dll
 
+zip/data/SDL2.dll:
+	@$(ECHO) "Downloading "$<"..."
+	@mkdir -p temp
+	@cd temp ; $(WGET) https://www.libsdl.org/release/SDL2-$(SDL_VER)-win32-x86.zip ; $(ZIPEXT) SDL2-$(SDL_VER)-win32-x86.zip SDL2.dll ; rm SDL2-$(SDL_VER)-win32-x86.zip
+	@mkdir -p zip/data
+	@mv temp/SDL2.dll zip/data/SDL2.dll
+	
+	
 objs.$(CFG)/windres.o: windres/* icon/*
 	windres -i windres/resource.rc -o $@
 	

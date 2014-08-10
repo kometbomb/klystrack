@@ -28,6 +28,7 @@ OTHER DEALINGS IN THE SOFTWARE.
 #include "mused.h"
 #include "gui/msgbox.h"
 #include "view/wavetableview.h"
+#include <string.h>
 
 extern Mused mused;
 extern GfxDomain *domain;
@@ -48,7 +49,7 @@ static int find_unused_pattern()
 			return empty;
 	}
 	
-	msgbox(domain, mused.slider_bevel->surface, &mused.largefont, "Max patterns exceeded!", MB_OK);
+	msgbox(domain, mused.slider_bevel, &mused.largefont, "Max patterns exceeded!", MB_OK);
 	
 	return -1;
 }

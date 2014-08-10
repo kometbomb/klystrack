@@ -27,6 +27,7 @@ OTHER DEALINGS IN THE SOFTWARE.
 #include "snd/music.h"
 #include "snd/freqs.h"
 #include "macros.h"
+#include <string.h>
 
 static const InstructionDesc instruction_desc[] =
 {

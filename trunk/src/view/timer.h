@@ -25,4 +25,4 @@ OTHER DEALINGS IN THE SOFTWARE.
 
 #include "../view.h"
 
-void timer_view(SDL_Surface *dest_surface, const SDL_Rect *dest, const SDL_Event *event, void *param);
+void timer_view(GfxDomain *dest_surface, const SDL_Rect *dest, const SDL_Event *event, void *param);
