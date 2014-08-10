@@ -83,10 +83,10 @@ void spectrum_analyzer_view(GfxDomain *dest_surface, const SDL_Rect *dest, const
 			
 			my_BlitSurface(mused.analyzer, &src, dest_surface, &temp);
 			
-			bar.h = mused.vis.spec_peak[i] * content.h / MAX_VOLUME;
+			bar.h = my_min(MAX_VOLUME, mused.vis.spec_peak[i]) * content.h / MAX_VOLUME;
 			bar.y = content.y + content.h - bar.h;
 			
-			src.h = mused.vis.spec_peak[i] * content.h / MAX_VOLUME;
+			src.h = my_min(MAX_VOLUME, mused.vis.spec_peak[i]) * content.h / MAX_VOLUME;
 			src.y = mused.analyzer->surface->h - bar.h;
 			src.h = bar.h;
 			src.x = w;

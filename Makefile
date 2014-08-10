@@ -212,7 +212,7 @@ ifneq ($(MAKECMDGOALS),clean)
 endif
 
 zip/data/SDL2_image.dll:
-	@$(ECHO) "Downloading "$<"..."
+	@$(ECHO) "Downloading "$@"..."
 	@mkdir -p temp
 	@cd temp ; $(WGET) http://www.libsdl.org/projects/SDL_image/release/SDL2_image-$(SDL_IMAGEVER)-win32-x86.zip ; $(ZIPEXT) SDL2_image-$(SDL_IMAGEVER)-win32-x86.zip SDL2_image.dll libpng16-16.dll zlib1.dll ; rm SDL2_image-$(SDL_IMAGEVER)-win32-x86.zip
 	@mkdir -p zip/data
@@ -221,7 +221,7 @@ zip/data/SDL2_image.dll:
 	@mv temp/zlib1.dll zip/data/zlib1.dll
 
 zip/data/SDL2.dll:
-	@$(ECHO) "Downloading "$<"..."
+	@$(ECHO) "Downloading "$@"..."
 	@mkdir -p temp
 	@cd temp ; $(WGET) https://www.libsdl.org/release/SDL2-$(SDL_VER)-win32-x86.zip ; $(ZIPEXT) SDL2-$(SDL_VER)-win32-x86.zip SDL2.dll ; rm SDL2-$(SDL_VER)-win32-x86.zip
 	@mkdir -p zip/data
