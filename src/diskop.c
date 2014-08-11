@@ -202,6 +202,7 @@ static void write_packed_pattern(FILE *f, const MusPattern *pattern, bool skip)
 	
 	FIX_ENDIAN(steps);
 	fwrite(&steps, 1, sizeof(steps), f);
+	fwrite(&pattern->color, 1, sizeof(pattern->color), f);
 	
 	Uint8 buffer = 0;
 	for (int i = 0 ; i < steps ; ++i)

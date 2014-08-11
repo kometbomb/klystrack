@@ -259,6 +259,7 @@ int main(int argc, char **argv)
 	init_icon();
 #endif
 	
+	default_settings();
 	load_config(TOSTRING(CONFIG_PATH), false);
 	
 	domain = gfx_create_domain(VERSION_STRING, SDL_WINDOW_RESIZABLE|SDL_WINDOW_OPENGL|((mused.flags & WINDOW_MAXIMIZED)?SDL_WINDOW_MAXIMIZED:0), mused.window_w, mused.window_h, mused.pixel_scale);
