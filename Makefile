@@ -32,8 +32,8 @@ else
 	ZIP := tar czf
 	DLLS = 
 	ARCHIVE := $(ARCHIVE).tar.gz
-	SDLFLAGS := `sdl-config --cflags` -U_FORTIFY_SOURCE
-	SDLLIBS := `sdl-config --libs` -lSDL2_image
+	SDLFLAGS := `sdl2-config --cflags` -U_FORTIFY_SOURCE
+	SDLLIBS := `sdl2-config --libs` -lSDL2_image
 endif
 
 ifdef COMSPEC
@@ -46,7 +46,7 @@ else
 endif
 
 EXTFLAGS := -DNOSDL_MIXER -DUSESDLMUTEXES -DENABLEAUDIODUMP -DSTEREOOUTPUT -DUSESDL_IMAGE $(EXTFLAGS)
-LDFLAGS :=  -L ../klystron/bin.$(CFG) -lengine_gfx -lengine_util -lengine_snd -lengine_gui -lm -lmingw32 $(SDLLIBS) 
+LDFLAGS :=  -L ../klystron/bin.$(CFG) -lengine_gfx -lengine_util -lengine_snd -lengine_gui -lm $(SDLLIBS) 
 INCLUDEFLAGS := -I src $(SDLFLAGS) -I ../klystron/src -L../klystron/bin.$(CFG) -DRES_PATH="$(RES_PATH)" -DCONFIG_PATH="$(CONFIG_PATH)" $(EXTFLAGS)
 
 ifdef COMSPEC
