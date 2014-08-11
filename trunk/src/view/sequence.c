@@ -5,6 +5,8 @@
 #include "action.h"
 #include "gui/mouse.h"
 
+Uint32 pattern_color[16] = { 0xffffff, 0xffff00, 0xff00ff, 0xff0000, 0xffffff, 0xffff00, 0xff00ff, 0xff0000, 0xffffff, 0xffff00, 0xff00ff, 0xff0000, 0xffffff, 0xffff00, 0xff00ff, 0xff0000 };
+
 void sequence_view_inner(GfxDomain *dest_surface, const SDL_Rect *_dest, const SDL_Event *event)
 {
 	SDL_Rect dest;
@@ -72,6 +74,7 @@ void sequence_view_inner(GfxDomain *dest_surface, const SDL_Rect *_dest, const S
 			int bev = (mused.current_sequencetrack == channel && mused.current_sequencepos >= sp->position && mused.current_sequencepos < sp->position + len) ? BEV_PATTERN_CURRENT : BEV_PATTERN;
 			
 			clip_rect(&pat, &clip2);
+			gfx_surface_set_color(mused.slider_bevel, pattern_color[mused.song.pattern[sp->pattern].color]);
 			bevel(dest_surface, &pat, mused.slider_bevel, bev);
 			
 			adjust_rect(&text, 2);
@@ -94,6 +97,7 @@ void sequence_view_inner(GfxDomain *dest_surface, const SDL_Rect *_dest, const S
 		}
 	}
 	
+	gfx_surface_set_color(mused.slider_bevel, 0xffffff);
 	gfx_domain_set_clip(domain, &dest);
 	
 	SDL_Rect loop = { dest.x, (mused.song.loop_point - top) * height / mused.sequenceview_steps + dest.y + 1, dest.w, (mused.song.song_length - mused.song.loop_point) * height / mused.sequenceview_steps };

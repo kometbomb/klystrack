@@ -59,6 +59,8 @@ static void set_pattern(int pattern)
 {
 	if ((mused.focus == EDITPATTERN && !mused.single_pattern_edit) || mused.focus != EDITPATTERN)
 	{
+		debug("setting pattern to %d at %d", pattern, mused.current_sequencepos);
+	
 		snapshot(S_T_SEQUENCE);
 	
 		for (int i = 0 ; i < mused.song.num_sequences[mused.current_sequencetrack] ; ++i)
@@ -77,6 +79,8 @@ static void set_pattern(int pattern)
 
 void clone_pattern(void *unused1, void *unused2, void *unused3)
 {
+	debug("Cloning pattern");
+
 	int empty = find_unused_pattern();
 	
 	if (empty == -1 || current_pattern() == empty)
@@ -84,12 +88,18 @@ void clone_pattern(void *unused1, void *unused2, void *unused3)
 		return;
 	}
 	
+	int cp = current_pattern();
+	
+	mused.song.pattern[empty].color = mused.song.pattern[current_pattern()].color;
+	
 	resize_pattern(&mused.song.pattern[empty], mused.song.pattern[current_pattern()].num_steps);
 	
-	memcpy(mused.song.pattern[empty].step, mused.song.pattern[current_pattern()].step, 
-		mused.song.pattern[current_pattern()].num_steps * sizeof(mused.song.pattern[current_pattern()].step[0]));
+	memcpy(mused.song.pattern[empty].step, mused.song.pattern[cp].step, 
+		mused.song.pattern[cp].num_steps * sizeof(mused.song.pattern[cp].step[0]));
 		
 	set_pattern(empty);
+	
+	set_info_message("Cloned pattern %02X to %02X", cp, empty);
 }
 
 

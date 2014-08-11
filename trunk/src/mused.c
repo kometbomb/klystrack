@@ -240,6 +240,14 @@ void resize_pattern(MusPattern * pattern, Uint16 new_size)
 }
 
 
+void default_settings()
+{
+	mused.window_w = 640;
+	mused.window_h = 480;
+	mused.pixel_scale = 1;
+}
+
+
 void init(MusInstrument *instrument, MusPattern *pattern, MusSeqPattern sequence[MUS_MAX_CHANNELS][NUM_SEQUENCES], MusChannel *channel)
 {
 	debug("init");
@@ -247,6 +255,8 @@ void init(MusInstrument *instrument, MusPattern *pattern, MusSeqPattern sequence
 	memset(&mused, 0, sizeof(mused));
 	
 	set_info_message("Welcome to klystrack!");
+	
+	default_settings();
 	
 	mused.flags = MULTICHANNEL_PREVIEW|ANIMATE_CURSOR|EDIT_MODE|SHOW_LOGO|CENTER_PATTERN_EDITOR|FOLLOW_PLAY_POSITION|MULTIKEY_JAMMING;
 	mused.visible_columns = VC_INSTRUMENT | VC_COMMAND;
@@ -264,11 +274,8 @@ void init(MusInstrument *instrument, MusPattern *pattern, MusSeqPattern sequence
 	mused.time_signature = 0x0404;
 	mused.prev_mode = 0;
 	mused.edit_backup_buffer = NULL;
-	mused.pixel_scale = 1;
 	mused.mix_rate = 44100;
 	mused.mix_buffer = 2048;
-	mused.window_w = 640;
-	mused.window_h = 480;
 	mused.fx_room_size = 16;
 	mused.fx_room_vol = 8;
 	mused.fx_room_dec = 8;
@@ -291,6 +298,7 @@ void init(MusInstrument *instrument, MusPattern *pattern, MusSeqPattern sequence
 	{
 		mused.song.pattern[i].step = NULL; 
 		mused.song.pattern[i].num_steps = 0;
+		mused.song.pattern[i].color = i % 16;
 		resize_pattern(&mused.song.pattern[i], mused.default_pattern_length);
 	}
 	

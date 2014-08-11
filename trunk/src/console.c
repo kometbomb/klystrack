@@ -46,8 +46,11 @@ void console_set_background(Console * c, int enabled)
 
 void console_set_color(Console* console, Uint32 color)
 {
-	console->current_color = color;
-	font_set_color(&console->font, console->current_color);
+	if (console->current_color != color)
+	{
+		console->current_color = color;
+		font_set_color(&console->font, console->current_color);
+	}
 }
 
 

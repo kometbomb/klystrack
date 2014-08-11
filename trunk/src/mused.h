@@ -186,11 +186,13 @@ typedef struct
 
 extern Mused mused;
 extern GfxDomain *domain;
+extern Uint32 pattern_color[16];
 
 #define NUM_PATTERNS 4096
 #define NUM_INSTRUMENTS 128
 #define NUM_SEQUENCES 2048
 
+void default_settings();
 void change_mode(int newmode);
 void clear_pattern(MusPattern *pat);
 void clear_pattern_range(MusPattern *pat, int first, int last);
