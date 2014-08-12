@@ -72,9 +72,9 @@ static void init_lines(void * section, void * unused1, void * unused2)
 {
 	deinit_lines();
 	
-	data.mode = (int)section;
+	data.mode = CASTPTR(int, section);
 	
-	switch ((int)section)
+	switch (data.mode)
 	{
 		case 0:
 		{
