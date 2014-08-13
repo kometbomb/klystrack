@@ -61,16 +61,16 @@ void import_module(void *type, void* unused1, void* unused2)
 	static const char *mod_ext[] = {"mod", "ahx", "xm", "org"};
 	
 	char buffer[100];
-	snprintf(buffer, sizeof(buffer), "Import %s song", mod_name[(int)type]);
+	snprintf(buffer, sizeof(buffer), "Import %s song", mod_name[CASTPTR(int, type)]);
 
-	FILE * f = open_dialog("rb", buffer, mod_ext[(int)type], domain, mused.slider_bevel, &mused.largefont, &mused.smallfont, NULL);
+	FILE * f = open_dialog("rb", buffer, mod_ext[CASTPTR(int, type)], domain, mused.slider_bevel, &mused.largefont, &mused.smallfont, NULL);
 	
 	if (!f) return;
 	
 	stop(NULL, NULL, NULL);
 	new_song();
 	
-	switch ((int)type)
+	switch (CASTPTR(int, type))
 	{
 		case IMPORT_MOD: r = import_mod(f); break;
 		case IMPORT_AHX: r = import_ahx(f); break;
@@ -80,7 +80,7 @@ void import_module(void *type, void* unused1, void* unused2)
 	
 	if (!r) 
 	{
-		snprintf(buffer, sizeof(buffer), "Not %s song", mod_name[(int)type]);
+		snprintf(buffer, sizeof(buffer), "Not %s song", mod_name[CASTPTR(int, type)]);
 		msgbox(domain, mused.slider_bevel, &mused.largefont, buffer, MB_OK);
 	}
 	else
