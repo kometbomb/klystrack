@@ -57,7 +57,7 @@ static int find_unused_pattern()
 
 static void set_pattern(int pattern)
 {
-	if ((mused.focus == EDITPATTERN && !mused.single_pattern_edit) || mused.focus != EDITPATTERN)
+	//if ((mused.focus == EDITPATTERN && !mused.single_pattern_edit) || mused.focus != EDITPATTERN)
 	{
 		debug("setting pattern to %d at %d", pattern, mused.current_sequencepos);
 	
@@ -70,10 +70,6 @@ static void set_pattern(int pattern)
 				mused.song.sequence[mused.current_sequencetrack][i].pattern = pattern;
 		}
 	}
-	
-	//current_pattern() = pattern;
-	
-	//update_ghost_patterns();
 }
 
 
@@ -82,17 +78,16 @@ void clone_pattern(void *unused1, void *unused2, void *unused3)
 	debug("Cloning pattern");
 
 	int empty = find_unused_pattern();
+	int cp = current_pattern();
 	
-	if (empty == -1 || current_pattern() == empty)
+	if (empty == -1 || cp == empty)
 	{
 		return;
 	}
 	
-	int cp = current_pattern();
+	mused.song.pattern[empty].color = mused.song.pattern[cp].color;
 	
-	mused.song.pattern[empty].color = mused.song.pattern[current_pattern()].color;
-	
-	resize_pattern(&mused.song.pattern[empty], mused.song.pattern[current_pattern()].num_steps);
+	resize_pattern(&mused.song.pattern[empty], mused.song.pattern[cp].num_steps);
 	
 	memcpy(mused.song.pattern[empty].step, mused.song.pattern[cp].step, 
 		mused.song.pattern[cp].num_steps * sizeof(mused.song.pattern[cp].step[0]));
