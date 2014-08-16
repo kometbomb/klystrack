@@ -146,7 +146,7 @@ void my_draw_view(const View* views, const SDL_Event *_event, GfxDomain *domain)
 	if (mused.cursor.y < mused.cursor_target.y) ++mused.cursor.y;
 	if (mused.cursor.y > mused.cursor_target.y) --mused.cursor.y;
 	
-	if (mused.cursor.w > 0) bevel(domain, &mused.cursor, mused.slider_bevel, (mused.flags & EDIT_MODE) ? BEV_EDIT_CURSOR : BEV_CURSOR);
+	if (mused.cursor.w > 0) bevelex(domain, &mused.cursor, mused.slider_bevel, (mused.flags & EDIT_MODE) ? BEV_EDIT_CURSOR : BEV_CURSOR, BEV_F_STRETCH_ALL|BEV_F_DISABLE_CENTER);
 }
 
 
@@ -1637,7 +1637,7 @@ void song_name_view(GfxDomain *dest_surface, const SDL_Rect *dest, const SDL_Eve
 
 void bevel_view(GfxDomain *dest_surface, const SDL_Rect *dest, const SDL_Event *event, void *param)
 {
-	bevel(domain,dest, mused.slider_bevel, CASTPTR(int,param));
+	bevelex(domain,dest, mused.slider_bevel, CASTPTR(int,param), BEV_F_STRETCH_ALL);
 }
 
 

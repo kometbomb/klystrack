@@ -193,7 +193,7 @@ void pattern_view_inner(GfxDomain *dest_surface, const SDL_Rect *dest, const SDL
 		track.h -= HEADER_HEIGHT;
 		track.y += HEADER_HEIGHT + 1;
 		
-		bevelex(dest_surface, &track, mused.slider_bevel, BEV_THIN_FRAME, BEV_F_STRETCH_ALL);
+		bevelex(dest_surface, &track, mused.slider_bevel, BEV_THIN_FRAME, BEV_F_STRETCH_ALL|BEV_F_DISABLE_CENTER);
 		adjust_rect(&track, 3);
 		for (int i = 0 ; i < mused.song.num_sequences[channel] ; ++i, ++sp)
 		{
@@ -513,7 +513,7 @@ static void pattern_view_stepcounter(GfxDomain *dest_surface, const SDL_Rect *de
 			console_write_args(mused.console, "%03X\n", row & 0xfff);
 	}
 	
-	bevelex(dest_surface, &frame, mused.slider_bevel, BEV_THIN_FRAME, BEV_F_STRETCH_ALL);
+	bevelex(dest_surface, &frame, mused.slider_bevel, BEV_THIN_FRAME, BEV_F_STRETCH_ALL|BEV_F_DISABLE_CENTER);
 	
 	gfx_domain_set_clip(dest_surface, NULL);
 }
