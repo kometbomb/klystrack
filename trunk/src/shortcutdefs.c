@@ -79,6 +79,7 @@ const KeyShortcut shortcuts[] =
 	{ KMOD_CTRL, SDLK_e, end_selection_action, 0, 0, 0, "Set selection end" },
 	{ KMOD_CTRL|KMOD_SHIFT, SDLK_e, expand_pattern, MAKEPTR(2), 0, 0, "Expand pattern" },
 	{ KMOD_ALT, SDLK_RETURN, toggle_fullscreen, 0, 0, 0, "Toggle fullscreen" },
+	{ KMOD_CTRL|KMOD_SHIFT, SDLK_k, clone_each_pattern, 0, 0, 0, "Clone sequence row" },
 	{ KMOD_CTRL, SDLK_k, clone_pattern, 0, 0, 0, "Clone pattern" },
 	{ KMOD_CTRL, SDLK_u, get_unused_pattern, 0, 0, 0, "Find first unused pattern" },
 	{ KMOD_CTRL, SDLK_i, interpolate, 0, 0, 0, "Interpolate" },

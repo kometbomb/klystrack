@@ -249,7 +249,7 @@ int generic_field(const SDL_Event *e, const SDL_Rect *area, int focus, int param
 	field.x -= spinner_area.w;
 	spinner_area.x -= spinner_area.w;
 	
-	bevel(domain, &field, mused.slider_bevel, BEV_FIELD);
+	bevelex(domain, &field, mused.slider_bevel, BEV_FIELD, BEV_F_STRETCH_ALL);
 	
 	adjust_rect(&field, 1);
 	
@@ -319,7 +319,7 @@ void songinfo1_view(GfxDomain *dest_surface, const SDL_Rect *dest, const SDL_Eve
 	copy_rect(&area, dest);
 	console_set_clip(mused.console, &area);
 	console_clear(mused.console);
-	bevel(domain,&area, mused.slider_bevel, BEV_BACKGROUND);
+	bevelex(domain,&area, mused.slider_bevel, BEV_BACKGROUND, BEV_F_STRETCH_ALL);
 	
 	area.w = my_min(320, area.w);
 	
@@ -362,7 +362,7 @@ void songinfo2_view(GfxDomain *dest_surface, const SDL_Rect *dest, const SDL_Eve
 	copy_rect(&area, dest);
 	console_set_clip(mused.console, &area);
 	console_clear(mused.console);
-	bevel(domain,&area, mused.slider_bevel, BEV_BACKGROUND);
+	bevelex(domain,&area, mused.slider_bevel, BEV_BACKGROUND, BEV_F_STRETCH_ALL);
 	
 	area.w = my_min(320, area.w);
 	
@@ -418,7 +418,7 @@ void songinfo3_view(GfxDomain *dest_surface, const SDL_Rect *dest, const SDL_Eve
 	copy_rect(&area, dest);
 	console_set_clip(mused.console, &area);
 	console_clear(mused.console);
-	bevel(domain,&area, mused.slider_bevel, BEV_BACKGROUND);
+	bevelex(domain,&area, mused.slider_bevel, BEV_BACKGROUND, BEV_F_STRETCH_ALL);
 	
 	area.w = my_min(320, area.w);
 	
@@ -457,7 +457,7 @@ void playstop_view(GfxDomain *dest_surface, const SDL_Rect *dest, const SDL_Even
 	copy_rect(&area, dest);
 	console_set_clip(mused.console, &area);
 	console_clear(mused.console);
-	bevel(domain,&area, mused.slider_bevel, BEV_BACKGROUND);
+	bevelex(domain,&area, mused.slider_bevel, BEV_BACKGROUND, BEV_F_STRETCH_ALL);
 	
 	area.w = my_min(PLAYSTOP_INFO_W * 2, area.w);
 	
@@ -499,7 +499,7 @@ void info_line(GfxDomain *dest_surface, const SDL_Rect *dest, const SDL_Event *e
 	area.w -= N_VIEWS * dest->h;
 	console_set_clip(mused.console, &area);
 	console_clear(mused.console);
-	bevel(domain,&area, mused.slider_bevel, BEV_THIN_FRAME);
+	bevelex(domain,&area, mused.slider_bevel, BEV_THIN_FRAME, BEV_F_STRETCH_ALL);
 	adjust_rect(&area, 3);
 	console_set_clip(mused.console, &area);
 	console_set_color(mused.console, colors[COLOR_MAIN_TEXT]);
@@ -720,7 +720,7 @@ void program_view(GfxDomain *dest_surface, const SDL_Rect *dest, const SDL_Event
 	copy_rect(&area, dest);
 	console_set_clip(mused.console, &area);
 	console_clear(mused.console);
-	bevel(domain,&area, mused.slider_bevel, BEV_THIN_FRAME);
+	bevelex(domain,&area, mused.slider_bevel, BEV_THIN_FRAME, BEV_F_STRETCH_ALL);
 	adjust_rect(&area, 2);
 	copy_rect(&clip, &area);
 	adjust_rect(&area, 1);
@@ -878,7 +878,7 @@ static void inst_field(const SDL_Event *e, const SDL_Rect *area, int p, int leng
 	console_set_clip(mused.console, area);
 	console_clear(mused.console);
 	
-	bevel(domain,area, mused.slider_bevel, BEV_FIELD);
+	bevelex(domain,area, mused.slider_bevel, BEV_FIELD, BEV_F_STRETCH_ALL);
 	
 	SDL_Rect field;
 	copy_rect(&field, area);
@@ -976,7 +976,7 @@ void instrument_view(GfxDomain *dest_surface, const SDL_Rect *dest, const SDL_Ev
 	
 	SDL_Rect r, frame;
 	copy_rect(&frame, dest);
-	bevel(domain,&frame, mused.slider_bevel, BEV_BACKGROUND);
+	bevelex(domain,&frame, mused.slider_bevel, BEV_BACKGROUND, BEV_F_STRETCH_ALL);
 	adjust_rect(&frame, 4);
 	copy_rect(&r, &frame);
 	r.w = r.w / 2 - 2;
@@ -1129,7 +1129,7 @@ void instrument_view2(GfxDomain *dest_surface, const SDL_Rect *dest, const SDL_E
 	
 	SDL_Rect r, frame;
 	copy_rect(&frame, dest);
-	bevel(domain,&frame, mused.slider_bevel, BEV_BACKGROUND);
+	bevelex(domain,&frame, mused.slider_bevel, BEV_BACKGROUND, BEV_F_STRETCH_ALL);
 	adjust_rect(&frame, 4);
 	copy_rect(&r, &frame);
 	r.w = r.w / 2 - 2;
@@ -1196,7 +1196,7 @@ void instrument_list(GfxDomain *dest_surface, const SDL_Rect *dest, const SDL_Ev
 	copy_rect(&area, dest);
 	console_set_clip(mused.console, &area);
 	console_clear(mused.console);
-	bevel(domain,&area, mused.slider_bevel, BEV_THIN_FRAME);
+	bevelex(domain,&area, mused.slider_bevel, BEV_THIN_FRAME, BEV_F_STRETCH_ALL);
 	adjust_rect(&area, 3);
 	console_set_clip(mused.console, &area);
 	
@@ -1299,7 +1299,7 @@ void fx_global_view(GfxDomain *dest_surface, const SDL_Rect *dest, const SDL_Eve
 	copy_rect(&area, dest);
 	console_set_clip(mused.console, &area);
 	console_clear(mused.console);
-	bevel(domain,&area, mused.slider_bevel, BEV_BACKGROUND);
+	bevelex(domain,&area, mused.slider_bevel, BEV_BACKGROUND, BEV_F_STRETCH_ALL);
 	adjust_rect(&area, 2);
 	console_set_clip(mused.console, &area);
 	SDL_Rect r;
@@ -1342,7 +1342,7 @@ void fx_view(GfxDomain *dest_surface, const SDL_Rect *dest, const SDL_Event *eve
 	copy_rect(&area, dest);
 	console_set_clip(mused.console, &area);
 	console_clear(mused.console);
-	bevel(domain,&area, mused.slider_bevel, BEV_BACKGROUND);
+	bevelex(domain,&area, mused.slider_bevel, BEV_BACKGROUND, BEV_F_STRETCH_ALL);
 	adjust_rect(&area, 4);
 	console_set_clip(mused.console, &area);
 	SDL_Rect r;
@@ -1606,7 +1606,7 @@ void instrument_disk_view(GfxDomain *dest_surface, const SDL_Rect *dest, const S
 	copy_rect(&area, dest);
 	console_set_clip(mused.console, &area);
 	console_clear(mused.console);
-	bevel(domain,&area, mused.slider_bevel, BEV_BACKGROUND);
+	bevelex(domain,&area, mused.slider_bevel, BEV_BACKGROUND, BEV_F_STRETCH_ALL);
 	adjust_rect(&area, 2);
 	
 	SDL_Rect button = { area.x + 2, area.y, area.w / 2 - 4, area.h };
