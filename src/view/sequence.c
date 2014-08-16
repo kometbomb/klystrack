@@ -12,7 +12,7 @@ void sequence_view_inner(GfxDomain *dest_surface, const SDL_Rect *_dest, const S
 	SDL_Rect dest;
 	copy_rect(&dest, _dest);
 	
-	bevel(dest_surface, _dest, mused.slider_bevel, BEV_SEQUENCE_BORDER);
+	bevelex(dest_surface, _dest, mused.slider_bevel, BEV_SEQUENCE_BORDER, BEV_F_STRETCH_ALL);
 
 	const int height = 10;
 	const int top = mused.sequence_position;
@@ -29,7 +29,7 @@ void sequence_view_inner(GfxDomain *dest_surface, const SDL_Rect *_dest, const S
 		
 		clip_rect(&sel, &dest);
 		gfx_domain_set_clip(domain, &sel);
-		bevel(dest_surface, &sel, mused.slider_bevel, BEV_SELECTED_SEQUENCE_ROW);
+		bevelex(dest_surface, &sel, mused.slider_bevel, BEV_SELECTED_SEQUENCE_ROW, BEV_F_STRETCH_ALL);
 	}
 	
 	slider_set_params(&mused.sequence_slider_param, 0, mused.song.song_length - mused.sequenceview_steps, my_max(0, top), (bottom / mused.sequenceview_steps - 1) * mused.sequenceview_steps, &mused.sequence_position, mused.sequenceview_steps, SLIDER_VERTICAL, mused.slider_bevel);
@@ -75,7 +75,7 @@ void sequence_view_inner(GfxDomain *dest_surface, const SDL_Rect *_dest, const S
 			
 			clip_rect(&pat, &clip2);
 			gfx_surface_set_color(mused.slider_bevel, pattern_color[mused.song.pattern[sp->pattern].color]);
-			bevel(dest_surface, &pat, mused.slider_bevel, bev);
+			bevelex(dest_surface, &pat, mused.slider_bevel, bev, BEV_F_STRETCH_ALL);
 			
 			adjust_rect(&text, 2);
 			text.h += 1;
@@ -154,7 +154,7 @@ void sequence_view_inner(GfxDomain *dest_surface, const SDL_Rect *_dest, const S
     {
 		SDL_Rect play = { dest.x, (mused.stat_song_position - top) * height / mused.sequenceview_steps + dest.y, dest.w, 2 };
 		clip_rect(&play, &dest);
-        bevel(dest_surface, &play, mused.slider_bevel, BEV_SEQUENCE_PLAY_POS);
+        bevelex(dest_surface, &play, mused.slider_bevel, BEV_SEQUENCE_PLAY_POS, BEV_F_STRETCH_ALL);
     }
 
 	
@@ -184,7 +184,7 @@ static void sequence_view_stepcounter(GfxDomain *dest_surface, const SDL_Rect *_
 	
 	gfx_domain_set_clip(domain, _dest);
 	
-	bevel(dest_surface, _dest, mused.slider_bevel, BEV_SEQUENCE_BORDER);
+	bevelex(dest_surface, _dest, mused.slider_bevel, BEV_SEQUENCE_BORDER, BEV_F_STRETCH_ALL);
 	
 	SDL_Rect dest;
 	copy_rect(&dest, _dest);

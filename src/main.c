@@ -305,6 +305,10 @@ int main(int argc, char **argv)
 	midi_init();
 #endif
 	
+#ifdef DEBUG
+	float draw_calls = 0;
+	int total_frames = 0;
+#endif
 	int active = 1;
 	
 	if (!(mused.flags & DISABLE_NOSTALGY))
@@ -546,6 +550,10 @@ int main(int argc, char **argv)
 			}
 			while (mused.mode != prev_mode); // Eliminates the one-frame long black screen
 			
+#ifdef DEBUG
+			total_frames++;
+			draw_calls += domain->calls_per_frame;
+#endif
 			gfx_domain_flip(domain);
 		}
 		else
@@ -591,6 +599,11 @@ int main(int argc, char **argv)
 	
 #ifdef WIN32
 	deinit_icon();
+#endif
+
+#ifdef DEBUG
+	if (total_frames > 0)
+		debug("Draw calls per frame: %.1f", draw_calls / total_frames);
 #endif
 
 	debug("klystrack has left the building.");

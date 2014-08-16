@@ -41,7 +41,7 @@ void wavetable_view(GfxDomain *dest_surface, const SDL_Rect *dest, const SDL_Eve
 {
 	SDL_Rect r, frame;
 	copy_rect(&frame, dest);
-	bevel(domain, &frame, mused.slider_bevel, BEV_BACKGROUND);
+	bevelex(domain, &frame, mused.slider_bevel, BEV_BACKGROUND, BEV_F_STRETCH_ALL);
 	adjust_rect(&frame, 4);
 	copy_rect(&r, &frame);
 	
@@ -140,7 +140,7 @@ void wavetablelist_view(GfxDomain *dest_surface, const SDL_Rect *dest, const SDL
 	console_set_clip(mused.console, &area);
 	const int chars = area.w / mused.console->font.w - 3;
 	console_clear(mused.console);
-	bevel(dest_surface, &area, mused.slider_bevel, BEV_THIN_FRAME);
+	bevelex(dest_surface, &area, mused.slider_bevel, BEV_THIN_FRAME, BEV_F_STRETCH_ALL);
 	adjust_rect(&area, 3);
 	console_set_clip(mused.console, &area);
 	SDL_Rect tmp;
@@ -252,7 +252,7 @@ void wavetable_sample_view(GfxDomain *dest_surface, const SDL_Rect *dest, const 
 {
 	SDL_Rect area;
 	copy_rect(&area, dest);
-	bevel(domain, &area, mused.slider_bevel, BEV_THIN_FRAME);
+	bevelex(domain, &area, mused.slider_bevel, BEV_THIN_FRAME, BEV_F_STRETCH_ALL);
 	adjust_rect(&area, 3);
 	update_sample_preview(dest_surface, &area);
 	my_BlitSurface(mused.wavetable_preview, NULL, dest_surface, &area);
@@ -284,7 +284,7 @@ void wavetable_tools_view(GfxDomain *dest_surface, const SDL_Rect *dest, const S
 {
 	SDL_Rect r, frame;
 	copy_rect(&frame, dest);
-	bevel(domain, &frame, mused.slider_bevel, BEV_BACKGROUND);
+	bevelex(domain, &frame, mused.slider_bevel, BEV_BACKGROUND, BEV_F_STRETCH_ALL);
 	adjust_rect(&frame, 4);
 	copy_rect(&r, &frame);
 	

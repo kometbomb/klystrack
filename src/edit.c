@@ -80,7 +80,7 @@ void clone_pattern(void *unused1, void *unused2, void *unused3)
 	int empty = find_unused_pattern();
 	int cp = current_pattern();
 	
-	if (empty == -1 || cp == empty)
+	if (empty == -1 || cp == empty || cp < 0)
 	{
 		return;
 	}
@@ -95,6 +95,24 @@ void clone_pattern(void *unused1, void *unused2, void *unused3)
 	set_pattern(empty);
 	
 	set_info_message("Cloned pattern %02X to %02X", cp, empty);
+}
+
+
+void clone_each_pattern(void *unused1, void *unused2, void *unused3)
+{
+	debug("Cloning each pattern");
+
+	int temp = mused.current_sequencetrack;
+	
+	for (int i = 0 ; i < mused.song.num_channels ; ++i)
+	{
+		mused.current_sequencetrack = i;
+		clone_pattern(NULL, NULL, NULL);
+	}
+	
+	mused.current_sequencetrack = temp;
+	
+	set_info_message("Cloned sequence row");
 }
 
 

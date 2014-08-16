@@ -60,7 +60,7 @@ const struct { bool margin; int w; int id; } pattern_params[] =
 
 void pattern_view_header(GfxDomain *dest_surface, const SDL_Rect *dest, const SDL_Event *event, int channel)
 {
-	bevel(dest_surface, dest, mused.slider_bevel, BEV_BACKGROUND);
+	bevelex(dest_surface, dest, mused.slider_bevel, BEV_BACKGROUND, BEV_F_STRETCH_ALL);
 	
 	SDL_Rect area;
 	copy_rect(&area, dest);
@@ -139,7 +139,7 @@ void pattern_view_inner(GfxDomain *dest_surface, const SDL_Rect *dest, const SDL
 	row.y = (bottom - top) / 2 * height + row.y + 2 + HEADER_HEIGHT;
 	row.h = height + 1;
 	
-	bevel(dest_surface, &row, mused.slider_bevel, BEV_SELECTED_PATTERN_ROW);
+	bevelex(dest_surface, &row, mused.slider_bevel, BEV_SELECTED_PATTERN_ROW, BEV_F_STRETCH_ALL);
 	
 	slider_set_params(&mused.pattern_slider_param, 0, mused.song.song_length - 1, mused.pattern_position, mused.pattern_position, &mused.pattern_position, 1, SLIDER_VERTICAL, mused.slider_bevel);
 	
@@ -193,7 +193,7 @@ void pattern_view_inner(GfxDomain *dest_surface, const SDL_Rect *dest, const SDL
 		track.h -= HEADER_HEIGHT;
 		track.y += HEADER_HEIGHT + 1;
 		
-		bevel(dest_surface, &track, mused.slider_bevel, BEV_THIN_FRAME);
+		bevelex(dest_surface, &track, mused.slider_bevel, BEV_THIN_FRAME, BEV_F_STRETCH_ALL);
 		adjust_rect(&track, 3);
 		for (int i = 0 ; i < mused.song.num_sequences[channel] ; ++i, ++sp)
 		{
@@ -427,7 +427,7 @@ void pattern_view_inner(GfxDomain *dest_surface, const SDL_Rect *dest, const SDL
 		
 		SDL_Rect cursor = { 3 + dest->x + narrow_w * (mused.current_sequencetrack - mused.pattern_horiz_position) + x, row.y, w, row.h};
 		adjust_rect(&cursor, -2);
-		bevel(dest_surface, &cursor, mused.slider_bevel, (mused.flags & EDIT_MODE) ? BEV_EDIT_CURSOR : BEV_CURSOR);
+		bevelex(dest_surface, &cursor, mused.slider_bevel, (mused.flags & EDIT_MODE) ? BEV_EDIT_CURSOR : BEV_CURSOR, BEV_F_STRETCH_ALL);
 	}
 	
 	// ach
@@ -463,7 +463,7 @@ static void pattern_view_stepcounter(GfxDomain *dest_surface, const SDL_Rect *de
 	
 	compact.w /= 2;
 	
-	bevel(dest_surface, &header, mused.slider_bevel, BEV_BACKGROUND);
+	bevelex(dest_surface, &header, mused.slider_bevel, BEV_BACKGROUND, BEV_F_STRETCH_ALL);
 	
 	button_event(dest_surface, event, &compact, mused.slider_bevel, 
                 !(mused.flags & COMPACT_VIEW) ? BEV_BUTTON : BEV_BUTTON_ACTIVE, 
@@ -497,7 +497,7 @@ static void pattern_view_stepcounter(GfxDomain *dest_surface, const SDL_Rect *de
 		if (mused.pattern_position == row)
 		{
 			SDL_Rect row = { content.x - 2, content.y + y - 1, content.w + 4, mused.console->font.h + 1};
-			bevel(dest_surface,&row, mused.slider_bevel, BEV_SELECTED_PATTERN_ROW);
+			bevelex(dest_surface,&row, mused.slider_bevel, BEV_SELECTED_PATTERN_ROW, BEV_F_STRETCH_ALL);
 			console_set_color(mused.console, colors[COLOR_PATTERN_SELECTED]);
 		}
 		else if (row < 0)
@@ -513,7 +513,7 @@ static void pattern_view_stepcounter(GfxDomain *dest_surface, const SDL_Rect *de
 			console_write_args(mused.console, "%03X\n", row & 0xfff);
 	}
 	
-	bevel(dest_surface, &frame, mused.slider_bevel, BEV_THIN_FRAME);
+	bevelex(dest_surface, &frame, mused.slider_bevel, BEV_THIN_FRAME, BEV_F_STRETCH_ALL);
 	
 	gfx_domain_set_clip(dest_surface, NULL);
 }
