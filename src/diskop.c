@@ -307,6 +307,8 @@ int open_song(FILE *f)
 		if(mused.song.pattern[i].num_steps == 0)
 			resize_pattern(&mused.song.pattern[i], mused.default_pattern_length);
 	
+	set_channels(mused.song.num_channels);
+	
 	return 1;
 }
 
