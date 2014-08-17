@@ -531,3 +531,9 @@ void set_info_message(const char *message, ...)
 	
 	mused.info_message_timer = SDL_AddTimer(5000, info_message_cb, NULL);
 }
+
+
+void set_channels(int channels)
+{
+	cyd_reserve_channels(&mused.cyd, channels);
+}

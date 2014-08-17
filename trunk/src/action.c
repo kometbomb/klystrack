@@ -453,11 +453,11 @@ void change_channels(void *delta, void *unused1, void *unused2)
 {
 	if (CASTPTR(int,delta) < 0 && mused.song.num_channels > 1)
 	{
-		--mused.song.num_channels;
+		set_channels(mused.song.num_channels - 1);
 	}
 	else if (CASTPTR(int,delta) > 0 && mused.song.num_channels < MUS_MAX_CHANNELS)
 	{
-		++mused.song.num_channels;
+		set_channels(mused.song.num_channels + 1);
 	}
 }
 
