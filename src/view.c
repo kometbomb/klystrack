@@ -599,11 +599,11 @@ void info_line(GfxDomain *dest_surface, const SDL_Rect *dest, const SDL_Event *e
 			{
 				static const char * param_desc[] = 
 				{
-					"FX bus",
-					"FX bus name",
 					"Enable multiplex",
 					"Multiplex period",
 					"Pitch inaccuracy",
+					"FX bus",
+					"FX bus name",
 					"Enable bitcrusher",
 					"Drop bits",
 					"Downsample",
