@@ -7,12 +7,16 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		002F39FA09D0881F00EBEB88 /* SDL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 002F39F909D0881F00EBEB88 /* SDL.framework */; };
-		002F3A0009D0884600EBEB88 /* SDL.framework in Copy Frameworks into .app bundle */ = {isa = PBXBuildFile; fileRef = 002F39F909D0881F00EBEB88 /* SDL.framework */; };
 		002F3A2E09D0888800EBEB88 /* SDLMain.m in Sources */ = {isa = PBXBuildFile; fileRef = 002F3A2C09D0888800EBEB88 /* SDLMain.m */; };
 		8329AF8F12ECE929006497E9 /* pack.c in Sources */ = {isa = PBXBuildFile; fileRef = 8329AF8D12ECE929006497E9 /* pack.c */; };
 		83722ED8167A9EC900336AFC /* wave_action.c in Sources */ = {isa = PBXBuildFile; fileRef = 83722ED6167A9EC900336AFC /* wave_action.c */; };
 		83722F13167AAA8F00336AFC /* key in Resources */ = {isa = PBXBuildFile; fileRef = 83722F0F167AAA8F00336AFC /* key */; };
+		8378C6CD19A0E55E00AFBD43 /* cydfm.c in Sources */ = {isa = PBXBuildFile; fileRef = 8378C6C919A0E55E00AFBD43 /* cydfm.c */; };
+		8378C6CE19A0E55E00AFBD43 /* cydosc.c in Sources */ = {isa = PBXBuildFile; fileRef = 8378C6CB19A0E55E00AFBD43 /* cydosc.c */; };
+		8378C6D119A0E5B600AFBD43 /* timer.c in Sources */ = {isa = PBXBuildFile; fileRef = 8378C6CF19A0E5B600AFBD43 /* timer.c */; };
+		8378C6D419A0E5DF00AFBD43 /* help.c in Sources */ = {isa = PBXBuildFile; fileRef = 8378C6D219A0E5DF00AFBD43 /* help.c */; };
+		8378C75A19A0EC9300AFBD43 /* SDL2_image.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8378C75919A0EC9300AFBD43 /* SDL2_image.framework */; };
+		8378C75C19A0EC9300AFBD43 /* SDL2.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8378C75B19A0EC9300AFBD43 /* SDL2.framework */; };
 		838D906913DAE89000E3C165 /* xm.c in Sources */ = {isa = PBXBuildFile; fileRef = 838D906713DAE89000E3C165 /* xm.c */; };
 		83C0076414F9C41F006A54CD /* ksnd.c in Sources */ = {isa = PBXBuildFile; fileRef = 83C0076114F9C41F006A54CD /* ksnd.c */; };
 		83C0076914F9C476006A54CD /* sequence.c in Sources */ = {isa = PBXBuildFile; fileRef = 83C0076714F9C476006A54CD /* sequence.c */; };
@@ -36,8 +40,6 @@
 		83C75A4412BB71060067F040 /* version in Resources */ = {isa = PBXBuildFile; fileRef = 83C75A2212BB71060067F040 /* version */; };
 		83C75A4712BB71060067F040 /* view.c in Sources */ = {isa = PBXBuildFile; fileRef = 83C75A2E12BB71060067F040 /* view.c */; };
 		83C75A4812BB71060067F040 /* wave.c in Sources */ = {isa = PBXBuildFile; fileRef = 83C75A3012BB71060067F040 /* wave.c */; };
-		83C75A9712BB71860067F040 /* SDL_image.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 83C75A9612BB71860067F040 /* SDL_image.framework */; };
-		83C75A9912BB71860067F040 /* SDL_mixer.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 83C75A9812BB71860067F040 /* SDL_mixer.framework */; };
 		83C75AB012BBD7D90067F040 /* ahx.c in Sources */ = {isa = PBXBuildFile; fileRef = 83C75AAA12BBD7D90067F040 /* ahx.c */; };
 		83C75AB112BBD7D90067F040 /* import.c in Sources */ = {isa = PBXBuildFile; fileRef = 83C75AAC12BBD7D90067F040 /* import.c */; };
 		83C75AB212BBD7D90067F040 /* mod.c in Sources */ = {isa = PBXBuildFile; fileRef = 83C75AAE12BBD7D90067F040 /* mod.c */; };
@@ -77,8 +79,6 @@
 		83DE4D6E136D7F9E009B63EB /* key.c in Sources */ = {isa = PBXBuildFile; fileRef = 83DE4D6A136D7F9E009B63EB /* key.c */; };
 		83DE4D6F136D7F9E009B63EB /* keytab.c in Sources */ = {isa = PBXBuildFile; fileRef = 83DE4D6C136D7F9E009B63EB /* keytab.c */; };
 		83DF78CB140C31BD00B6C9C3 /* optimize.c in Sources */ = {isa = PBXBuildFile; fileRef = 83DF78C9140C31BD00B6C9C3 /* optimize.c */; };
-		83EBE9F612BC07DE00263A0E /* SDL_mixer.framework in Copy Frameworks into .app bundle */ = {isa = PBXBuildFile; fileRef = 83C75A9812BB71860067F040 /* SDL_mixer.framework */; };
-		83EBE9F712BC07E200263A0E /* SDL_image.framework in Copy Frameworks into .app bundle */ = {isa = PBXBuildFile; fileRef = 83C75A9612BB71860067F040 /* SDL_image.framework */; };
 		83FE0A2515319BDE00103637 /* nostalgy.c in Sources */ = {isa = PBXBuildFile; fileRef = 83FE0A2315319BDE00103637 /* nostalgy.c */; };
 		83FE0A2815319C0B00103637 /* org.c in Sources */ = {isa = PBXBuildFile; fileRef = 83FE0A2615319C0B00103637 /* org.c */; };
 		8D11072B0486CEB800E47090 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 089C165CFE840E0CC02AAC07 /* InfoPlist.strings */; };
@@ -92,9 +92,6 @@
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
-				83EBE9F712BC07E200263A0E /* SDL_image.framework in Copy Frameworks into .app bundle */,
-				83EBE9F612BC07DE00263A0E /* SDL_mixer.framework in Copy Frameworks into .app bundle */,
-				002F3A0009D0884600EBEB88 /* SDL.framework in Copy Frameworks into .app bundle */,
 			);
 			name = "Copy Frameworks into .app bundle";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -102,7 +99,6 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
-		002F39F909D0881F00EBEB88 /* SDL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SDL.framework; path = /Library/Frameworks/SDL.framework; sourceTree = "<absolute>"; };
 		002F3A2B09D0888800EBEB88 /* SDLMain.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = SDLMain.h; sourceTree = SOURCE_ROOT; };
 		002F3A2C09D0888800EBEB88 /* SDLMain.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = SDLMain.m; sourceTree = SOURCE_ROOT; };
 		089C165DFE840E0CC02AAC07 /* English */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = English; path = English.lproj/InfoPlist.strings; sourceTree = "<group>"; };
@@ -116,6 +112,17 @@
 		83722ED6167A9EC900336AFC /* wave_action.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = wave_action.c; path = ../src/wave_action.c; sourceTree = SOURCE_ROOT; };
 		83722ED7167A9EC900336AFC /* wave_action.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = wave_action.h; path = ../src/wave_action.h; sourceTree = SOURCE_ROOT; };
 		83722F0F167AAA8F00336AFC /* key */ = {isa = PBXFileReference; lastKnownFileType = folder; name = key; path = ../key; sourceTree = SOURCE_ROOT; };
+		8378C6C819A0E55E00AFBD43 /* cydadsr.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = cydadsr.h; path = ../../klystron/src/snd/cydadsr.h; sourceTree = SOURCE_ROOT; };
+		8378C6C919A0E55E00AFBD43 /* cydfm.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = cydfm.c; path = ../../klystron/src/snd/cydfm.c; sourceTree = SOURCE_ROOT; };
+		8378C6CA19A0E55E00AFBD43 /* cydfm.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = cydfm.h; path = ../../klystron/src/snd/cydfm.h; sourceTree = SOURCE_ROOT; };
+		8378C6CB19A0E55E00AFBD43 /* cydosc.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = cydosc.c; path = ../../klystron/src/snd/cydosc.c; sourceTree = SOURCE_ROOT; };
+		8378C6CC19A0E55E00AFBD43 /* cydosc.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = cydosc.h; path = ../../klystron/src/snd/cydosc.h; sourceTree = SOURCE_ROOT; };
+		8378C6CF19A0E5B600AFBD43 /* timer.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = timer.c; path = ../src/view/timer.c; sourceTree = SOURCE_ROOT; };
+		8378C6D019A0E5B600AFBD43 /* timer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = timer.h; path = ../src/view/timer.h; sourceTree = SOURCE_ROOT; };
+		8378C6D219A0E5DF00AFBD43 /* help.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = help.c; path = ../src/help.c; sourceTree = SOURCE_ROOT; };
+		8378C6D319A0E5DF00AFBD43 /* help.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = help.h; path = ../src/help.h; sourceTree = SOURCE_ROOT; };
+		8378C75919A0EC9300AFBD43 /* SDL2_image.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SDL2_image.framework; path = /Library/Frameworks/SDL2_image.framework; sourceTree = "<absolute>"; };
+		8378C75B19A0EC9300AFBD43 /* SDL2.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SDL2.framework; path = /Library/Frameworks/SDL2.framework; sourceTree = "<absolute>"; };
 		838D906713DAE89000E3C165 /* xm.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = xm.c; path = ../src/import/xm.c; sourceTree = SOURCE_ROOT; };
 		838D906813DAE89000E3C165 /* xm.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = xm.h; path = ../src/import/xm.h; sourceTree = SOURCE_ROOT; };
 		83C0076114F9C41F006A54CD /* ksnd.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = ksnd.c; sourceTree = "<group>"; };
@@ -164,8 +171,6 @@
 		83C75A7012BB71270067F040 /* macros.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = macros.h; path = ../../klystron/src/macros.h; sourceTree = SOURCE_ROOT; };
 		83C75A7112BB71270067F040 /* sllhdr.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = sllhdr.h; path = ../../klystron/src/sllhdr.h; sourceTree = SOURCE_ROOT; };
 		83C75A8F12BB71270067F040 /* version.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = version.h; path = ../../klystron/src/version.h; sourceTree = SOURCE_ROOT; };
-		83C75A9612BB71860067F040 /* SDL_image.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SDL_image.framework; path = Library/Frameworks/SDL_image.framework; sourceTree = SDKROOT; };
-		83C75A9812BB71860067F040 /* SDL_mixer.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SDL_mixer.framework; path = Library/Frameworks/SDL_mixer.framework; sourceTree = SDKROOT; };
 		83C75AAA12BBD7D90067F040 /* ahx.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = ahx.c; path = ../src/import/ahx.c; sourceTree = SOURCE_ROOT; };
 		83C75AAB12BBD7D90067F040 /* ahx.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ahx.h; path = ../src/import/ahx.h; sourceTree = SOURCE_ROOT; };
 		83C75AAC12BBD7D90067F040 /* import.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = import.c; path = ../src/import/import.c; sourceTree = SOURCE_ROOT; };
@@ -259,10 +264,9 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				83C75A9912BB71860067F040 /* SDL_mixer.framework in Frameworks */,
-				002F39FA09D0881F00EBEB88 /* SDL.framework in Frameworks */,
 				8D11072F0486CEB800E47090 /* Cocoa.framework in Frameworks */,
-				83C75A9712BB71860067F040 /* SDL_image.framework in Frameworks */,
+				8378C75A19A0EC9300AFBD43 /* SDL2_image.framework in Frameworks */,
+				8378C75C19A0EC9300AFBD43 /* SDL2.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -281,9 +285,8 @@
 		1058C7A0FEA54F0111CA2CBB /* Linked Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				83C75A9612BB71860067F040 /* SDL_image.framework */,
-				83C75A9812BB71860067F040 /* SDL_mixer.framework */,
-				002F39F909D0881F00EBEB88 /* SDL.framework */,
+				8378C75919A0EC9300AFBD43 /* SDL2_image.framework */,
+				8378C75B19A0EC9300AFBD43 /* SDL2.framework */,
 				1058C7A1FEA54F0111CA2CBB /* Cocoa.framework */,
 			);
 			name = "Linked Frameworks";
@@ -362,6 +365,8 @@
 		83C759F612BB70CA0067F040 /* Klystrack */ = {
 			isa = PBXGroup;
 			children = (
+				8378C6D219A0E5DF00AFBD43 /* help.c */,
+				8378C6D319A0E5DF00AFBD43 /* help.h */,
 				83722ED6167A9EC900336AFC /* wave_action.c */,
 				83722ED7167A9EC900336AFC /* wave_action.h */,
 				83FE0A2615319C0B00103637 /* org.c */,
@@ -455,6 +460,8 @@
 		83C75AB312BBD7EE0067F040 /* view */ = {
 			isa = PBXGroup;
 			children = (
+				8378C6CF19A0E5B600AFBD43 /* timer.c */,
+				8378C6D019A0E5B600AFBD43 /* timer.h */,
 				83C0076714F9C476006A54CD /* sequence.c */,
 				83C0076814F9C476006A54CD /* sequence.h */,
 				83C75AB412BBD7FB0067F040 /* pattern.c */,
@@ -519,6 +526,11 @@
 		83C75AF212BBD8420067F040 /* snd */ = {
 			isa = PBXGroup;
 			children = (
+				8378C6C819A0E55E00AFBD43 /* cydadsr.h */,
+				8378C6C919A0E55E00AFBD43 /* cydfm.c */,
+				8378C6CA19A0E55E00AFBD43 /* cydfm.h */,
+				8378C6CB19A0E55E00AFBD43 /* cydosc.c */,
+				8378C6CC19A0E55E00AFBD43 /* cydosc.h */,
 				83C75AF312BBD84C0067F040 /* cyd.c */,
 				83C75AF412BBD84C0067F040 /* cyd.h */,
 				83C75AF512BBD84C0067F040 /* cydchr.c */,
@@ -714,6 +726,10 @@
 				83FE0A2515319BDE00103637 /* nostalgy.c in Sources */,
 				83FE0A2815319C0B00103637 /* org.c in Sources */,
 				83722ED8167A9EC900336AFC /* wave_action.c in Sources */,
+				8378C6CD19A0E55E00AFBD43 /* cydfm.c in Sources */,
+				8378C6CE19A0E55E00AFBD43 /* cydosc.c in Sources */,
+				8378C6D119A0E5B600AFBD43 /* timer.c in Sources */,
+				8378C6D419A0E5DF00AFBD43 /* help.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -734,54 +750,25 @@
 		83EBE95A12BBFDF900263A0E /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = "$(ARCHS_STANDARD_32_64_BIT)";
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(HOME)/Library/Frameworks",
-					/Library/Frameworks,
-					"$(FRAMEWORK_SEARCH_PATHS)",
-				);
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_PREPROCESSOR_DEFINITIONS = (
-					DEBUG,
 					USESDL_IMAGE,
 					STEREOOUTPUT,
 					ENABLEAUDIODUMP,
+					NOSDL_MIXER,
 					USESDLMUTEXES,
 				);
-				GCC_VERSION = 4.0;
-				"GCC_VERSION[arch=x86_64]" = 4.2;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				HEADER_SEARCH_PATHS = (
-					/Library/Frameworks/SDL_image.framework/Headers,
-					/Library/Frameworks/SDL_mixer.framework/Headers,
-					"$(HOME)/Library/Frameworks/SDL.framework/Headers",
-					/Library/Frameworks/SDL.framework/Headers,
-				);
-				PREBINDING = NO;
-				SDKROOT = macosx10.5;
-				USER_HEADER_SEARCH_PATHS = "../../klystron/src ../src";
+				ONLY_ACTIVE_ARCH = YES;
+				USER_HEADER_SEARCH_PATHS = "/Library/Frameworks/SDL2_image.framework/Headers /Library/Frameworks/SDL2.framework/Headers ../../klystron/src ../src";
 			};
 			name = Release;
 		};
 		83EBE95B12BBFDF900263A0E /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				COPY_PHASE_STRIP = NO;
-				GCC_DYNAMIC_NO_PIC = NO;
-				GCC_ENABLE_FIX_AND_CONTINUE = YES;
-				GCC_MODEL_TUNING = G5;
-				GCC_OPTIMIZATION_LEVEL = 0;
-				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = OSX_Xcode_Prefix.pch;
-				GCC_PREPROCESSOR_DEFINITIONS = (
-					"CONFIG_PATH=~/.klystrack",
-					USESDL_IMAGE,
-					STEREOOUTPUT,
-					ENABLEAUDIODUMP,
-					USESDLMUTEXES,
-					USESTATICTEMPSTRINGS,
-				);
+				HEADER_SEARCH_PATHS = "";
 				INFOPLIST_FILE = Info.plist;
 				INSTALL_PATH = "$(HOME)/Applications";
 				ONLY_ACTIVE_ARCH = NO;
@@ -793,22 +780,9 @@
 		C01FCF4B08A954540054247B /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				COPY_PHASE_STRIP = NO;
-				GCC_DYNAMIC_NO_PIC = NO;
-				GCC_ENABLE_FIX_AND_CONTINUE = YES;
-				GCC_MODEL_TUNING = G5;
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = OSX_Xcode_Prefix.pch;
-				GCC_PREPROCESSOR_DEFINITIONS = (
-					"CONFIG_PATH=~/.klystrack",
-					DEBUG,
-					USESDL_IMAGE,
-					STEREOOUTPUT,
-					ENABLEAUDIODUMP,
-					USESDLMUTEXES,
-					USESTATICTEMPSTRINGS,
-				);
 				INFOPLIST_FILE = Info.plist;
 				INSTALL_PATH = "$(HOME)/Applications";
 				PRODUCT_NAME = Klystrack;
@@ -819,7 +793,6 @@
 		C01FCF4F08A954540054247B /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = "$(ARCHS_STANDARD_32_64_BIT)";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(HOME)/Library/Frameworks",
 					/Library/Frameworks,
@@ -832,9 +805,8 @@
 					STEREOOUTPUT,
 					ENABLEAUDIODUMP,
 					USESDLMUTEXES,
+					NOSDL_MIXER,
 				);
-				GCC_VERSION = 4.0;
-				"GCC_VERSION[arch=x86_64]" = 4.2;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				HEADER_SEARCH_PATHS = (
@@ -843,10 +815,6 @@
 					"$(HOME)/Library/Frameworks/SDL.framework/Headers",
 					/Library/Frameworks/SDL.framework/Headers,
 				);
-				ONLY_ACTIVE_ARCH = YES;
-				PREBINDING = NO;
-				SDKROOT = macosx10.5;
-				"SDKROOT[arch=x86_64]" = macosx10.6;
 				USER_HEADER_SEARCH_PATHS = "../../klystron/src ../src";
 			};
 			name = Debug;

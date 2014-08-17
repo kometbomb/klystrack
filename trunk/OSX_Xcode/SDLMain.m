@@ -347,13 +347,8 @@ static void CustomApplicationMain (int argc, char **argv)
 
 
 
-#ifdef main
-#  undef main
-#endif
-
-
-/* Main entry point to executable - should *not* be SDL_main! */
-int main (int argc, char **argv)
+/* Main entry point to executable */
+int SDL_main (int argc, char **argv)
 {
     /* Copy the arguments into a global variable */
     /* This is passed if we are launched by double-clicking */
