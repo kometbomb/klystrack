@@ -15,8 +15,10 @@
 		8378C6CE19A0E55E00AFBD43 /* cydosc.c in Sources */ = {isa = PBXBuildFile; fileRef = 8378C6CB19A0E55E00AFBD43 /* cydosc.c */; };
 		8378C6D119A0E5B600AFBD43 /* timer.c in Sources */ = {isa = PBXBuildFile; fileRef = 8378C6CF19A0E5B600AFBD43 /* timer.c */; };
 		8378C6D419A0E5DF00AFBD43 /* help.c in Sources */ = {isa = PBXBuildFile; fileRef = 8378C6D219A0E5DF00AFBD43 /* help.c */; };
-		8378C75A19A0EC9300AFBD43 /* SDL2_image.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8378C75919A0EC9300AFBD43 /* SDL2_image.framework */; };
-		8378C75C19A0EC9300AFBD43 /* SDL2.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8378C75B19A0EC9300AFBD43 /* SDL2.framework */; };
+		8378C75A19A0EC9300AFBD43 /* SDL2_image.framework in Copy Frameworks into .app bundle */ = {isa = PBXBuildFile; fileRef = 8378C75919A0EC9300AFBD43 /* SDL2_image.framework */; };
+		8378C75C19A0EC9300AFBD43 /* SDL2.framework in Copy Frameworks into .app bundle */ = {isa = PBXBuildFile; fileRef = 8378C75B19A0EC9300AFBD43 /* SDL2.framework */; };
+		8378C7C919A0F17300AFBD43 /* SDL2_image.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8378C75919A0EC9300AFBD43 /* SDL2_image.framework */; };
+		8378C7CA19A0F17300AFBD43 /* SDL2.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8378C75B19A0EC9300AFBD43 /* SDL2.framework */; };
 		838D906913DAE89000E3C165 /* xm.c in Sources */ = {isa = PBXBuildFile; fileRef = 838D906713DAE89000E3C165 /* xm.c */; };
 		83C0076414F9C41F006A54CD /* ksnd.c in Sources */ = {isa = PBXBuildFile; fileRef = 83C0076114F9C41F006A54CD /* ksnd.c */; };
 		83C0076914F9C476006A54CD /* sequence.c in Sources */ = {isa = PBXBuildFile; fileRef = 83C0076714F9C476006A54CD /* sequence.c */; };
@@ -92,6 +94,8 @@
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
+				8378C75A19A0EC9300AFBD43 /* SDL2_image.framework in Copy Frameworks into .app bundle */,
+				8378C75C19A0EC9300AFBD43 /* SDL2.framework in Copy Frameworks into .app bundle */,
 			);
 			name = "Copy Frameworks into .app bundle";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -264,9 +268,9 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				8378C7C919A0F17300AFBD43 /* SDL2_image.framework in Frameworks */,
+				8378C7CA19A0F17300AFBD43 /* SDL2.framework in Frameworks */,
 				8D11072F0486CEB800E47090 /* Cocoa.framework in Frameworks */,
-				8378C75A19A0EC9300AFBD43 /* SDL2_image.framework in Frameworks */,
-				8378C75C19A0EC9300AFBD43 /* SDL2.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -574,11 +578,12 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = C01FCF4A08A954540054247B /* Build configuration list for PBXNativeTarget "Klystrack" */;
 			buildPhases = (
-				83EBEA2A12BC0D3E00263A0E /* ShellScript */,
+				83EBEA2A12BC0D3E00263A0E /* Version files */,
 				8D1107290486CEB800E47090 /* Resources */,
 				8D11072C0486CEB800E47090 /* Sources */,
 				8D11072E0486CEB800E47090 /* Frameworks */,
 				002F39FD09D0883400EBEB88 /* Copy Frameworks into .app bundle */,
+				8378C7E119A0F46A00AFBD43 /* Fix frameworks */,
 			);
 			buildRules = (
 			);
@@ -636,7 +641,21 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
-		83EBEA2A12BC0D3E00263A0E /* ShellScript */ = {
+		8378C7E119A0F46A00AFBD43 /* Fix frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Fix frameworks";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "function relocateLibraryInCurrentApp() {\n  install_name_tool -change $1$2 @executable_path/../Frameworks/$2 $CONFIGURATION_BUILD_DIR/$EXECUTABLE_PATH\n}\nrelocateLibraryInCurrentApp @rpath/ SDL2_image.framework/Versions/A/SDL2_image\nrelocateLibraryInCurrentApp @rpath/ SDL2.framework/Versions/A/SDL2";
+		};
+		83EBEA2A12BC0D3E00263A0E /* Version files */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -644,6 +663,7 @@
 			inputPaths = (
 				"$(SRCROOT)/../src/version",
 			);
+			name = "Version files";
 			outputPaths = (
 				"$(DERIVED_FILE_DIR)/../src/version_number.h",
 				"$(DERIVED_FILE_DIR)/../src/version.h",
@@ -750,6 +770,8 @@
 		83EBE95A12BBFDF900263A0E /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ARCHS = "$(ARCHS_STANDARD_64_BIT)";
+				COPY_PHASE_STRIP = NO;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					USESDL_IMAGE,
