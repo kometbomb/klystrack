@@ -211,6 +211,8 @@ void new_song()
 	mused.modified = false;
 	
 	invalidate_wavetable_view();
+	
+	set_channels(mused.song.num_channels);
 }
 
 
@@ -304,8 +306,6 @@ void init(MusInstrument *instrument, MusPattern *pattern, MusSeqPattern sequence
 	
 	undo_init(&mused.undo);
 	undo_init(&mused.redo);
-	
-	new_song();
 	
 	enum_themes();
 	enum_keymaps();
@@ -535,5 +535,7 @@ void set_info_message(const char *message, ...)
 
 void set_channels(int channels)
 {
+	debug("Changed num_channels = %d", channels);
+	mused.song.num_channels = channels;
 	cyd_reserve_channels(&mused.cyd, channels);
 }

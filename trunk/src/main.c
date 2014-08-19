@@ -261,7 +261,7 @@ int main(int argc, char **argv)
 	
 	default_settings();
 	load_config(TOSTRING(CONFIG_PATH), false);
-	
+		
 	domain = gfx_create_domain(VERSION_STRING, SDL_WINDOW_RESIZABLE|SDL_WINDOW_OPENGL|((mused.flags & WINDOW_MAXIMIZED)?SDL_WINDOW_MAXIMIZED:0), mused.window_w, mused.window_h, mused.pixel_scale);
 	domain->fps = 30;
 	domain->scale = mused.pixel_scale;
@@ -282,6 +282,8 @@ int main(int argc, char **argv)
 	
 	cyd_init(&mused.cyd, mused.mix_rate, MUS_MAX_CHANNELS);
 	mus_init_engine(&mused.mus, &mused.cyd);
+	new_song();
+	
 	enable_callback(true);
 	
 	for (int i = 0 ; i < CYD_MAX_FX_CHANNELS ; ++i)
