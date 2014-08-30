@@ -3,6 +3,8 @@
 #include "view/wavetableview.h"
 #include "snd/freqs.h"
 #include <string.h>
+#include "wavegen.h"
+#include "util/rnd.h"
 
 void wavetable_drop_lowest_bit(void *unused1, void *unused2, void *unused3)
 {
@@ -203,8 +205,9 @@ void wavetable_chord(void *transpose, void *unused2, void *unused3)
 }
 
 
-void wavetable_create_one_cycle(void *unused1, void *unused2, void *unused3)
+void wavetable_create_one_cycle(void *_settings, void *unused2, void *unused3)
 {
+	WgSettings *settings = _settings;
 	CydWavetableEntry *w = &mused.mus.cyd->wavetable_entries[mused.selected_wavetable];
 	
 	if (w->samples > 0)
@@ -212,17 +215,24 @@ void wavetable_create_one_cycle(void *unused1, void *unused2, void *unused3)
 		snapshot(S_T_WAVE_DATA);
 	}
 	
-	int new_length = 256;
+	int new_length = settings->length;
 	Sint16 *new_data = malloc(sizeof(Sint16) * new_length);
 	
-	for (int s = 0 ; s < new_length ; ++s)
+	int lowest_mul = 999;
+	
+	for (int i = 0 ; i < WG_CHAIN_OSCS ; ++i)
 	{
-		new_data[s] = sin(s * M_PI * 2 / new_length) * 32767;
+		lowest_mul = my_min(lowest_mul, settings->chain[i].mult);
+		
+		if (settings->chain[i].op == WG_OP_EQ) 
+			break;
 	}
+	
+	wg_gen_waveform(settings->chain, new_data, new_length);
 	
 	if (w->data) free(w->data);
 	w->data = new_data;
-	w->sample_rate = new_length * 220;
+	w->sample_rate = new_length * 220 / lowest_mul;
 	w->samples = new_length;
 	w->loop_begin = 0;
 	w->loop_end = new_length;
@@ -252,4 +262,59 @@ void wavetable_draw(float x, float y, float width)
 		
 		invalidate_wavetable_view();
 	}
+}
+
+
+void wavegen_randomize(void *_settings, void *unused2, void *unused3)
+{
+	bool do_sines = !(rndu() & 3);
+	bool do_shift = !(rndu() & 1);
+	bool do_exp = !(rndu() & 3);
+	bool do_highfreg = !(rndu() & 1);
+	bool do_inharmonic = !(rndu() & 1);
+	bool do_chop = !(rndu() & 3);
+	
+	for (int i = 0 ; i < WG_CHAIN_OSCS ; ++i)
+	{
+		mused.wgset.chain[i].flags = rnd(0, 3);
+	
+		if (do_sines)
+		{
+			if (do_chop && i > 0)
+			{
+				if (rndu() & 1)
+					mused.wgset.chain[i].osc = WG_OSC_SINE;
+				else
+					mused.wgset.chain[i].osc = WG_OSC_SQUARE;
+			}
+			else
+				mused.wgset.chain[i].osc = WG_OSC_SINE;
+		}
+		else
+		{
+			mused.wgset.chain[i].osc = rnd(0, WG_NUM_OSCS - 1);
+		
+			if (mused.wgset.chain[i].osc == WG_OSC_NOISE)
+				mused.wgset.chain[i].osc = rnd(0, WG_NUM_OSCS - 1);
+		}
+		
+		if (do_inharmonic)
+			mused.wgset.chain[i].mult = rnd(1, do_highfreg ? 9 : 5);
+		else
+			mused.wgset.chain[i].mult = 1 << rnd(0, do_highfreg ? 2 : 3);
+		
+		mused.wgset.chain[i].op = rnd(0, WG_NUM_OPS - 2);
+		
+		if (do_shift)
+			mused.wgset.chain[i].shift = rnd(0, 7);
+		else
+			mused.wgset.chain[i].shift = 0;
+		
+		if (do_exp)
+			mused.wgset.chain[i].exp = rndf() * 1.8 + 0.1;
+		else
+			mused.wgset.chain[i].exp = 1.0f;
+	}
+	
+	mused.wgset.chain[rnd(0, WG_CHAIN_OSCS - 1)].op = WG_OP_EQ;
 }

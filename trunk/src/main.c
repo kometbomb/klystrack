@@ -167,8 +167,8 @@ static const View wavetable_view_tab[] =
 	{{0, 0, 204, -INFO-SAMPLEVIEW}, wavetable_view, NULL, -1},
 	{{204, 0, -SCROLLBAR, -INFO-SAMPLEVIEW}, wavetablelist_view, NULL, -1},
 	{{0 - SCROLLBAR, 0, SCROLLBAR, -INFO-SAMPLEVIEW }, slider, &mused.wavetable_list_slider_param, EDITWAVETABLE },
-	{{0, -INFO-SAMPLEVIEW, -128, SAMPLEVIEW}, wavetable_sample_view, NULL, -1},
-	{{-128, -INFO-SAMPLEVIEW, 128, SAMPLEVIEW}, wavetable_tools_view, NULL, -1},
+	{{0, -INFO-SAMPLEVIEW, -128, SAMPLEVIEW}, wavetable_sample_area, NULL, -1},
+	{{-128, -INFO-SAMPLEVIEW, 128, SAMPLEVIEW}, wavetable_edit_area, NULL, -1},
 	{{0, 0 - INFO, 0, INFO }, info_line, NULL, -1},
 	{{0, 0, 0, 0}, NULL}
 };
