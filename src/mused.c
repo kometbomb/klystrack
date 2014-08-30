@@ -316,6 +316,18 @@ void init(MusInstrument *instrument, MusPattern *pattern, MusSeqPattern sequence
 	mused.single_pattern_edit = 1;
 	
 	debug("undo = %p redo = %p", mused.undo, mused.redo);
+
+	for (int i = 0 ; i < WG_CHAIN_OSCS ; ++i)
+	{
+		mused.wgset.chain[i].osc = WG_OSC_SINE;
+		mused.wgset.chain[i].mult = 1;
+		mused.wgset.chain[i].op = WG_OP_MUL;
+		mused.wgset.chain[i].shift = 0;
+		mused.wgset.chain[i].exp = 1.0;
+		mused.wgset.chain[i].flags = 0;
+	}
+	
+	mused.wgset.length = 256;
 	
 	debug("init done");
 }

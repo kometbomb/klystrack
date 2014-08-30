@@ -56,6 +56,7 @@ enum
 #include "gui/menu.h"
 #include "undo.h"
 #include <stdbool.h>
+#include "wavegen.h"
 
 #define SCREEN_WIDTH 320
 #define SCREEN_HEIGHT 240
@@ -91,6 +92,7 @@ enum
 	MULTIKEY_JAMMING = 65536 << 7,
 	DISABLE_VU_METERS = 65536 << 8,
 	WINDOW_MAXIMIZED = 65536 << 9,
+	SHOW_WAVEGEN = 65536 << 10,
 };
 
 enum
@@ -182,6 +184,9 @@ typedef struct
 	Uint32 midi_last_clock;
 	Uint8 tick_ctr;
 #endif
+
+	WgSettings wgset;
+	int selected_wg_osc;
 } Mused;
 
 extern Mused mused;

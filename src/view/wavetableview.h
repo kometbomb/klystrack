@@ -33,6 +33,8 @@ void wavetable_view(GfxDomain *dest_surface, const SDL_Rect *dest, const SDL_Eve
 void wavetablelist_view(GfxDomain *dest_surface, const SDL_Rect *dest, const SDL_Event *event, void *param);
 void wavetable_sample_view(GfxDomain *dest_surface, const SDL_Rect *dest, const SDL_Event *event, void *param);
 void wavetable_tools_view(GfxDomain *dest_surface, const SDL_Rect *dest, const SDL_Event *event, void *param);
+void wavetable_edit_area(GfxDomain *dest_surface, const SDL_Rect *dest, const SDL_Event *event, void *param);
+void wavetable_sample_area(GfxDomain *dest_surface, const SDL_Rect *dest, const SDL_Event *event, void *param);
 void invalidate_wavetable_view();
 
 #endif

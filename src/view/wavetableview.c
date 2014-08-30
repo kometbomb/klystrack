@@ -280,6 +280,8 @@ void invalidate_wavetable_view()
 }
 
 
+
+
 void wavetable_tools_view(GfxDomain *dest_surface, const SDL_Rect *dest, const SDL_Event *event, void *param)
 {
 	SDL_Rect r, frame;
@@ -323,5 +325,209 @@ void wavetable_tools_view(GfxDomain *dest_surface, const SDL_Rect *dest, const S
 	
 	r.y += r.h;
 	
-	button_text_event(domain, event, &r, mused.slider_bevel, &mused.buttonfont, BEV_BUTTON, BEV_BUTTON_ACTIVE, "GENERATE A", wavetable_create_one_cycle, MAKEPTR(12), NULL, NULL);
+	button_text_event(domain, event, &r, mused.slider_bevel, &mused.buttonfont, BEV_BUTTON, BEV_BUTTON_ACTIVE, "WAVEGEN", flip_bit_action, &mused.flags, MAKEPTR(SHOW_WAVEGEN), NULL);
+}
+
+
+void oscillator_view(GfxDomain *domain, const SDL_Rect *dest, const SDL_Event *event, void *param)
+{
+	WgOsc *osc = param;
+	
+	SDL_Rect frame;
+	copy_rect(&frame, dest);
+	
+	int bev = BEV_THIN_FRAME;
+	
+	if (osc == &mused.wgset.chain[mused.selected_wg_osc])
+		bev = BEV_EDIT_CURSOR;
+	
+	bevelex(domain, &frame, mused.slider_bevel, bev, BEV_F_STRETCH_ALL);
+	adjust_rect(&frame, 2);
+	
+	gfx_rect(domain, &frame, colors[COLOR_WAVETABLE_BACKGROUND]);
+	
+	float py = wg_osc(osc, 0);
+	
+	for (int x = 1 ; x < frame.w ; ++x)
+	{
+		float y = wg_osc(osc, (float)x / frame.w);
+		gfx_line(domain, frame.x + x - 1, py * frame.h / 2 + frame.y + frame.h / 2, frame.x + x, y * frame.h / 2 + frame.y + frame.h / 2, colors[COLOR_WAVETABLE_SAMPLE]);
+		py = y;
+	}
+}
+
+
+void wavegen_view(GfxDomain *dest_surface, const SDL_Rect *dest, const SDL_Event *event, void *param)
+{
+	SDL_Rect r, frame;
+	copy_rect(&frame, dest);
+	bevelex(domain, &frame, mused.slider_bevel, BEV_BACKGROUND, BEV_F_STRETCH_ALL);
+	adjust_rect(&frame, 4);
+	
+	int active_oscs = 1;
+	
+	for (int i = 0 ; i < WG_CHAIN_OSCS - 1 ; ++i)
+	{
+		if (mused.wgset.chain[i].op != WG_OP_EQ)
+			++active_oscs;
+		else
+			break;
+	}
+	
+	for (int i = 0 ; i < active_oscs ; ++i)
+	{
+		WgOsc *osc = &mused.wgset.chain[i];
+		copy_rect(&r, &frame);
+		r.w = frame.w / active_oscs - 4;
+		r.x = frame.x + (r.w + 4) * i;
+		r.h = 32;
+		oscillator_view(dest_surface, &r, event, osc);
+		
+		if (check_event(event, &r, NULL, 0, 0, 0))
+			mused.selected_wg_osc = i;
+	}
+	
+	for (int i = 0 ; i < active_oscs ; ++i)
+	{
+		WgOsc *osc = &mused.wgset.chain[i];
+		SDL_Rect r;
+		copy_rect(&r, &frame);
+		r.y += 16 - 6;
+		r.w = 12;
+		r.x = frame.x + (frame.w / active_oscs) * i + (frame.w / active_oscs) - 10;
+		r.h = 12;
+		
+		const char *op[] = {"+", "x", "E"};
+		
+		if (button_text_event(domain, event, &r, mused.slider_bevel, &mused.buttonfont, BEV_BUTTON, BEV_BUTTON_ACTIVE, op[osc->op], NULL, NULL, NULL, NULL) & 1)
+			osc->op = (osc->op + 1) % WG_NUM_OPS;
+	}
+	
+	WgOsc *osc = &mused.wgset.chain[mused.selected_wg_osc];
+	
+	int d;
+	
+	r.y += r.h;
+	
+	r.x = frame.x;
+	r.w = frame.w - 2;
+	r.h = 10;
+	
+	if ((d = generic_field(event, &r, EDITWAVETABLE, -1, "OSC", "%d", MAKEPTR(osc->osc), 1)) != 0)
+	{
+		osc->osc = my_max(0, my_min(WG_NUM_OSCS - 1, osc->osc + d));
+	}
+	
+	r.y += r.h;
+	
+	if ((d = generic_field(event, &r, EDITWAVETABLE, -1, "MUL", "%d", MAKEPTR(osc->mult), 1)) != 0)
+	{
+		osc->mult = my_max(1, my_min(9, osc->mult + d));
+	}
+	
+	r.y += r.h;
+	
+	if ((d = generic_field(event, &r, EDITWAVETABLE, -1, "SHIFT", "%d", MAKEPTR(osc->shift), 1)) != 0)
+	{
+		osc->shift = my_max(0, my_min(7, osc->shift + d));
+	}
+	
+	r.y += r.h;
+	
+	char str[10];
+	snprintf(str, 10, "%0.1f", osc->exp);
+	
+	if ((d = generic_field(event, &r, EDITWAVETABLE, -1, "EXP", "%s", str, 3)) != 0)
+	{
+		osc->exp += d * 0.1f;
+		
+		if (osc->exp < 0.1f)
+			osc->exp = 0.1;
+		else if (osc->exp > 9.9f)
+			osc->exp = 9.9f;	
+	}
+	
+	r.y += r.h;
+	
+	if (checkbox(domain, event, &r, mused.slider_bevel, &mused.smallfont, BEV_BUTTON, BEV_BUTTON_ACTIVE, DECAL_TICK, "ABS", &osc->flags, WG_OSC_FLAG_ABS)) 
+	{
+	}
+	
+	r.y += r.h;
+	
+	if (checkbox(domain, event, &r, mused.slider_bevel, &mused.smallfont, BEV_BUTTON, BEV_BUTTON_ACTIVE, DECAL_TICK, "NEG", &osc->flags, WG_OSC_FLAG_NEG)) 
+	{
+	}
+	
+	r.y += r.h;
+		
+	r.x = frame.x;
+	r.w = frame.w - 2;
+	r.h = 10;
+	
+	if ((d = generic_field(event, &r, EDITWAVETABLE, -1, "LENGTH", "%4d", MAKEPTR(mused.wgset.length), 4)) != 0)
+	{
+		mused.wgset.length = my_max(16, my_min(65536, mused.wgset.length + d));
+	}
+	
+	r.y += r.h;
+	
+	button_text_event(domain, event, &r, mused.slider_bevel, &mused.buttonfont, BEV_BUTTON, BEV_BUTTON_ACTIVE, "GENERATE", wavetable_create_one_cycle, &mused.wgset, NULL, NULL);
+	
+	r.y += r.h;
+	
+	r.w = r.w / 2;
+	
+	button_text_event(domain, event, &r, mused.slider_bevel, &mused.buttonfont, BEV_BUTTON, BEV_BUTTON_ACTIVE, "RND", wavegen_randomize, &mused.wgset, NULL, NULL);
+	
+	r.x += r.w;
+	
+	button_text_event(domain, event, &r, mused.slider_bevel, &mused.buttonfont, BEV_BUTTON, BEV_BUTTON_ACTIVE, "TOOLBOX", flip_bit_action, &mused.flags, MAKEPTR(SHOW_WAVEGEN), NULL);
+}
+
+
+void wavetable_edit_area(GfxDomain *dest_surface, const SDL_Rect *dest, const SDL_Event *event, void *param)
+{
+	if (mused.flags & SHOW_WAVEGEN)
+		wavegen_view(dest_surface, dest, event, param);
+	else
+		wavetable_tools_view(dest_surface, dest, event, param);
+}
+
+
+void wavegen_preview(GfxDomain *dest_surface, const SDL_Rect *dest, const SDL_Event *event, void *param)
+{
+	SDL_Rect area;
+	copy_rect(&area, dest);
+	bevelex(domain, &area, mused.slider_bevel, BEV_THIN_FRAME, BEV_F_STRETCH_ALL);
+	adjust_rect(&area, 3);
+	
+	float py = wg_get_sample(mused.wgset.chain, 0);
+	
+	if (py > 1.0)
+		py = 1.0;
+	else if (py < -1.0)
+		py = -1.0;
+	
+	for (int x = 1 ; x < area.w ; ++x)
+	{
+		float y = wg_get_sample(mused.wgset.chain, (float)x / area.w);
+		
+		if (y > 1.0)
+			y = 1.0;
+		else if (y < -1.0)
+			y = -1.0;
+		
+		gfx_line(domain, area.x + x - 1, py * area.h / 2 + area.y + area.h / 2, area.x + x, y * area.h / 2 + area.y + area.h / 2, colors[COLOR_WAVETABLE_SAMPLE]);
+		py = y;
+	}
+}
+
+
+void wavetable_sample_area(GfxDomain *dest_surface, const SDL_Rect *dest, const SDL_Event *event, void *param)
+{
+	if (mused.flags & SHOW_WAVEGEN)
+		wavegen_preview(dest_surface, dest, event, param);
+	else
+		wavetable_sample_view(dest_surface, dest, event, param);
 }

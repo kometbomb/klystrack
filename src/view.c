@@ -281,7 +281,7 @@ void generic_flags(const SDL_Event *e, const SDL_Rect *_area, int focus, int p, 
 	int hit = check_mouse_hit(e, _area, focus, p);
 	Uint32 flags = *_flags;
 	
-	if (checkbox(domain, e, &area, mused.slider_bevel, &mused.smallfont, BEV_BUTTON, BEV_BUTTON_ACTIVE, DECAL_TICK,label, &flags, mask)) 
+	if (checkbox(domain, e, &area, mused.slider_bevel, &mused.smallfont, BEV_BUTTON, BEV_BUTTON_ACTIVE, DECAL_TICK, label, &flags, mask)) 
 	{
 		
 	}
