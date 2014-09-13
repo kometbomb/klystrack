@@ -18,7 +18,6 @@ typedef enum
 {
 	WG_OP_ADD,
 	WG_OP_MUL,
-	WG_OP_EQ,
 	WG_NUM_OPS
 } WgOpType;
 
@@ -27,7 +26,8 @@ typedef struct
 	WgOscType osc;
 	WgOpType op;
 	int mult, shift;
-	float exp;
+	int exp;
+	float exp_c;
 	Uint32 flags;
 } WgOsc;
 
@@ -40,9 +40,16 @@ enum
 typedef struct
 {
 	WgOsc chain[WG_CHAIN_OSCS];
-	int length;
+	int num_oscs, length;
 } WgSettings;
 
-void wg_gen_waveform(WgOsc *chain, Sint16 *data, int len);
+typedef struct
+{
+	const char *name;
+	WgSettings settings;
+} WgPreset;
+
+void wg_gen_waveform(WgOsc *chain, int num_oscs, Sint16 *data, int len);
 float wg_osc(WgOsc *osc, float _phase);
-float wg_get_sample(WgOsc *chain, float phase);
+void wg_init_osc(WgOsc *osc);
+float wg_get_sample(WgOsc *chain, int num_oscs, float phase);

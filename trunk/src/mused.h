@@ -186,7 +186,7 @@ typedef struct
 #endif
 
 	WgSettings wgset;
-	int selected_wg_osc;
+	int selected_wg_osc, selected_wg_preset;
 } Mused;
 
 extern Mused mused;

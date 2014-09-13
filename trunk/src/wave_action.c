@@ -220,15 +220,12 @@ void wavetable_create_one_cycle(void *_settings, void *unused2, void *unused3)
 	
 	int lowest_mul = 999;
 	
-	for (int i = 0 ; i < WG_CHAIN_OSCS ; ++i)
+	for (int i = 0 ; i < settings->num_oscs ; ++i)
 	{
 		lowest_mul = my_min(lowest_mul, settings->chain[i].mult);
-		
-		if (settings->chain[i].op == WG_OP_EQ) 
-			break;
 	}
 	
-	wg_gen_waveform(settings->chain, new_data, new_length);
+	wg_gen_waveform(settings->chain, settings->num_oscs, new_data, new_length);
 	
 	if (w->data) free(w->data);
 	w->data = new_data;
@@ -274,7 +271,9 @@ void wavegen_randomize(void *_settings, void *unused2, void *unused3)
 	bool do_inharmonic = !(rndu() & 1);
 	bool do_chop = !(rndu() & 3);
 	
-	for (int i = 0 ; i < WG_CHAIN_OSCS ; ++i)
+	mused.wgset.num_oscs = rnd(1, WG_CHAIN_OSCS);
+	
+	for (int i = 0 ; i < mused.wgset.num_oscs ; ++i)
 	{
 		mused.wgset.chain[i].flags = rnd(0, 3);
 	
@@ -301,9 +300,9 @@ void wavegen_randomize(void *_settings, void *unused2, void *unused3)
 		if (do_inharmonic)
 			mused.wgset.chain[i].mult = rnd(1, do_highfreg ? 9 : 5);
 		else
-			mused.wgset.chain[i].mult = 1 << rnd(0, do_highfreg ? 2 : 3);
+			mused.wgset.chain[i].mult = 1 << rnd(0, do_highfreg ? 3 : 2);
 		
-		mused.wgset.chain[i].op = rnd(0, WG_NUM_OPS - 2);
+		mused.wgset.chain[i].op = rnd(0, WG_NUM_OPS - 1);
 		
 		if (do_shift)
 			mused.wgset.chain[i].shift = rnd(0, 7);
@@ -311,10 +310,18 @@ void wavegen_randomize(void *_settings, void *unused2, void *unused3)
 			mused.wgset.chain[i].shift = 0;
 		
 		if (do_exp)
-			mused.wgset.chain[i].exp = rndf() * 1.8 + 0.1;
+			mused.wgset.chain[i].exp = rnd(5,95);
 		else
-			mused.wgset.chain[i].exp = 1.0f;
+			mused.wgset.chain[i].exp = 50;
 	}
+}
+
+
+void wavegen_preset(void *_preset, void *_settings, void *unused3)
+{
+	WgSettings *preset = &((WgPreset*)_preset)->settings;
+	WgSettings *settings = _settings;
 	
-	mused.wgset.chain[rnd(0, WG_CHAIN_OSCS - 1)].op = WG_OP_EQ;
+	settings->num_oscs = preset->num_oscs;
+	memcpy(settings->chain, preset->chain, sizeof(preset->chain[0]) * preset->num_oscs);
 }
