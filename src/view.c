@@ -581,7 +581,8 @@ void info_line(GfxDomain *dest_surface, const SDL_Rect *dest, const SDL_Event *e
 					"FM enable",
 					"FM modulation",
 					"FM feedback",
-					"FM multiplier",
+					"FM carrier multiplier",
+					"FM modulator multiplier",
 					"FM attack",
 					"FM decay",
 					"FM sustain",
@@ -1167,8 +1168,15 @@ void instrument_view2(GfxDomain *dest_surface, const SDL_Rect *dest, const SDL_E
 	update_rect(&frame, &r);
 	inst_text(event, &r, P_FM_FEEDBACK, "FEEDBACK", "%01X", MAKEPTR(inst->fm_feedback), 1);
 	update_rect(&frame, &r);
-	inst_text(event, &r, P_FM_HARMONIC, "MULT", "%02X", MAKEPTR(inst->fm_harmonic), 2);
+	tmp = r.w;
+	r.w -= 27;
+	inst_text(event, &r, P_FM_HARMONIC_CARRIER, "MUL", "%01X", MAKEPTR(inst->fm_harmonic >> 4), 1);
+	r.x += r.w + 11;
+	r.w = 16;
+	
+	inst_text(event, &r, P_FM_HARMONIC_MODULATOR, "", "%01X", MAKEPTR(inst->fm_harmonic & 15), 1);
 	update_rect(&frame, &r);
+	r.w = tmp;
 	inst_text(event, &r, P_FM_ATTACK, "ATK", "%02X", MAKEPTR(inst->fm_adsr.a), 2);
 	update_rect(&frame, &r);
 	inst_text(event, &r, P_FM_DECAY, "DEC", "%02X", MAKEPTR(inst->fm_adsr.d), 2);
