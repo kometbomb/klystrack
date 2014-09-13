@@ -467,10 +467,26 @@ void instrument_add_param(int a)
 		
 		break;
 		
-		case P_FM_HARMONIC:
+		case P_FM_HARMONIC_CARRIER:
+		{
+			Uint8 carrier = (i->fm_harmonic >> 4);
+			Uint8 modulator = i->fm_harmonic & 0xf;
 		
-		clamp(i->fm_harmonic, a, 0, 255);
+			clamp(carrier, a, 0, 15);
 		
+			i->fm_harmonic = carrier << 4 | modulator;
+		}
+		break;
+		
+		case P_FM_HARMONIC_MODULATOR:
+		{
+			Uint8 carrier = (i->fm_harmonic >> 4);
+			Uint8 modulator = i->fm_harmonic & 0xf;
+		
+			clamp(modulator, a, 0, 15);
+		
+			i->fm_harmonic = carrier << 4 | modulator;
+		}
 		break;
 		
 		
