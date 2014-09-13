@@ -323,10 +323,11 @@ void init(MusInstrument *instrument, MusPattern *pattern, MusSeqPattern sequence
 		mused.wgset.chain[i].mult = 1;
 		mused.wgset.chain[i].op = WG_OP_MUL;
 		mused.wgset.chain[i].shift = 0;
-		mused.wgset.chain[i].exp = 1.0;
+		mused.wgset.chain[i].exp = 50;
 		mused.wgset.chain[i].flags = 0;
 	}
 	
+	mused.wgset.num_oscs = 1;
 	mused.wgset.length = 256;
 	
 	debug("init done");

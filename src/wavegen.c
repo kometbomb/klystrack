@@ -7,7 +7,7 @@
 float wg_osc(WgOsc *osc, float _phase)
 {
 	double intpart = 0.0f;
-	double phase = pow(modf(_phase * osc->mult + (float)osc->shift / 8, &intpart), osc->exp); 
+	double phase = pow(modf(_phase * osc->mult + (float)osc->shift / 8, &intpart), osc->exp_c); 
 	float output = 0;
 	
 	switch (osc->osc)
@@ -51,17 +51,15 @@ float wg_osc(WgOsc *osc, float _phase)
 }
 
 
-float wg_get_sample(WgOsc *chain, float phase)
+float wg_get_sample(WgOsc *chain, int num_oscs, float phase)
 {
 	float sample = 0;
-	WgOpType op = WG_OP_EQ;
+	WgOpType op = WG_OP_ADD;
 	
-	for (int i = 0 ; i < WG_CHAIN_OSCS ; ++i)
+	for (int i = 0 ; i < num_oscs ; ++i)
 	{
 		WgOsc *osc = &chain[i];
 		float output = wg_osc(osc, phase);
-		
-		
 		
 		switch (op)
 		{
@@ -73,25 +71,28 @@ float wg_get_sample(WgOsc *chain, float phase)
 			case WG_OP_MUL:
 				sample *= output;
 				break;
-		
-			case WG_OP_EQ:
-				sample = output;
-				break;
 		}
 		
 		op = osc->op;
-		++osc;
-		
-		if (op == WG_OP_EQ)
-			break;
 	}
 	
 	return sample;
 }
 
 
-void wg_gen_waveform(WgOsc *chain, Sint16 *data, int len)
+void wg_init_osc(WgOsc *osc)
 {
+	osc->exp_c = log(0.5f) / log((float)osc->exp / 100);
+}
+
+
+void wg_gen_waveform(WgOsc *chain, int num_oscs, Sint16 *data, int len)
+{
+	for (int i = 0 ; i < num_oscs ; ++i)
+	{
+		wg_init_osc(&chain[i]);
+	}
+
 	for (int i = 0 ; i < len ; ++i)
-		data[i] = my_min(32767, my_max(-32768, 32767 * wg_get_sample(chain, (float)i / len)));
+		data[i] = my_min(32767, my_max(-32768, 32767 * wg_get_sample(chain, num_oscs, (float)i / len)));
 }

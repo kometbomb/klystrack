@@ -346,6 +346,8 @@ void oscillator_view(GfxDomain *domain, const SDL_Rect *dest, const SDL_Event *e
 	
 	gfx_rect(domain, &frame, colors[COLOR_WAVETABLE_BACKGROUND]);
 	
+	wg_init_osc(osc);
+	
 	float py = wg_osc(osc, 0);
 	
 	for (int x = 1 ; x < frame.w ; ++x)
@@ -363,23 +365,61 @@ void wavegen_view(GfxDomain *dest_surface, const SDL_Rect *dest, const SDL_Event
 	copy_rect(&frame, dest);
 	bevelex(domain, &frame, mused.slider_bevel, BEV_BACKGROUND, BEV_F_STRETCH_ALL);
 	adjust_rect(&frame, 4);
+	copy_rect(&r, &frame);
+	r.h = 10;
 	
-	int active_oscs = 1;
+	int d;
 	
-	for (int i = 0 ; i < WG_CHAIN_OSCS - 1 ; ++i)
+	static WgPreset presets[] = {
+		{"OPL2 0", {{ {WG_OSC_SINE, WG_OP_ADD, 1, 0, 50, 0, 0} }, 1}},
+		{"OPL2 1", {{ {WG_OSC_SINE, WG_OP_MUL, 1, 0, 50, 0, 0}, {WG_OSC_SQUARE, WG_OP_MUL, 1, 0, 50, 0, WG_OSC_FLAG_ABS} }, 2}},
+		{"OPL2 2", {{ {WG_OSC_SINE, WG_OP_MUL, 1, 0, 50, 0, 0}, {WG_OSC_SQUARE, WG_OP_MUL, 1, 0, 50, 0, 0} }, 2}},
+		{"OPL2 3", {{ {WG_OSC_SINE, WG_OP_MUL, 1, 0, 50, 0, 0}, {WG_OSC_SQUARE, WG_OP_MUL, 2, 0, 50, 0, WG_OSC_FLAG_ABS}, {WG_OSC_SQUARE, WG_OP_MUL, 1, 0, 50, 0, 0} }, 3}},
+		{"OPL3 4", {{ {WG_OSC_SINE, WG_OP_MUL, 2, 0, 50, 0, 0}, {WG_OSC_SQUARE, WG_OP_MUL, 1, 0, 50, 0, WG_OSC_FLAG_ABS} }, 2}},
+		{"OPL3 5", {{ {WG_OSC_SINE, WG_OP_MUL, 2, 0, 50, 0, 0}, {WG_OSC_SQUARE, WG_OP_MUL, 2, 0, 50, 0, 0}, {WG_OSC_SQUARE, WG_OP_MUL, 1, 0, 50, 0, WG_OSC_FLAG_ABS} }, 3}},
+		{"OPL3 6", {{ {WG_OSC_SQUARE, WG_OP_MUL, 1, 0, 50, 0, 0}}, 1}},
+	};
+	
 	{
-		if (mused.wgset.chain[i].op != WG_OP_EQ)
-			++active_oscs;
-		else
-			break;
+		SDL_Rect button;
+		copy_rect(&button, &r);
+		button.w = 38;
+		button_text_event(domain, event, &button, mused.slider_bevel, &mused.buttonfont, BEV_BUTTON, BEV_BUTTON_ACTIVE, "LOAD", wavegen_preset, &presets[mused.selected_wg_preset], &mused.wgset, NULL);
 	}
+	
+	if ((d = generic_field(event, &r, EDITWAVETABLE, -1, "", "%s", (char*)presets[mused.selected_wg_preset].name, 10)) != 0)
+	{
+		mused.selected_wg_preset += d;
+		
+		if (mused.selected_wg_preset < 0)
+			mused.selected_wg_preset = 0;
+		else if (mused.selected_wg_preset >= sizeof(presets) / sizeof(presets[0]))
+			mused.selected_wg_preset = sizeof(presets) / sizeof(presets[0]) - 1;	
+	}
+	
+	r.y += r.h + 2;
+		
+	if ((d = generic_field(event, &r, EDITWAVETABLE, -1, "OSCS", "%d", MAKEPTR(mused.wgset.num_oscs), 3)) != 0)
+	{
+		mused.wgset.num_oscs += d;
+		
+		if (mused.wgset.num_oscs < 1)
+			mused.wgset.num_oscs = 1;
+		else if (mused.wgset.num_oscs > WG_CHAIN_OSCS)
+			mused.wgset.num_oscs = WG_CHAIN_OSCS;	
+	}
+	
+	r.y += r.h + 2;
+	
+	int active_oscs = mused.wgset.num_oscs;
 	
 	for (int i = 0 ; i < active_oscs ; ++i)
 	{
 		WgOsc *osc = &mused.wgset.chain[i];
 		copy_rect(&r, &frame);
-		r.w = frame.w / active_oscs - 4;
-		r.x = frame.x + (r.w + 4) * i;
+		r.y += 24;
+		r.w = frame.w / active_oscs - 2;
+		r.x = frame.x + (r.w + 2) * i;
 		r.h = 32;
 		oscillator_view(dest_surface, &r, event, osc);
 		
@@ -392,39 +432,41 @@ void wavegen_view(GfxDomain *dest_surface, const SDL_Rect *dest, const SDL_Event
 		WgOsc *osc = &mused.wgset.chain[i];
 		SDL_Rect r;
 		copy_rect(&r, &frame);
-		r.y += 16 - 6;
+		r.y += 34;
 		r.w = 12;
-		r.x = frame.x + (frame.w / active_oscs) * i + (frame.w / active_oscs) - 10;
+		r.x = frame.x + (frame.w / active_oscs) * i + (frame.w / active_oscs) - 8;
 		r.h = 12;
 		
-		const char *op[] = {"+", "x", "E"};
+		const char *op[] = {"+", "x"};
 		
-		if (button_text_event(domain, event, &r, mused.slider_bevel, &mused.buttonfont, BEV_BUTTON, BEV_BUTTON_ACTIVE, op[osc->op], NULL, NULL, NULL, NULL) & 1)
+		if (i < active_oscs - 1 && button_text_event(domain, event, &r, mused.slider_bevel, &mused.buttonfont, BEV_BUTTON, BEV_BUTTON_ACTIVE, op[osc->op], NULL, NULL, NULL, NULL) & 1)
 			osc->op = (osc->op + 1) % WG_NUM_OPS;
 	}
 	
 	WgOsc *osc = &mused.wgset.chain[mused.selected_wg_osc];
 	
-	int d;
-	
 	r.y += r.h;
 	
 	r.x = frame.x;
-	r.w = frame.w - 2;
+	
+	int row_begin = r.x;
+	
+	r.w = frame.w / 2 - 2;
 	r.h = 10;
 	
-	if ((d = generic_field(event, &r, EDITWAVETABLE, -1, "OSC", "%d", MAKEPTR(osc->osc), 1)) != 0)
+	if ((d = generic_field(event, &r, EDITWAVETABLE, -1, "TYPE", "%d", MAKEPTR(osc->osc), 1)) != 0)
 	{
-		osc->osc = my_max(0, my_min(WG_NUM_OSCS - 1, osc->osc + d));
+		osc->osc = my_max(0, my_min(WG_NUM_OSCS - 1, (int)osc->osc + d));
 	}
 	
-	r.y += r.h;
+	r.x += r.w + 4;
 	
 	if ((d = generic_field(event, &r, EDITWAVETABLE, -1, "MUL", "%d", MAKEPTR(osc->mult), 1)) != 0)
 	{
 		osc->mult = my_max(1, my_min(9, osc->mult + d));
 	}
 	
+	r.x = row_begin;
 	r.y += r.h;
 	
 	if ((d = generic_field(event, &r, EDITWAVETABLE, -1, "SHIFT", "%d", MAKEPTR(osc->shift), 1)) != 0)
@@ -432,33 +474,32 @@ void wavegen_view(GfxDomain *dest_surface, const SDL_Rect *dest, const SDL_Event
 		osc->shift = my_max(0, my_min(7, osc->shift + d));
 	}
 	
-	r.y += r.h;
+	r.x += r.w + 4;
 	
-	char str[10];
-	snprintf(str, 10, "%0.1f", osc->exp);
-	
-	if ((d = generic_field(event, &r, EDITWAVETABLE, -1, "EXP", "%s", str, 3)) != 0)
+	if ((d = generic_field(event, &r, EDITWAVETABLE, -1, "EXP", ".%02u", MAKEPTR(osc->exp), 3)) != 0)
 	{
-		osc->exp += d * 0.1f;
+		osc->exp += d * 5;
 		
-		if (osc->exp < 0.1f)
-			osc->exp = 0.1;
-		else if (osc->exp > 9.9f)
-			osc->exp = 9.9f;	
+		if (osc->exp < 5)
+			osc->exp = 5;
+		else if (osc->exp > 95)
+			osc->exp = 95;	
 	}
 	
+	r.x = row_begin;
 	r.y += r.h;
 	
 	if (checkbox(domain, event, &r, mused.slider_bevel, &mused.smallfont, BEV_BUTTON, BEV_BUTTON_ACTIVE, DECAL_TICK, "ABS", &osc->flags, WG_OSC_FLAG_ABS)) 
 	{
 	}
 	
-	r.y += r.h;
+	r.x += r.w + 4;
 	
 	if (checkbox(domain, event, &r, mused.slider_bevel, &mused.smallfont, BEV_BUTTON, BEV_BUTTON_ACTIVE, DECAL_TICK, "NEG", &osc->flags, WG_OSC_FLAG_NEG)) 
 	{
 	}
 	
+	r.x = row_begin;
 	r.y += r.h;
 		
 	r.x = frame.x;
@@ -502,7 +543,7 @@ void wavegen_preview(GfxDomain *dest_surface, const SDL_Rect *dest, const SDL_Ev
 	bevelex(domain, &area, mused.slider_bevel, BEV_THIN_FRAME, BEV_F_STRETCH_ALL);
 	adjust_rect(&area, 3);
 	
-	float py = wg_get_sample(mused.wgset.chain, 0);
+	float py = wg_get_sample(mused.wgset.chain, mused.wgset.num_oscs, 0);
 	
 	if (py > 1.0)
 		py = 1.0;
@@ -511,7 +552,7 @@ void wavegen_preview(GfxDomain *dest_surface, const SDL_Rect *dest, const SDL_Ev
 	
 	for (int x = 1 ; x < area.w ; ++x)
 	{
-		float y = wg_get_sample(mused.wgset.chain, (float)x / area.w);
+		float y = wg_get_sample(mused.wgset.chain, mused.wgset.num_oscs, (float)x / area.w);
 		
 		if (y > 1.0)
 			y = 1.0;
