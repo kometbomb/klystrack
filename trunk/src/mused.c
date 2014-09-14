@@ -465,11 +465,17 @@ int get_patternstep(int abspos, int track)
 
 int current_pattern()
 {
+	return current_pattern_for_channel(mused.current_sequencetrack);
+}
+
+
+int current_pattern_for_channel(int channel)
+{
 	int p = -1;
 	
-	const MusSeqPattern *sp = &mused.song.sequence[mused.current_sequencetrack][0];
+	const MusSeqPattern *sp = &mused.song.sequence[channel][0];
 	
-	for (int i = 0 ; i < mused.song.num_sequences[mused.current_sequencetrack] && sp->position <= mused.current_patternpos ; ++i, ++sp)
+	for (int i = 0 ; i < mused.song.num_sequences[channel] && sp->position <= mused.current_patternpos ; ++i, ++sp)
 	{
 		if (sp->position <= mused.current_patternpos && sp->position + mused.song.pattern[sp->pattern].num_steps > mused.current_patternpos) p = sp->pattern;
 	}

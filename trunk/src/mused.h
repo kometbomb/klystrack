@@ -217,6 +217,7 @@ void enable_callback(bool state);
 int get_pattern(int abspos, int track);
 int get_patternstep(int abspos, int track);
 int current_pattern();
+int current_pattern_for_channel(int channel);
 int current_patternstep();
 MusStep * get_current_step();
 MusPattern * get_current_pattern();

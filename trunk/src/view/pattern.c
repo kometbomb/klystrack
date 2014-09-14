@@ -35,6 +35,7 @@ OTHER DEALINGS IN THE SOFTWARE.
 #include "../mybevdefs.h"
 #include "snd/freqs.h"
 #include <stdbool.h>
+#include "sequence.h"
 
 #define HEADER_HEIGHT 12
 
@@ -92,12 +93,35 @@ void pattern_view_header(GfxDomain *dest_surface, const SDL_Rect *dest, const SD
 		const int pan_w = 42;
 
 		vol.x -= vol.w + 3 + 17;
-		vol.x -= pan_w + 3 + 9;
+		vol.x -= pan_w * 2 + 3 + 9;
 		vol.w = pan_w;
 		vol.h -= 1;
 		vol.y += 1;
 		
 		int d;
+		int _current_pattern = current_pattern_for_channel(channel);
+		
+		if (_current_pattern != -1) 
+		{
+			if ((d = generic_field(event, &vol, 96, channel, "", "", NULL, 1)))
+			{
+				snapshot_cascade(S_T_SONGINFO, 96, channel);
+				mused.song.pattern[_current_pattern].color = my_max(0, my_min(15, (int)mused.song.pattern[_current_pattern].color + d));
+			}
+			
+			{
+				SDL_Rect bar;
+				copy_rect(&bar, &vol);
+				bar.w = 8;
+				bar.h = 8;
+				bar.x += vol.w - 24 - 1;
+				bar.y += 1;
+				
+				gfx_rect(dest_surface, &bar, pattern_color[mused.song.pattern[_current_pattern].color]);
+			}
+		}
+				
+		vol.x += vol.w + 2;
 		
 		char tmp[4]="\xfa\xf9";
 		
@@ -106,18 +130,18 @@ void pattern_view_header(GfxDomain *dest_surface, const SDL_Rect *dest, const SD
 		
 		if ((d = generic_field(event, &vol, 97, channel, "P", "%s", tmp, 2)))
 		{
-				snapshot_cascade(S_T_SONGINFO, 97, channel);
-				mused.song.default_panning[channel] = my_max(-64, my_min(63, (int)mused.song.default_panning[channel] + d * 8));
-				if (abs(mused.song.default_panning[channel]) < 8)
-						mused.song.default_panning[channel] = 0;
+			snapshot_cascade(S_T_SONGINFO, 97, channel);
+			mused.song.default_panning[channel] = my_max(-64, my_min(63, (int)mused.song.default_panning[channel] + d * 8));
+			if (abs(mused.song.default_panning[channel]) < 8)
+					mused.song.default_panning[channel] = 0;
 		}
 				
 		vol.x += vol.w + 2;
 		
 		if ((d = generic_field(event, &vol, 98, channel, "V", "%02X", MAKEPTR(mused.song.default_volume[channel]), 2)))
 		{
-				snapshot_cascade(S_T_SONGINFO, 98, channel);
-				mused.song.default_volume[channel] = my_max(0, my_min(MAX_VOLUME, (int)mused.song.default_volume[channel] + d));
+			snapshot_cascade(S_T_SONGINFO, 98, channel);
+			mused.song.default_volume[channel] = my_max(0, my_min(MAX_VOLUME, (int)mused.song.default_volume[channel] + d));
 		}
 	}
 }
