@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		002F3A2E09D0888800EBEB88 /* SDLMain.m in Sources */ = {isa = PBXBuildFile; fileRef = 002F3A2C09D0888800EBEB88 /* SDLMain.m */; };
+		8343837F19F2C341001EDF56 /* res in Resources */ = {isa = PBXBuildFile; fileRef = 8343837E19F2C341001EDF56 /* res */; };
 		83722F13167AAA8F00336AFC /* key in Resources */ = {isa = PBXBuildFile; fileRef = 83722F0F167AAA8F00336AFC /* key */; };
 		8377DBE919F2A24500994874 /* makebundle.c in Sources */ = {isa = PBXBuildFile; fileRef = 8377DBE819F2A24500994874 /* makebundle.c */; };
 		8377DD1F19F2A5A500994874 /* action.c in Sources */ = {isa = PBXBuildFile; fileRef = 8377DCC719F2A5A500994874 /* action.c */; };
@@ -80,7 +81,6 @@
 		8377DE7C19F2A6A300994874 /* view.c in Sources */ = {isa = PBXBuildFile; fileRef = 8377DE5019F2A6A200994874 /* view.c */; };
 		8377DE8C19F2A74D00994874 /* bundle.c in Sources */ = {isa = PBXBuildFile; fileRef = 8377DE8819F2A74D00994874 /* bundle.c */; };
 		8377DE8D19F2A74D00994874 /* rnd.c in Sources */ = {isa = PBXBuildFile; fileRef = 8377DE8A19F2A74D00994874 /* rnd.c */; };
-		8377DE8F19F2A88A00994874 /* res in Resources */ = {isa = PBXBuildFile; fileRef = 8377DE8E19F2A88A00994874 /* res */; };
 		8378C75C19A0EC9300AFBD43 /* SDL2.framework in Copy Frameworks into .app bundle */ = {isa = PBXBuildFile; fileRef = 8378C75B19A0EC9300AFBD43 /* SDL2.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 		8378C7CA19A0F17300AFBD43 /* SDL2.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8378C75B19A0EC9300AFBD43 /* SDL2.framework */; };
 		83C75C6812BBF7B20067F040 /* 256x256.icns in Resources */ = {isa = PBXBuildFile; fileRef = 83C75C6712BBF7B20067F040 /* 256x256.icns */; };
@@ -89,6 +89,16 @@
 		8D11072B0486CEB800E47090 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 089C165CFE840E0CC02AAC07 /* InfoPlist.strings */; };
 		8D11072F0486CEB800E47090 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1058C7A1FEA54F0111CA2CBB /* Cocoa.framework */; };
 /* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		8343837B19F2B411001EDF56 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 29B97313FDCFA39411CA2CEA /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 8377DBE019F2A19900994874;
+			remoteInfo = make_bundle;
+		};
+/* End PBXContainerItemProxy section */
 
 /* Begin PBXCopyFilesBuildPhase section */
 		002F39FD09D0883400EBEB88 /* Copy Frameworks into .app bundle */ = {
@@ -121,6 +131,7 @@
 		1058C7A1FEA54F0111CA2CBB /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = /System/Library/Frameworks/Cocoa.framework; sourceTree = "<absolute>"; };
 		29B97324FDCFA39411CA2CEA /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = /System/Library/Frameworks/AppKit.framework; sourceTree = "<absolute>"; };
 		29B97325FDCFA39411CA2CEA /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = /System/Library/Frameworks/Foundation.framework; sourceTree = "<absolute>"; };
+		8343837E19F2C341001EDF56 /* res */ = {isa = PBXFileReference; lastKnownFileType = folder; path = res; sourceTree = "<group>"; };
 		83722F0F167AAA8F00336AFC /* key */ = {isa = PBXFileReference; lastKnownFileType = folder; name = key; path = ../key; sourceTree = SOURCE_ROOT; };
 		8377DBE119F2A19900994874 /* make_bundle */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = make_bundle; sourceTree = BUILT_PRODUCTS_DIR; };
 		8377DBE819F2A24500994874 /* makebundle.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = makebundle.c; path = ../../../klystron/tools/makebundle/makebundle.c; sourceTree = "<group>"; };
@@ -271,7 +282,6 @@
 		8377DE8919F2A74D00994874 /* bundle.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = bundle.h; sourceTree = "<group>"; };
 		8377DE8A19F2A74D00994874 /* rnd.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = rnd.c; sourceTree = "<group>"; };
 		8377DE8B19F2A74D00994874 /* rnd.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = rnd.h; sourceTree = "<group>"; };
-		8377DE8E19F2A88A00994874 /* res */ = {isa = PBXFileReference; lastKnownFileType = folder; name = res; path = ../res; sourceTree = "<group>"; };
 		8378C75B19A0EC9300AFBD43 /* SDL2.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SDL2.framework; path = /Library/Frameworks/SDL2.framework; sourceTree = "<absolute>"; };
 		83C75C6712BBF7B20067F040 /* 256x256.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; name = 256x256.icns; path = ../icon/256x256.icns; sourceTree = SOURCE_ROOT; };
 		83D5E10A19F2951F003F2ED5 /* SDL2_image.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SDL2_image.framework; path = /Library/Frameworks/SDL2_image.framework; sourceTree = "<absolute>"; };
@@ -362,7 +372,7 @@
 		29B97317FDCFA39411CA2CEA /* Resources */ = {
 			isa = PBXGroup;
 			children = (
-				8377DE8E19F2A88A00994874 /* res */,
+				8343837E19F2C341001EDF56 /* res */,
 				83722F0F167AAA8F00336AFC /* key */,
 				83C75C6712BBF7B20067F040 /* 256x256.icns */,
 				8D1107310486CEB800E47090 /* Info.plist */,
@@ -637,6 +647,7 @@
 			buildConfigurationList = C01FCF4A08A954540054247B /* Build configuration list for PBXNativeTarget "Klystrack" */;
 			buildPhases = (
 				83EBEA2A12BC0D3E00263A0E /* Version files */,
+				8343837D19F2B440001EDF56 /* Bundle theme resources */,
 				8D1107290486CEB800E47090 /* Resources */,
 				8D11072C0486CEB800E47090 /* Sources */,
 				8D11072E0486CEB800E47090 /* Frameworks */,
@@ -646,6 +657,7 @@
 			buildRules = (
 			);
 			dependencies = (
+				8343837C19F2B411001EDF56 /* PBXTargetDependency */,
 			);
 			name = Klystrack;
 			productInstallPath = "$(HOME)/Applications";
@@ -698,7 +710,7 @@
 				8D11072B0486CEB800E47090 /* InfoPlist.strings in Resources */,
 				8377DD3A19F2A5A500994874 /* version in Resources */,
 				83C75C6812BBF7B20067F040 /* 256x256.icns in Resources */,
-				8377DE8F19F2A88A00994874 /* res in Resources */,
+				8343837F19F2C341001EDF56 /* res in Resources */,
 				8377DD3B19F2A5A500994874 /* version.in in Resources */,
 				83722F13167AAA8F00336AFC /* key in Resources */,
 			);
@@ -707,6 +719,34 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
+		8343837D19F2B440001EDF56 /* Bundle theme resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+				"$(SRCROOT)/../themes/AHX",
+				"$(SRCROOT)/../themes/Blacklyst",
+				"$(SRCROOT)/../themes/C64",
+				"$(SRCROOT)/../themes/Classic",
+				"$(SRCROOT)/../themes/Default",
+				"$(SRCROOT)/../themes/Gameboy",
+				"$(SRCROOT)/../themes/Golden_Brown",
+			);
+			name = "Bundle theme resources";
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/res/AHX",
+				"$(DERIVED_FILE_DIR)/res/Blacklyst",
+				"$(DERIVED_FILE_DIR)/res/C64",
+				"$(DERIVED_FILE_DIR)/res/Classic",
+				"$(DERIVED_FILE_DIR)/res/Default",
+				"$(DERIVED_FILE_DIR)/res/Gameboy",
+				"$(DERIVED_FILE_DIR)/res/Golden_Brown",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "THEMES=\"AHX Blacklyst C64 Classic Default Gameboy Golden_Brown\"\nTHEMEDIR=$SRCROOT/../themes\nMAKEBUNDLE=$BUILT_PRODUCTS_DIR/make_bundle\n\nfunction cpie {\n    if [ -f $1 ]; then\n        cp -f $1 $2\n    fi\n}\n\nfor theme in $THEMES; do\necho \"Building theme $theme...\"\nmkdir -p res\nmkdir -p themetemp\ncpie $THEMEDIR/$theme/colors.txt themetemp\ncpie $THEMEDIR/$theme/bevel.* themetemp\ncpie $THEMEDIR/$theme/vu.* themetemp\ncpie $THEMEDIR/$theme/analyzor.* themetemp\ncpie $THEMEDIR/$theme/logo.* themetemp\ncpie $THEMEDIR/$theme/catometer.* themetemp\nif test -d $THEMEDIR/$theme/font; then $MAKEBUNDLE themetemp/8x8.fnt $THEMEDIR/$theme/font ; fi\nif test -d $THEMEDIR/$theme/font7x6; then $MAKEBUNDLE themetemp/7x6.fnt $THEMEDIR/$theme/font7x6 ; fi\nif test -d $THEMEDIR/$theme/tiny; then $MAKEBUNDLE themetemp/4x6.fnt $THEMEDIR/$theme/tiny ; fi\n$MAKEBUNDLE res/$theme themetemp\nrm -rf themetemp\ndone";
+		};
 		8378C7E119A0F46A00AFBD43 /* Fix frameworks */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -829,6 +869,14 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		8343837C19F2B411001EDF56 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 8377DBE019F2A19900994874 /* make_bundle */;
+			targetProxy = 8343837B19F2B411001EDF56 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
 
 /* Begin PBXVariantGroup section */
 		089C165CFE840E0CC02AAC07 /* InfoPlist.strings */ = {
@@ -1035,6 +1083,7 @@
 				8377DBE719F2A19900994874 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
 		};
 		C01FCF4A08A954540054247B /* Build configuration list for PBXNativeTarget "Klystrack" */ = {
 			isa = XCConfigurationList;
