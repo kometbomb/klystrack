@@ -290,6 +290,18 @@ int helpbox(const char *title, GfxDomain *domain, GfxSurface *gfx, const Font *l
 						case SDLK_UP:
 						slider_move_position(&data.selected_line, &data.list_position, &data.scrollbar, -1);
 						break;
+						
+						case SDLK_PAGEUP:
+						case SDLK_PAGEDOWN:
+						{
+							int items = data.scrollbar.visible_last - data.scrollbar.visible_first;
+							
+							if (e.key.keysym.sym == SDLK_PAGEUP)
+								items = -items;
+							
+							slider_move_position(&data.selected_line, &data.list_position, &data.scrollbar, items);
+						}
+						break;
 												
 						default: break;
 					}
