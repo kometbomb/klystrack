@@ -1974,6 +1974,7 @@ void wave_add_param(int d)
 		switch (mused.wavetable_param)
 		{
 			case W_BASE: d *= 12; break;
+			case W_BASEFINE: d *= 16; break;
 			default: d *= 256; break;
 		}
 	}
