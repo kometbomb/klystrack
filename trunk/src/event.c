@@ -1966,6 +1966,7 @@ void fx_event(SDL_Event *e)
 void wave_add_param(int d)
 {
 	CydWavetableEntry *w = &mused.mus.cyd->wavetable_entries[mused.selected_wavetable];
+	WgOsc *osc = &mused.wgset.chain[mused.selected_wg_osc];
 	
 	if (d < 0) d = -1; else if (d > 0) d = 1;
 	
@@ -2036,6 +2037,60 @@ void wave_add_param(int d)
 		{
 			clamp(w->loop_end, d, w->loop_begin, w->samples);
 			clamp(w->loop_begin, 0, 0, my_min(w->samples, w->loop_end));
+		}
+		break;
+		
+		case W_NUMOSCS:
+		{
+			mused.wgset.num_oscs += d;
+		
+			if (mused.wgset.num_oscs < 1)
+				mused.wgset.num_oscs = 1;
+			else if (mused.wgset.num_oscs > WG_CHAIN_OSCS)
+				mused.wgset.num_oscs = WG_CHAIN_OSCS;	
+		}
+		break;
+		
+		case W_OSCTYPE:
+		{
+			osc->osc = my_max(0, my_min(WG_NUM_OSCS - 1, (int)osc->osc + d));
+		}
+		break;
+		
+		case W_OSCMUL:
+		{
+			osc->mult = my_max(1, my_min(9, osc->mult + d));
+		}
+		break;
+		
+		case W_OSCSHIFT:
+		{
+			osc->shift = my_max(0, my_min(7, osc->shift + d));
+		}
+		break;
+		
+		case W_OSCEXP:
+		{
+			osc->exp += d * 5;
+		
+			if (osc->exp < 5)
+				osc->exp = 5;
+			else if (osc->exp > 95)
+				osc->exp = 95;	
+		}
+		break;
+		
+		case W_OSCABS:
+			flipbit(osc->flags, WG_OSC_FLAG_ABS);
+		break;
+		
+		case W_OSCNEG:
+			flipbit(osc->flags, WG_OSC_FLAG_NEG);
+		break;
+		
+		case W_WAVELENGTH:
+		{
+			mused.wgset.length = my_max(16, my_min(65536, mused.wgset.length + d));
 		}
 		break;
 	}

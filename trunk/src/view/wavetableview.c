@@ -399,14 +399,9 @@ void wavegen_view(GfxDomain *dest_surface, const SDL_Rect *dest, const SDL_Event
 	
 	r.y += r.h + 2;
 		
-	if ((d = generic_field(event, &r, EDITWAVETABLE, -1, "OSCS", "%d", MAKEPTR(mused.wgset.num_oscs), 3)) != 0)
+	if ((d = generic_field(event, &r, EDITWAVETABLE, W_NUMOSCS, "OSCS", "%d", MAKEPTR(mused.wgset.num_oscs), 3)) != 0)
 	{
-		mused.wgset.num_oscs += d;
-		
-		if (mused.wgset.num_oscs < 1)
-			mused.wgset.num_oscs = 1;
-		else if (mused.wgset.num_oscs > WG_CHAIN_OSCS)
-			mused.wgset.num_oscs = WG_CHAIN_OSCS;	
+		wave_add_param(d);
 	}
 	
 	r.y += r.h + 2;
@@ -454,50 +449,42 @@ void wavegen_view(GfxDomain *dest_surface, const SDL_Rect *dest, const SDL_Event
 	r.w = frame.w / 2 - 2;
 	r.h = 10;
 	
-	if ((d = generic_field(event, &r, EDITWAVETABLE, -1, "TYPE", "%d", MAKEPTR(osc->osc), 1)) != 0)
+	if ((d = generic_field(event, &r, EDITWAVETABLE, W_OSCTYPE, "TYPE", "%d", MAKEPTR(osc->osc), 1)) != 0)
 	{
-		osc->osc = my_max(0, my_min(WG_NUM_OSCS - 1, (int)osc->osc + d));
+		wave_add_param(d);
 	}
 	
 	r.x += r.w + 4;
 	
-	if ((d = generic_field(event, &r, EDITWAVETABLE, -1, "MUL", "%d", MAKEPTR(osc->mult), 1)) != 0)
+	if ((d = generic_field(event, &r, EDITWAVETABLE, W_OSCMUL, "MUL", "%d", MAKEPTR(osc->mult), 1)) != 0)
 	{
-		osc->mult = my_max(1, my_min(9, osc->mult + d));
+		wave_add_param(d);
 	}
 	
 	r.x = row_begin;
 	r.y += r.h;
 	
-	if ((d = generic_field(event, &r, EDITWAVETABLE, -1, "SHIFT", "%d", MAKEPTR(osc->shift), 1)) != 0)
+	if ((d = generic_field(event, &r, EDITWAVETABLE, W_OSCSHIFT, "SHIFT", "%d", MAKEPTR(osc->shift), 1)) != 0)
 	{
-		osc->shift = my_max(0, my_min(7, osc->shift + d));
+		wave_add_param(d);
 	}
 	
 	r.x += r.w + 4;
 	
-	if ((d = generic_field(event, &r, EDITWAVETABLE, -1, "EXP", ".%02u", MAKEPTR(osc->exp), 3)) != 0)
+	if ((d = generic_field(event, &r, EDITWAVETABLE, W_OSCEXP, "EXP", ".%02u", MAKEPTR(osc->exp), 3)) != 0)
 	{
-		osc->exp += d * 5;
-		
-		if (osc->exp < 5)
-			osc->exp = 5;
-		else if (osc->exp > 95)
-			osc->exp = 95;	
+		wave_add_param(d);
 	}
 	
 	r.x = row_begin;
 	r.y += r.h;
 	
-	if (checkbox(domain, event, &r, mused.slider_bevel, &mused.smallfont, BEV_BUTTON, BEV_BUTTON_ACTIVE, DECAL_TICK, "ABS", &osc->flags, WG_OSC_FLAG_ABS)) 
-	{
-	}
+	generic_flags(event, &r, EDITWAVETABLE, W_OSCABS, "ABS", &osc->flags, WG_OSC_FLAG_ABS);
 	
 	r.x += r.w + 4;
 	
-	if (checkbox(domain, event, &r, mused.slider_bevel, &mused.smallfont, BEV_BUTTON, BEV_BUTTON_ACTIVE, DECAL_TICK, "NEG", &osc->flags, WG_OSC_FLAG_NEG)) 
-	{
-	}
+	generic_flags(event, &r, EDITWAVETABLE, W_OSCNEG, "NEG", &osc->flags, WG_OSC_FLAG_NEG); 
+	
 	
 	r.x = row_begin;
 	r.y += r.h;
@@ -506,9 +493,9 @@ void wavegen_view(GfxDomain *dest_surface, const SDL_Rect *dest, const SDL_Event
 	r.w = frame.w - 2;
 	r.h = 10;
 	
-	if ((d = generic_field(event, &r, EDITWAVETABLE, -1, "LENGTH", "%4d", MAKEPTR(mused.wgset.length), 4)) != 0)
+	if ((d = generic_field(event, &r, EDITWAVETABLE, W_WAVELENGTH, "LENGTH", "%4d", MAKEPTR(mused.wgset.length), 4)) != 0)
 	{
-		mused.wgset.length = my_max(16, my_min(65536, mused.wgset.length + d));
+		wave_add_param(d);
 	}
 	
 	r.y += r.h;
