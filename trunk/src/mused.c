@@ -300,7 +300,7 @@ void init(MusInstrument *instrument, MusPattern *pattern, MusSeqPattern sequence
 	{
 		mused.song.pattern[i].step = NULL; 
 		mused.song.pattern[i].num_steps = 0;
-		mused.song.pattern[i].color = i % 16;
+		mused.song.pattern[i].color = 0;
 		resize_pattern(&mused.song.pattern[i], mused.default_pattern_length);
 	}
 	
