@@ -77,5 +77,6 @@ void flip_bit_action(void *bits, void *mask, void *);
 void set_note_jump(void *steps, void *, void *);
 void change_visualizer_action(void *vis, void *unused1, void *unused2);
 void open_help(void *unused0, void *unused1, void *unused2);
+void change_oversample(void *oversample, void *unused1, void *unused2);
 
 #endif

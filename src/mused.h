@@ -187,6 +187,8 @@ typedef struct
 
 	WgSettings wgset;
 	int selected_wg_osc, selected_wg_preset;
+	
+	int oversample;
 } Mused;
 
 extern Mused mused;
