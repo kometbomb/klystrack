@@ -281,6 +281,7 @@ void init(MusInstrument *instrument, MusPattern *pattern, MusSeqPattern sequence
 	mused.fx_room_size = 16;
 	mused.fx_room_vol = 8;
 	mused.fx_room_dec = 8;
+	mused.oversample = 2;
 		
 	strcpy(mused.themename, "Default");
 	strcpy(mused.keymapname, "Default");

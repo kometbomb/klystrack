@@ -72,6 +72,7 @@ static const struct { int type; const char *name; void *param; int mask; } confi
 	{ C_BOOL, "disable_nostalgy", &mused.flags, DISABLE_NOSTALGY },
 	{ C_BOOL, "disable_vu_meters", &mused.flags, DISABLE_VU_METERS },
 	{ C_BOOL, "maximized", &mused.flags, WINDOW_MAXIMIZED },
+	{ C_INT, "oversample", &mused.oversample },
 	{ C_END }
 };
 
@@ -82,6 +83,7 @@ void apply_config()
 	change_pixel_scale(CASTTOPTR(void,mused.pixel_scale), 0, 0);
 	load_theme_action(mused.themename, 0, 0);
 	load_keymap_action(mused.keymapname, 0, 0);
+	change_oversample(CASTTOPTR(void,mused.oversample), 0, 0);
 }
 
 

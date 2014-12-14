@@ -48,6 +48,7 @@ extern GfxDomain *domain;
 extern const Menu mainmenu[];
 extern Menu pixelmenu[];
 extern Menu patternlengthmenu[];
+extern Menu oversamplemenu[];
 
 bool inside_undo = false;
 
@@ -129,6 +130,22 @@ void change_octave(void *delta, void *unused1, void *unused2)
 	mused.octave += CASTPTR(int,delta);
 	if (mused.octave > 7) mused.octave = 7;
 	else if (mused.octave < 0) mused.octave = 0;
+}
+
+
+void change_oversample(void *oversample, void *unused1, void *unused2)
+{
+	cyd_set_oversampling(&mused.cyd, CASTPTR(int,oversample));
+	
+	mused.oversample = CASTPTR(int,oversample);
+	
+	for (int i = 0 ; i < 4; ++i)
+	{
+		if (oversamplemenu[i].p1 == oversample)
+			oversamplemenu[i].flags |= MENU_BULLET;
+		else
+			oversamplemenu[i].flags &= ~MENU_BULLET;
+	}
 }
 
 

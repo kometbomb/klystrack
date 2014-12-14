@@ -96,6 +96,16 @@ Menu pixelmenu[] =
 };
 
 
+Menu oversamplemenu[] =
+{
+	{ 0, prefsmenu, "No oversampling", NULL, change_oversample, (void*)0, 0, 0 },
+	{ 0, prefsmenu, "2x", NULL, change_oversample, (void*)1, 0, 0 },
+	{ 0, prefsmenu, "4x", NULL, change_oversample, (void*)2, 0, 0 },
+	{ 0, prefsmenu, "8x", NULL, change_oversample, (void*)3, 0, 0 },
+	{ 0, NULL,NULL },
+};
+
+
 Menu patternlengthmenu[] =
 {
 	{ 0, prefsmenu, "Same as STEP", NULL, MENU_CHECK, &mused.flags, (void*)LOCK_SEQUENCE_STEP_AND_PATTERN_LENGTH, 0 },
@@ -115,6 +125,7 @@ const Menu prefsmenu[] =
 	{ 0, mainmenu, "", NULL, NULL },
 	{ 0, mainmenu, "Pixel size", pixelmenu },
 	{ 0, mainmenu, "Fullscreen", NULL, MENU_CHECK_NOSET, &mused.flags, (void*)FULLSCREEN, toggle_fullscreen },
+	{ 0, mainmenu, "Oversampling", oversamplemenu },
 	{ 0, mainmenu, "", NULL, NULL },
 #ifdef MIDI
 	{ 0, mainmenu, "MIDI", midi_menu },
