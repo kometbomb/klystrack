@@ -2018,6 +2018,12 @@ void wave_add_param(int d)
 		}
 		break;
 		
+		case W_LOOPPINGPONG:
+		{
+			flipbit(w->flags, CYD_WAVE_PINGPONG);
+		}
+		break;
+		
 		case W_LOOPBEGIN:
 		{
 			clamp(w->loop_begin, d, 0, my_min(w->samples, w->loop_end));
