@@ -61,7 +61,7 @@ void sequence_view_inner(GfxDomain *dest_surface, const SDL_Rect *_dest, const S
 			if (i < mused.song.num_sequences[channel] - 1)
 				len = my_min(len, (sp + 1)->position - sp->position);
 			
-			if (sp->position + len <= top) continue;
+			if (sp->position + len < top) continue;
 			
 			SDL_Rect pat = { x + dest.x + 1, (sp->position - top) * height / mused.sequenceview_steps + dest.y + 1, w, len * height / mused.sequenceview_steps };
 			SDL_Rect text;
