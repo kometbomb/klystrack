@@ -691,6 +691,9 @@ static int seqsort(const void *_a, const void *_b)
 
 void add_sequence(int channel, int position, int pattern, int offset)
 {
+	if(mused.song.pattern[pattern].num_steps == 0) 
+		resize_pattern(&mused.song.pattern[pattern], mused.sequenceview_steps);
+
 	for (int i = 0 ; i < mused.song.num_sequences[channel] ; ++i)
 		if (mused.song.sequence[channel][i].position == position)
 		{
