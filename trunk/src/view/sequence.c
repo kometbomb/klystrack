@@ -5,7 +5,13 @@
 #include "action.h"
 #include "gui/mouse.h"
 
-Uint32 pattern_color[16] = { 0xffffff, 0xffff00, 0xff00ff, 0xff0000, 0xffffff, 0xffff00, 0xff00ff, 0xff0000, 0xffffff, 0xffff00, 0xff00ff, 0xff0000, 0xffffff, 0xffff00, 0xff00ff, 0xff0000 };
+#define RGB(r,g,b) ((r << 16) | (g << 8) | (b))
+
+Uint32 pattern_color[16] = 
+{ 
+	RGB(255,255,255), RGB(255,0,0), RGB(255,130,0), RGB(223,227,0), RGB(130,255,0), RGB(0,255, 0), RGB(0, 227, 130), RGB(0, 255,255), RGB(0,130,255),
+	RGB(0,0,255), RGB(130,0,255), RGB(255,0,255), RGB(239,0,130),RGB(196,196,196), RGB(130,130,130), RGB(85,85,85)
+};
 
 void sequence_view_inner(GfxDomain *dest_surface, const SDL_Rect *_dest, const SDL_Event *event)
 {
