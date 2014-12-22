@@ -304,10 +304,23 @@ void wavetable_tools_view(GfxDomain *dest_surface, const SDL_Rect *dest, const S
 	
 	r.y += r.h;
 	
-	button_text_event(domain, event, &r, mused.slider_bevel, &mused.buttonfont, BEV_BUTTON, BEV_BUTTON_ACTIVE, "NORMALIZE 1/4", wavetable_normalize, MAKEPTR(32768 / 4), NULL, NULL);
-	
-	r.y += r.h;
-	
+	{
+		int temp_x = r.x;
+		int temp = r.w;
+		
+		r.w /= 2;
+		
+		button_text_event(domain, event, &r, mused.slider_bevel, &mused.buttonfont, BEV_BUTTON, BEV_BUTTON_ACTIVE, "+1 dB", wavetable_amp, MAKEPTR((int)(1.122 * 32768)), NULL, NULL);
+		
+		r.x += r.w;
+		
+		button_text_event(domain, event, &r, mused.slider_bevel, &mused.buttonfont, BEV_BUTTON, BEV_BUTTON_ACTIVE, "-1 dB", wavetable_amp, MAKEPTR((int)(0.891 * 32768)), NULL, NULL);
+		
+		r.y += r.h;
+		
+		r.x = temp_x;
+		r.w = temp;
+	}
 	
 	button_text_event(domain, event, &r, mused.slider_bevel, &mused.buttonfont, BEV_BUTTON, BEV_BUTTON_ACTIVE, "CUT TAIL", wavetable_cut_tail, NULL, NULL, NULL);
 	
