@@ -325,3 +325,25 @@ void wavegen_preset(void *_preset, void *_settings, void *unused3)
 	settings->num_oscs = preset->num_oscs;
 	memcpy(settings->chain, preset->chain, sizeof(preset->chain[0]) * preset->num_oscs);
 }
+
+
+void wavetable_amp(void *_amp, void *unused2, void *unused3)
+{
+	snapshot(S_T_WAVE_DATA);
+		
+	CydWavetableEntry *w = &mused.mus.cyd->wavetable_entries[mused.selected_wavetable];
+	
+	if (w->samples > 0)
+	{
+		int amp = CASTPTR(int, _amp);
+		
+		debug("amp = %d", amp);
+	
+		for (int s = 0 ; s < w->samples ; ++s)
+		{
+			w->data[s] = my_max(my_min((Sint32)w->data[s] * amp / 32768, 32767), -32768);
+		}
+		
+		invalidate_wavetable_view();
+	}
+}
