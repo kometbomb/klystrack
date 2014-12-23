@@ -1,0 +1,14 @@
+Source: klystrack
+Section: multimedia
+Priority: optional
+Maintainer: Tero Lindeman <kometbomb@kometbomb.net>
+Build-Depends: debhelper (>= 7), libsdl2 (>=2.0), libsdl2-image (>=2.0)
+Standards-Version: 3.8.0
+Homepage: http://code.google.com/p/klystrack/
+
+Package: klystrack
+Architecture: amd64
+Depends: ${shlibs:Depends}, ${misc:Depends}
+Description: klystrack chiptune tracker
+ klystrack is a chiptune tracker for creating music in an oldschool 
+ video game style.
