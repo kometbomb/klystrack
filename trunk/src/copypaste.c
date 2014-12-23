@@ -42,23 +42,23 @@ void copy()
 		case EDITPATTERN:
 		
 		if (mused.selection.start == mused.selection.end && get_current_pattern())
-			cp_copy_items(&mused.cp, CP_PATTERN, get_current_pattern()->step, sizeof(MusStep), get_current_pattern()->num_steps);
+			cp_copy_items(&mused.cp, CP_PATTERN, get_current_pattern()->step, sizeof(MusStep), get_current_pattern()->num_steps, mused.selection.start);
 		else
 			cp_copy_items(&mused.cp, CP_PATTERNSEGMENT, &mused.song.pattern[get_pattern(mused.selection.start, mused.current_sequencetrack)].step[get_patternstep(mused.selection.start, mused.current_sequencetrack)], sizeof(MusStep), 
-				mused.selection.end-mused.selection.start);
+				mused.selection.end-mused.selection.start, mused.selection.start);
 		
 		break;
 		
 		case EDITINSTRUMENT:
 		{
-			cp_copy(&mused.cp, CP_INSTRUMENT, &mused.song.instrument[mused.current_instrument], sizeof(mused.song.instrument[mused.current_instrument]));
+			cp_copy(&mused.cp, CP_INSTRUMENT, &mused.song.instrument[mused.current_instrument], sizeof(mused.song.instrument[mused.current_instrument]), 0);
 		}
 		break;
 		
 		case EDITPROG:
 		{
 			cp_copy_items(&mused.cp, CP_PROGRAM, &mused.song.instrument[mused.current_instrument].program[mused.selection.start], mused.selection.end-mused.selection.start, 
-				sizeof(mused.song.instrument[mused.current_instrument].program[0]));
+				sizeof(mused.song.instrument[mused.current_instrument].program[0]), mused.selection.start);
 		}
 		break;
 		
@@ -80,7 +80,7 @@ void copy()
 			if (first == -1 || first >= mused.song.num_sequences[mused.current_sequencetrack]) 
 				break;
 			
-			cp_copy_items(&mused.cp, CP_SEQUENCE, &mused.song.sequence[mused.current_sequencetrack][first], last-first+1, sizeof(mused.song.sequence[mused.current_sequencetrack][0]));
+			cp_copy_items(&mused.cp, CP_SEQUENCE, &mused.song.sequence[mused.current_sequencetrack][first], last-first+1, sizeof(mused.song.sequence[mused.current_sequencetrack][0]), mused.selection.start);
 		}
 		break;
 	}
@@ -138,7 +138,7 @@ void paste()
 			
 			for (int i = 0 ; i < items ; ++i)
 			{
-				add_sequence(mused.current_sequencetrack, ((MusSeqPattern*)mused.cp.data)[i].position-first+mused.current_sequencepos, ((MusSeqPattern*)mused.cp.data)[i].pattern, ((MusSeqPattern*)mused.cp.data)[i].note_offset);
+				add_sequence(mused.current_sequencetrack, ((MusSeqPattern*)mused.cp.data)[i].position-mused.cp.position+mused.current_sequencepos, ((MusSeqPattern*)mused.cp.data)[i].pattern, ((MusSeqPattern*)mused.cp.data)[i].note_offset);
 			}
 		}
 		break;
