@@ -45,6 +45,15 @@ static int find_unused_pattern()
 				|| mused.song.pattern[empty].step[s].command != 0))
 				not_empty = 1;
 		
+		for (int c = 0 ; c < mused.song.num_channels && !not_empty ; ++c)
+		{
+			for (int i = 0 ; i < mused.song.num_sequences[c] && !not_empty ; ++i)
+			{
+				if (mused.song.sequence[c][i].pattern == empty)
+					not_empty = 1;
+			}
+		}
+		
 		if (!not_empty)
 			return empty;
 	}
@@ -143,6 +152,20 @@ void get_unused_pattern(void *unused1, void *unused2, void *unused3)
 	}
 	
 	set_pattern(empty);
+}
+
+
+void get_unused_pattern_all_tracks(void *unused1, void *unused2, void *unused3)
+{
+	int temp = mused.current_sequencetrack;
+	
+	for (int i = 0 ; i < mused.song.num_channels ; ++i)
+	{
+		mused.current_sequencetrack = i;
+		get_unused_pattern(0, 0, 0);
+	}
+	
+	mused.current_sequencetrack = temp;
 }
 
 

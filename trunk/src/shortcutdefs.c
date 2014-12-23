@@ -82,6 +82,7 @@ const KeyShortcut shortcuts[] =
 	{ KMOD_CTRL|KMOD_SHIFT, SDLK_k, clone_each_pattern, 0, 0, 0, "Clone sequence row" },
 	{ KMOD_CTRL, SDLK_k, clone_pattern, 0, 0, 0, "Clone pattern" },
 	{ KMOD_CTRL, SDLK_u, get_unused_pattern, 0, 0, 0, "Find first unused pattern" },
+	{ KMOD_CTRL|KMOD_SHIFT, SDLK_u, get_unused_pattern_all_tracks, 0, 0, 0, "Find unused patterns for all tracks" },
 	{ KMOD_CTRL, SDLK_i, interpolate, 0, 0, 0, "Interpolate" },
 	{ KMOD_SHIFT, SDLK_KP_PLUS, transpose_note_data, (void*)+1, 0, 0, "Transpose selection up" },
 	{ KMOD_SHIFT, SDLK_KP_MINUS, transpose_note_data, (void*)-1, 0, 0, "Transpose selection down" },

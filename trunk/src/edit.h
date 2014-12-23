@@ -49,6 +49,7 @@ void zero_step(MusStep *step);
 void clone_pattern(void *, void *, void *);
 void clone_each_pattern(void *, void *, void *);
 void get_unused_pattern(void*, void*, void*);
+void get_unused_pattern_all_tracks(void *, void *, void *);
 void expand_pattern(void *factor, void *, void *);
 void shrink_pattern(void *factor, void *, void *);
 void interpolate(void *, void *, void *);
