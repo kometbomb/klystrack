@@ -237,6 +237,7 @@ static const Menu editmenu[] =
 	{ 0, mainmenu, "", NULL, NULL },
 	{ 0, mainmenu, "Copy", NULL, generic_action, copy, 0, 0 },
 	{ 0, mainmenu, "Paste", NULL, generic_action, paste, 0, 0 },
+	{ 0, mainmenu, "Join paste", NULL, generic_action, join_paste, 0, 0 },
 	{ 0, mainmenu, "Cut", NULL, generic_action, cut, 0, 0 },
 	{ 0, mainmenu, "Delete", NULL, generic_action, delete, 0, 0 },
 	{ 0, mainmenu, "Select all", NULL, select_all, 0, 0, 0 },
