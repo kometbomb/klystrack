@@ -257,7 +257,7 @@ int import_mod(FILE *f)
 			
 			sample_data[0] = sample_data[1] = 0;
 			
-			cyd_wave_entry_init(&mused.mus.cyd->wavetable_entries[wt_e], sample_data, sample_length[i], CYD_WAVE_TYPE_SINT8, 1, 1, 16);
+			cyd_wave_entry_init(&mused.mus.cyd->wavetable_entries[wt_e], sample_data, sample_length[i], CYD_WAVE_TYPE_SINT8, 1, 1, 1);
 			
 			mused.mus.cyd->wavetable_entries[wt_e].loop_begin = SDL_SwapBE16(loop_begin[i]) * 2;
 			mused.mus.cyd->wavetable_entries[wt_e].loop_end = (SDL_SwapBE16(loop_begin[i]) + SDL_SwapBE16(loop_len[i])) * 2;
