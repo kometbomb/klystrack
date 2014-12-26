@@ -68,10 +68,24 @@ int import_xm(FILE *f)
 		Uint16 default_tempo;
 		Uint16 default_bpm;
 		Uint8 pattern_order[256];
-	} __attribute__((__packed__)) header;
+	} header;
 	
-	if (fread(&header, 1, sizeof(header), f) != sizeof(header)) 
-		return 0;
+	fread(&header.sig[0], 1, sizeof(header.sig), f);
+	fread(&header.name[0], 1, sizeof(header.name), f);
+	fread(&header._1a, 1, sizeof(header._1a), f);
+	fread(&header.tracker_name[0], 1, sizeof(header.tracker_name), f);
+	fread(&header.version, 1, sizeof(header.version), f);
+	
+	fread(&header.header_size, 1, sizeof(header.header_size), f);
+	fread(&header.song_length, 1, sizeof(header.song_length), f);
+	fread(&header.restart_position, 1, sizeof(header.restart_position), f);
+	fread(&header.num_channels, 1, sizeof(header.num_channels), f);
+	fread(&header.num_patterns, 1, sizeof(header.num_patterns), f);
+	fread(&header.num_instruments, 1, sizeof(header.num_instruments), f);
+	fread(&header.flags, 1, sizeof(header.flags), f);
+	fread(&header.default_tempo, 1, sizeof(header.default_tempo), f);
+	fread(&header.default_bpm, 1, sizeof(header.default_bpm), f);
+	fread(&header.pattern_order[0], 1, sizeof(header.pattern_order), f);
 	
 	if (strncmp("Extended Module: ", header.sig, 17) != 0)
 	{
@@ -119,9 +133,12 @@ int import_xm(FILE *f)
 			Uint8 packing_type;
 			Uint16 num_rows;
 			Uint16 data_size;
-		} __attribute__((__packed__)) pattern_hdr;
+		} pattern_hdr;
 	
-		fread(&pattern_hdr, 1, sizeof(pattern_hdr), f);
+		fread(&pattern_hdr.header_length, 1, sizeof(pattern_hdr.header_length), f);
+		fread(&pattern_hdr.packing_type, 1, sizeof(pattern_hdr.packing_type), f);
+		fread(&pattern_hdr.num_rows, 1, sizeof(pattern_hdr.num_rows), f);
+		fread(&pattern_hdr.data_size, 1, sizeof(pattern_hdr.data_size), f);
 		
 		FIX_ENDIAN(pattern_hdr.data_size);
 		FIX_ENDIAN(pattern_hdr.num_rows);
@@ -130,6 +147,8 @@ int import_xm(FILE *f)
 		pattern_length[p] = pattern_hdr.num_rows;
 		
 		Uint8 data[256*32*5];
+		
+		debug("num_rows = %d", pattern_hdr.num_rows);
 		
 		fread(&data[0], 1, pattern_hdr.data_size, f);
 		
@@ -215,7 +234,7 @@ int import_xm(FILE *f)
 			char name[22];
 			Uint8 type;
 			Uint16 num_samples;
-		} __attribute__((__packed__)) instrument_hdr;
+		} instrument_hdr;
 		
 		struct {
 			Uint32 size;
@@ -233,17 +252,39 @@ int import_xm(FILE *f)
 			Uint8 vib_type, vib_sweep, vib_depth, vib_rate;
 			Uint16 vol_fadeout;
 			Uint8 reserved[2];
-		} __attribute__((__packed__)) instrument_ext_hdr;
+		} instrument_ext_hdr;
 
 		size_t si = ftell(f);
-		fread(&instrument_hdr, 1, sizeof(instrument_hdr), f);
+		fread(&instrument_hdr.size, 1, sizeof(instrument_hdr.size), f);
+		fread(&instrument_hdr.name[0], 1, sizeof(instrument_hdr.name), f);
+		fread(&instrument_hdr.type, 1, sizeof(instrument_hdr.type), f);
+		fread(&instrument_hdr.num_samples, 1, sizeof(instrument_hdr.num_samples), f);
 		
 		FIX_ENDIAN(instrument_hdr.size);
 		FIX_ENDIAN(instrument_hdr.num_samples);
 		
 		if (instrument_hdr.num_samples > 0)
 		{
-			fread(&instrument_ext_hdr, 1, sizeof(instrument_ext_hdr), f);
+			fread(&instrument_ext_hdr.size, 1, sizeof(instrument_ext_hdr.size), f);
+			fread(&instrument_ext_hdr.sample[0], 1, sizeof(instrument_ext_hdr.sample), f);
+			fread(&instrument_ext_hdr.vol_env[0], 1, sizeof(instrument_ext_hdr.vol_env), f);
+			fread(&instrument_ext_hdr.pan_env[0], 1, sizeof(instrument_ext_hdr.pan_env), f);
+			fread(&instrument_ext_hdr.num_volume, 1, sizeof(instrument_ext_hdr.num_volume), f);
+			fread(&instrument_ext_hdr.num_panning, 1, sizeof(instrument_ext_hdr.num_panning), f);
+			fread(&instrument_ext_hdr.vol_sustain, 1, sizeof(instrument_ext_hdr.vol_sustain), f);
+			fread(&instrument_ext_hdr.vol_loop_start, 1, sizeof(instrument_ext_hdr.vol_loop_start), f); 
+			fread(&instrument_ext_hdr.vol_loop_end, 1, sizeof(instrument_ext_hdr.vol_loop_end), f);
+			fread(&instrument_ext_hdr.pan_sustain, 1, sizeof(instrument_ext_hdr.pan_sustain), f);
+			fread(&instrument_ext_hdr.pan_loop_start, 1, sizeof(instrument_ext_hdr.pan_loop_start), f); 
+			fread(&instrument_ext_hdr.pan_loop_end, 1, sizeof(instrument_ext_hdr.pan_loop_end), f);
+			fread(&instrument_ext_hdr.vol_type, 1, sizeof(instrument_ext_hdr.vol_type), f);
+			fread(&instrument_ext_hdr.pan_type, 1, sizeof(instrument_ext_hdr.pan_type), f);
+			fread(&instrument_ext_hdr.vib_type, 1, sizeof(instrument_ext_hdr.vib_type), f);
+			fread(&instrument_ext_hdr.vib_sweep, 1, sizeof(instrument_ext_hdr.vib_sweep), f);
+			fread(&instrument_ext_hdr.vib_depth, 1, sizeof(instrument_ext_hdr.vib_depth), f);
+			fread(&instrument_ext_hdr.vib_rate, 1, sizeof(instrument_ext_hdr.vib_rate), f);
+			fread(&instrument_ext_hdr.vol_fadeout, 1, sizeof(instrument_ext_hdr.vol_fadeout), f);
+			fread(&instrument_ext_hdr.reserved[0], 1, sizeof(instrument_ext_hdr.reserved), f);
 			
 			fseek(f, si + instrument_hdr.size, SEEK_SET);
 			
@@ -266,9 +307,18 @@ int import_xm(FILE *f)
 					Uint8 relative_note;
 					Uint8 reserved;
 					char name[22];
-				} __attribute__((__packed__)) sample_hdr;
+				} sample_hdr;
 				
-				fread(&sample_hdr, 1, sizeof(sample_hdr), f);
+				fread(&sample_hdr.sample_length, 1, sizeof(sample_hdr.sample_length), f);
+				fread(&sample_hdr.sample_loop_start, 1, sizeof(sample_hdr.sample_loop_start), f);
+				fread(&sample_hdr.sample_loop_length, 1, sizeof(sample_hdr.sample_loop_length), f);
+				fread(&sample_hdr.volume, 1, sizeof(sample_hdr.volume), f);
+				fread(&sample_hdr.finetune, 1, sizeof(sample_hdr.finetune), f);
+				fread(&sample_hdr.type, 1, sizeof(sample_hdr.type), f);
+				fread(&sample_hdr.panning, 1, sizeof(sample_hdr.panning), f);
+				fread(&sample_hdr.relative_note, 1, sizeof(sample_hdr.relative_note), f);
+				fread(&sample_hdr.reserved, 1, sizeof(sample_hdr.reserved), f);
+				fread(&sample_hdr.name[0], 1, sizeof(sample_hdr.name), f);
 				
 				FIX_ENDIAN(sample_hdr.sample_length);
 				FIX_ENDIAN(sample_hdr.sample_loop_start);
@@ -307,7 +357,7 @@ int import_xm(FILE *f)
 						((Uint16*)smp)[idx] = x;
 					}
 					
-					cyd_wave_entry_init(&mused.mus.cyd->wavetable_entries[wt_e], smp, first_length / 2, CYD_WAVE_TYPE_SINT16, 1, 1, 16);
+					cyd_wave_entry_init(&mused.mus.cyd->wavetable_entries[wt_e], smp, first_length / 2, CYD_WAVE_TYPE_SINT16, 1, 1, 1);
 				}
 				else
 				{
@@ -320,7 +370,7 @@ int import_xm(FILE *f)
 						smp[idx] = x;
 					}
 					
-					cyd_wave_entry_init(&mused.mus.cyd->wavetable_entries[wt_e], smp, first_length, CYD_WAVE_TYPE_SINT8, 1, 1, 16);
+					cyd_wave_entry_init(&mused.mus.cyd->wavetable_entries[wt_e], smp, first_length, CYD_WAVE_TYPE_SINT8, 1, 1, 1);
 				}
 				
 				free(smp);
