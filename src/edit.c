@@ -235,7 +235,9 @@ void interpolate(void *unused1, void *unused2, void *unused3)
 	
 	MusPattern *pat = &mused.song.pattern[current_pattern()];
 	
-	Uint16 command = pat->step[mused.selection.start].command;
+	int start_step = get_patternstep(mused.selection.start, mused.current_sequencetrack);
+	
+	Uint16 command = pat->step[start_step].command;
 	Uint16 mask = 0xff00;
 	
 	if ((command & 0xf000) == MUS_FX_CUTOFF_FINE_SET 
@@ -243,14 +245,14 @@ void interpolate(void *unused1, void *unused2, void *unused3)
 	
 	command &= mask;
 	
-	int begin = pat->step[mused.selection.start].command & ~mask;
-	int end = pat->step[mused.selection.end - 1].command & ~mask;
+	int begin = pat->step[start_step].command & ~mask;
+	int end = pat->step[start_step + mused.selection.end - 1 - mused.selection.start].command & ~mask;
 	
 	int l = mused.selection.end - mused.selection.start - 1;
 	
 	snapshot(S_T_PATTERN);
 	
-	for (int i = mused.selection.start, p = 0 ; i < mused.selection.end ; ++i, ++p)
+	for (int i = start_step, p = 0 ; p < mused.selection.end - mused.selection.start ; ++i, ++p)
 	{
 		if ((pat->step[i].command & mask) == command)
 		{
@@ -326,7 +328,9 @@ void transpose_note_data(void *semitones, void *unused1, void *unused2)
 	
 	snapshot(S_T_PATTERN);
 	
-	for (int i = mused.selection.start, p = 0 ; i < mused.selection.end ; ++i, ++p)
+	debug("Transposing pattern %d (%d-%d)", current_pattern(), mused.selection.start, mused.selection.end);
+	
+	for (int i = get_patternstep(mused.selection.start, mused.current_sequencetrack), p = 0 ; p < mused.selection.end - mused.selection.start ; ++i, ++p)
 	{
 		if (pat->step[i].note != MUS_NOTE_NONE)
 		{
