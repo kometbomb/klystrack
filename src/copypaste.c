@@ -271,11 +271,17 @@ void begin_selection(int position)
 
 void select_range(int position)
 {
-	debug("Selected from %d-%d", mused.selection.start, position);
 	mused.selection.start = mused.selection.keydown;
 	
 	if (mused.selection.end == position)
-		mused.selection.end = position + 1; // so we can select the last row (can't move the cursor one element after the last)
+	{
+		int extra = 1;
+		
+		if (mused.focus == EDITSEQUENCE)
+			extra = mused.sequenceview_steps;
+		
+		mused.selection.end = position + extra; // so we can select the last row (can't move the cursor one element after the last)
+	}
 	else
 		mused.selection.end = position;
 		
@@ -283,4 +289,6 @@ void select_range(int position)
 	{
 		swap(mused.selection.start, mused.selection.end);
 	}
+	
+	debug("Selected from %d-%d", mused.selection.start, mused.selection.end);
 }
