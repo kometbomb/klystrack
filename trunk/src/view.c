@@ -1284,7 +1284,7 @@ void fx_name_view(GfxDomain *dest_surface, const SDL_Rect *dest, const SDL_Event
 	
 	label("FX", &larea);
 	
-	tarea.w = dest->w - farea.w - larea.w;
+	tarea.w = dest->w - farea.w - larea.w - 1;
 	farea.x = larea.w + dest->x;
 	tarea.x = farea.x + farea.w;
 	
