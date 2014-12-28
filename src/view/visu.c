@@ -108,6 +108,7 @@ void catometer_view(GfxDomain *dest_surface, const SDL_Rect *dest, const SDL_Eve
 	
 	SDL_Rect clip, cat;
 	copy_rect(&cat, &content);
+	cat.w = mused.catometer->surface->w;
 	cat.x = cat.x + content.w / 2 - mused.catometer->surface->w / 2;
 	gfx_domain_set_clip(domain, &clip);
 	gfx_domain_set_clip(domain, &content);
@@ -130,15 +131,15 @@ void catometer_view(GfxDomain *dest_surface, const SDL_Rect *dest, const SDL_Eve
 	
 	mused.vis.prev_a = a;
 	
-	/*int ax = cos(a) * 12;
+	int ax = cos(a) * 12;
 	int ay = sin(a) * 12;
 	int eye1 = 31;
-	int eye2 = -30;*/
+	int eye2 = -30;
 	
 	for (int w = -3 ; w <= 3 ; ++w)
 	{
-		//gfx_line(dest_surface, dest->x + dest->w / 2 + eye1 + w, dest->y + dest->h / 2 + 6, dest->x + dest->w / 2 + ax + eye1, dest->y + dest->h / 2 + ay + 6, 0x0);
-		//gfx_line(dest_surface, dest->x + dest->w / 2 + eye2 + w, dest->y + dest->h / 2 + 6, dest->x + dest->w / 2 + ax + eye2, dest->y + dest->h / 2 + ay + 6, 0x0);
+		gfx_line(dest_surface, dest->x + dest->w / 2 + eye1 + w, dest->y + dest->h / 2 + 6, dest->x + dest->w / 2 + ax + eye1, dest->y + dest->h / 2 + ay + 6, 0x0);
+		gfx_line(dest_surface, dest->x + dest->w / 2 + eye2 + w, dest->y + dest->h / 2 + 6, dest->x + dest->w / 2 + ax + eye2, dest->y + dest->h / 2 + ay + 6, 0x0);
 	}
 	
 	gfx_domain_set_clip(dest_surface, &clip);
