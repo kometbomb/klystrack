@@ -833,7 +833,7 @@ void program_view(GfxDomain *dest_surface, const SDL_Rect *dest, const SDL_Event
 		if (selection_begin > selection_end) swap(selection_begin, selection_end);
 		
 		SDL_Rect selection = { area.x, selection_begin - 1, area.w, selection_end - selection_begin + 1 };
-		adjust_rect(&selection, -4);
+		adjust_rect(&selection, -3);
 		bevel(domain,&selection, mused.slider_bevel, BEV_SELECTION);
 	}
 	

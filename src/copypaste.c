@@ -145,7 +145,7 @@ void paste()
 		
 		case EDITPATTERN:
 		{
-			size_t items = cp_get_item_count(&mused.cp, sizeof(mused.song.sequence[0][0]));
+			size_t items = cp_get_item_count(&mused.cp, sizeof(mused.song.pattern[current_pattern()].step[0]));
 			
 			if (items < 1) 
 				break;
@@ -178,7 +178,7 @@ void paste()
 		
 		case EDITPROG:
 		{
-			size_t items = cp_get_item_count(&mused.cp, sizeof(mused.song.sequence[0][0]));
+			size_t items = cp_get_item_count(&mused.cp, sizeof(mused.song.instrument[mused.current_instrument].program[0]));
 			
 			if (items < 1) 
 				break;

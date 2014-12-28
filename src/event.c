@@ -1661,7 +1661,7 @@ void edit_program_event(SDL_Event *e)
 			case SDLK_INSERT:
 			{
 				snapshot(S_T_INSTRUMENT);
-				for (int i = MUS_PROG_LEN-2; i >= mused.current_program_step ; --i)
+				for (int i = MUS_PROG_LEN-1; i > mused.current_program_step ; --i)
 					mused.song.instrument[mused.current_instrument].program[i] = mused.song.instrument[mused.current_instrument].program[i-1];
 				mused.song.instrument[mused.current_instrument].program[mused.current_program_step] = MUS_FX_NOP;
 			}
