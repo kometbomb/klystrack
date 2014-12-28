@@ -187,8 +187,10 @@ void change_time_signature(void *beat, void *unused1, void *unused2)
 
 void play(void *from_cursor, void *unused1, void *unused2)
 {
+	int pos = from_cursor ? mused.current_sequencepos : 0;
+	mused.play_start_at = get_playtime_at(pos);
 	enable_callback(true);
-	mus_set_song(&mused.mus, &mused.song, from_cursor ? mused.current_sequencepos : 0);
+	mus_set_song(&mused.mus, &mused.song, pos);
 	mused.flags |= SONG_PLAYING;
 	if (mused.flags & STOP_EDIT_ON_PLAY) mused.flags &= ~EDIT_MODE;
 }

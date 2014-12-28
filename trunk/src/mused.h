@@ -140,7 +140,7 @@ typedef struct
 	MusPattern *stat_pattern[MUS_MAX_CHANNELS];
 	MusChannel *channel;
 	int stat_pattern_number[MUS_MAX_CHANNELS], stat_note[MUS_MAX_CHANNELS];
-	Uint64 time_played;
+	Uint64 time_played, play_start_at;
 	/* ---- */
 	char info_message[256];
 	SDL_TimerID info_message_timer;
@@ -226,5 +226,6 @@ MusPattern * get_current_pattern();
 void change_visualizer(int vis);
 void set_info_message(const char *string, ...)  __attribute__ ((format (printf, 1, 2)));
 void set_channels(int channels);
+Uint64 get_playtime_at(int position);
 
 #endif
