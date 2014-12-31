@@ -823,3 +823,13 @@ void open_help(void *unused0, void *unused1, void *unused2)
 	cyd_lock(&mused.cyd, 1);
 }
 
+
+void toggle_follow_play_position(void *unused1, void *unused2, void *unused3)
+{
+	mused.flags ^= FOLLOW_PLAY_POSITION;
+	
+	if (mused.flags & FOLLOW_PLAY_POSITION)
+		set_info_message("Following song position");
+	else
+		set_info_message("Not following song position");
+}

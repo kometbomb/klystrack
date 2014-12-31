@@ -381,6 +381,13 @@ void pattern_view_inner(GfxDomain *dest_surface, const SDL_Rect *dest, const SDL
 						break;
 				}
 			}
+			
+			if ((mused.flags & SONG_PLAYING) && !(mused.flags & FOLLOW_PLAY_POSITION))
+			{
+				gfx_domain_set_clip(dest_surface, &track);
+				SDL_Rect pos = { track.x, (mused.stat_song_position - top) * height + track.y - 1, ((channel == mused.current_sequencetrack) ? w : narrow_w), 2 };
+				bevel(dest_surface, &pos, mused.slider_bevel, BEV_SEQUENCE_PLAY_POS);
+			}
 		}
 		
 		if ((mused.flags & SONG_PLAYING) && !(mused.flags & DISABLE_VU_METERS))
