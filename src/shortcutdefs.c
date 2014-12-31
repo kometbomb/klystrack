@@ -119,6 +119,7 @@ const KeyShortcut shortcuts[] =
 	{ 0, SDLK_KP_7, select_instrument, MAKEPTR(7), 0, MAKEPTR(1), "Select instrument" },
 	{ 0, SDLK_KP_8, select_instrument, MAKEPTR(8), 0, MAKEPTR(1), "Select instrument" },
 	{ 0, SDLK_KP_9, select_instrument, MAKEPTR(9), 0, MAKEPTR(1), "Select instrument" },
+	{ KMOD_CTRL, SDLK_p, toggle_follow_play_position, 0, 0, 0, "Toggle follow song position" },
 	/* Null terminated */
 	{ 0, 0, NULL, 0, 0, 0 }
 };
