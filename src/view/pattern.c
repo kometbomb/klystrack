@@ -529,13 +529,15 @@ static void pattern_view_stepcounter(GfxDomain *dest_surface, const SDL_Rect *de
 		{
 			SDL_Rect row = { content.x - 2, content.y + y - 1, content.w + 4, mused.console->font.h + 1};
 			bevelex(dest_surface,&row, mused.slider_bevel, BEV_SELECTED_PATTERN_ROW, BEV_F_STRETCH_ALL);
-			console_set_color(mused.console, colors[COLOR_PATTERN_SELECTED]);
 		}
-		else if (row < 0)
+		
+		if (row < 0 || row >= mused.song.song_length)
+		{
 			console_set_color(mused.console, colors[COLOR_PATTERN_DISABLED]);
+		}
 		else
 		{
-			console_set_color(mused.console, ((row == current_patternstep()) ? colors[COLOR_PATTERN_SELECTED] : timesig(row, colors[COLOR_PATTERN_BAR], colors[COLOR_PATTERN_BEAT], colors[COLOR_PATTERN_NORMAL])));
+			console_set_color(mused.console, ((row == mused.pattern_position) ? colors[COLOR_PATTERN_SELECTED] : timesig(row, colors[COLOR_PATTERN_BAR], colors[COLOR_PATTERN_BEAT], colors[COLOR_PATTERN_NORMAL])));
 		}
 		
 		if (SHOW_DECIMALS & mused.flags)
