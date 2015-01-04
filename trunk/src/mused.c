@@ -563,7 +563,7 @@ void set_channels(int channels)
 
 Uint64 get_playtime_at(int position)
 {
-	Uint64 t = 0;
+	Uint64 ticks = 0;
 	int pos = 0;
 	int seq_pos[MUS_MAX_CHANNELS] = {0};
 	int spd1 = mused.song.song_speed, spd2 = mused.song.song_speed2, rate = mused.song.song_rate;
@@ -574,7 +574,7 @@ Uint64 get_playtime_at(int position)
 		{
 			if (seq_pos[t] < mused.song.num_sequences[t])
 			{
-				if (mused.song.sequence[t][seq_pos[t]].position < pos)
+				if (mused.song.sequence[t][seq_pos[t]].position + mused.song.pattern[mused.song.sequence[t][seq_pos[t]].pattern].num_steps <= pos)
 					seq_pos[t]++;
 					
 				if (seq_pos[t] < mused.song.num_sequences[t])
@@ -598,15 +598,19 @@ Uint64 get_playtime_at(int position)
 						{
 							rate = command & 0xff;
 						}
+						else if ((command & 0xff00) == MUS_FX_SKIP_PATTERN)
+						{
+							pos = seq_start_pos + pat->num_steps - 1;
+						}
 					}
 				}
 			}
 		}
 		
-		t += ((1000 * (spd1 + spd2) / 2) / rate);
+		ticks += ((1000 * (spd1 + spd2) / 2) / rate);
 		
 		++pos;
 	}
 	
-	return t;
+	return ticks;
 }
