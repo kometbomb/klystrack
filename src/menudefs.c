@@ -125,6 +125,7 @@ const Menu prefsmenu[] =
 	{ 0, mainmenu, "", NULL, NULL },
 	{ 0, mainmenu, "Pixel size", pixelmenu },
 	{ 0, mainmenu, "Fullscreen", NULL, MENU_CHECK_NOSET, &mused.flags, (void*)FULLSCREEN, toggle_fullscreen },
+	{ 0, mainmenu, "Disable rendering to texture", NULL, MENU_CHECK_NOSET, &mused.flags, (void*)DISABLE_RENDER_TO_TEXTURE, toggle_render_to_texture },
 	{ 0, mainmenu, "Oversampling", oversamplemenu },
 	{ 0, mainmenu, "", NULL, NULL },
 #ifdef MIDI
