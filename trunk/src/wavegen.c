@@ -94,5 +94,14 @@ void wg_gen_waveform(WgOsc *chain, int num_oscs, Sint16 *data, int len)
 	}
 
 	for (int i = 0 ; i < len ; ++i)
-		data[i] = my_min(32767, my_max(-32768, 32767 * wg_get_sample(chain, num_oscs, (float)i / len)));
+	{
+		double s = wg_get_sample(chain, num_oscs, (float)i / len);
+		
+		if (s > 1.0)
+			s = 1.0;
+		else if (s < -1.0)
+			s = -1.0;
+			
+		data[i] = 32767 * s;
+	}
 }

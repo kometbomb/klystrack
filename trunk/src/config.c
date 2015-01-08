@@ -73,6 +73,7 @@ static const struct { int type; const char *name; void *param; int mask; } confi
 	{ C_BOOL, "disable_vu_meters", &mused.flags, DISABLE_VU_METERS },
 	{ C_BOOL, "maximized", &mused.flags, WINDOW_MAXIMIZED },
 	{ C_INT, "oversample", &mused.oversample },
+	{ C_BOOL, "disable_render_to_texture", &mused.flags, DISABLE_RENDER_TO_TEXTURE },
 	{ C_END }
 };
 
@@ -80,6 +81,7 @@ static const struct { int type; const char *name; void *param; int mask; } confi
 void apply_config()
 {
 	change_fullscreen(0, 0, 0);
+	change_render_to_texture(0, 0, 0);
 	change_pixel_scale(CASTTOPTR(void,mused.pixel_scale), 0, 0);
 	load_theme_action(mused.themename, 0, 0);
 	load_keymap_action(mused.keymapname, 0, 0);

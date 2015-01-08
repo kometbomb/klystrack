@@ -573,6 +573,23 @@ void change_fullscreen(void *a, void*b, void*c)
 }
 
 
+void toggle_render_to_texture(void *a, void*b, void*c)
+{
+	SDL_Event e;
+	e.button.button = SDL_BUTTON_LEFT;
+	mouse_released(&e);
+	mused.flags ^= DISABLE_RENDER_TO_TEXTURE;
+	change_render_to_texture(0,0,0);
+}
+
+
+void change_render_to_texture(void *a, void*b, void*c)
+{
+	domain->flags = (domain->flags & ~GFX_DOMAIN_DISABLE_RENDER_TO_TEXTURE) | ((mused.flags & DISABLE_RENDER_TO_TEXTURE) ? GFX_DOMAIN_DISABLE_RENDER_TO_TEXTURE : 0);
+	gfx_domain_update(domain, true);
+}
+
+
 void load_theme_action(void *name, void*b, void*c)
 {
 	load_theme((char*)name);
