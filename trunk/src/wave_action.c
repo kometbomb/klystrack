@@ -88,6 +88,40 @@ void wavetable_normalize(void *vol, void *unused2, void *unused3)
 }
 
 
+void wavetable_remove_dc(void *unused1, void *unused2, void *unused3)
+{
+	snapshot(S_T_WAVE_DATA);
+		
+	CydWavetableEntry *w = &mused.mus.cyd->wavetable_entries[mused.selected_wavetable];
+	
+	if (w->samples > 0)
+	{
+		double avg = 0;
+	
+		for (int s = 0 ; s < w->samples ; ++s)
+		{
+			avg += w->data[s];
+		}
+		
+		avg /= w->samples;
+		
+		for (int s = 0 ; s < w->samples ; ++s)
+		{
+			double new_val = w->data[s] - avg;
+			
+			if (new_val < -32768)
+				new_val = -32768;
+			else if (new_val > 32767)
+				new_val = 32767;
+				
+			w->data[s] = new_val;
+		}
+		
+		invalidate_wavetable_view();
+	}
+}
+
+
 void wavetable_cut_tail(void *unused1, void *unused2, void *unused3)
 {
 	snapshot(S_T_WAVE_DATA);

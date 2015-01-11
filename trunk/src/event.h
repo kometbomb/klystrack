@@ -158,6 +158,9 @@ enum
 	W_OSCABS,
 	W_OSCNEG,
 	W_WAVELENGTH,
+	W_GENERATE,
+	W_RND,
+	W_TOOLBOX,
 	/* ----- */
 	W_N_PARAMS
 };

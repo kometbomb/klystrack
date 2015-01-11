@@ -313,6 +313,22 @@ void generic_flags(const SDL_Event *e, const SDL_Rect *_area, int focus, int p, 
 }
 
 
+int generic_button(const SDL_Event *e, const SDL_Rect *area, int focus, int param, const char *_label, void (*action)(void*,void*,void*), void *p1, void *p2, void *p3)
+{
+	if (is_selected_param(focus, param))
+	{
+		SDL_Rect r;
+		copy_rect(&r, area);
+		adjust_rect(&r, -2);
+		r.h -= 2;
+		r.w -= 2;
+		set_cursor(&r);
+	}
+
+	return button_text_event(domain, e, area, mused.slider_bevel, &mused.smallfont, BEV_BUTTON, BEV_BUTTON_ACTIVE, _label, action, p1, p2, p3);
+}
+
+
 void songinfo1_view(GfxDomain *dest_surface, const SDL_Rect *dest, const SDL_Event *event, void *param)
 {
 	SDL_Rect area;
