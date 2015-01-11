@@ -330,6 +330,10 @@ void wavetable_tools_view(GfxDomain *dest_surface, const SDL_Rect *dest, const S
 	
 	r.y += r.h;
 	
+	button_text_event(domain, event, &r, mused.slider_bevel, &mused.buttonfont, BEV_BUTTON, BEV_BUTTON_ACTIVE, "KILL DC", wavetable_remove_dc, 0, NULL, NULL);
+	
+	r.y += r.h;
+	
 	button_text_event(domain, event, &r, mused.slider_bevel, &mused.buttonfont, BEV_BUTTON, BEV_BUTTON_ACTIVE, "5TH", wavetable_chord, MAKEPTR(5), NULL, NULL);
 	
 	r.y += r.h;

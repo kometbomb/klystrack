@@ -43,6 +43,7 @@ OTHER DEALINGS IN THE SOFTWARE.
 void my_draw_view(const View* views, const SDL_Event *_event, GfxDomain *domain);
 int generic_field(const SDL_Event *e, const SDL_Rect *area, int focus, int param, const char *_label, const char *format, void *value, int width);
 void generic_flags(const SDL_Event *e, const SDL_Rect *_area, int focus, int p, const char *label, Uint32 *flags, Uint32 mask);
+int generic_button(const SDL_Event *e, const SDL_Rect *area, int focus, int param, const char *_label, void (*action)(void*,void*,void*), void *p1, void *p2, void *p3);
 char * notename(int note);
 void my_separator(const SDL_Rect *parent, SDL_Rect *rect);
 void set_cursor(const SDL_Rect *location);
