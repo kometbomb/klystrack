@@ -93,7 +93,7 @@ void pattern_view_header(GfxDomain *dest_surface, const SDL_Rect *dest, const SD
 		const int pan_w = 42;
 
 		vol.x -= vol.w + 3 + 17;
-		vol.x -= pan_w * 2 + 3 + 9;
+		vol.x -= pan_w * 2 + 3 + 12;
 		vol.w = pan_w;
 		vol.h -= 1;
 		vol.y += 1;
