@@ -2,7 +2,7 @@
 
 = klystrack wiki  =
 
-*News:* This wiki is also available in Japanese, translated by maak [https://docs.google.com/document/d/1y0dDI5iH2W_Ru31JvXMQRu2gkF4UBFuPZYpgDwNlk90/edit]. Thanks a lot!
+*News:* This wiki is also available [https://docs.google.com/document/d/1y0dDI5iH2W_Ru31JvXMQRu2gkF4UBFuPZYpgDwNlk90/edit in Japanese], translated by maak. Thanks a lot!
 
 Welcome to the klystrack wiki, the basic documentation to all things klystrack. If you are not into reading manuals, just take a look at the [Tutorials] and just start making tunes.
 
