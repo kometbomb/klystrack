@@ -4,3 +4,5 @@
 = Tutorials =
 
 n00bstar has written [http://n00bstar.blogspot.ca/p/klystrack-tutorials.html excellent tutorials] that also explain how to create nice instruments, how that relates to music theory, mixing and basic chiptune concepts!
+
+*News:* Takashi Kawano has translated these [https://drive.google.com/file/d/0B4ElRMyQr4zWbDdQYmFwQWl3dTQ/view?usp=sharing in Japanese]! Thanks!
