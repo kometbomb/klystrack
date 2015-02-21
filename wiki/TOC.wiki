@@ -1,6 +1,6 @@
 #summary Manual sidebar
 
-  * [TOC Home]
+  * [Home Home]
   * *Preface*
     * [IntroductionToTrackers Introduction to trackers]
     * [Features Features]
