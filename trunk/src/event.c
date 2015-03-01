@@ -449,10 +449,10 @@ void instrument_add_param(int a)
 			
 		break;
 		
-		case P_FM_TRIANGLE:
+		case P_FM_ENV_START:
 		
-		flipbit(i->fm_flags, CYD_FM_ENABLE_TRIANGLE);
-		
+		clamp(i->fm_attack_start, a, 0, 31);
+			
 		break;
 		
 		case P_FM_WAVE:

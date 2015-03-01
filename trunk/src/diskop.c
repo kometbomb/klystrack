@@ -160,6 +160,7 @@ static void save_instrument_inner(FILE *f, MusInstrument *inst, const CydWavetab
 	_VER_WRITE(&inst->fm_feedback, 0);
 	_VER_WRITE(&inst->fm_harmonic, 0);
 	_VER_WRITE(&inst->fm_adsr, 0);
+	_VER_WRITE(&inst->fm_attack_start, 0);
 	
 	if (write_wave_fm)
 	{
