@@ -603,8 +603,8 @@ void info_line(GfxDomain *dest_surface, const SDL_Rect *dest, const SDL_Event *e
 					"FM decay",
 					"FM sustain",
 					"FM release",
-					"FM triangle",
-					"FM wavetable",
+					"FM env start",
+					"FM use wavetable",
 					"FM wavetable entry"
 				};
 				strcpy(text, param_desc[mused.selected_param]);
@@ -1201,7 +1201,7 @@ void instrument_view2(GfxDomain *dest_surface, const SDL_Rect *dest, const SDL_E
 	update_rect(&frame, &r);
 	inst_text(event, &r, P_FM_RELEASE, "REL", "%02X", MAKEPTR(inst->fm_adsr.r), 2);
 	update_rect(&frame, &r);
-	inst_flags(event, &r, P_FM_TRIANGLE, "TRIANGLE", &inst->fm_flags, CYD_FM_ENABLE_TRIANGLE);
+	inst_text(event, &r, P_FM_ENV_START, "E.START", "%02X", MAKEPTR(inst->fm_attack_start), 2);
 	update_rect(&frame, &r);
 	tmp = r.w;
 	r.w = 42;

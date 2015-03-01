@@ -132,7 +132,7 @@ enum
 	P_FM_DECAY,
 	P_FM_SUSTAIN,
 	P_FM_RELEASE,
-	P_FM_TRIANGLE,
+	P_FM_ENV_START,
 	P_FM_WAVE,
 	P_FM_WAVE_ENTRY,
 	/*----------*/
