@@ -1,0 +1,19 @@
+# Is klystrack an AHX clone/replacement? #
+
+No. Nor it is possible to import or export AHX modules perfectly since the two programs are very different even if they look similar. The only thing 100 % compatible between the two is the spirit.
+
+# Is klystrack a Protracker clone/replacement? #
+
+No. See above.
+
+# Why are patterns so short? #
+
+Use `Alt-Insert` and `Alt-Delete` to change pattern length.
+
+# Why aren't all patterns visible in pattern editor? #
+
+This is because it only shows patterns that start at the same position in the sequence. You can use equal length patterns to avoid this problem. Or, you can simply use the pattern editor as a single pattern editor like in Buzz (which it actually copies).
+
+# I use an AZERTY keyboard, what now? #
+
+Use the keymap for AZERTY keyboards. It swaps the keys so it works similarly to a QWERTY keyboard when entering notes.

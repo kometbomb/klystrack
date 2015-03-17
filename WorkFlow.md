@@ -1,0 +1,7 @@
+This simple tutorial is meant to give an idea what needs to be done in order to create the sounds, the patterns and the sequence.
+
+  1. Create or load some nice sounds in the [instrument editor](InstrumentEditor.md).
+  1. Go to the [pattern editor](PatternEditor.md) and create a simple melody in pattern 0, bassline or whatever you want to begin with. Resize the pattern if you need to. Use `Alt-Insert` to add rows to the pattern (around 32 to 64 is good).
+  1. Go to the [sequence editor](SequenceEditor.md), set the song length so the pattern is fully inside the "song loop area" and press the `0` key when the cursor is on row 0000 (any channel will do). This will set sequence position 0000 to play pattern on the selected channel.
+  1. Press `F5` to play the song.
+  1. Repeat the above until you get a record deal.

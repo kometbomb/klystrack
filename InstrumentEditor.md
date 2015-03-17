@@ -1,0 +1,166 @@
+The instrument editor view shows parameters that control the sound synthesis and the instrument program editor. The parameters are a quick way to add simple and common effects to the sound such as vibrato or pulse width modulation. The program is a more comprehensive way to achieve the same and much more.
+
+
+
+# Parameters #
+
+![http://klystrack.googlecode.com/svn/trunk/doc/inst_editor.png](http://klystrack.googlecode.com/svn/trunk/doc/inst_editor.png)
+
+## Attributes ##
+
+### Base note ###
+
+This parameter is what note is played when C-4 is triggered. In other words, if the base note is raised one half tone to C#4, pressing the key for C-4 will trigger C#4.
+
+### Lock note ###
+
+Use this flag to make the instrument always trigger at the base note. Useful for drums and sound effects. This is doubly useful when using pattern transposing on combined drum and bassline patterns, only the bassline being transposed.
+
+### Drum ###
+
+This flag makes the instrument enable the noise waveform for the duration of the very first tick. A nod towards the Hubbard play routine.
+
+### Key sync ###
+
+Triggering the note resets the oscillators.
+
+### Enable vibrato ###
+
+This flips the vibrato bit, i.e. the vibrato bit is considered to be on except if the bit is set in the track data.
+
+### Set pulse width ###
+
+Resets the pulse width to the pulse width parameter when a note is triggered.
+
+### Set cutoff ###
+
+Resets the cutoff frequency to the cutoff parameter when a note is triggered.
+
+### FX ###
+
+If enabled, this instrument will output to the chain set by FX BUS (see below.)
+
+## Waveform ##
+
+PUL, SAW, TRI and NOI select pulse (a.k.a. square wave), sawtooth, triangle and noise waveforms, respectively. If multiple forms are selected, they are ANDed to form a combination.
+
+The PW parameter controls the pulse width (duty cycle) of the pulse wave. 7FF is a symmetric square wave and 0 is no wave at all. Generally, the higher the value, the deeper the sound is and small values produce a thin sound.
+
+Triangle wave is an approximation of a sine wave. It's useful for soft sounds.
+
+The noise waveform can be controlled with the METAL flag which makes the noise values loop, in effect producing audible ringing when the played frequency is high enough. Refer to the cowbell example instrument.
+
+Using the 1/4th switch, it is possible to make the pitch two octaves lower (original frequency divided by four). This is so that there is more low range, in effect this makes the lowest pitch `C--2` (`C-0` minus two octaves.)
+
+## Wavetable ##
+
+WAVE is used to associate a [wavetable](Wavetable.md) sample with the instrument. Multiple instruments can share the same sample. OENV overrides the ADSR envelope for the sample, which can be useful when combining samples with the synth. The L flag locks the sample at its base note (set in the wavetable editor), also useful when combining with the synth and using the sample as a attack sound that always plays at the same pitch.
+
+## Volume envelope ##
+
+The volume envelope is a standard attack-decay-sustain-release type envelope. When the note is triggered, the attack (ATK) parameter controls the speed at which the volume rises to the level specified by the volume (VOL) parameter. The volume then decays (DEC) to the sustain (SUS) level (which is relative to the overall volume). When a note-off is triggered, the played sound then releases (fades out) at the rate controlled by the REL parameter.
+
+If RELATIVE is checked, all volume commands will be relative to the volume. That is, the command `0C20` will set the audible volume to 25% (32/128) of VOL. If RELATIVE is not checked, `0C20` will set the audible volume to 32 no matter what the instrument volume is.
+
+## Buzzer ##
+
+The buzzer effect emulates the common technique from the YM2149 sound chip. The sound chip had a very simple envelope that had the (relatively unique) ability to repeat the envelope curve indefinitely.
+
+Basically, the buzzer effect is just fast amplitude modulation relative to the player frequency. Generally, the envelope frequency is one octave higher than the played note. This makes the player waveform much more varied even if it was a square wave (the YM2149 only had very basic square wave oscillators). For the original buzzer sound from the Atari ST, use a pulse wave at pulse width of 7FF.
+
+**Note:** Buzzer overrides the ADSR envelope.
+
+### Detune/Fine ###
+
+The DETUNE parameter controls the semitone the buzzer modulates the player waveform. The FINE parameter controls the fine tuning.
+
+### Shape ###
+
+The shape parameter sets the shape of the envelope. 0-1 are saw waves and 2-3 are triangle waves.
+
+## Sync/ring modulation ##
+
+The SYNC and RING parameters control whether the oscillator synchronization and ring modulation are enabled. The SRC parameters specify the source channel that controls the modulation. If the source is set to FF, the same channel as the instrument is played on is used as source.
+
+Oscillator synchronization makes the source oscillator to reset the oscillator that the instrument is playing on every time the source oscillator cycles and the counter wraps over.
+
+Ring modulation multiplies the source waveform with the instrument waveform.
+
+## Misc ##
+
+### Slide ###
+
+The slide parameter controls the time it takes for the previous note to change into the new note if the slide bit is set in the track data. A bigger value means shorter time.
+
+### Program period ###
+
+Program period specifies how many ticks does it take for the program to advance one step.
+
+### Vibrato ###
+
+VIB modulates instrument pitch at the set speed (VIB.S) and depth (VIB.D) if the vibrato bit is set in the track data or if the VIB flag is set for the instrument (which inverses the bit). V.DEL sets the delay time it takes for the vibrato depth to rise to the full depth (useful for "auto" vibrato). VIB.SH sets the vibrato shape, available waveforms are sine wave, ramp up, ramp down, pulse and cyclic random values.
+
+Vibrato can also be achieved with a little program that uses the portamento commands (01xx and 02xx) to modulate the played note.
+
+### Pulse width modulation ###
+
+PWM modulates the pulse width parameter at the set speed (PWM.S) and depth (PWM.D). PWM is useful for making square wave instruments like leads sound more varied with little effort. The modulating waveform can be set with PWM, the same waveforms are available as there are for vibrato.
+
+As with vibrato, related commands can be used to create PWM using the instrument program.
+
+### FX bus ###
+
+The FXBUS parameter selects the effect chain this instrument will send its output to if FX is checked.
+
+### No prog restart ###
+
+This flag disables restarting of the instrument program when a note is triggered. The program will continue executing where it was (in that channel, even if the previous instrument was not the same as the newly triggered instrument.) Use `7D00` to manually restart the program.
+
+# Instrument program #
+
+When an instrument is triggered, the program starts executing from the beginning (unless NO PROG RESTART is set). The program executes an instruction according to the P.PRD (program period) parameter. If P.PRD is set to 1, the program will update every tick. If P.PRD is set to 2, the program will update every second check and so on.
+
+A program modifies the played waveform and can be used to create more interesting sounds. The commands are the same as the [track commands](Commands.md). This means the program can also be thought as a macro: you do not need to enter the same track commands if the instrument executes has the same commands in the program.
+
+The program can be edited by moving to the program and pressing return on the instruction you want to edit.
+
+The following example is a simple 0-4-7 major arpeggio:
+
+```
+00 00 0000   set arpeggio note to 0 (the same note as played)
+01 01 0004   set arpeggio note to 4 (played note plus 4 semitones)
+02 02 0007   set arpeggio note to 7
+03 03 FF00   jump back to step 00
+```
+
+Note that you can also specify the arpeggio notes by using the track command `10xy`. This makes it possible to use the same instrument to play different arpeggio chords. In the program, you can refer to those two notes with {{00f0}} and {{00f1}}. For the above example, the following program and track data achieves the same:
+
+```
+00 00 0000   set arpeggio note to 0 (the same note as played)
+01 01 00F0   set arpeggio note to external arpeggio note 0 
+02 02 00F1   set arpeggio note to external arpeggio note 1
+03 03 FF00   jump back to step 00
+```
+
+And the track data:
+
+```
+C-4 00 ... 0047
+```
+
+**Tip:** A handy way to debug instrument programs is to set the program period (execution speed) to 10 or more and then pay attention to the little marker that shows current program tick. That way you'll notice if e.g. a jump doesn't point to the correct command.
+
+## Combining commands ##
+
+Use `Space` to combine the currently selected command with the command that is directly below it. This means klystrack sees the combined commands as one, meaning they are executed at the same time.
+
+```
+00 00 000C ,   set arpeggio note to +12 semitones  (press Space here)
+01    0918 '   set PW
+02 01 0000 ,   set arpeggio note to +0 semitones   (press Space here)  <--,
+03    0102 |   portamento up by 2/256 semitones    (press Space here)     |
+04    0710 '   PW down by 10                                              |
+05 02 FF02     jump to location 02 ---------------------------------------'
+```
+
+Note how the second column doesn't follow the leftmost column as it did in the previous examples. This is because some of the commands are no longer executed separately. Also note that the jump is to the number in the _leftmost_ column.

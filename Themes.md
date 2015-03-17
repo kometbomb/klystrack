@@ -1,0 +1,58 @@
+
+
+In the trunk, the `theme/Default` directory contains the basic files needed for a theme. The two font directories need to be bundled into font files and all the files need to be bundled into one theme file. This can be automatized with the DIY kit (see below.)
+
+# DIY kit #
+
+**This is Windows-only but if you compile makebundle and follow the steps in `pack.bat`, you can do this on any platform**
+
+**Note:** Please check you have the latest default theme files [located in trunk](http://code.google.com/p/klystrack/source/browse/trunk/themes/Default/).
+
+  1. Download [this ZIP archive](http://code.google.com/p/klystrack/downloads/detail?name=klystrack-DIY-theme-kit.zip&can=2&q=) and unzip to e.g. `C:\temp`.
+  1. Edit the files in `C:\temp\Default\*` as you see fit
+  1. After editing, run `pack.bat` to pack the theme as `C:\temp\my_theme`.
+
+You can then drop `my_theme` in the klystrack `res` directory and load it from the menu.
+
+# Theme file contents #
+
+**RGB 255 0 255 is the magic color for transparency (because it's a horrible color and should never be used.)**
+
+**You can include either BMP or PNG version of any image file in the theme. E.g. if `bevel.bmp` doesn't exist in the theme, `bevel.png` will be used instead.**
+
+Files and colors that do not exist in a theme will be taken from the default theme.
+
+## colors.txt ##
+
+This file contains the text color definitions. The while should contain definitions in the following format, each on its own line:
+
+```
+color_name = 0xffffff
+another_color_name = 0x808080
+```
+
+The hexadecimal number is a RGB value.
+
+## bevel.bmp ##
+
+This is the main graphics file. The first row has different bevel (patterned rectangle) styles, the bottom row has button decals. The bevels generally have a 4 pixel wide border and a 8x8 center that is repeated. Everything has to be 16x16.
+
+Here are the horizontal indices (leftmost tile index is zero) for the graphics:
+  * [bevdefs.h](http://code.google.com/p/klystron/source/browse/trunk/src/gui/bevdefs.h)
+  * [mybevdefs.h](http://code.google.com/p/klystrack/source/browse/trunk/src/mybevdefs.h)
+
+## vu.bmp ##
+
+This file contains the VU meter graphics. The dimensions can be anything as long as they fit inside the pattern area.
+
+## analyzor.bmp ##
+
+This is the spectrum analyzer bar. The left side of the image is used as the "enabled" graphic and the right side is the "disabled" graphic. I.e. the right side is what is drawn in any case and the left side is the actual bar that's drawn over the disabled gfx.
+
+The actual width of the bar will be the image width divided by two (since half of the image is the disabled graphic).
+
+## logo.bmp ##
+
+## 8x8.fnt, 7x6.fnt ##
+
+The fonts can be changed but it is recommended that they have the same dimensions as the originals. Refer to the klystron manual for more information on the font file format.

@@ -1,0 +1,1 @@
+Most editing actions in klystrack can be undoed. However, actions like loading a song, starting a new song and so on won't be undoable. Undo is available in the menu (Edit > Undo) or more easily by pressing `Ctrl-Z`. An undone action can be redone (redo) with `Ctrl-Y`.

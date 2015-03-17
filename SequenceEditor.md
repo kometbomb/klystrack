@@ -1,0 +1,26 @@
+The sequence editor is the place where all the patterns are put together to form a song structure.
+
+Each channel can use any of the patterns. The patterns are not locked to a certain channel nor do the patterns lock to other patterns. A pattern can be used as many times as needed -- you do not need to duplicate the pattern data unless you want to make little changes such as a drum fill.
+
+The patterns are entered in two ways (see the preferences menu):
+
+  * _Jeskola Buzz style_: using the keyboard, pressing `0`-`9` and `A`-`Z` puts a pattern at the current cursor location (`Shift` allows yet more patterns). The editor is pretty straightforward and generally works like the [pattern editor](PatternEditor.md).
+  * _AHX-style_: pattern numbers are entered digit by digit, similarly to how the pattern editor works when entering instrument, volume or command digits.
+
+
+```
+     pattern
+     |  position offset
+     |  |  transpose offset
+     |  |  |
+0000 01+03+02 --
+0010 --       00
+0020 --       ::
+0030 --       --
+```
+
+In the above example, pattern 00 starts at location 0010 (hex, 16 dec) and is 32 steps long, thus the `::` that indicates the visual length of the pattern. The 01 pattern is 16 or less steps in length, thus only the pattern number is visible.
+
+The `+03` after the pattern number 01 means the pattern starts 3 steps after the row shown on the left side of the sequence. That is, 01 starts at location 3 (0000+3). In normal use this is not very common as the patterns usually are located at 0010, 0020 and so on (or whatever you have set as the row length). If the compact option is enabled, the location offset is not shown.
+
+The last offset `+02` means the pattern is to be played transposed two semitones up. The transposing can be overridden by instrument pitch lock or the absolute arpeggio command. This offset is also hidden if the compact mode is enabled.

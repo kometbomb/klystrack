@@ -1,0 +1,74 @@
+# Commands #
+
+When a note is playing, an instrument program or the track data can modify various parameters by using commands.
+
+The commands are interchangeable between the track commands and the program commands (where applicable). Most of the commands loosely follow the "standards" set by the original Soundtracker and later trackers.
+
+The commands generally follow a pattern: the first two digits tell the action and the next two are the parameter(s) for the command.
+
+_`xx`, `yy` = parameter to command_
+
+| **Command** | **Description** |
+|:------------|:----------------|
+| `00xx` | set arpeggio note (final played note = played note + arpeggio note + vibrato etc.) |
+| `40xx` | set absolute arpeggio note (final played note = absolute arpeggio note + vibrato etc.) |
+| `01xx`  | portamento up |
+| `02xx` | portamento down |
+| `03xx` | slide to note with speed xx |
+| `04xy` | vibrato with speed of x and depth of y |
+| `07xx`  | pulse width down |
+| `08xx` | pulse width up |
+| `09xx` | set pulse width |
+| `0axy` | Fade volume up by x, down by y |
+| `0b0x` | set waveform (1 = noise, 2 = pulse, 4 = triangle, 8 = saw, 9 = 1 + 8 = noise + saw etc.) |
+| `0cxx` | set volume |
+| `0dxx` | jump to pattern position xx (in current pattern only), makes pattern looping possible |
+| `0e1x` | fine portamento up by x |
+| `0e2x` | fine portamento down by x |
+| `0e9x` | retrigger note every x tick |
+| `0eax` | fine fade volume down by x |
+| `0ebx` | fine fade volume up by x |
+| `0ecx` | set volume to zero on tick x (note cut) |
+| `0edx` | start playing current note on tick x (note delay) |
+| `0fxy` | set play speeds to x and y. if x is 0, set both to y |
+| `10xy` | set external arpeggio notes (used with 00f0 and 00f1 in the program) |
+| `11xx` | portamento up by one semitone |
+| `12xx` | portamento down by one semitone |
+| `17xx` | slide panning to left by xx |
+| `18xx` | set stereo panning to xx, 0 = left, 64 = center, 128 = right |
+| `19xx` | slide panning to right by xx |
+| `1axx` | fade global volume, works similar to 0axx |
+| `1cxx` | set channel volume, works similar to 0cxx |
+| `1dxx` | set global volume, works similar to 0cxx |
+| `1fxx` | set play rate to xx |
+| `21xx` | filter cutoff up |
+| `22xx` | filter cutoff down |
+| `29xx` | set cutoff |
+| `2axx` | set resonance |
+| `2bxx` | set filter type |
+| `2cxx` | combined set filter cutoff and type (0x00..0x7F = lowpass, 0x80..0xFF = highpass, similar to AHX command 4xx) |
+| `2dxx` | jump to the end of the current pattern |
+| `31xx` | slide buzz tuning up |
+| `32xx` | slide buzz tuning down |
+| `3f0x` | set buzz shape (0-3) |
+| `39xx` | set buzz finetune (0x80 = 0, 0x00 = -128, 0xff = 127) |
+| `3axx` | set buzz semitune (0x80 = 0, 0x00 = -128, 0xff = 127) |
+| `5xxx` | start wavetable sample at offset xxx (0-fff) |
+| `6xxx` | set fine cutoff frequency (0-7ff) |
+| `7dxx` | restart instument program |
+| `fc00` | trigger release |
+| `fd00` | loop begin |
+| `fexx` | loop to previous "fd00" xx times |
+| `ffxx` | go to step xx |
+| `fffd` | trigger note release |
+| `fffe` | nop (no operation) |
+| `ffff` | end program |
+
+
+# Volume column commands #
+
+The volume column can be used to trigger some commands in addition to setting the volume.
+
+| Dx | Fade volume down (same as command `0a0x` |
+|:---|:-----------------------------------------|
+| Ux | Fade volume up (same as command `0ax0` |

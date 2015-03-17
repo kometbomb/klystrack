@@ -1,0 +1,90 @@
+# Basics #
+
+The pattern editor is a pretty traditional tracker pattern editor. A pattern is the meat of any tracker tune, without pattern data there is no music.
+
+Basically, each pattern is a queue of notes and parameters.
+
+```
+     instrument
+note |  ______ legato, slide, vibrato
+ |   | |||
+C-4 00 LSV 0000 <--- track command
+```
+
+If a note is set for a pattern step, a new note will be played when the player position hits the row. The instrument column tells which instrument to use. The note will continue to play until the volume is set to zero, the envelope fades out or a note-off command (key `1`) is encountered in the note column.
+
+The legato, slide and vibrato columns (set with `1`) tell klystrack to enable vibrato or slide from the previously played note. Note that enabling slide without legato will still trigger the note (it will simply start from the previous note and slide to the new pitch), the envelope will be set to attack phase. With legato, the slide will audibly continue from the previous pitch and volume. The slide and vibrato can also be enabled using a [command](Command.md).
+
+The [track commands](Commands.md) modify the sound with effects like portamento, vibrato or volume fade. A command doesn't need a note or instrument set, the following first triggers a note and does a pitch bend down while triggering key release:
+
+```
+A-3 00 ... 0000
+... .. ... 0000
+... .. ... 0000
+... .. ... 0220
+--- .. ... 0220
+... .. ... 0240
+```
+
+The keyboard is arranged so that most of the keys represent a two-row musical keyboard. I.e.:
+
+```
+ 2 3   5 6 7   9 0
+Q W E R T Y U I O P
+
+ S D   G H J
+Z X C V B N M
+```
+
+`Alt+Insert` adds a step to the end and `Alt+Delete` removes a row. Any pattern parameter (or note) can be erased with `.` (period). See the full list of [keyboard shortcuts](KeyboardShortcuts.md). It is suggested that `Return` is used to jump back and forth between the pattern editor and the sequence editor to quickly navigate around the song.
+
+If the compact mode is enabled, some of the parameters will not be shown and the whole view is greatly condensed.
+
+## Edit mode ##
+
+As with most trackers, `Space bar` toggles edit mode on and off. This means that if edit mode is not enabled, you can't accidentally edit pattern data while jamming.
+
+## Compact mode ##
+
+You can hide columns you do not need by enabling the compact mode. Set the visible channels in `Show > Visible columns`. This is useful if you want to fit more channels on the screen.
+
+# Multi-pattern editing #
+
+If you use `Return` to switch from the sequence to the pattern editor and more than one pattern would be played at that position, the pattern editor will show each pattern side by side. Is makes it easier to see what is happening at the same time on other channels.
+
+Use the channel toggle button to enable and disable channels, holding down `Shift` while pressing the button solos the channel instead (mutes all other channels).
+
+# Editing tools #
+
+For convenience, klystrack includes some basic tools for editing patterns. Namely, it is possible to clone a pattern and start editing the new pattern (`Ctrl+K`), find an unused (no note data) pattern (`Ctrl+U`) and interpolate the command parameter (`Ctrl+I`).
+
+## Interpolate ##
+
+The interpolation automatically fills in command parameters between two values. It is best used as follows:
+
+  1. Enter the desired command and starting parameter in the first pattern step
+  1. Enter the desired ending parameter on the pattern step you wish the interpolation to end
+  1. Select the area including the first and last steps you just edited
+  1. When you press `Ctrl+I`, on all the steps with the same command as on the first step of the selection, the command parameter will be filled with smoothly interpolated values. This means if you e.g. want to interpolate the cutoff with command 6xxx and have Cxx (set volume) and other unrelated commands already in the pattern, only the steps with 6xxx will receive the new parameter. All other commands will be left as they are.
+
+Consider the following:
+
+```
+C-4 01 6100 <--- Start selection here
+... .. 6000
+... .. 0C30
+... .. 6300 <--- End selection here
+```
+
+The result will be something like:
+
+```
+C-4 01 6000 
+... .. 6100
+... .. 0C30
+... .. 6300 
+```
+
+## Expand and shrink pattern ##
+
+The current pattern can be expanded (inserts blank steps between existing steps) or shrunk (expand in reverse). This is useful if you want to halve the tempo or you need to insert stuff between steps (for this you also need to double the song speed after expanding).

@@ -1,0 +1,29 @@
+**This is for developers and porters only!**
+
+No need to take this document too seriously. Common sense applies. :)
+
+# Stable releases #
+
+## Revision ##
+
+Take the corresponding tag from the repository and compile that. E.g. if you want to build 1.5.1, take tags/1.5.1, not the HEAD revision.
+
+## Filenames ##
+
+When uploading a new stable release, please name the file as "klystrack-1.5.1.dmg" or such, adding the platform in the filename in case the extension might collide with another file. E.g. "klystrack-1.5.1-win32.zip" (some other platform might use the zip format).
+
+## File description ##
+
+Please add a short description such as "AmigaOS4 port" etc. and use the same description across versions. If there are e.g. archive and installer files for the same release, please use a different description for each.
+
+Add suitable tags, namely the `OpSys` tags and the `Type` tags, e.g. `OpSys-OSX Type-Archive`.
+
+When adding a new latest stable build, please add the `Featured` tag and _remove the `Featured` tag from the older files!_ This makes the latest files visible on the main page so people can find them more easily.
+
+If a release fixes a security or otherwise annoying bug (read: crash, data loss), deprecate the older releases with the issue. Working releases do not need to be deleted.
+
+# Nightly/beta builds #
+
+Please differentiate the unstable builds from the stable releases by using a filename that includes the revision somewhere and preferably add "nightly" there somewhere, too.
+
+Please use the `Nightly` tag so the file stands out as a test build. Please deprecate (delete the file and select deprecate) if there are more than, say, three nightlies on the download page.

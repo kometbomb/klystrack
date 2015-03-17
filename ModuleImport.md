@@ -1,0 +1,26 @@
+**Note:** It is strongly suggested that the import feature is used only as a basis for a conversion, manual work will be needed in most cases.
+
+# Protracker #
+
+4-32 channel modules are supported. It is assumed a file with no signature bytes (M.K. etc.) are original The Ultimate Soundtracker modules, which may not be the case.
+
+Some effects are converted but because Protracker works on sample periods and not notes when e.g. pitch bending, the actual speeds will be off.
+
+# FastTracker II #
+
+Song data is loaded, however multisample instruments only load the first sample.
+
+# AHX #
+
+klystrack attempts to load AHX modules as perfectly as the differences between AHX and klystrack permit. Here are some things that can't be converted perfectly:
+
+  * AHX envelopes are not ADSR like in klystrack, additionally the envelope timing is not perfect
+  * AHX noise is a looping sample, in klystrack the noise is generated and does not loop
+  * klystrack PWM is oscillator-based while in AHX it works between upper and lower limits
+  * There is no automatic filter modulation in klystrack
+  * The same precautions apply to portamento etc. as in Protracker
+  * In AHX the pattern commands override the instrument commands while in klystrack it is the other way around (e.g. if an instrument sets the cutoff with a command, a pattern command will might not change the cutoff at all). If the filter commands look like they do not do anything, check the instrument program and remove the filter commands there.
+
+# Organya #
+
+Simple note data import without samples.

@@ -1,0 +1,109 @@
+_**Note:** Only significant changes and new features are listed here._
+
+See [the road map](RoadMap.md) for future plans.
+
+# 1.6.0 #
+
+  * New pattern editor with exact neighboring patterns and no more single pattern editing
+  * Sequencer had a facelift
+  * New LFSR waveform for crazy Atari POKEY/TIA sounds
+  * Crush effect has a slightly altered algorithm and optional dithering
+  * Oscillator oversampling for much better sound quality
+  * Organya (.org, Cave Story) import
+  * Sample data editor/mangler
+  * CAT-O-METER!
+
+# 1.5.4 #
+
+  * Improved file selector (drive list, bookmarks)
+  * Sequence editor step size is saved with song
+  * Sequence data can be entered digit by digit
+  * Better wavetable preview (including key jamming with samples)
+  * Module import optimizations for duplicate patterns
+  * Numerous fixes (time signature visualization, pattern clone etc.)
+  * New theme (Golden\_Brown)
+
+# 1.5.3 #
+
+  * New Blacklyst theme
+  * Keypad numbers now select instruments (select the instrument page with CTRL+0-9)
+  * Customizable key mappings (use TAB for jumping between channels!)
+  * XM import
+
+# 1.5.2 #
+
+  * Wavetable compression
+  * Frequency inaccuracy parameter (for Atari VCS/XL kind of dissonance)
+  * New example songs
+
+# 1.5.1 #
+
+Pretty much the 1.5.0 that should have been if there had been more time
+
+  * OSX and AmigaOS ports
+  * Raw sample file loading (ST-00 sampledisks)
+  * Default channel panning parameter
+  * "Position looping" (don't advance sequence past currently edited pattern)
+  * Adjustable edit position jump ("note jump" in Hivelytracker)
+
+# 1.5.0 #
+
+  * Wavetable for low-quality sample action (and for better Protracker module import)
+  * Volume column in patterns
+  * Master volume control and clipping warning
+  * Improved bitcrush effect for authentic low quality speech samples and stuff
+  * More features to make it act like most trackers
+  * Visualization e.g. VU meters
+  * Improved GUI with subtle hints of what actually does what
+  * Able to select visible channel columns (e.g. only note and instrument number columns for super-lofi tracking)
+  * Undo
+  * Original and AHX/Protracker/etc. look-a-like themes from [iLKke](http://ilkke.blogspot.com/)
+  * Program icon (for Windows)
+  * Important bugfixes, some critical, some not so much
+  * Experimental MIDI sync and basic MIDI controller support (keyboard)
+
+# 1.4.2 #
+
+  * There was a potentially crashing bug in 1.4.1 file selector
+
+# 1.4.0 #
+
+  * File extensions are now `.kt` for songs and `.ki` for instruments
+  * Resizable window, supports any window size
+  * AHX module import with instrument conversion
+  * Patterns can now be transposed (à la AHX)
+
+# 1.3.4 #
+
+  * WAV file export
+
+# 1.3.3 #
+
+  * Multiplexing for single channel music
+
+# 1.3.2 #
+
+  * Compiled to run on P2+ platforms
+  * Can disable keyjazz (multichannel preview in instrument editor)
+  * Collected small fixes from nightly builds
+
+# 1.3.0 #
+
+  * Basic Protracker etc. module import
+  * Pattern editing (parameter interpolation, clone etc.)
+
+# 1.2.0 #
+
+  * New YM2149 (Atari ST, CPC, +2 Speccy etc.) style envelope that allows recreating the common buzzer effect
+  * Settings are saved to `~/.klystrack`
+  * Multiple [themes](Themes.md) supported
+  * Fullscreen mode
+  * **Windows** Tilde is expanded to user directory
+
+# 1.1.1 #
+
+  * Mouse wheel scrolls lists
+  * Fullscreen mode
+  * Should discard non-standard multimedia key keypresses
+  * File selector shows current path
+  * **Linux** Tilde is expanded to home directory

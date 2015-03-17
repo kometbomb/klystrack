@@ -1,0 +1,11 @@
+/code/klystron
+/code/klystrack}}}
+  # Compile klystron and klystrack (take note you need to compile both projects for e.g. the debug profile with the same compile options - the easiest way to do this is to do "make -C /code/klystrack release", that will compile both projects with the right settings)
+  # In case something crashes, be sure to run "make clean" on both directories and then try again
+  # The klystrack makefile should also compile the needed resource file in {{{res/data}}}
+  # To deploy, do a {{{make zip}}} for klystrack. {{{zip/data}}} should now contain the files needed to run klystrack (including SDL libraries). 
+  # To debug, go to {{{/code/klystrack}}} and do {{{gdb bin.debug/klystrack.exe}}} this is so that klystrack will find the resource file in {{{/code/klystrack/res/data}}}
+
+klystrack compiles at least on on MinGW (Win32) and Ubuntu (i386). On Windows, you might need the standard UNIX tools like sed, cat and so on.
+
+[http://code.google.com/p/klystrack/issues/detail?id=93 Issue 93] contains some Linux specific compilation help.```

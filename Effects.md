@@ -1,0 +1,35 @@
+# A general note on effects #
+
+As can be expected, the klystrack effects are mostly for slightly complimenting the chiptune sound. Thus, the sound quality might not be very good for foreground sounds and are best used minimally and only when necessary.
+
+An example would be slightly opening a background sound or replacing duplicated "echo tracks" commonly used in modules with a reverb with the same delay length. An example of what not to do would be using the chorus effect with maxed out knobs to create psychedelic, un-chiptuney sounds.
+
+# Effect channels #
+
+Instruments can send their output to any effect channels and any channel can receive input from any number of instruments. This makes it possible to have different reverb settings for e.g. drums (little reverb) and lead (massive echo).
+
+## Reverb ##
+
+The reverb effect is a 8-tap FIR. The delay and gain of each tap can be individually set. The reverb is meant to mimic the reverb effect found in SNES, it is not meant to sound as good as more sophisticated reverbs with dozens of taps and feedback.
+
+The spread parameter controls the stereo separation of taps. It is relative to the overall delay of the tap. Early taps will have less separation.
+
+Use the buttons to quickly mute or enable individual taps or to snap the delay time to pattern step length (useful for simple, clear delay effects.) The room wizard can be used to set a random reverb.
+
+**Tip:** It is possible to create a flange effect by setting very short delays and relatively high gain.
+
+## Crush ##
+
+The crush effect simply drops the bit depth of the output signal (BITS) and downsamples (DSMP) the sample rate. This produces ringing artifacts in the sound especially for low volumes and high pitches.
+
+## Stereo chorus ##
+
+This effect can be used to spread a monophonic sound over the left and the right channel. It modulates the right channel so that the two channels are out of phase generating an illusion of surrounding sound.
+
+# Global effects #
+
+Global effects affect the master output, their effect will be audible on any instruments even if they itself don't use any effects.
+
+## Channel multiplexing ##
+
+This feature simply enables one channel and mutes all other channels at the set period (in ticks). Use for extreme low tech music as it essentially reduces the channels to one. Multiplexing can be used for arpeggios.

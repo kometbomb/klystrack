@@ -1,0 +1,7 @@
+# klystrack wiki #
+
+**News:** This wiki is also available [in Japanese](https://docs.google.com/document/d/1y0dDI5iH2W_Ru31JvXMQRu2gkF4UBFuPZYpgDwNlk90/edit), translated by maak. Thanks a lot!
+
+Welcome to the klystrack wiki, the basic documentation to all things klystrack. If you are not into reading manuals, just take a look at the [Tutorials](Tutorials.md) and just start making tunes.
+
+If something doesn't work and you can't find an answer here, just ask about it.

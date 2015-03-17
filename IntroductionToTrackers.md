@@ -1,0 +1,53 @@
+
+
+# Tracker... what's that? #
+
+A tracker is a simple sequencer that originated from the Amiga computers in 1987 as a simple alternative to other music editors. For someone used to modern sequencers, MIDI and all that, the concept can be somewhat strange.
+
+The main difference to formal notation or a MIDI sequencer is that in a tracker everything happens in discrete steps. In other words, it is similar to if you could only use sixteenth notes and rests. A tracker is also more technical and functional in that a pattern consists mostly of numerical (often hexadecimal) parameters.
+
+Wikipedia has [a pretty good explanation of trackers in general](http://en.wikipedia.org/wiki/Tracker_%28music_software%29).
+
+# How klystrack differs from traditional trackers #
+
+klystrack doesn't use samples (at least at the moment). It synthesizes sounds on the fly. This allows more flexible sounds since the parameters can be changed in real time.
+
+For a quite long time, especially on platforms where space was not an issue, it was common for a tracker to have patterns consisting of all available channels. That is, each pattern had e.g. four channels side by side and this required unneeded duplication of data.
+
+For example, even if one channel constantly played the same sequence (think a drum track), it had to be copied to each new pattern. In klystrack a pattern has only one channel of data. Thus, you can reuse the same pattern much more freely.
+
+The patterns can also be located at any position in the sequence, making it possible for two patterns of different length syncopate. This is not possible in a traditional tracker since all patterns usually are of the same length and begin at the same location for each channel.
+
+# Glossary #
+
+## Channel ##
+
+In a tracker, a song is divided to a number of channels. A channel can only have one note playing at a time, a new note will stop the previous note playing. In klystrack, there is a upper limit of 32 channels.
+
+## Sequence ##
+
+The sequence is the order in which [patterns](#Pattern.md) are played. Patterns can begin at any position and channel.
+
+## Pattern ##
+
+A pattern is a sequence of notes and [commands](#Command.md) that will play on a [channel](#Channel.md). All patterns always play at the same speed, synced by the current [step](#Step.md).
+
+## Note ##
+
+A note in pattern data is basically an instruction for the tracker program to start playing an instrument at the specified note. In klystrack, the note can be stopped with a note-off instruction, or by simply setting the volume to zero.
+
+## Step ##
+
+Step usually means one discrete row of pattern data. A song advances at a constant rate step by step. A step is divided into one or more [ticks](#Tick.md).
+
+## Tick ##
+
+A [step](#Step.md) is divided into one or more ticks. When one step is playing at a speed of 6, a tick will happen six times before the position moves to the next step. At each tick [commands](#Command.md) are updated. For example, the portamento and slide commands update the pitch at each tick.
+
+In klystrack, the instrument program is also divided into steps, also called ticks since in most cases multiple program steps are executed during one song step.
+
+## Command ##
+
+A [command](Commands.md), also known as _special effect_ or just _effect_ in Soundtracker and Protracker, modifies the currently played note. This can be done on the track level or an instrument program can do it automatically. A track command might fade the note out and a program command might repeatedly change the played note to create an arpeggio.
+
+Program commands are also the way to create more interesting sounds that change the waveform or filter frequency when the note is played. A snare drum might repeatedly change the waveform from noise to triangle wave to simulate the rattle and resonance. A techno kick drum might have a portamento command to make the note dive.
