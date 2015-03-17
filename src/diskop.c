@@ -35,12 +35,13 @@ OTHER DEALINGS IN THE SOFTWARE.
 #include "snd/pack.h"
 #include "view/wavetableview.h"
 #include <string.h>
+#include "memwriter.h"
 
 extern Mused mused;
 extern GfxDomain *domain;
 
 
-static void write_wavetable_entry(FILE *f, const CydWavetableEntry *write_wave, bool write_wave_data)
+static void write_wavetable_entry(SDL_RWops *f, const CydWavetableEntry *write_wave, bool write_wave_data)
 {
 	Uint32 flags = write_wave->flags & ~(CYD_WAVE_COMPRESSED_DELTA|CYD_WAVE_COMPRESSED_GRAY); // need to unmask bits because they're set by bitpack
 	Uint32 sample_rate = write_wave->sample_rate;
@@ -73,103 +74,104 @@ static void write_wavetable_entry(FILE *f, const CydWavetableEntry *write_wave, 
 	FIX_ENDIAN(loop_end);
 	FIX_ENDIAN(base_note);
 	
-	_VER_WRITE(&flags, 0);
-	_VER_WRITE(&sample_rate, 0);
-	_VER_WRITE(&samples, 0);
-	_VER_WRITE(&loop_begin, 0);
-	_VER_WRITE(&loop_end, 0);
-	_VER_WRITE(&base_note, 0);
+	SDL_RWwrite(f, &flags, sizeof(flags), 1);
+	SDL_RWwrite(f, &sample_rate, sizeof(sample_rate), 1);
+	SDL_RWwrite(f, &samples, sizeof(samples), 1);
+	SDL_RWwrite(f, &loop_begin, sizeof(loop_begin), 1);
+	SDL_RWwrite(f, &loop_end, sizeof(loop_end), 1);
+	SDL_RWwrite(f, &base_note, sizeof(base_note), 1);
 	
 	
 	if (packed)
 	{
 		FIX_ENDIAN(packed_size);
-		_VER_WRITE(&packed_size, 0);
+		SDL_RWwrite(f, &packed_size, sizeof(packed_size), 1);
 		
-		fwrite(packed, sizeof(packed[0]), (packed_size + 7) / 8, f);
+		SDL_RWwrite(f, packed, sizeof(packed[0]), (packed_size + 7) / 8);
 		
 		free(packed);
 	}
 }
 
 	
-static void save_instrument_inner(FILE *f, MusInstrument *inst, const CydWavetableEntry *write_wave, const CydWavetableEntry *write_wave_fm)
+static void save_instrument_inner(SDL_RWops *f, MusInstrument *inst, const CydWavetableEntry *write_wave, const CydWavetableEntry *write_wave_fm)
 {
 	Uint32 temp32 = inst->flags;
 	FIX_ENDIAN(temp32);
-	_VER_WRITE(&temp32, 0);
+	SDL_RWwrite(f, &temp32, sizeof(temp32), 1);
 	temp32 = inst->cydflags;
 	FIX_ENDIAN(temp32);
-	_VER_WRITE(&temp32, 0);
-	_VER_WRITE(&inst->adsr, 0);
-	_VER_WRITE(&inst->sync_source, 0);
-	_VER_WRITE(&inst->ring_mod, 0); 
+	SDL_RWwrite(f, &temp32, sizeof(temp32), 1);
+	SDL_RWwrite(f, &inst->adsr, sizeof(inst->adsr), 1);
+	SDL_RWwrite(f, &inst->sync_source, sizeof(inst->sync_source), 1);
+	SDL_RWwrite(f, &inst->ring_mod, sizeof(inst->ring_mod), 1); 
 	Uint16 temp16 = inst->pw;
 	FIX_ENDIAN(temp16);
-	_VER_WRITE(&temp16, 0);
-	_VER_WRITE(&inst->volume, 0);
+	SDL_RWwrite(f, &temp16, sizeof(temp16), 1);
+	SDL_RWwrite(f, &inst->volume, sizeof(inst->volume), 1);
 	Uint8 progsteps = 0;
 	for (int i = 0 ; i < MUS_PROG_LEN ; ++i)
 		if (inst->program[i] != MUS_FX_NOP) progsteps = i+1;
-	_VER_WRITE(&progsteps, 0);
+	SDL_RWwrite(f, &progsteps, sizeof(progsteps), 1);
 	for (int i = 0 ; i < progsteps ; ++i)
 	{
 		temp16 = inst->program[i];
 		FIX_ENDIAN(temp16);
-		_VER_WRITE(&temp16, sizeof(inst->program[i]));
+		SDL_RWwrite(f, &temp16, sizeof(temp16), 1);
 	}
-	_VER_WRITE(&inst->prog_period, 0); 
-	_VER_WRITE(&inst->vibrato_speed, 0); 
-	_VER_WRITE(&inst->vibrato_depth, 0); 
-	_VER_WRITE(&inst->pwm_speed, 0); 
-	_VER_WRITE(&inst->pwm_depth, 0); 
-	_VER_WRITE(&inst->slide_speed, 0);
-	_VER_WRITE(&inst->base_note, 0);
-	_VER_WRITE(&inst->finetune, 0);
+	
+	SDL_RWwrite(f, &inst->prog_period, sizeof(inst->prog_period), 1); 
+	SDL_RWwrite(f, &inst->vibrato_speed, sizeof(inst->vibrato_speed), 1); 
+	SDL_RWwrite(f, &inst->vibrato_depth, sizeof(inst->vibrato_depth), 1); 
+	SDL_RWwrite(f, &inst->pwm_speed, sizeof(inst->pwm_speed), 1); 
+	SDL_RWwrite(f, &inst->pwm_depth, sizeof(inst->pwm_depth), 1); 
+	SDL_RWwrite(f, &inst->slide_speed, sizeof(inst->slide_speed), 1);
+	SDL_RWwrite(f, &inst->base_note, sizeof(inst->base_note), 1);
+	SDL_RWwrite(f, &inst->finetune, sizeof(inst->finetune), 1);
 	Uint8 len = strlen(inst->name);
-	_VER_WRITE(&len, 0);
+	SDL_RWwrite(f, &len, sizeof(len), 1);
 	if (len)
-		_VER_WRITE(inst->name, len);
+		SDL_RWwrite(f, &inst->name, sizeof(inst->name[0]), len);
 	temp16 = inst->cutoff;
 	FIX_ENDIAN(temp16);
-	_VER_WRITE(&temp16, 0);
-	_VER_WRITE(&inst->resonance, 0);
-	_VER_WRITE(&inst->flttype, 0);
-	_VER_WRITE(&inst->ym_env_shape, 0);
+	SDL_RWwrite(f, &temp16, sizeof(temp16), 1);
+	SDL_RWwrite(f, &inst->resonance, sizeof(inst->resonance), 1);
+	SDL_RWwrite(f, &inst->flttype, sizeof(inst->flttype), 1);
+	SDL_RWwrite(f, &inst->ym_env_shape, sizeof(inst->ym_env_shape), 1);
 	temp16 = inst->buzz_offset;
 	FIX_ENDIAN(temp16);
-	_VER_WRITE(&temp16, 0);
-	_VER_WRITE(&inst->fx_bus, 0);
-	_VER_WRITE(&inst->vib_shape, 0);
-	_VER_WRITE(&inst->vib_delay, 0);
-	_VER_WRITE(&inst->pwm_shape, 0);
-	_VER_WRITE(&inst->lfsr_type, 0);
+	SDL_RWwrite(f, &temp16, sizeof(temp16), 1);
+	SDL_RWwrite(f, &inst->fx_bus, sizeof(inst->fx_bus), 1);
+	SDL_RWwrite(f, &inst->vib_shape, sizeof(inst->vib_shape), 1);
+	SDL_RWwrite(f, &inst->vib_delay, sizeof(inst->vib_delay), 1);
+	SDL_RWwrite(f, &inst->pwm_shape, sizeof(inst->pwm_shape), 1);
+	SDL_RWwrite(f, &inst->lfsr_type, sizeof(inst->lfsr_type), 1);
 	
 	if (write_wave)
 	{
 		Uint8 temp = 0xff;
-		_VER_WRITE(&temp, 0);
+		SDL_RWwrite(f, &temp, sizeof(temp), 1);
 	}
 	else
 	{
-		_VER_WRITE(&inst->wavetable_entry, 0);
+		SDL_RWwrite(f, &inst->wavetable_entry, sizeof(inst->wavetable_entry), 1);
 	}
 	
-	_VER_WRITE(&inst->fm_flags, 0);
-	_VER_WRITE(&inst->fm_modulation, 0);
-	_VER_WRITE(&inst->fm_feedback, 0);
-	_VER_WRITE(&inst->fm_harmonic, 0);
-	_VER_WRITE(&inst->fm_adsr, 0);
-	_VER_WRITE(&inst->fm_attack_start, 0);
+	SDL_RWwrite(f, &inst->fm_flags, sizeof(inst->fm_flags), 1);
+	SDL_RWwrite(f, &inst->fm_modulation, sizeof(inst->fm_modulation), 1);
+	SDL_RWwrite(f, &inst->fm_feedback, sizeof(inst->fm_feedback), 1);
+	SDL_RWwrite(f, &inst->fm_harmonic, sizeof(inst->fm_harmonic), 1);
+	SDL_RWwrite(f, &inst->fm_adsr, sizeof(inst->fm_adsr), 1);
+	SDL_RWwrite(f, &inst->fm_attack_start, sizeof(inst->fm_attack_start), 1);
 	
 	if (write_wave_fm)
 	{
 		Uint8 temp = (inst->wavetable_entry == inst->fm_wave) ? 0xfe : 0xff;
-		_VER_WRITE(&temp, 0);
+		SDL_RWwrite(f, &temp, sizeof(temp), 1);
 	}
 	else
 	{
-		_VER_WRITE(&inst->fm_wave, 0);
+		SDL_RWwrite(f, &inst->fm_wave, sizeof(inst->fm_wave), 1);
 	}
 	
 	if (write_wave)
@@ -185,7 +187,7 @@ static void save_instrument_inner(FILE *f, MusInstrument *inst, const CydWavetab
 }
 
 
-static void write_packed_pattern(FILE *f, const MusPattern *pattern, bool skip)
+static void write_packed_pattern(SDL_RWops *f, const MusPattern *pattern, bool skip)
 {
 	/* 
 	
@@ -202,8 +204,8 @@ static void write_packed_pattern(FILE *f, const MusPattern *pattern, bool skip)
 	if (skip) steps = 0;
 	
 	FIX_ENDIAN(steps);
-	fwrite(&steps, 1, sizeof(steps), f);
-	fwrite(&pattern->color, 1, sizeof(pattern->color), f);
+	SDL_RWwrite(f, &steps, 1, sizeof(steps));
+	SDL_RWwrite(f, &pattern->color, 1, sizeof(pattern->color));
 	
 	Uint8 buffer = 0;
 	for (int i = 0 ; i < steps ; ++i)
@@ -221,7 +223,7 @@ static void write_packed_pattern(FILE *f, const MusPattern *pattern, bool skip)
 			buffer |= MUS_PAK_BIT_CMD;
 			
 		if (i & 1 || i + 1 >= steps)
-			fwrite(&buffer, 1, sizeof(buffer), f);
+			SDL_RWwrite(f, &buffer, 1, sizeof(buffer));
 			
 		buffer <<= 4;
 	}
@@ -229,28 +231,28 @@ static void write_packed_pattern(FILE *f, const MusPattern *pattern, bool skip)
 	for (int i = 0 ; i < steps ; ++i)
 	{
 		if (pattern->step[i].note != MUS_NOTE_NONE)
-			fwrite(&pattern->step[i].note, 1, sizeof(pattern->step[i].note), f);
+			SDL_RWwrite(f, &pattern->step[i].note, 1, sizeof(pattern->step[i].note));
 			
 		if (pattern->step[i].instrument != MUS_NOTE_NO_INSTRUMENT)
-			fwrite(&pattern->step[i].instrument, 1, sizeof(pattern->step[i].instrument), f);
+			SDL_RWwrite(f, &pattern->step[i].instrument, 1, sizeof(pattern->step[i].instrument));
 			
 		if (pattern->step[i].ctrl != 0 || pattern->step[i].volume != MUS_NOTE_NO_VOLUME)
 		{
 			Uint8 ctrl = pattern->step[i].ctrl;
 			if (pattern->step[i].volume != MUS_NOTE_NO_VOLUME) 
 				ctrl |= MUS_PAK_BIT_VOLUME;
-			fwrite(&ctrl, 1, sizeof(pattern->step[i].ctrl), f);
+			SDL_RWwrite(f, &ctrl, 1, sizeof(pattern->step[i].ctrl));
 		}
 			
 		if (pattern->step[i].command != 0)
 		{
 			Uint16 c = pattern->step[i].command;
 			FIX_ENDIAN(c);
-			fwrite(&c, 1, sizeof(pattern->step[i].command), f);
+			SDL_RWwrite(f, &c, 1, sizeof(pattern->step[i].command));
 		}
 		
 		if (pattern->step[i].volume != MUS_NOTE_NO_VOLUME)
-			fwrite(&pattern->step[i].volume, 1, sizeof(pattern->step[i].volume), f);
+			SDL_RWwrite(f, &pattern->step[i].volume, 1, sizeof(pattern->step[i].volume));
 	}
 }
 
@@ -314,13 +316,13 @@ int open_song(FILE *f)
 }
 
 
-int save_instrument(FILE *f)
+int save_instrument(SDL_RWops *f)
 {
 	const Uint8 version = MUS_VERSION;
 				
-	fwrite(MUS_INST_SIG, strlen(MUS_INST_SIG), sizeof(MUS_INST_SIG[0]), f);
+	SDL_RWwrite(f, MUS_INST_SIG, strlen(MUS_INST_SIG), sizeof(MUS_INST_SIG[0]));
 	
-	fwrite(&version, 1, sizeof(version), f);
+	SDL_RWwrite(f, &version, 1, sizeof(version));
 	
 	save_instrument_inner(f, &mused.song.instrument[mused.current_instrument], &mused.mus.cyd->wavetable_entries[mused.song.instrument[mused.current_instrument].wavetable_entry], &mused.mus.cyd->wavetable_entries[mused.song.instrument[mused.current_instrument].fm_wave]);
 	
@@ -328,7 +330,7 @@ int save_instrument(FILE *f)
 }
 
 
-int save_song(FILE *f)
+int save_song_inner(SDL_RWops *f, SongStats *stats)
 {
 	bool kill_unused_things = false;
 
@@ -355,52 +357,55 @@ int save_song(FILE *f)
 		kill_unused_things = true;
 	}
 
-	fwrite(MUS_SONG_SIG, strlen(MUS_SONG_SIG), sizeof(MUS_SONG_SIG[0]), f);
+	SDL_RWwrite(f, MUS_SONG_SIG, strlen(MUS_SONG_SIG), sizeof(MUS_SONG_SIG[0]));
 	
 	const Uint8 version = MUS_VERSION;
 	
 	mused.song.time_signature = mused.time_signature;
 	mused.song.sequence_step = mused.sequenceview_steps;
 	
-	fwrite(&version, 1, sizeof(version), f);
+	SDL_RWwrite(f, &version, 1, sizeof(version));
 	
-	fwrite(&mused.song.num_channels, 1, sizeof(mused.song.num_channels), f);
+	SDL_RWwrite(f, &mused.song.num_channels, 1, sizeof(mused.song.num_channels));
 	Uint16 temp16 = mused.song.time_signature;
 	FIX_ENDIAN(temp16);
-	fwrite(&temp16, 1, sizeof(mused.song.time_signature), f);
+	SDL_RWwrite(f, &temp16, 1, sizeof(mused.song.time_signature));
 	temp16 = mused.song.sequence_step;
 	FIX_ENDIAN(temp16);
-	fwrite(&temp16, 1, sizeof(mused.song.sequence_step), f);
-	fwrite(&n_inst, 1, sizeof(mused.song.num_instruments), f);
+	SDL_RWwrite(f, &temp16, 1, sizeof(mused.song.sequence_step));
+	SDL_RWwrite(f, &n_inst, 1, sizeof(mused.song.num_instruments));
 	temp16 = mused.song.num_patterns;
 	FIX_ENDIAN(temp16);
-	fwrite(&temp16, 1, sizeof(mused.song.num_patterns), f);
+	SDL_RWwrite(f, &temp16, 1, sizeof(mused.song.num_patterns));
 	for (int i = 0 ; i < mused.song.num_channels ; ++i)
 	{
 		temp16 = mused.song.num_sequences[i];
 		FIX_ENDIAN(temp16);
-		fwrite(&temp16, 1, sizeof(mused.song.num_sequences[i]), f);
+		SDL_RWwrite(f, &temp16, 1, sizeof(mused.song.num_sequences[i]));
 	}
 	temp16 = mused.song.song_length;
 	FIX_ENDIAN(temp16);
-	fwrite(&temp16, 1, sizeof(mused.song.song_length), f);
+	SDL_RWwrite(f, &temp16, 1, sizeof(mused.song.song_length));
 	temp16 = mused.song.loop_point;
 	FIX_ENDIAN(temp16);
-	fwrite(&temp16, 1, sizeof(mused.song.loop_point), f);
-	fwrite(&mused.song.master_volume, 1, 1, f);
-	fwrite(&mused.song.song_speed, 1, sizeof(mused.song.song_speed), f);
-	fwrite(&mused.song.song_speed2, 1, sizeof(mused.song.song_speed2), f);
-	fwrite(&mused.song.song_rate, 1, sizeof(mused.song.song_rate), f);
+	SDL_RWwrite(f, &temp16, 1, sizeof(mused.song.loop_point));
+	SDL_RWwrite(f, &mused.song.master_volume, 1, 1);
+	SDL_RWwrite(f, &mused.song.song_speed, 1, sizeof(mused.song.song_speed));
+	SDL_RWwrite(f, &mused.song.song_speed2, 1, sizeof(mused.song.song_speed2));
+	SDL_RWwrite(f, &mused.song.song_rate, 1, sizeof(mused.song.song_rate));
 	Uint32 temp32 = mused.song.flags;
 	FIX_ENDIAN(temp32);
-	fwrite(&temp32, 1, sizeof(mused.song.flags), f);
-	fwrite(&mused.song.multiplex_period, 1, sizeof(mused.song.multiplex_period), f);
-	fwrite(&mused.song.pitch_inaccuracy, 1, sizeof(mused.song.pitch_inaccuracy), f);
+	SDL_RWwrite(f, &temp32, 1, sizeof(mused.song.flags));
+	SDL_RWwrite(f, &mused.song.multiplex_period, 1, sizeof(mused.song.multiplex_period));
+	SDL_RWwrite(f, &mused.song.pitch_inaccuracy, 1, sizeof(mused.song.pitch_inaccuracy));
 	
 	Uint8 len = strlen(mused.song.title);
-	fwrite(&len, 1, 1, f);
+	SDL_RWwrite(f, &len, 1, 1);
 	if (len)
-		fwrite(mused.song.title, 1, len, f);
+		SDL_RWwrite(f, mused.song.title, 1, len);
+	
+	if (stats)
+		stats->size[STATS_HEADER] = SDL_RWtell(f);
 	
 	Uint8 n_fx = kill_unused_things ? 0 : CYD_MAX_FX_CHANNELS;
 	
@@ -410,7 +415,7 @@ int save_song(FILE *f)
 			if (mused.song.instrument[i].cydflags & CYD_CHN_ENABLE_FX) n_fx = my_max(n_fx, mused.song.instrument[i].fx_bus + 1);
 	}	
 	
-	fwrite(&n_fx, 1, sizeof(n_fx), f);
+	SDL_RWwrite(f, &n_fx, 1, sizeof(n_fx));
 	
 	debug("Saving %d fx", n_fx);
 	for (int fx = 0 ; fx < n_fx ; ++fx)
@@ -426,31 +431,37 @@ int save_song(FILE *f)
 		}
 		
 		Uint8 len = strlen(temp.name);
-		_VER_WRITE(&len, 0);
+		SDL_RWwrite(f, &len, sizeof(len), 1);
 		if (len)
-			_VER_WRITE(temp.name, len);
+			SDL_RWwrite(f, temp.name, sizeof(temp.name[0]), len);
 		
-		_VER_WRITE(&temp.flags, 0);
-		_VER_WRITE(&temp.crush.bit_drop, 0);
-		_VER_WRITE(&temp.chr.rate, 0);
-		_VER_WRITE(&temp.chr.min_delay, 0);
-		_VER_WRITE(&temp.chr.max_delay, 0);
-		_VER_WRITE(&temp.chr.sep, 0);
+		SDL_RWwrite(f, &temp.flags, sizeof(temp.flags), 1);
+		SDL_RWwrite(f, &temp.crush.bit_drop, sizeof(temp.crush.bit_drop), 1);
+		SDL_RWwrite(f, &temp.chr.rate, sizeof(temp.chr.rate), 1);
+		SDL_RWwrite(f, &temp.chr.min_delay, sizeof(temp.chr.min_delay), 1);
+		SDL_RWwrite(f, &temp.chr.max_delay, sizeof(temp.chr.max_delay), 1);
+		SDL_RWwrite(f, &temp.chr.sep, sizeof(temp.chr.sep), 1);
 		
-		_VER_WRITE(&temp.rvb.spread, 0);
+		SDL_RWwrite(f, &temp.rvb.spread, sizeof(temp.rvb.spread), 1);
 		
 		for (int i = 0 ; i < CYDRVB_TAPS ; ++i)	
 		{
-			_VER_WRITE(&temp.rvb.tap[i].delay, 0);
-			_VER_WRITE(&temp.rvb.tap[i].gain, 0);
+			SDL_RWwrite(f, &temp.rvb.tap[i].delay, sizeof(temp.rvb.tap[i].delay), 1);
+			SDL_RWwrite(f, &temp.rvb.tap[i].gain, sizeof(temp.rvb.tap[i].gain), 1);
 		}
 
-		_VER_WRITE(&temp.crushex.downsample, 0); 
-		_VER_WRITE(&temp.crushex.gain, 0);
+		SDL_RWwrite(f, &temp.crushex.downsample, sizeof(temp.crushex.downsample), 1); 
+		SDL_RWwrite(f, &temp.crushex.gain, sizeof(temp.crushex.gain), 1);
 	}
 	
-	fwrite(&mused.song.default_volume[0], sizeof(mused.song.default_volume[0]), mused.song.num_channels, f);
-	fwrite(&mused.song.default_panning[0], sizeof(mused.song.default_panning[0]), mused.song.num_channels, f);
+	if (stats)
+		stats->size[STATS_FX] = SDL_RWtell(f);
+	
+	SDL_RWwrite(f, &mused.song.default_volume[0], sizeof(mused.song.default_volume[0]), mused.song.num_channels);
+	SDL_RWwrite(f, &mused.song.default_panning[0], sizeof(mused.song.default_panning[0]), mused.song.num_channels);
+	
+	if (stats)
+		stats->size[STATS_DEFVOLPAN] = SDL_RWtell(f);
 	
 	int max_wt = kill_unused_things ? 0 : CYD_WAVE_MAX_ENTRIES;
 	
@@ -466,6 +477,9 @@ int save_song(FILE *f)
 		}
 	}
 	
+	if (stats)
+		stats->size[STATS_INSTRUMENTS] = SDL_RWtell(f);
+	
 	bool *used_pattern = calloc(sizeof(bool), mused.song.num_patterns);
 	
 	for (int i = 0 ; i < mused.song.num_channels; ++i)
@@ -474,27 +488,33 @@ int save_song(FILE *f)
 		{
 			temp16 = mused.song.sequence[i][s].position;
 			FIX_ENDIAN(temp16);
-			fwrite(&temp16, 1, sizeof(temp16), f);
+			SDL_RWwrite(f, &temp16, 1, sizeof(temp16));
 			
 			used_pattern[mused.song.sequence[i][s].pattern] = true;
 			
 			temp16 = mused.song.sequence[i][s].pattern;
 			FIX_ENDIAN(temp16);
-			fwrite(&temp16, 1, sizeof(temp16), f);
-			fwrite(&mused.song.sequence[i][s].note_offset, 1, sizeof(mused.song.sequence[i][s].note_offset), f);
+			SDL_RWwrite(f, &temp16, 1, sizeof(temp16));
+			SDL_RWwrite(f, &mused.song.sequence[i][s].note_offset, 1, sizeof(mused.song.sequence[i][s].note_offset));
 		}
 	}
+	
+	if (stats)
+		stats->size[STATS_SEQUENCE] = SDL_RWtell(f);
 	
 	for (int i = 0 ; i < mused.song.num_patterns; ++i)
 	{
 		write_packed_pattern(f, &mused.song.pattern[i], !used_pattern[i]);
 	}
 	
+	if (stats)
+		stats->size[STATS_PATTERNS] = SDL_RWtell(f);
+	
 	free(used_pattern);
 	
 	FIX_ENDIAN(max_wt);
 	
-	fwrite(&max_wt, 1, sizeof(Uint8), f);
+	SDL_RWwrite(f, &max_wt, 1, sizeof(Uint8));
 	
 	debug("Saving %d wavetable items", max_wt);
 	for (int i = 0 ; i < max_wt ; ++i)
@@ -508,9 +528,27 @@ int save_song(FILE *f)
 		write_wavetable_entry(f, &mused.mus.cyd->wavetable_entries[i], used);
 	}
 	
+	if (stats)
+		stats->size[STATS_WAVETABLE] = SDL_RWtell(f);
+	
 	mused.song.num_patterns = NUM_PATTERNS;
 	mused.song.num_instruments = NUM_INSTRUMENTS;
 	mused.modified = false;
+	
+	if (stats)
+	{
+		for (int i = N_STATS - 1 ; i > 0 ; --i)
+		{
+			stats->size[i] -= stats->size[i - 1];
+		}
+		
+		stats->total_size = 0;
+		
+		for (int i = 0 ; i < N_STATS ; ++i)
+		{
+			stats->total_size += stats->size[i];
+		}
+	}
 	
 	return 1;
 }
@@ -596,6 +634,14 @@ int open_instrument(FILE *f)
 }
 
 
+int save_song(SDL_RWops *ops)
+{
+	int r = save_song_inner(ops, NULL);
+	
+	return r;
+}
+
+
 void open_data(void *type, void *action, void *_ret)
 {
 	int t = CASTPTR(int, type);
@@ -629,13 +675,14 @@ void open_data(void *type, void *action, void *_ret)
 	const struct 
 	{
 		const char *name, *ext;
-		int (*open[2])(FILE *);
+		int (*open)(FILE *);
+		int (*save)(SDL_RWops *);
 	} open_stuff[] = {
-		{ "song", "kt", { open_song, save_song } },
-		{ "instrument", "ki", { open_instrument, save_instrument } },
-		{ "wave", "wav", {open_wavetable, NULL } },
-		{ "raw signed", "", {open_wavetable_raw, NULL} },
-		{ "raw unsigned", "", {open_wavetable_raw_u, NULL} }
+		{ "song", "kt", open_song, save_song },
+		{ "instrument", "ki", open_instrument, save_instrument },
+		{ "wave", "wav", open_wavetable, NULL },
+		{ "raw signed", "", open_wavetable_raw, NULL },
+		{ "raw unsigned", "", open_wavetable_raw_u, NULL }
 	};
 	
 	const char *mode[] = { "rb", "wb" };
@@ -671,15 +718,30 @@ void open_data(void *type, void *action, void *_ret)
 	}
 	
 	FILE * f = open_dialog(mode[a], str, open_stuff[t].ext, domain, mused.slider_bevel, &mused.largefont, &mused.smallfont, def);
+	SDL_RWops *rw = NULL;
 	
 	if (f)
 	{
 		int return_val = 1;
+		void * tmp;
+		
+		if (a == 0)
+			tmp = open_stuff[t].open;
+		else
+			tmp = open_stuff[t].save;
 	
-		if (open_stuff[t].open[a])
+		if (tmp)
 		{
 			cyd_lock(&mused.cyd, 1);
-			int r = open_stuff[t].open[a](f);
+			int r;
+			if (a == 0)
+				r = open_stuff[t].open(f);
+			else
+			{	
+				rw = create_memwriter(f);
+				r = open_stuff[t].save(rw);
+			}
+			
 			cyd_lock(&mused.cyd, 0);
 			
 			if (!r)
@@ -692,6 +754,10 @@ void open_data(void *type, void *action, void *_ret)
 			else if (a == OD_A_OPEN && t != OD_T_SONG)
 				mused.modified = true;
 		}	
+		
+		if (rw)
+			SDL_RWclose(rw);
+		
 		fclose(f);
 		
 		if (ret) *ret = return_val;

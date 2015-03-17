@@ -227,6 +227,6 @@ MusPattern * get_current_pattern();
 void change_visualizer(int vis);
 void set_info_message(const char *string, ...)  __attribute__ ((format (printf, 1, 2)));
 void set_channels(int channels);
-Uint64 get_playtime_at(int position);
+Uint32 get_playtime_at(int position);
 
 #endif

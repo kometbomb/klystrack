@@ -30,6 +30,7 @@ OTHER DEALINGS IN THE SOFTWARE.
 #include "ahx.h"
 #include "xm.h"
 #include "org.h"
+#include "hubbard.h"
 #include "gui/toolutil.h"
 #include "gui/msgbox.h"
 #include "diskop.h"
@@ -57,8 +58,8 @@ void import_module(void *type, void* unused1, void* unused2)
 		if (!r) return;
 	}
 	
-	static const char *mod_name[] = {"a Protracker", "an AHX", "a FastTracker II", "a Cave Story"};
-	static const char *mod_ext[] = {"mod", "ahx", "xm", "org"};
+	static const char *mod_name[] = {"a Protracker", "an AHX", "a FastTracker II", "a Cave Story", "a Rob Hubbard"};
+	static const char *mod_ext[] = {"mod", "ahx", "xm", "org", "sid"};
 	
 	char buffer[100];
 	snprintf(buffer, sizeof(buffer), "Import %s song", mod_name[CASTPTR(int, type)]);
@@ -76,12 +77,20 @@ void import_module(void *type, void* unused1, void* unused2)
 		case IMPORT_AHX: r = import_ahx(f); break;
 		case IMPORT_XM: r = import_xm(f); break;
 		case IMPORT_ORG: r = import_org(f); break;
+		case IMPORT_HUBBARD: r = import_hubbard(f); break;
 	}
 	
-	if (!r) 
+	if (CASTPTR(int, type) != IMPORT_HUBBARD)
 	{
-		snprintf(buffer, sizeof(buffer), "Not %s song", mod_name[CASTPTR(int, type)]);
-		msgbox(domain, mused.slider_bevel, &mused.largefont, buffer, MB_OK);
+		if (!r) 
+		{
+			snprintf(buffer, sizeof(buffer), "Not %s song", mod_name[CASTPTR(int, type)]);
+			msgbox(domain, mused.slider_bevel, &mused.largefont, buffer, MB_OK);
+		}
+		else
+		{
+			optimize_song(&mused.song);
+		}
 	}
 	else
 	{
