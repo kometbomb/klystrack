@@ -561,56 +561,7 @@ void set_channels(int channels)
 }
 
 
-Uint64 get_playtime_at(int position)
+Uint32 get_playtime_at(int position)
 {
-	Uint64 ticks = 0;
-	int pos = 0;
-	int seq_pos[MUS_MAX_CHANNELS] = {0};
-	int spd1 = mused.song.song_speed, spd2 = mused.song.song_speed2, rate = mused.song.song_rate;
-	
-	while (pos < position)
-	{
-		for (int t = 0 ; t < mused.song.num_channels ; ++t)
-		{
-			if (seq_pos[t] < mused.song.num_sequences[t])
-			{
-				if (mused.song.sequence[t][seq_pos[t]].position + mused.song.pattern[mused.song.sequence[t][seq_pos[t]].pattern].num_steps <= pos)
-					seq_pos[t]++;
-					
-				if (seq_pos[t] < mused.song.num_sequences[t])
-				{
-					int seq_start_pos = mused.song.sequence[t][seq_pos[t]].position;				
-					MusPattern *pat = &mused.song.pattern[mused.song.sequence[t][seq_pos[t]].pattern];
-					
-					if (pos - seq_start_pos < pat->num_steps)
-					{
-						Uint16 command = pat->step[pos - seq_start_pos].command;
-						
-						if ((command & 0xff00) == MUS_FX_SET_SPEED)
-						{
-							spd1 = command & 0xf;
-							spd2 = (command & 0xf0) >> 4;
-							
-							if (!spd2)
-								spd2 = spd1;
-						}
-						else if ((command & 0xff00) == MUS_FX_SET_RATE)
-						{
-							rate = command & 0xff;
-						}
-						else if ((command & 0xff00) == MUS_FX_SKIP_PATTERN)
-						{
-							pos = seq_start_pos + pat->num_steps - 1;
-						}
-					}
-				}
-			}
-		}
-		
-		ticks += ((1000 * (spd1 + spd2) / 2) / rate);
-		
-		++pos;
-	}
-	
-	return ticks;
+	return mus_get_playtime_at(&mused.song, position);
 }

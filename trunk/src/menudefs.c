@@ -30,6 +30,7 @@ OTHER DEALINGS IN THE SOFTWARE.
 #include "mused.h"
 #include "import/import.h"
 #include "midi.h"
+#include "stats.h"
 
 extern Mused mused;
 
@@ -157,6 +158,7 @@ static const Menu importmenu[] =
 	{ 0, filemenu, "Import .AHX", NULL, import_module, MAKEPTR(IMPORT_AHX) },
 	{ 0, filemenu, "Import .XM", NULL, import_module, MAKEPTR(IMPORT_XM) },
 	{ 0, filemenu, "Import .ORG", NULL, import_module, MAKEPTR(IMPORT_ORG) },
+	{ 0, filemenu, "Import .SID (Rob Hubbard)", NULL, import_module, MAKEPTR(IMPORT_HUBBARD) },
 	{ 0, NULL, NULL }
 };
 
@@ -211,6 +213,7 @@ static const Menu playmenu[] =
 static const Menu infomenu[] =
 {
 	{ 0, mainmenu, "About",  NULL, show_about_box, (void*)0, 0, 0 },
+	{ 0, mainmenu, "Song statistics",  NULL, song_stats, (void*)0, 0, 0 },
 	{ 0, NULL, NULL }
 };
 

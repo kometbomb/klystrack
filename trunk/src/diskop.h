@@ -27,6 +27,8 @@ OTHER DEALINGS IN THE SOFTWARE.
 */
 
 #include <stdio.h>
+#include "SDL_rwops.h"
+#include "songstats.h"
 
 enum
 {
@@ -44,10 +46,11 @@ enum
 };
 
 int open_song(FILE *f);
-int save_song(FILE *f);
+int save_song(SDL_RWops *f);
+int save_song_inner(SDL_RWops *f, SongStats *stats);
 int open_wavetable(FILE *f);
 int open_instrument(FILE *f);
-int save_instrument(FILE *f);
+int save_instrument(SDL_RWops *f);
 
 /* action */
 void open_data(void *type, void *action, void*c);
