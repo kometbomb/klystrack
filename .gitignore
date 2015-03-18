@@ -1,0 +1,7 @@
+/deps
+/objs.*
+/bin.*
+/res
+/src/version_number.h
+/src/version.h
+*.dll

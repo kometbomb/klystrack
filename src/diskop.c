@@ -463,18 +463,10 @@ int save_song_inner(SDL_RWops *f, SongStats *stats)
 	if (stats)
 		stats->size[STATS_DEFVOLPAN] = SDL_RWtell(f);
 	
-	int max_wt = kill_unused_things ? 0 : CYD_WAVE_MAX_ENTRIES;
-	
 	debug("Saving %d instruments", n_inst);
 	for (int i = 0 ; i < n_inst ; ++i)
 	{
 		save_instrument_inner(f, &mused.song.instrument[i], NULL, NULL);
-		
-		if (kill_unused_things)
-		{
-			if (mused.song.instrument[i].cydflags & CYD_CHN_ENABLE_WAVE)
-				max_wt = my_max(max_wt, mused.song.instrument[i].wavetable_entry + 1);
-		}
 	}
 	
 	if (stats)
@@ -512,20 +504,23 @@ int save_song_inner(SDL_RWops *f, SongStats *stats)
 	
 	free(used_pattern);
 	
+	int max_wt = kill_unused_things ? 0 : CYD_WAVE_MAX_ENTRIES;
+	
+	for (int i = 0 ; i < CYD_WAVE_MAX_ENTRIES ; ++i)
+	{
+		if (mused.mus.cyd->wavetable_entries[i].samples)
+			max_wt = my_max(max_wt, i + 1);
+	}
+	
 	FIX_ENDIAN(max_wt);
 	
 	SDL_RWwrite(f, &max_wt, 1, sizeof(Uint8));
 	
 	debug("Saving %d wavetable items", max_wt);
+	
 	for (int i = 0 ; i < max_wt ; ++i)
 	{
-		bool used = false;
-		
-		for (int ins = 0 ; ins < n_inst ; ++ins)
-			if (mused.song.instrument[ins].wavetable_entry == i)
-				used = true;
-		
-		write_wavetable_entry(f, &mused.mus.cyd->wavetable_entries[i], used);
+		write_wavetable_entry(f, &mused.mus.cyd->wavetable_entries[i], true);
 	}
 	
 	if (stats)
