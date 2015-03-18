@@ -121,14 +121,11 @@ res/$(1): themes/$(1)/* #themes/$(1)/font/* themes/$(1)/font7x6/* themes/$(1)/ti
 	
 endef
 
+build: Makefile src/version.h src/version_number.h
+	@make -C ../klystron CFG=$(CFG) EXTFLAGS="$(EXTFLAGS)"
+	@make all CFG=$(CFG) EXTFLAGS="$(EXTFLAGS)"
 
-build: Makefile src/version
-	@echo '#ifndef VERSION_NUMBER' > src/version_number.h
-	@echo '#define VERSION_NUMBER' >> src/version_number.h
-	@echo -n '#define VERSION "' >> src/version_number.h
-	@echo -n `cat src/version` >> src/version_number.h
-	@echo '"' >> src/version_number.h
-	@echo '#endif' >> src/version_number.h
+src/version.h: src/version
 	@echo '#ifndef VERSION_H' > ./src/version.h
 	@echo '#define VERSION_H' >> ./src/version.h
 	@echo '#include "version_number.h"' >> ./src/version.h
@@ -137,9 +134,14 @@ build: Makefile src/version
 	@echo '"' >> ./src/version.h
 	@echo '#define VERSION_STRING "klystrack " VERSION " " REVISION' >> ./src/version.h
 	@echo '#endif' >> ./src/version.h
-	@make -C ../klystron CFG=$(CFG) EXTFLAGS="$(EXTFLAGS)"
-	@make all CFG=$(CFG) EXTFLAGS="$(EXTFLAGS)"
-
+	
+src/version_number.h: src/version
+	@echo '#ifndef VERSION_NUMBER' > src/version_number.h
+	@echo '#define VERSION_NUMBER' >> src/version_number.h
+	@echo -n '#define VERSION "' >> src/version_number.h
+	@echo -n `cat src/version` >> src/version_number.h
+	@echo '"' >> src/version_number.h
+	@echo '#endif' >> src/version_number.h
 
 # root (i.e. src/*.c)
 $(eval $(call directory_defs,,))
