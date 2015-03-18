@@ -132,8 +132,8 @@ build: Makefile src/version
 	@echo '#ifndef VERSION_H' > ./src/version.h
 	@echo '#define VERSION_H' >> ./src/version.h
 	@echo '#include "version_number.h"' >> ./src/version.h
-	@echo -n '#define REVISION "r' >> ./src/version.h
-	@svnversion -n . >> ./src/version.h
+	@echo -n '#define REVISION "' >> ./src/version.h
+	@date +"%Y%m%d" | tr -d '\n' >> ./src/version.h
 	@echo '"' >> ./src/version.h
 	@echo '#define VERSION_STRING "klystrack " VERSION " " REVISION' >> ./src/version.h
 	@echo '#endif' >> ./src/version.h
@@ -187,9 +187,9 @@ endif
 	
 nightly: zip
 	@$(REV) ver.in ver.txt
-	@cp zip/$(ARCHIVE) zip/klystrack-nightly-`svnversion -n .`-win32.zip
+	@cp zip/$(ARCHIVE) zip/klystrack-nightly-`date +"%Y%m%d" | tr -d '\n'`-win32.zip
 ifneq ($(UPLOAD),)
-	@$(UPLOAD) zip/klystrack-nightly-`svnversion -n .`-win32.zip
+	@$(UPLOAD) zip/klystrack-nightly-`date +"%Y%m%d" | tr -d '\n'`-win32.zip
 endif
 	@rm -f ver.txt
 
