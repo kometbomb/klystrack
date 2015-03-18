@@ -1789,7 +1789,7 @@ void fx_add_param(int d)
 		
 		case R_CRUSHDITHER:
 		{
-			flipbit(mused.song.fx[mused.fx_bus].flags, CYDFX_ENABLE_CRUSH);
+			flipbit(mused.song.fx[mused.fx_bus].flags, CYDFX_ENABLE_CRUSH_DITHER);
 		}
 		break;
 		
