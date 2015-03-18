@@ -413,7 +413,7 @@ int save_song_inner(SDL_RWops *f, SongStats *stats)
 	{
 		for (int i = 0 ; i < CYD_MAX_FX_CHANNELS ; ++i)
 		{
-			if (mused.song.fx[i].flags & (CYDFX_ENABLE_REVERB |	CYDFX_ENABLE_CRUSH | CYDFX_ENABLE_CHORUS | CYDFX_ENABLE_CRUSH_DITHER))
+			if (mused.song.fx[i].flags & (CYDFX_ENABLE_REVERB |	CYDFX_ENABLE_CRUSH | CYDFX_ENABLE_CHORUS))
 				n_fx = my_max(n_fx, i + 1);
 		}
 	}	
