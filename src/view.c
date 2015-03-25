@@ -1680,6 +1680,7 @@ void sequence_spectrum_view(GfxDomain *dest_surface, const SDL_Rect *dest, const
 			copy_rect(&d, &a);
 			d.x = d.w / 2 - mused.logo->surface->w / 2 + d.x;
 			d.w = mused.logo->surface->w;
+			s.w = mused.logo->surface->w;
 			my_BlitSurface(mused.logo, &s, dest_surface, &d);
 			gfx_domain_set_clip(domain, NULL);
 			if (check_event(event, &a, NULL, NULL, NULL, NULL))
