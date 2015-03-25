@@ -36,27 +36,9 @@ OTHER DEALINGS IN THE SOFTWARE.
 #include "view/wavetableview.h"
 #include <string.h>
 #include "memwriter.h"
-#include <time.h>
 
 extern Mused mused;
 extern GfxDomain *domain;
-
-
-int create_backup(char *filename)
-{
-	char new_filename[1000];
-	time_t now_time;
-	time(&now_time);
-	struct tm *now_tm = localtime(&now_time);
-	
-	if (!now_tm)
-		return 0;
-	
-	snprintf(new_filename, sizeof(new_filename), "%s.%04d%02d%02d-%02d%02d%02d.backup", filename, 
-		now_tm->tm_year + 1900, now_tm->tm_mon, now_tm->tm_mday, now_tm->tm_hour, now_tm->tm_min, now_tm->tm_sec);
-		
-	return rename(filename, new_filename) == 0;
-}
 
 
 static void write_wavetable_entry(SDL_RWops *f, const CydWavetableEntry *write_wave, bool write_wave_data)
@@ -733,18 +715,8 @@ void open_data(void *type, void *action, void *_ret)
 		def = _def;
 	}
 	
-	char filename[5000];
-	FILE *f = NULL;
+	FILE * f = open_dialog(mode[a], str, open_stuff[t].ext, domain, mused.slider_bevel, &mused.largefont, &mused.smallfont, def);
 	SDL_RWops *rw = NULL;
-	
-	if (open_dialog_fn(mode[a], str, open_stuff[t].ext, domain, mused.slider_bevel, &mused.largefont, &mused.smallfont, def, filename, sizeof(filename)))
-	{
-		if (!(mused.flags & DISABLE_BACKUPS) && a == OD_A_SAVE && !create_backup(filename))
-			warning("Could not create backup for %s", filename);
-		
-		f = fopen(filename, mode[a]);
-		if (!f) msgbox(domain, mused.slider_bevel, &mused.largefont, "Could not open file", MB_OK);
-	}
 	
 	if (f)
 	{
