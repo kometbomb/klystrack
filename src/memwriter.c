@@ -72,6 +72,7 @@ static int mw_close(SDL_RWops *ops)
 	}
 	
 	free(mem->data);
+	free(mem);
 	SDL_FreeRW(ops);
 	
 	return r;
