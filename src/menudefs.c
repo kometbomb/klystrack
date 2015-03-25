@@ -148,6 +148,7 @@ const Menu prefsmenu[] =
 	{ 0, mainmenu, "AHX-style sequence edit", NULL, MENU_CHECK, &mused.flags, (void*)EDIT_SEQUENCE_DIGITS, 0 },
 	{ 0, mainmenu, "Disable nostalgy", NULL, MENU_CHECK, &mused.flags, (void*)DISABLE_NOSTALGY, 0 },
 	{ 0, mainmenu, "Disable VU meters", NULL, MENU_CHECK, &mused.flags, (void*)DISABLE_VU_METERS, 0 },
+	{ 0, mainmenu, "Disable file backups", NULL, MENU_CHECK, &mused.flags, (void*)DISABLE_BACKUPS, 0 },
 	{ 0, NULL, NULL }
 };
 

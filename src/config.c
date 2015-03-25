@@ -74,6 +74,7 @@ static const struct { int type; const char *name; void *param; int mask; } confi
 	{ C_BOOL, "maximized", &mused.flags, WINDOW_MAXIMIZED },
 	{ C_INT, "oversample", &mused.oversample },
 	{ C_BOOL, "disable_render_to_texture", &mused.flags, DISABLE_RENDER_TO_TEXTURE },
+	{ C_BOOL, "disable_backups", &mused.flags, DISABLE_BACKUPS },
 	{ C_END }
 };
 
