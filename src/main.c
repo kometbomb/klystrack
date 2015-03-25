@@ -337,18 +337,26 @@ int main(int argc, char **argv)
 					switch (e.window.event) {
 						case SDL_WINDOWEVENT_MINIMIZED:
 						case SDL_WINDOWEVENT_RESTORED:
+							debug("SDL_WINDOWEVENT_MINIMIZED");
 							mused.flags &= ~WINDOW_MAXIMIZED;
 							break;
 							
 						case SDL_WINDOWEVENT_MAXIMIZED:
+							debug("SDL_WINDOWEVENT_MAXIMIZED");
 							mused.flags |= WINDOW_MAXIMIZED;
 							break;
 							
 						case SDL_WINDOWEVENT_RESIZED:
+							debug("SDL_WINDOWEVENT_RESIZED %dx%d", e.window.data1, e.window.data2);
 							domain->screen_w = my_max(320, e.window.data1 / domain->scale);
 							domain->screen_h = my_max(240, e.window.data2 / domain->scale);
-							mused.window_w = domain->screen_w * domain->scale;
-							mused.window_h = domain->screen_h * domain->scale;
+							
+							if (!(mused.flags & FULLSCREEN))
+							{
+								mused.window_w = domain->screen_w * domain->scale;
+								mused.window_h = domain->screen_h * domain->scale;
+							}
+							
 							gfx_domain_update(domain, !(mused.flags & WINDOW_MAXIMIZED));
 							break;
 					}

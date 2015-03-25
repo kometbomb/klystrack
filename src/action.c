@@ -569,6 +569,13 @@ void toggle_fullscreen(void *a, void*b, void*c)
 void change_fullscreen(void *a, void*b, void*c)
 {
 	domain->fullscreen = (mused.flags & FULLSCREEN) != 0;
+	
+	if (!(mused.flags & FULLSCREEN))
+	{
+		domain->screen_w = mused.window_w / domain->scale;
+		domain->screen_h = mused.window_h / domain->scale;
+	}
+	
 	gfx_domain_update(domain, true);
 }
 
