@@ -296,7 +296,7 @@ void wavetable_draw(float x, float y, float width)
 }
 
 
-void wavegen_randomize(void *_settings, void *unused2, void *unused3)
+void wavegen_randomize(void *unused1, void *unused2, void *unused3)
 {
 	bool do_sines = !(rndu() & 3);
 	bool do_shift = !(rndu() & 1);
@@ -380,4 +380,11 @@ void wavetable_amp(void *_amp, void *unused2, void *unused3)
 		
 		invalidate_wavetable_view();
 	}
+}
+
+
+void wavetable_randomize_and_create_one_cycle(void *_settings, void *unused2, void *unused3)
+{
+	wavegen_randomize(NULL, NULL, NULL);
+	wavetable_create_one_cycle(_settings, NULL, NULL);
 }

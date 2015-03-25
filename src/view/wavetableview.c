@@ -515,13 +515,17 @@ void wavegen_view(GfxDomain *dest_surface, const SDL_Rect *dest, const SDL_Event
 		wave_add_param(d);
 	}
 	
-	r.y += r.h;
+	r.y += r.h + 2;
+	r.w = r.w / 2;
+	
+	button_text_event(domain, event, &r, mused.slider_bevel, &mused.buttonfont, BEV_BUTTON, BEV_BUTTON_ACTIVE, "RND+GEN", wavetable_randomize_and_create_one_cycle, &mused.wgset, NULL, NULL);
+	
+	r.x += r.w;
 	
 	button_text_event(domain, event, &r, mused.slider_bevel, &mused.buttonfont, BEV_BUTTON, BEV_BUTTON_ACTIVE, "GENERATE", wavetable_create_one_cycle, &mused.wgset, NULL, NULL);
 	
 	r.y += r.h;
-	
-	r.w = r.w / 2;
+	r.x -= r.w;
 	
 	button_text_event(domain, event, &r, mused.slider_bevel, &mused.buttonfont, BEV_BUTTON, BEV_BUTTON_ACTIVE, "RND", wavegen_randomize, &mused.wgset, NULL, NULL);
 	
