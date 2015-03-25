@@ -151,7 +151,7 @@ void new_song()
 		MusInstrument *inst = &mused.song.instrument[i];
 		kt_default_instrument(inst);
 	}
-	
+
 	mused.song.master_volume = MAX_VOLUME;
 	mused.song.num_channels = 4;
 	mused.song.num_instruments = NUM_INSTRUMENTS;
@@ -168,6 +168,7 @@ void new_song()
 	mused.current_sequencetrack = 0;
 	update_position_sliders();
 	memset(mused.song.title, 0, sizeof(mused.song.title));
+	strcpy(mused.previous_song_filename, "");
 	
 	for (int i = 0 ; i < NUM_PATTERNS ; ++i)
 	{

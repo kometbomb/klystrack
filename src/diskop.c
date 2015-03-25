@@ -724,8 +724,15 @@ void open_data(void *type, void *action, void *_ret)
 			
 			case OD_T_SONG:
 			{
-				strncpy(_def, mused.song.title, sizeof(_def)-4);
-				strcat(_def, ".kt");
+				if (strlen(mused.previous_song_filename) == 0)
+				{
+					strncpy(_def, mused.song.title, sizeof(_def)-4);
+					strcat(_def, ".kt");
+				}
+				else
+				{
+					strncpy(_def, mused.previous_song_filename, sizeof(mused.previous_song_filename) - 1);
+				}
 			}
 			break;
 		}
@@ -741,6 +748,9 @@ void open_data(void *type, void *action, void *_ret)
 	{
 		if (!(mused.flags & DISABLE_BACKUPS) && a == OD_A_SAVE && !create_backup(filename))
 			warning("Could not create backup for %s", filename);
+		
+		if (a == OD_A_SAVE && t == OD_T_SONG) 
+			strncpy(mused.previous_song_filename, filename, sizeof(mused.previous_song_filename) - 1);
 		
 		f = fopen(filename, mode[a]);
 		if (!f) msgbox(domain, mused.slider_bevel, &mused.largefont, "Could not open file", MB_OK);
