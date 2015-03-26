@@ -726,12 +726,11 @@ void open_data(void *type, void *action, void *_ret)
 			{
 				if (strlen(mused.previous_song_filename) == 0)
 				{
-					strncpy(_def, mused.song.title, sizeof(_def)-4);
-					strcat(_def, ".kt");
+					snprintf(_def, sizeof(def), "%s.kt", mused.song.title);
 				}
 				else
 				{
-					strncpy(_def, mused.previous_song_filename, sizeof(mused.previous_song_filename) - 1);
+					strncpy(_def, mused.previous_song_filename, sizeof(def));
 				}
 			}
 			break;

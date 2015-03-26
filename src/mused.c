@@ -169,6 +169,7 @@ void new_song()
 	update_position_sliders();
 	memset(mused.song.title, 0, sizeof(mused.song.title));
 	strcpy(mused.previous_song_filename, "");
+	strcpy(mused.previous_wav_filename, "");
 	
 	for (int i = 0 ; i < NUM_PATTERNS ; ++i)
 	{

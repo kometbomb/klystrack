@@ -633,12 +633,29 @@ void change_timesig(void *delta, void *b, void *c)
 void export_wav_action(void *a, void*b, void*c)
 {
 	char def[1000];
-	snprintf(def, sizeof(def), "%s.wav", mused.song.title);
-	FILE * f = open_dialog("wb", "Export .WAV", "wav", domain, mused.slider_bevel, &mused.largefont, &mused.smallfont, def);
-	if (f)
+	
+	if (strlen(mused.previous_song_filename) == 0)
 	{
-		export_wav(&mused.song, mused.mus.cyd->wavetable_entries, f);
-		fclose(f);
+		snprintf(def, sizeof(def), "%s.wav", mused.song.title);
+	}
+	else
+	{
+		strncpy(def, mused.previous_song_filename, sizeof(mused.previous_song_filename) - 1);
+	}
+	
+	char filename[5000];
+	
+	if (open_dialog_fn("wb", "Export .WAV", "wav", domain, mused.slider_bevel, &mused.largefont, &mused.smallfont, def, filename, sizeof(filename)))
+	{
+		strncpy(mused.previous_song_filename, filename, sizeof(mused.previous_song_filename) - 1);
+	
+		FILE *f = fopen(filename, "wb");
+	
+		if (f)
+		{
+			export_wav(&mused.song, mused.mus.cyd->wavetable_entries, f);
+			fclose(f);
+		}
 	}
 }
 
