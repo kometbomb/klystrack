@@ -66,8 +66,16 @@ void translate_key_event(SDL_KeyboardEvent *e)
 void enum_keymaps()
 {
 	memset(keymapmenu, 0, sizeof(keymapmenu));
-
+	
 	// TODO: remove copypastecode and write enum_dir() function that takes a handler
+	
+	int maps = 0;
+	
+	keymapmenu[maps].parent = prefsmenu;
+	keymapmenu[maps].text = strdup("Default");
+	keymapmenu[maps].action = load_keymap_action;
+	keymapmenu[maps].p1 = (void*)keymapmenu[maps].text;
+	++maps;
 	
 	char path[1000];
 	snprintf(path, sizeof(path) - 1, "%s/key", query_resource_directory());
@@ -81,13 +89,6 @@ void enum_keymaps()
 	}
 	
 	struct dirent *de = NULL;
-	int maps = 0;
-	
-	keymapmenu[maps].parent = prefsmenu;
-	keymapmenu[maps].text = strdup("Default");
-	keymapmenu[maps].action = load_keymap_action;
-	keymapmenu[maps].p1 = (void*)keymapmenu[maps].text;
-	++maps;
 	
 	while ((de = readdir(dir)) != NULL)
 	{
