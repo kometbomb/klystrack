@@ -53,7 +53,7 @@ int create_backup(char *filename)
 		return 0;
 	
 	snprintf(new_filename, sizeof(new_filename), "%s.%04d%02d%02d-%02d%02d%02d.backup", filename, 
-		now_tm->tm_year + 1900, now_tm->tm_mon, now_tm->tm_mday, now_tm->tm_hour, now_tm->tm_min, now_tm->tm_sec);
+		now_tm->tm_year + 1900, now_tm->tm_mon + 1, now_tm->tm_mday, now_tm->tm_hour, now_tm->tm_min, now_tm->tm_sec);
 		
 	return rename(filename, new_filename) == 0;
 }
