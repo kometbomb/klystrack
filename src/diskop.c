@@ -717,8 +717,7 @@ void open_data(void *type, void *action, void *_ret)
 		{
 			case OD_T_INSTRUMENT:
 			{
-				strncpy(_def, mused.song.instrument[mused.current_instrument].name, sizeof(_def)-4);
-				strcat(_def, ".ki");
+				snprintf(_def, sizeof(_def), "%s.ki", mused.song.instrument[mused.current_instrument].name);
 			}
 			break;
 			
@@ -726,11 +725,11 @@ void open_data(void *type, void *action, void *_ret)
 			{
 				if (strlen(mused.previous_song_filename) == 0)
 				{
-					snprintf(_def, sizeof(def), "%s.kt", mused.song.title);
+					snprintf(_def, sizeof(_def), "%s.kt", mused.song.title);
 				}
 				else
 				{
-					strncpy(_def, mused.previous_song_filename, sizeof(def));
+					strncpy(_def, mused.previous_song_filename, sizeof(_def));
 				}
 			}
 			break;
