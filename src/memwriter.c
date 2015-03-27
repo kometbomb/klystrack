@@ -1,4 +1,5 @@
 #include "memwriter.h"
+#include "macros.h"
 #include <stdlib.h>
 #include <string.h>
 
@@ -41,13 +42,15 @@ static size_t mw_write(SDL_RWops *ops, const void *data, size_t size, size_t num
 	MemWriter *mem = ops->hidden.unknown.data1;
 	if (mem->position + size * num > mem->allocated)
 	{
-		int chunk = mem->position + size;
+		int chunk = mem->position + size * num - mem->allocated;
 		
 		if (chunk < 1024)
 			chunk = 1024;
 		
 		mem->allocated = mem->allocated + chunk;
 		mem->data = realloc(mem->data, mem->allocated);
+		
+		debug("MemWriter: Allocating %d bytes (%d bytes allocated total)", chunk, mem->allocated);
 	}
 	
 	memcpy(mem->data + mem->position, data, size * num);
@@ -55,7 +58,9 @@ static size_t mw_write(SDL_RWops *ops, const void *data, size_t size, size_t num
 	mem->position += size * num;
 	
 	if (mem->size < mem->position)
+	{
 		mem->size = mem->position;
+	}
 		
 	return size * num;
 }
@@ -68,6 +73,7 @@ static int mw_close(SDL_RWops *ops)
 	
 	if (mem->flush)
 	{
+		debug("MemWriter: Flushing %d bytes to disk", mem->size);
 		r = fwrite(mem->data, mem->size, 1, mem->flush) == mem->size ? 0 : -1;
 	}
 	
