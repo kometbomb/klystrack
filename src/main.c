@@ -600,8 +600,6 @@ int main(int argc, char **argv)
 	debug("cyd_deinit");
 	cyd_deinit(&mused.cyd);
 	
-	gfx_domain_free(domain);
-	
 	save_config(TOSTRING(CONFIG_PATH));
 	
 	debug("deinit");
@@ -610,6 +608,8 @@ int main(int argc, char **argv)
 #ifdef WIN32
 	deinit_icon();
 #endif
+
+	gfx_domain_free(domain);
 
 #ifdef DEBUG
 	if (total_frames > 0)
