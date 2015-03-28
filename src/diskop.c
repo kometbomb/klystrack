@@ -549,7 +549,6 @@ int save_song_inner(SDL_RWops *f, SongStats *stats)
 	
 	mused.song.num_patterns = NUM_PATTERNS;
 	mused.song.num_instruments = NUM_INSTRUMENTS;
-	mused.modified = false;
 	
 	if (stats)
 	{
@@ -653,6 +652,8 @@ int open_instrument(FILE *f)
 int save_song(SDL_RWops *ops)
 {
 	int r = save_song_inner(ops, NULL);
+	
+	mused.modified = false;
 	
 	return r;
 }
