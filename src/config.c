@@ -102,7 +102,7 @@ void load_config(const char *path, bool apply)
 			char line[500], name[500];
 			if (!fgets(line, sizeof(line), f)) break;
 			
-			if (sscanf(line, "%[^ =]", name) == 1)
+			if (sscanf(line, "%400[^ =]", name) == 1)
 			{
 				int i;
 				for (i = 0; confitem[i].type != C_END ; ++i)
@@ -114,7 +114,7 @@ void load_config(const char *path, bool apply)
 							case C_BOOL:
 							{
 								char value[10];
-								if (sscanf(line, "%[^ =]%*[= ]%9[^\n\r]", name, value) == 2)
+								if (sscanf(line, "%400[^ =]%*[= ]%9[^\n\r]", name, value) == 2)
 								{
 									if (strcmp(value, "yes") == 0)
 									{
@@ -131,7 +131,7 @@ void load_config(const char *path, bool apply)
 							case C_INT:
 							{
 								int value;
-								if (sscanf(line, "%[^ =]%*[= ]%d", name, &value) == 2)
+								if (sscanf(line, "%400[^ =]%*[= ]%d", name, &value) == 2)
 								{
 									*(int*)confitem[i].param = value;
 								}
@@ -141,7 +141,7 @@ void load_config(const char *path, bool apply)
 							case C_STR:
 							{
 								char value[100];
-								if (sscanf(line, "%[^ =]%*[= ]%99[^\n\r]", name, value) == 2)
+								if (sscanf(line, "%400[^ =]%*[= ]%99[^\n\r]", name, value) == 2)
 								{
 									strncpy((char*)confitem[i].param, value, confitem[i].mask);
 								}
