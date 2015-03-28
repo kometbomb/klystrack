@@ -594,8 +594,6 @@ int main(int argc, char **argv)
 	midi_deinit();
 #endif
 	
-	//Mix_CloseAudio();
-	
 	cyd_unregister(&mused.cyd);
 	debug("cyd_deinit");
 	cyd_deinit(&mused.cyd);
