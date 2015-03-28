@@ -227,6 +227,10 @@ void kt_default_instrument(MusInstrument *inst)
 void resize_pattern(MusPattern * pattern, Uint16 new_size)
 {
 	int old_steps = pattern->num_steps;
+	
+	if (new_size == old_steps)
+		return;
+	
 	pattern->num_steps = new_size;
 
 	if (new_size > old_steps)
