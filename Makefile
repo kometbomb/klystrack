@@ -122,6 +122,7 @@ res/$(1): themes/$(1)/* #themes/$(1)/font/* themes/$(1)/font7x6/* themes/$(1)/ti
 endef
 
 build: Makefile src/version.h src/version_number.h
+	@touch src/version
 	@make -C ../klystron CFG=$(CFG) EXTFLAGS="$(EXTFLAGS)"
 	@make all CFG=$(CFG) EXTFLAGS="$(EXTFLAGS)"
 
