@@ -189,10 +189,8 @@ ifdef COMSPEC
 endif
 	
 nightly: zip
-	@$(REV) ver.in ver.txt
 	@cp zip/$(ARCHIVE) zip/klystrack-nightly-`date +"%Y%m%d" | tr -d '\n'`-win32.zip
-	@rm -f ver.txt
-
+	
 clean:
 	@rm -rf deps objs.$(CFG) bin.$(CFG) zip temp res
 
