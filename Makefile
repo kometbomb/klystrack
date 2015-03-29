@@ -25,7 +25,7 @@ ifdef COMSPEC
 	ARCHIVE := $(ARCHIVE).zip
 	SDLFLAGS := -I c:/mingw/include/SDL2
 	SDLLIBS :=  -lSDL2main -lSDL2 -lSDL2_image -lwinmm
-	CFLAGS += -mthreads -DMIDI
+	CFLAGS += -mthreads 
 	ZIP := pkzipc -exclude=.* -zipdate=newest -path=relative -silent -rec -dir -add
 	ZIPEXT := pkzipc -ext -silent
 else
