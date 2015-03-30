@@ -192,7 +192,7 @@ nightly: zip
 	@cp zip/$(ARCHIVE) zip/klystrack-nightly-`date +"%Y%m%d" | tr -d '\n'`-win32.zip
 	
 clean:
-	@rm -rf deps objs.$(CFG) bin.$(CFG) zip temp res
+	@rm -rf deps objs.debug objs.release objs.profile bin.release bin.debug bin.profile zip temp res
 
 bin.$(CFG)/$(TARGET): $(OBJS)
 	@$(ECHO) "Linking $(TARGET)..."
