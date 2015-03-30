@@ -376,15 +376,13 @@ int main(int argc, char **argv)
 				break;
 				
 				case SDL_MOUSEMOTION:
-					e.motion.xrel /= domain->scale;
-					e.motion.yrel /= domain->scale;
-					e.button.x /= domain->scale;
-					e.button.y /= domain->scale;
+					gfx_convert_mouse_coordinates(domain, &e.motion.x, &e.motion.y);
+					gfx_convert_mouse_coordinates(domain, &e.motion.xrel, &e.motion.yrel);
 				break;
 				
 				case SDL_MOUSEBUTTONDOWN:
-					e.button.x /= domain->scale;
-					e.button.y /= domain->scale;
+					gfx_convert_mouse_coordinates(domain, &e.button.x, &e.button.y);
+					
 					if (e.button.button == SDL_BUTTON_RIGHT)
 					{
 						my_open_menu(mainmenu, NULL);
