@@ -265,6 +265,8 @@ int main(int argc, char **argv)
 	domain = gfx_create_domain(VERSION_STRING, SDL_WINDOW_RESIZABLE|SDL_WINDOW_OPENGL|((mused.flags & WINDOW_MAXIMIZED)?SDL_WINDOW_MAXIMIZED:0), mused.window_w, mused.window_h, mused.pixel_scale);
 	domain->fps = 30;
 	domain->scale = mused.pixel_scale;
+	domain->window_min_w = 320;
+	domain->window_min_h = 240;
 	gfx_domain_update(domain, false);
 	
 	MusInstrument instrument[NUM_INSTRUMENTS];
@@ -336,8 +338,10 @@ int main(int argc, char **argv)
 				case SDL_WINDOWEVENT:
 					switch (e.window.event) {
 						case SDL_WINDOWEVENT_MINIMIZED:
-						case SDL_WINDOWEVENT_RESTORED:
 							debug("SDL_WINDOWEVENT_MINIMIZED");
+							break;
+						case SDL_WINDOWEVENT_RESTORED:
+							debug("SDL_WINDOWEVENT_RESTORED");
 							mused.flags &= ~WINDOW_MAXIMIZED;
 							break;
 							
@@ -347,7 +351,9 @@ int main(int argc, char **argv)
 							break;
 							
 						case SDL_WINDOWEVENT_RESIZED:
-							debug("SDL_WINDOWEVENT_RESIZED %dx%d", e.window.data1, e.window.data2);
+							{
+							debug("%s %dx%d", e.window.event == SDL_WINDOWEVENT_RESIZED ? "SDL_WINDOWEVENT_RESIZED" : "SDL_WINDOWEVENT_SIZE_CHANGED", e.window.data1, e.window.data2);
+							
 							domain->screen_w = my_max(320, e.window.data1 / domain->scale);
 							domain->screen_h = my_max(240, e.window.data2 / domain->scale);
 							
@@ -357,7 +363,8 @@ int main(int argc, char **argv)
 								mused.window_h = domain->screen_h * domain->scale;
 							}
 							
-							gfx_domain_update(domain, !(mused.flags & WINDOW_MAXIMIZED));
+							gfx_domain_update(domain, false);// e.window.event == SDL_WINDOWEVENT_RESIZED);
+							}
 							break;
 					}
 					break;
