@@ -304,6 +304,17 @@ int main(int argc, char **argv)
 		}
 		cyd_lock(&mused.cyd, 0);
 	}
+	else if (mused.flags & START_WITH_TEMPLATE)
+	{
+		cyd_lock(&mused.cyd, 1);
+		FILE *f = fopen("Default.kt", "rb");
+		if (f)
+		{
+			open_song(f);
+			fclose(f);
+		}
+		cyd_lock(&mused.cyd, 0);
+	}
 	
 #ifdef MIDI
 	midi_init();
@@ -316,7 +327,10 @@ int main(int argc, char **argv)
 	int active = 1;
 	
 	if (!(mused.flags & DISABLE_NOSTALGY))
+	{
 		nos_decrunch(domain);
+		mused.flags |= DISABLE_NOSTALGY;
+	}
 		
 	while (1)
 	{

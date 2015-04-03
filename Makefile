@@ -173,6 +173,7 @@ zip: doc/* $(THEMES) $(DLLS) examples/instruments/* examples/songs/* linux/Makef
 	@cp doc/LICENSE zip/data/LICENSE
 	@cp doc/SDL.txt zip/data/SDL.txt
 	@cp doc/SDL_image.txt zip/data/SDL_image.txt
+	@cp doc/Default.kt zip/data/Default.kt
 	@cp bin.release/$(TARGET) zip/data/$(TARGET)
 ifdef COMSPEC
 	@cd zip/data; rm -f ../$(ARCHIVE); $(ZIP) ../$(ARCHIVE) "*"

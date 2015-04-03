@@ -110,11 +110,10 @@ Menu oversamplemenu[] =
 Menu patternlengthmenu[] =
 {
 	{ 0, prefsmenu, "Same as STEP", NULL, MENU_CHECK, &mused.flags, (void*)LOCK_SEQUENCE_STEP_AND_PATTERN_LENGTH, 0 },
-	{ 0, prefsmenu, "", NULL, NULL },
-	{ 0, prefsmenu, "16", NULL, change_default_pattern_length, (void*)16, 0, 0 },
-	{ 0, prefsmenu, "32", NULL, change_default_pattern_length, (void*)32, 0, 0 },
-	{ 0, prefsmenu, "48", NULL, change_default_pattern_length, (void*)48, 0, 0 },
-	{ 0, prefsmenu, "64", NULL, change_default_pattern_length, (void*)64, 0, 0 },
+	{ 0, prefsmenu, "16 steps", NULL, change_default_pattern_length, (void*)16, 0, 0 },
+	{ 0, prefsmenu, "32 steps", NULL, change_default_pattern_length, (void*)32, 0, 0 },
+	{ 0, prefsmenu, "48 steps", NULL, change_default_pattern_length, (void*)48, 0, 0 },
+	{ 0, prefsmenu, "64 steps", NULL, change_default_pattern_length, (void*)64, 0, 0 },
 	{ 0, NULL,NULL },
 };
 
@@ -149,6 +148,7 @@ const Menu prefsmenu[] =
 	{ 0, mainmenu, "Disable nostalgy", NULL, MENU_CHECK, &mused.flags, (void*)DISABLE_NOSTALGY, 0 },
 	{ 0, mainmenu, "Disable VU meters", NULL, MENU_CHECK, &mused.flags, (void*)DISABLE_VU_METERS, 0 },
 	{ 0, mainmenu, "Disable file backups", NULL, MENU_CHECK, &mused.flags, (void*)DISABLE_BACKUPS, 0 },
+	{ 0, mainmenu, "Load default song on startup", NULL, MENU_CHECK, &mused.flags, (void*)START_WITH_TEMPLATE, 0 },
 	{ 0, NULL, NULL }
 };
 
