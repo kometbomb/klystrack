@@ -350,9 +350,13 @@ int main(int argc, char **argv)
 							mused.flags |= WINDOW_MAXIMIZED;
 							break;
 							
+						case SDL_WINDOWEVENT_SIZE_CHANGED:
+							debug("SDL_WINDOWEVENT_SIZE_CHANGED %dx%d", e.window.data1, e.window.data2);
+							break;
+							
 						case SDL_WINDOWEVENT_RESIZED:
 							{
-							debug("%s %dx%d", e.window.event == SDL_WINDOWEVENT_RESIZED ? "SDL_WINDOWEVENT_RESIZED" : "SDL_WINDOWEVENT_SIZE_CHANGED", e.window.data1, e.window.data2);
+							debug("SDL_WINDOWEVENT_RESIZED %dx%d", e.window.data1, e.window.data2);
 							
 							domain->screen_w = my_max(320, e.window.data1 / domain->scale);
 							domain->screen_h = my_max(240, e.window.data2 / domain->scale);
@@ -363,20 +367,11 @@ int main(int argc, char **argv)
 								mused.window_h = domain->screen_h * domain->scale;
 							}
 							
-							gfx_domain_update(domain, false);// e.window.event == SDL_WINDOWEVENT_RESIZED);
+							gfx_domain_update(domain, false);
 							}
 							break;
 					}
 					break;
-					
-				
-				/*case SDL_ACTIVEEVENT:
-				if (e.active.state & SDL_APPACTIVE)
-				{	
-					active = e.active.gain;
-					debug("Window %s focus", active ? "gained" : "lost");
-				}
-				break;*/
 				
 				case SDL_USEREVENT:
 					e.type = SDL_MOUSEBUTTONDOWN;
@@ -402,6 +397,8 @@ int main(int argc, char **argv)
 				
 				case SDL_MOUSEBUTTONUP:
 				{
+					gfx_convert_mouse_coordinates(domain, &e.button.x, &e.button.y);
+					
 					if (e.button.button == SDL_BUTTON_LEFT)
 					{
 						mouse_released(&e);
