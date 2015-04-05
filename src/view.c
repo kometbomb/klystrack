@@ -675,6 +675,18 @@ void info_line(GfxDomain *dest_surface, const SDL_Rect *dest, const SDL_Event *e
 								case MUS_NOTE_VOLUME_FADE_DN:
 									strcpy(text, "Fade volume down");
 									break;
+									
+								case MUS_NOTE_VOLUME_PAN_LEFT:
+									strcpy(text, "Pan left");
+									break;
+									
+								case MUS_NOTE_VOLUME_PAN_RIGHT:
+									strcpy(text, "Pan right");
+									break;
+									
+								case MUS_NOTE_VOLUME_SET_PAN:
+									strcpy(text, "Set panning");
+									break;
 							}
 						}
 						else

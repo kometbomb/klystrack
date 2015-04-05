@@ -1473,6 +1473,9 @@ void pattern_event(SDL_Event *e)
 								{
 									case SDLK_u: cmd = MUS_NOTE_VOLUME_FADE_UP; break;
 									case SDLK_d: cmd = MUS_NOTE_VOLUME_FADE_DN; break;
+									case SDLK_p: cmd = MUS_NOTE_VOLUME_SET_PAN; break;
+									case SDLK_l: cmd = MUS_NOTE_VOLUME_PAN_LEFT; break;
+									case SDLK_r: cmd = MUS_NOTE_VOLUME_PAN_RIGHT; break;
 									default: break;
 								}
 								
