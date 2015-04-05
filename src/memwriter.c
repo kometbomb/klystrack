@@ -50,7 +50,7 @@ static size_t mw_write(SDL_RWops *ops, const void *data, size_t size, size_t num
 		mem->allocated = mem->allocated + chunk;
 		mem->data = realloc(mem->data, mem->allocated);
 		
-		debug("MemWriter: Allocating %d bytes (%d bytes allocated total)", chunk, mem->allocated);
+		debug("MemWriter: Allocating %d bytes (%d bytes allocated total)", chunk, (int)mem->allocated);
 	}
 	
 	memcpy(mem->data + mem->position, data, size * num);
@@ -73,7 +73,7 @@ static int mw_close(SDL_RWops *ops)
 	
 	if (mem->flush)
 	{
-		debug("MemWriter: Flushing %d bytes to disk", mem->size);
+		debug("MemWriter: Flushing %d bytes to disk", (int)mem->size);
 		r = fwrite(mem->data, mem->size, 1, mem->flush) == mem->size ? 0 : -1;
 	}
 	
