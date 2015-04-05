@@ -2,11 +2,8 @@ background = 0x0
 main_text = 0xffffff
 small_text = 0x787878
 
-sequence_selected = 0xffffff
-sequence_bar = 0x7869c4
-sequence_beat = 0x7869c4
+sequence_counter = 0xffffff
 sequence_normal = 0x7869c4
-sequence_disabled = 0x000000
 
 pattern_normal = 0x787878
 pattern_beat = 0x787878
@@ -43,3 +40,5 @@ pattern_ctrl_bar = 0x9f9f9f
 pattern_command = 0x9f9f9f
 pattern_command_beat = 0x9f9f9f
 pattern_command_bar = 0x9f9f9f
+
+catometer_eyes = 0xa04f9b

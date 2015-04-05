@@ -2,11 +2,8 @@ background = 0x0
 main_text = 0xffffff
 small_text = 0xffffff
 
-sequence_selected = 0xffffff
-sequence_bar = 0x000080
-sequence_beat = 0x800000
+sequence_counter = 0x000000
 sequence_normal = 0x000000
-sequence_disabled = 0xa0a0a0
 
 pattern_selected = 0xffffff
 pattern_bar = 0xffffff
@@ -31,3 +28,5 @@ menu_header = 0xffffff
 menu_header_selected = 0xffffff
 menu_shortcut = 0xffffff
 menu_shortcut_selected = 0xffffff
+
+catometer_eyes = 0xa04f9b

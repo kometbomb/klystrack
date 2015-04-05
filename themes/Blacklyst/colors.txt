@@ -5,11 +5,7 @@ button_text = 0xffffff
 text_shadow = 0x0
 
 sequence_counter = 0x820b05
-sequence_selected = 0x0
-sequence_bar = 0x00f4cd
-sequence_beat = 0x00f4cd
 sequence_normal = 0x3eb6a3
-sequence_disabled = 0x333333
 
 pattern_normal = 0x3eb6a3
 pattern_beat = 0x00f4cd
@@ -52,3 +48,5 @@ menu_shortcut_selected = 0xffffff
 wavetable_sample = 0xffffff
 wavetable_background = 0x0
 progress_bar = 0xffffff
+
+catometer_eyes = 0xa04f9b

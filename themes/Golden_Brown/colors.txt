@@ -3,11 +3,8 @@ main_text = 0xe1d622
 small_text = 0xe1d622
 button_text = 0xc3ba24
 
-sequence_selected = 0xffffff
-sequence_bar = 0x003c5e
-sequence_beat = 0x73180c
+sequence_counter = 0x000000
 sequence_normal = 0x3c2f26
-sequence_disabled = 0x715e4a
 
 pattern_normal = 0x668ca6
 pattern_beat = 0xa0b2c6
@@ -50,3 +47,5 @@ menu_shortcut_selected = 0xe1d622
 wavetable_sample = 0xffffff
 wavetable_background = 0x0
 progress_bar = 0x291f17
+
+catometer_eyes = 0xa04f9b
