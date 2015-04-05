@@ -1,0 +1,50 @@
+background = 0x000011
+main_text = 0x0
+small_text = 0xffffff
+button_text = 0xffffff
+text_shadow = 0x0
+
+sequence_counter = 0xffffff
+sequence_normal = 0x0
+
+pattern_normal = 0x3047ff
+pattern_beat = 0x3047ff
+pattern_bar = 0x3047ff
+pattern_selected = 0x0
+pattern_disabled = 0x333333
+
+pattern_instrument = 0x3047ff
+pattern_instrument_beat = 0x3047ff
+pattern_instrument_bar = 0x3047ff
+
+pattern_volume = 0x3047ff
+pattern_volume_beat = 0x3047ff
+pattern_volume_bar = 0x3047ff
+
+pattern_ctrl = 0x3047ff
+pattern_ctrl_beat = 0x3047ff
+pattern_ctrl_bar = 0x3047ff
+
+pattern_command = 0x3047ff
+pattern_command_beat = 0x3047ff
+pattern_command_bar = 0x3047ff
+
+pattern_empty_data = 0xff000000
+
+program_selected = 0x0
+program_even = 0x3047ff
+program_odd = 0x3047ff
+
+instrument_selected = 0x0
+instrument_normal = 0x3047ff
+
+menu = 0xffffff
+menu_selected = 0xffffff
+menu_header = 0xffffff
+menu_header_selected = 0xffffff
+menu_shortcut = 0xffffff
+menu_shortcut_selected = 0xffffff
+
+wavetable_sample = 0xfff000
+wavetable_background = 0x0
+progress_bar = 0xffffff
