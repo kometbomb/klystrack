@@ -36,7 +36,7 @@ SectionIn RO
   File zip\data\LICENSE
   File zip\data\SDL2.dll
   File zip\data\SDL.txt
-  File zip\data\SDL2_image.txt
+  File zip\data\SDL_image.txt
   File zip\data\SDL2_image.dll
   File zip\data\zlib1.dll
   File zip\data\libpng16-16.dll
@@ -51,6 +51,9 @@ SectionIn RO
   File zip\data\res\Classic
   File "zip\data\res\Golden_Brown"
   File zip\data\res\Blacklyst
+  File "zip\data\res\Rust_Camo"
+  File "zip\data\res\Rust_Red"
+  File "zip\data\res\Ultimate_Proctamed"
   
   SetOutPath $INSTDIR\key
   
@@ -134,12 +137,12 @@ Section Uninstall
   SetOutPath $INSTDIR
  
   Delete LICENSE
-  Delete SDL.dll
+  Delete SDL2.dll
   Delete SDL.txt
-  Delete SDL_image.txt
+  Delete SDL2_image.txt
   Delete SDL_image.dll
   Delete zlib1.dll
-  Delete libpng15-15.dll
+  Delete libpng16-16.dll
   Delete klystrack.exe
   
   SetOutPath $INSTDIR\res
@@ -151,6 +154,9 @@ Section Uninstall
   Delete Classic
   Delete "Golden_Brown"
   Delete Blacklyst
+  Delete "Rust_Camo"
+  Delete "Rust_Red"
+  Delete "Ultimate_Proctamed"
   
   SetOutPath $TEMP\key
   
