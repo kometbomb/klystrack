@@ -72,11 +72,7 @@ static void load_colors(const char *cfg)
 			static const char *names[NUM_COLORS] =
 			{
 				"sequence_counter",
-				"sequence_selected",
-				"sequence_bar",
-				"sequence_beat",
 				"sequence_normal",
-				"sequence_disabled",
 				"pattern_selected",
 				"pattern_bar",
 				"pattern_beat",
