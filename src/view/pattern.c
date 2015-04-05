@@ -335,7 +335,45 @@ void pattern_view_inner(GfxDomain *dest_surface, const SDL_Rect *dest, const SDL
 								console_set_color(mused.console, diszero(s->volume != MUS_NOTE_NO_VOLUME, color));
 						
 							if (s->volume != MUS_NOTE_NO_VOLUME)
-								font_write_args(&mused.console->font, dest_surface, &pos, "%X", (s->volume >> (4 - (param - PED_VOLUME1) * 4)) & 0xf);
+							{
+								if (param == PED_VOLUME1 && s->volume > MAX_VOLUME)
+								{
+									char c;
+									
+									switch (s->volume & 0xf0)
+									{
+										default:
+											c = '-';
+											break;
+											
+										case MUS_NOTE_VOLUME_SET_PAN:
+											c = 'P';
+											break;
+											
+										case MUS_NOTE_VOLUME_PAN_LEFT:
+											c = 0xf9;
+											break;
+											
+										case MUS_NOTE_VOLUME_PAN_RIGHT:
+											c = 0xfa;
+											break;
+											
+										case MUS_NOTE_VOLUME_FADE_UP:
+											c = 0xfb;
+											break;
+											
+										case MUS_NOTE_VOLUME_FADE_DN:
+											c = 0xfc;
+											break;
+									}
+									
+									font_write_args(&mused.console->font, dest_surface, &pos, "%c", c);
+								}									
+								else
+								{
+									font_write_args(&mused.console->font, dest_surface, &pos, "%X", (s->volume >> (4 - (param - PED_VOLUME1) * 4)) & 0xf);
+								}
+							}
 							else
 								font_write(&mused.console->font, dest_surface, &pos, "-");
 							break;

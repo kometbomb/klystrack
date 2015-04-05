@@ -1466,6 +1466,9 @@ void pattern_event(SDL_Event *e)
 							
 							case SDLK_u:						
 							case SDLK_d:
+							case SDLK_l:				
+							case SDLK_r:
+							case SDLK_p:						
 							{
 								int cmd = 0;
 							
@@ -1512,7 +1515,11 @@ void pattern_event(SDL_Event *e)
 									
 									snapshot(S_T_PATTERN);
 									
-									if ((vol & 0xf0) != MUS_NOTE_VOLUME_FADE_UP && (vol & 0xf0) != MUS_NOTE_VOLUME_FADE_DN)
+									if ((vol & 0xf0) != MUS_NOTE_VOLUME_FADE_UP && 
+										(vol & 0xf0) != MUS_NOTE_VOLUME_FADE_DN &&
+										(vol & 0xf0) != MUS_NOTE_VOLUME_PAN_LEFT &&
+										(vol & 0xf0) != MUS_NOTE_VOLUME_PAN_RIGHT &&
+										(vol & 0xf0) != MUS_NOTE_VOLUME_SET_PAN)
 										mused.song.pattern[current_pattern()].step[current_patternstep()].volume = my_min(MAX_VOLUME, vol); 
 									else mused.song.pattern[current_pattern()].step[current_patternstep()].volume = vol;
 								
