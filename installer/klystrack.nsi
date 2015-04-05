@@ -34,12 +34,12 @@ SectionIn RO
   
   ; Put file there
   File zip\data\LICENSE
-  File zip\data\SDL.dll
+  File zip\data\SDL2.dll
   File zip\data\SDL.txt
-  File zip\data\SDL_image.txt
-  File zip\data\SDL_image.dll
+  File zip\data\SDL2_image.txt
+  File zip\data\SDL2_image.dll
   File zip\data\zlib1.dll
-  File zip\data\libpng15-15.dll
+  File zip\data\libpng16-16.dll
   File zip\data\Default.kt
   
   SetOutPath $INSTDIR\res
