@@ -114,7 +114,8 @@ static void load_colors(const char *cfg)
 				"wavetable_sample",
 				"wavetable_background",
 				"progress_bar",
-				"pattern_seq_number"
+				"pattern_seq_number",
+				"catometer_eyes"
 			};
 			
 			int i;

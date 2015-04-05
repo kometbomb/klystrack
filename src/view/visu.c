@@ -29,6 +29,9 @@ OTHER DEALINGS IN THE SOFTWARE.
 #include "mused.h"
 #include "snd/freqs.h"
 #include "gfx/gfx.h"
+#include "theme.h"
+
+extern Uint32 colors[NUM_COLORS];
 
 void spectrum_analyzer_view(GfxDomain *dest_surface, const SDL_Rect *dest, const SDL_Event *event, void *param)
 {
@@ -138,8 +141,8 @@ void catometer_view(GfxDomain *dest_surface, const SDL_Rect *dest, const SDL_Eve
 	
 	for (int w = -3 ; w <= 3 ; ++w)
 	{
-		gfx_line(dest_surface, dest->x + dest->w / 2 + eye1 + w, dest->y + dest->h / 2 + 6, dest->x + dest->w / 2 + ax + eye1, dest->y + dest->h / 2 + ay + 6, 0x0);
-		gfx_line(dest_surface, dest->x + dest->w / 2 + eye2 + w, dest->y + dest->h / 2 + 6, dest->x + dest->w / 2 + ax + eye2, dest->y + dest->h / 2 + ay + 6, 0x0);
+		gfx_line(dest_surface, dest->x + dest->w / 2 + eye1 + w, dest->y + dest->h / 2 + 6, dest->x + dest->w / 2 + ax + eye1, dest->y + dest->h / 2 + ay + 6, colors[COLOR_CATOMETER_EYES]);
+		gfx_line(dest_surface, dest->x + dest->w / 2 + eye2 + w, dest->y + dest->h / 2 + 6, dest->x + dest->w / 2 + ax + eye2, dest->y + dest->h / 2 + ay + 6, colors[COLOR_CATOMETER_EYES]);
 	}
 	
 	gfx_domain_set_clip(dest_surface, &clip);
