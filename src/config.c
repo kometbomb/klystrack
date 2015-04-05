@@ -57,7 +57,6 @@ static const struct { int type; const char *name; void *param; int mask; } confi
 	{ C_BOOL, "animate_cursor", &mused.flags, ANIMATE_CURSOR },
 	{ C_BOOL, "hide_zeros", &mused.flags, HIDE_ZEROS },
 	{ C_BOOL, "protracker_delete", &mused.flags, DELETE_EMPTIES },
-	{ C_BOOL, "center_pattern_editor", &mused.flags, CENTER_PATTERN_EDITOR },
 	{ C_INT, "visible_columns", &mused.visible_columns },
 	{ C_BOOL, "show_decimals", &mused.flags, SHOW_DECIMALS },
 	{ C_BOOL, "show_reverb_ticks", &mused.flags, SHOW_DELAY_IN_TICKS },

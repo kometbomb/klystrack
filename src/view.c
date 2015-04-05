@@ -1698,6 +1698,8 @@ void sequence_spectrum_view(GfxDomain *dest_surface, const SDL_Rect *dest, const
 		a.w += SCROLLBAR;
 		gfx_domain_set_clip(dest_surface, &a);
 		
+		check_event(event, &a, toggle_visualizer, NULL, NULL, NULL);
+		
 		switch (mused.current_visualizer)
 		{
 			default:

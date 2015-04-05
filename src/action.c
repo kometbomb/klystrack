@@ -851,6 +851,15 @@ void change_default_pattern_length(void *length, void *unused1, void *unused2)
 }
 
 
+void toggle_visualizer(void *unused1, void *unused2, void *unused3)
+{
+	++mused.current_visualizer;
+	
+	if (mused.current_visualizer >= VIS_NUM_TOTAL)
+		mused.current_visualizer = 0;
+}
+
+
 void change_visualizer_action(void *vis, void *unused1, void *unused2)
 {
 	change_visualizer(CASTPTR(int,vis));

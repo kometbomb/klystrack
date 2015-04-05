@@ -81,5 +81,6 @@ void change_visualizer_action(void *vis, void *unused1, void *unused2);
 void open_help(void *unused0, void *unused1, void *unused2);
 void change_oversample(void *oversample, void *unused1, void *unused2);
 void toggle_follow_play_position(void *unused1, void *unused2, void *unused3);
+void toggle_visualizer(void *unused1, void *unused2, void *unused3);
 
 #endif
