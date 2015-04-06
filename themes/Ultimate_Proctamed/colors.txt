@@ -13,6 +13,8 @@ pattern_bar = 0x3047ff
 pattern_selected = 0x0
 pattern_disabled = 0x333333
 
+statusbar_text = pattern_normal
+
 pattern_instrument = 0x3047ff
 pattern_instrument_beat = 0x3047ff
 pattern_instrument_bar = 0x3047ff
