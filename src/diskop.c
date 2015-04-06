@@ -205,6 +205,44 @@ static void save_instrument_inner(SDL_RWops *f, MusInstrument *inst, const CydWa
 }
 
 
+static void save_fx_inner(SDL_RWops *f, CydFxSerialized *fx)
+{
+	CydFxSerialized temp;
+	memcpy(&temp, fx, sizeof(temp));
+	
+	FIX_ENDIAN(temp.flags);
+	for (int i = 0 ; i < CYDRVB_TAPS ; ++i)	
+	{
+		FIX_ENDIAN(temp.rvb.tap[i].gain);
+		FIX_ENDIAN(temp.rvb.tap[i].delay);
+	}
+	
+	Uint8 len = strlen(temp.name);
+	SDL_RWwrite(f, &len, sizeof(len), 1);
+	if (len)
+		SDL_RWwrite(f, temp.name, sizeof(temp.name[0]), len);
+	
+	SDL_RWwrite(f, &temp.flags, sizeof(temp.flags), 1);
+	SDL_RWwrite(f, &temp.crush.bit_drop, sizeof(temp.crush.bit_drop), 1);
+	SDL_RWwrite(f, &temp.chr.rate, sizeof(temp.chr.rate), 1);
+	SDL_RWwrite(f, &temp.chr.min_delay, sizeof(temp.chr.min_delay), 1);
+	SDL_RWwrite(f, &temp.chr.max_delay, sizeof(temp.chr.max_delay), 1);
+	SDL_RWwrite(f, &temp.chr.sep, sizeof(temp.chr.sep), 1);
+	
+	SDL_RWwrite(f, &temp.rvb.spread, sizeof(temp.rvb.spread), 1);
+	
+	for (int i = 0 ; i < CYDRVB_TAPS ; ++i)	
+	{
+		SDL_RWwrite(f, &temp.rvb.tap[i].delay, sizeof(temp.rvb.tap[i].delay), 1);
+		SDL_RWwrite(f, &temp.rvb.tap[i].gain, sizeof(temp.rvb.tap[i].gain), 1);
+	}
+
+	SDL_RWwrite(f, &temp.crushex.downsample, sizeof(temp.crushex.downsample), 1); 
+	SDL_RWwrite(f, &temp.crushex.gain, sizeof(temp.crushex.gain), 1);
+}
+
+
+
 static void write_packed_pattern(SDL_RWops *f, const MusPattern *pattern, bool skip)
 {
 	/* 
@@ -348,6 +386,20 @@ int save_instrument(SDL_RWops *f)
 }
 
 
+int save_fx(SDL_RWops *f)
+{
+	const Uint8 version = MUS_VERSION;
+				
+	SDL_RWwrite(f, MUS_FX_SIG, strlen(MUS_FX_SIG), sizeof(MUS_FX_SIG[0]));
+	
+	SDL_RWwrite(f, &version, 1, sizeof(version));
+	
+	save_fx_inner(f, &mused.song.fx[mused.fx_bus]);
+	
+	return 1;
+}
+
+
 int save_song_inner(SDL_RWops *f, SongStats *stats)
 {
 	bool kill_unused_things = false;
@@ -441,38 +493,7 @@ int save_song_inner(SDL_RWops *f, SongStats *stats)
 	debug("Saving %d fx", n_fx);
 	for (int fx = 0 ; fx < n_fx ; ++fx)
 	{
-		CydFxSerialized temp;
-		memcpy(&temp, &mused.song.fx[fx], sizeof(temp));
-		
-		FIX_ENDIAN(temp.flags);
-		for (int i = 0 ; i < CYDRVB_TAPS ; ++i)	
-		{
-			FIX_ENDIAN(temp.rvb.tap[i].gain);
-			FIX_ENDIAN(temp.rvb.tap[i].delay);
-		}
-		
-		Uint8 len = strlen(temp.name);
-		SDL_RWwrite(f, &len, sizeof(len), 1);
-		if (len)
-			SDL_RWwrite(f, temp.name, sizeof(temp.name[0]), len);
-		
-		SDL_RWwrite(f, &temp.flags, sizeof(temp.flags), 1);
-		SDL_RWwrite(f, &temp.crush.bit_drop, sizeof(temp.crush.bit_drop), 1);
-		SDL_RWwrite(f, &temp.chr.rate, sizeof(temp.chr.rate), 1);
-		SDL_RWwrite(f, &temp.chr.min_delay, sizeof(temp.chr.min_delay), 1);
-		SDL_RWwrite(f, &temp.chr.max_delay, sizeof(temp.chr.max_delay), 1);
-		SDL_RWwrite(f, &temp.chr.sep, sizeof(temp.chr.sep), 1);
-		
-		SDL_RWwrite(f, &temp.rvb.spread, sizeof(temp.rvb.spread), 1);
-		
-		for (int i = 0 ; i < CYDRVB_TAPS ; ++i)	
-		{
-			SDL_RWwrite(f, &temp.rvb.tap[i].delay, sizeof(temp.rvb.tap[i].delay), 1);
-			SDL_RWwrite(f, &temp.rvb.tap[i].gain, sizeof(temp.rvb.tap[i].gain), 1);
-		}
-
-		SDL_RWwrite(f, &temp.crushex.downsample, sizeof(temp.crushex.downsample), 1); 
-		SDL_RWwrite(f, &temp.crushex.gain, sizeof(temp.crushex.gain), 1);
+		save_fx_inner(f, &mused.song.fx[fx]);
 	}
 	
 	if (stats)
@@ -649,6 +670,18 @@ int open_instrument(FILE *f)
 }
 
 
+int open_fx(FILE *f)
+{
+	if (!mus_load_fx_file(f, &mused.song.fx[mused.fx_bus])) return 0;
+	
+	mused.modified = true;
+	
+	mus_set_fx(&mused.mus, &mused.song);
+	
+	return 1;
+}
+
+
 int save_song(SDL_RWops *ops)
 {
 	int r = save_song_inner(ops, NULL);
@@ -699,7 +732,8 @@ void open_data(void *type, void *action, void *_ret)
 		{ "instrument", "ki", open_instrument, save_instrument },
 		{ "wave", "wav", open_wavetable, NULL },
 		{ "raw signed", "", open_wavetable_raw, NULL },
-		{ "raw unsigned", "", open_wavetable_raw_u, NULL }
+		{ "raw unsigned", "", open_wavetable_raw_u, NULL },
+		{ "FX bus", "kx", open_fx, save_fx }
 	};
 	
 	const char *mode[] = { "rb", "wb" };
@@ -719,6 +753,12 @@ void open_data(void *type, void *action, void *_ret)
 			case OD_T_INSTRUMENT:
 			{
 				snprintf(_def, sizeof(_def), "%s.ki", mused.song.instrument[mused.current_instrument].name);
+			}
+			break;
+			
+			case OD_T_FX:
+			{
+				snprintf(_def, sizeof(_def), "%s.kx", mused.song.fx[mused.fx_bus].name);
 			}
 			break;
 			

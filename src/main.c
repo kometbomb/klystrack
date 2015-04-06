@@ -153,8 +153,9 @@ static const View sequence_view_tab[] =
 static const View fx_view_tab[] =
 {
 	{{0, 0, 0, 14}, fx_global_view, NULL, -1},
-	{{0, 14, 0, 14}, bevel_view, (void*)BEV_BACKGROUND, -1},
-	{{2, 16, -1, 10}, fx_name_view, NULL, -1},
+	{{0, 14, -130, 14}, bevel_view, (void*)BEV_BACKGROUND, -1},
+	{{2, 16, -132, 10}, fx_name_view, NULL, -1},
+	{{-130, 14, 130, 14}, instrument_disk_view, MAKEPTR(OD_T_FX), -1},
 	{{0, 28, 0, -INFO}, fx_view, NULL, -1},
 	{{0, 0 - INFO, 0, INFO }, info_line, NULL, -1},
 	{{0, 0, 0, 0}, NULL}
