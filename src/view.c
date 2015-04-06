@@ -518,7 +518,7 @@ void info_line(GfxDomain *dest_surface, const SDL_Rect *dest, const SDL_Event *e
 	bevelex(domain,&area, mused.slider_bevel, BEV_THIN_FRAME, BEV_F_STRETCH_ALL);
 	adjust_rect(&area, 3);
 	console_set_clip(mused.console, &area);
-	console_set_color(mused.console, colors[COLOR_MAIN_TEXT]);
+	console_set_color(mused.console, colors[COLOR_STATUSBAR_TEXT]);
 	
 	console_clear(mused.console);
 	
