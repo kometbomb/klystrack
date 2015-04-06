@@ -3,6 +3,7 @@ main_text = 0xffffff
 small_text = 0xffffff
 button_text = 0xffffff
 text_shadow = 0x0
+statusbar_text = main_text
 
 sequence_counter = 0x820b05
 sequence_normal = 0x3eb6a3
