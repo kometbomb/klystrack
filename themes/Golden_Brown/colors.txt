@@ -2,6 +2,7 @@ background = 0x0
 main_text = 0xe1d622
 small_text = 0xe1d622
 button_text = 0xc3ba24
+statusbar_text = main_text
 
 sequence_counter = 0x000000
 sequence_normal = 0x3c2f26

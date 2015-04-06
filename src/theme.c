@@ -64,56 +64,57 @@ static void load_colors(const char *cfg)
 	
 	while (token)
 	{
-		char name[51];
+		char name[51], from[51];
 		Uint32 color;
+		
+		static const char *names[NUM_COLORS] =
+		{
+			"sequence_counter",
+			"sequence_normal",
+			"pattern_selected",
+			"pattern_bar",
+			"pattern_beat",
+			"pattern_instrument",
+			"pattern_instrument_bar",
+			"pattern_instrument_beat",
+			"pattern_volume",
+			"pattern_volume_bar",
+			"pattern_volume_beat",
+			"pattern_ctrl",
+			"pattern_ctrl_bar",
+			"pattern_ctrl_beat",
+			"pattern_command",
+			"pattern_command_bar",
+			"pattern_command_beat",
+			"pattern_normal",
+			"pattern_disabled",
+			"program_selected",
+			"program_even",
+			"program_odd",
+			"instrument_selected",
+			"instrument_normal",
+			"menu",
+			"menu_selected",
+			"menu_header",
+			"menu_header_selected",
+			"menu_shortcut",
+			"menu_shortcut_selected",
+			"main_text",
+			"small_text",
+			"background",
+			"button_text",
+			"text_shadow",
+			"pattern_empty_data",
+			"wavetable_sample",
+			"wavetable_background",
+			"progress_bar",
+			"pattern_seq_number",
+			"catometer_eyes",
+			"statusbar_text"
+		};
 		
 		if (sscanf(token, "%50[^ =]%*[ =]%x", name, &color) == 2)
 		{
-			static const char *names[NUM_COLORS] =
-			{
-				"sequence_counter",
-				"sequence_normal",
-				"pattern_selected",
-				"pattern_bar",
-				"pattern_beat",
-				"pattern_instrument",
-				"pattern_instrument_bar",
-				"pattern_instrument_beat",
-				"pattern_volume",
-				"pattern_volume_bar",
-				"pattern_volume_beat",
-				"pattern_ctrl",
-				"pattern_ctrl_bar",
-				"pattern_ctrl_beat",
-				"pattern_command",
-				"pattern_command_bar",
-				"pattern_command_beat",
-				"pattern_normal",
-				"pattern_disabled",
-				"program_selected",
-				"program_even",
-				"program_odd",
-				"instrument_selected",
-				"instrument_normal",
-				"menu",
-				"menu_selected",
-				"menu_header",
-				"menu_header_selected",
-				"menu_shortcut",
-				"menu_shortcut_selected",
-				"main_text",
-				"small_text",
-				"background",
-				"button_text",
-				"text_shadow",
-				"pattern_empty_data",
-				"wavetable_sample",
-				"wavetable_background",
-				"progress_bar",
-				"pattern_seq_number",
-				"catometer_eyes"
-			};
-			
 			int i;
 			for (i = 0 ; i < NUM_COLORS ; ++i)
 			{
@@ -130,6 +131,40 @@ static void load_colors(const char *cfg)
 			}
 			
 			if (i >= NUM_COLORS) warning("Unknown color name '%s'", name);
+		}
+		else if (sscanf(token, "%50[^ =]%*[ =]%50s", name, from) == 2)
+		{
+			int from_i, to_i;
+			
+			for (from_i = 0 ; from_i < NUM_COLORS ; ++from_i)
+			{
+				if (strcasecmp(names[from_i], from) == 0)
+				{
+					break;
+				}
+			}
+			
+			if (from_i >= NUM_COLORS) 
+				warning("Unknown color name '%s'", name);
+			else
+			{
+				for (to_i = 0 ; to_i < NUM_COLORS ; ++to_i)
+				{
+					if (strcasecmp(names[to_i], name) == 0)
+					{
+						colors[to_i] = color;
+						break;
+					}
+				}
+				
+				if (to_i >= NUM_COLORS) warning("Unknown color name '%s'", name);
+				else
+				{
+					debug("%s=%s", name, from);
+					colors[to_i] = colors[from_i];
+				}
+			}
+			
 		}
 		
 		token = strtok(NULL, "\n");
