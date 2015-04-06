@@ -277,7 +277,7 @@ void init(MusInstrument *instrument, MusPattern *pattern, MusSeqPattern sequence
 	mused.mode = EDITINSTRUMENT;
 	mused.current_patternx = 0;
 	mused.current_sequencepos = 0;
-	mused.default_pattern_length = mused.sequenceview_steps = 16;
+	mused.default_pattern_length = mused.sequenceview_steps = 64;
 	mused.current_sequencetrack = 0;
 	mused.time_signature = 0x0404;
 	mused.prev_mode = 0;
