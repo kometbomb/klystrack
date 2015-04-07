@@ -607,7 +607,11 @@ void info_line(GfxDomain *dest_surface, const SDL_Rect *dest, const SDL_Event *e
 					"FM use wavetable",
 					"FM wavetable entry"
 				};
-				strcpy(text, param_desc[mused.selected_param]);
+				
+				if (mused.selected_param == P_FXBUS)
+					snprintf(text, sizeof(text) - 1, "%s (%s)", param_desc[mused.selected_param], mused.song.fx[mused.song.instrument[mused.current_instrument].fx_bus].name);
+				else
+					strcpy(text, param_desc[mused.selected_param]);
 			}
 			
 			break;
