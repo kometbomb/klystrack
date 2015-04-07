@@ -38,6 +38,8 @@ enum
 	OD_T_WAVETABLE_RAW_S,
 	OD_T_WAVETABLE_RAW_U,
 	OD_T_FX,
+	/*------*/
+	OD_T_N_TYPES
 };
 
 enum

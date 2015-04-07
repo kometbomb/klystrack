@@ -57,6 +57,7 @@ enum
 #include "undo.h"
 #include <stdbool.h>
 #include "wavegen.h"
+#include "diskop.h"
 
 #define SCREEN_WIDTH 320
 #define SCREEN_HEIGHT 240
@@ -134,7 +135,7 @@ typedef struct
 	int edit_buffer_size;
 	SliderParam sequence_slider_param, pattern_slider_param, program_slider_param, instrument_list_slider_param, 
 		pattern_horiz_slider_param, sequence_horiz_slider_param, wavetable_list_slider_param;
-	char previous_song_filename[1000], previous_wav_filename[1000];
+	char previous_song_filename[1000], previous_wav_filename[1000], previous_filebox_path[OD_T_N_TYPES][1000];
 	/*---*/
 	char * edit_backup_buffer;
 	Selection selection;

@@ -37,6 +37,7 @@ OTHER DEALINGS IN THE SOFTWARE.
 #include <string.h>
 #include "memwriter.h"
 #include <time.h>
+#include <unistd.h>
 
 extern Mused mused;
 extern GfxDomain *domain;
@@ -783,8 +784,13 @@ void open_data(void *type, void *action, void *_ret)
 	FILE *f = NULL;
 	SDL_RWops *rw = NULL;
 	
+	if (mused.previous_filebox_path[t][0]) 
+		chdir(mused.previous_filebox_path[t]);
+	
 	if (open_dialog_fn(mode[a], str, open_stuff[t].ext, domain, mused.slider_bevel, &mused.largefont, &mused.smallfont, def, filename, sizeof(filename)))
 	{
+		getcwd(mused.previous_filebox_path[t], sizeof(mused.previous_filebox_path[t]));
+		
 		if (!(mused.flags & DISABLE_BACKUPS) && a == OD_A_SAVE && !create_backup(filename))
 			warning("Could not create backup for %s", filename);
 		
