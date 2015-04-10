@@ -34,6 +34,94 @@ OTHER DEALINGS IN THE SOFTWARE.
 
 extern Mused mused;
 
+typedef struct
+{
+	int n_samples;
+	Uint32 sample_length;
+	Sint8 *data;
+	int n_drums;
+	struct {
+		Uint32 length;
+		Sint8 *data;
+	} *drum;
+} orgsamp_t;
+
+int load_orgsamp(orgsamp_t *data)
+{
+	FILE *f = fopen("orgsamp.dat", "rb");
+	
+	memset(data, 0, sizeof(*data));
+	
+	if (f)
+	{
+		Uint8 temp8 = 0;
+		Uint32 temp32 = 0;
+		fread(&temp8, 1, sizeof(temp8), f);
+		data->n_samples = temp8;
+		
+		debug("orgsamp %d samples", data->n_samples);
+		
+		fread(&temp8, 1, 1, f);
+		temp32 = temp8 << 16;
+		fread(&temp8, 1, 1, f);
+		temp32 |= temp8 << 8;
+		fread(&temp8, 1, 1, f);
+		temp32 |= temp8;
+
+		data->sample_length = temp32;
+		
+		debug("sample length: %d samples", data->sample_length);
+		
+		data->data = malloc(data->sample_length * data->n_samples);
+		
+		fread(data->data, 1, data->sample_length * data->n_samples, f);
+		
+		fread(&temp8, 1, sizeof(temp8), f);
+		
+		data->n_drums = temp8;
+		data->drum = malloc(sizeof(data->drum[0]) * data->n_drums);
+		
+		debug("%d drums", data->n_drums);
+		
+		fseek(f, 2, SEEK_CUR);
+		
+		for (int i = 0 ; i < data->n_drums ; ++i)
+		{
+			debug("position %lu", ftell(f));
+			
+			
+			fread(&temp8, 1, 1, f);
+			temp32 = temp8 << 16;
+			fread(&temp8, 1, 1, f);
+			temp32 |= temp8 << 8;
+			fread(&temp8, 1, 1, f);
+			temp32 |= temp8;
+			
+			debug("Drum %x bytes", temp32);
+			
+			data->drum[i].length = temp32;
+			data->drum[i].data = malloc(temp32);
+			
+			fread(data->drum[i].data, 1, data->drum[i].length, f);
+		}
+		
+		fclose(f);
+		
+		return 1;
+	}
+	
+	return 0;
+}
+
+void unload_orgsamp(orgsamp_t *data)
+{
+	for (int i = 0 ; i < data->n_drums ; ++i)
+		free(data->drum[i].data);
+	
+	free(data->drum);
+	free(data->data);
+}
+
 int import_org(FILE *f)
 {
 	struct 
@@ -44,10 +132,14 @@ int import_org(FILE *f)
 		Uint8 beats_per_step;
 		Uint32 loop_begin;
 		Uint32 loop_end;
-	} __attribute__((__packed__)) header;
+	} header;
 	
-	if (fread(&header, 1, sizeof(header), f) != sizeof(header)) 
-		return 0;
+	fread(&header.sig, 1, sizeof(header.sig), f);
+	fread(&header.tempo, 1, sizeof(header.tempo), f);
+	fread(&header.steps_per_bar, 1, sizeof(header.steps_per_bar), f);
+	fread(&header.beats_per_step, 1, sizeof(header.beats_per_step), f);
+	fread(&header.loop_begin, 1, sizeof(header.loop_begin), f);
+	fread(&header.loop_end, 1, sizeof(header.loop_end), f);
 	
 	if (strncmp("Org-02", header.sig, 6) != 0 && strncmp("Org-03", header.sig, 6) != 0)
 	{
@@ -73,20 +165,48 @@ int import_org(FILE *f)
 		Uint8 instrument;
 		Uint8 pi;
 		Uint16 n_notes;
-	} __attribute__((__packed__)) instrument[16];
+	} instrument[16];
 	
-	if (fread(&instrument, 1, sizeof(instrument), f) != sizeof(instrument)) 
-		return 0;
+	for (int i = 0 ; i < 16 ; ++i)
+	{
+		fread(&instrument[i].pitch, 1, sizeof(instrument[i].pitch), f);
+		fread(&instrument[i].instrument, 1, sizeof(instrument[i].instrument), f);
+		fread(&instrument[i].pi, 1, sizeof(instrument[i].pi), f);
+		fread(&instrument[i].n_notes, 1, sizeof(instrument[i].n_notes), f);
+		
+		FIX_ENDIAN(instrument[i].pitch);
+		FIX_ENDIAN(instrument[i].n_notes);
+	}
+	
+	orgsamp_t orgsamp;
+	
+	int orgsamp_loaded = load_orgsamp(&orgsamp);
 		
 	int real_channels = 0;
 	
 	for (int i = 0 ; i < 16 ; ++i)
 	{
-		FIX_ENDIAN(instrument[i].pitch);
-		FIX_ENDIAN(instrument[i].n_notes);
-		
 		if (instrument[i].n_notes)
 		{
+			mused.song.instrument[real_channels].cydflags = CYD_CHN_ENABLE_WAVE;
+			mused.song.instrument[real_channels].adsr.a = 0;
+			mused.song.instrument[real_channels].adsr.d = 0x1f;
+			mused.song.instrument[real_channels].adsr.s = 0x1f;
+			mused.song.instrument[real_channels].adsr.r = 1;
+			mused.song.instrument[real_channels].flags = 0;
+			mused.song.instrument[real_channels].wavetable_entry = real_channels;
+			
+			if (orgsamp_loaded)
+			{
+				if (i < 8)
+				{
+					cyd_wave_entry_init(&mused.mus.cyd->wavetable_entries[real_channels], &orgsamp.data[instrument[i].instrument * orgsamp.sample_length], orgsamp.sample_length, CYD_WAVE_TYPE_SINT8, 1, 1, 1);
+					mused.mus.cyd->wavetable_entries[real_channels].loop_end = orgsamp.sample_length;
+				}
+				else
+					cyd_wave_entry_init(&mused.mus.cyd->wavetable_entries[real_channels], orgsamp.drum[instrument[i].instrument].data, orgsamp.drum[instrument[i].instrument].length, CYD_WAVE_TYPE_SINT8, 1, 1, 1);
+			}
+			
 			Uint32 *position = calloc(sizeof(Uint32), instrument[i].n_notes);
 			Uint8 *note = calloc(sizeof(Uint8), instrument[i].n_notes), 
 				*length = calloc(sizeof(Uint8), instrument[i].n_notes), 
@@ -149,6 +269,9 @@ int import_org(FILE *f)
 	}
 	
 	mused.song.num_channels = real_channels;
+	
+	if (orgsamp_loaded)
+		unload_orgsamp(&orgsamp);
 		
 	return 1;
 }
