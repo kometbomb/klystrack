@@ -40,6 +40,7 @@ typedef struct
 	Uint32 sample_length;
 	Sint8 *data;
 	int n_drums;
+	int drum_rate;
 	struct {
 		Uint32 length;
 		Sint8 *data;
@@ -54,12 +55,14 @@ int load_orgsamp(orgsamp_t *data)
 	
 	if (f)
 	{
+		debug("Reading orgsamp.dat");
+		
 		Uint8 temp8 = 0;
 		Uint32 temp32 = 0;
+		Uint16 temp16 = 0;
+		
 		fread(&temp8, 1, sizeof(temp8), f);
 		data->n_samples = temp8;
-		
-		debug("orgsamp %d samples", data->n_samples);
 		
 		fread(&temp8, 1, 1, f);
 		temp32 = temp8 << 16;
@@ -70,8 +73,6 @@ int load_orgsamp(orgsamp_t *data)
 
 		data->sample_length = temp32;
 		
-		debug("sample length: %d samples", data->sample_length);
-		
 		data->data = malloc(data->sample_length * data->n_samples);
 		
 		fread(data->data, 1, data->sample_length * data->n_samples, f);
@@ -81,23 +82,18 @@ int load_orgsamp(orgsamp_t *data)
 		data->n_drums = temp8;
 		data->drum = malloc(sizeof(data->drum[0]) * data->n_drums);
 		
-		debug("%d drums", data->n_drums);
+		fread(&temp16, 1, sizeof(temp16), f);
 		
-		fseek(f, 2, SEEK_CUR);
+		data->drum_rate = SDL_SwapBE16(temp16);
 		
 		for (int i = 0 ; i < data->n_drums ; ++i)
 		{
-			debug("position %lu", ftell(f));
-			
-			
 			fread(&temp8, 1, 1, f);
 			temp32 = temp8 << 16;
 			fread(&temp8, 1, 1, f);
 			temp32 |= temp8 << 8;
 			fread(&temp8, 1, 1, f);
 			temp32 |= temp8;
-			
-			debug("Drum %x bytes", temp32);
 			
 			data->drum[i].length = temp32;
 			data->drum[i].data = malloc(temp32);
@@ -152,6 +148,7 @@ int import_org(FILE *f)
 	FIX_ENDIAN(header.loop_end);
 	
 	mused.song.time_signature = (((Uint16)header.beats_per_step) << 8) | header.steps_per_bar;
+	mused.time_signature = mused.song.time_signature;
 	mused.song.song_length = header.loop_end + header.steps_per_bar;
 	mused.song.loop_point = header.loop_begin;
 	if (header.tempo > 0) 
@@ -198,13 +195,26 @@ int import_org(FILE *f)
 			
 			if (orgsamp_loaded)
 			{
+				CydWavetableEntry *e = &mused.mus.cyd->wavetable_entries[real_channels];
+				
 				if (i < 8)
 				{
-					cyd_wave_entry_init(&mused.mus.cyd->wavetable_entries[real_channels], &orgsamp.data[instrument[i].instrument * orgsamp.sample_length], orgsamp.sample_length, CYD_WAVE_TYPE_SINT8, 1, 1, 1);
-					mused.mus.cyd->wavetable_entries[real_channels].loop_end = orgsamp.sample_length;
+					
+					cyd_wave_entry_init(e, &orgsamp.data[instrument[i].instrument * orgsamp.sample_length], orgsamp.sample_length, CYD_WAVE_TYPE_SINT8, 1, 1, 1);
+					e->flags |= CYD_WAVE_LOOP;
+					e->loop_end = orgsamp.sample_length;
+					e->sample_rate = (56320 * orgsamp.sample_length / 256);
+					e->base_note = (MIDDLE_C - 3) * 256;
+					
+					sprintf(mused.song.instrument[real_channels].name, "Wave-%02d", instrument[i].instrument);
 				}
 				else
+				{
 					cyd_wave_entry_init(&mused.mus.cyd->wavetable_entries[real_channels], orgsamp.drum[instrument[i].instrument].data, orgsamp.drum[instrument[i].instrument].length, CYD_WAVE_TYPE_SINT8, 1, 1, 1);
+					e->sample_rate = orgsamp.drum_rate * 20;
+					e->base_note = (MIDDLE_C - 3) * 256;
+					sprintf(mused.song.instrument[real_channels].name, "Drum-%02d", instrument[i].instrument);
+				}
 			}
 			
 			Uint32 *position = calloc(sizeof(Uint32), instrument[i].n_notes);
@@ -226,11 +236,14 @@ int import_org(FILE *f)
 			
 			for (int n = 0 ; n < instrument[i].n_notes ; ++n)
 			{	
+				if (position[n] >= header.loop_end)
+					continue;
+				
 				MusStep *step = &mused.song.pattern[i].step[position[n]];
 				
 				if (note[n] != 255)
 				{
-					step->note = note[n];
+					step->note = note[n] + 12;
 					step->instrument = real_channels;
 				}
 				
