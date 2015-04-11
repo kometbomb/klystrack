@@ -350,6 +350,8 @@ int main(int argc, char **argv)
 				break;
 				
 				case SDL_WINDOWEVENT:
+					set_repeat_timer(NULL);
+					
 					switch (e.window.event) {
 						case SDL_WINDOWEVENT_MINIMIZED:
 							debug("SDL_WINDOWEVENT_MINIMIZED");
