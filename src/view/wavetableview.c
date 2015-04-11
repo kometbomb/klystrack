@@ -510,7 +510,7 @@ void wavegen_view(GfxDomain *dest_surface, const SDL_Rect *dest, const SDL_Event
 	r.w = frame.w - 2;
 	r.h = 10;
 	
-	if ((d = generic_field(event, &r, EDITWAVETABLE, W_WAVELENGTH, "LENGTH", "%4d", MAKEPTR(mused.wgset.length), 4)) != 0)
+	if ((d = generic_field(event, &r, EDITWAVETABLE, W_WAVELENGTH, "LENGTH", "%5d", MAKEPTR(mused.wgset.length), 5)) != 0)
 	{
 		wave_add_param(d);
 	}

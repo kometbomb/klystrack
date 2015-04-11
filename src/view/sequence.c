@@ -99,6 +99,9 @@ void sequence_view_inner(GfxDomain *dest_surface, const SDL_Rect *_dest, const S
 		for (int i = top ; i < bottom ; i += mused.sequenceview_steps, y+=height)
 		{
 			SDL_Rect pos = { dest.x + x, y, w, height };
+			
+			clip_rect(&pos, &dest);
+			
 			check_event(event, &pos, select_sequence_position, MAKEPTR(channel), MAKEPTR(i), 0);
 		}
 	}
