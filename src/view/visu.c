@@ -96,6 +96,8 @@ void spectrum_analyzer_view(GfxDomain *dest_surface, const SDL_Rect *dest, const
 			
 			copy_rect(&temp, &bar);
 			
+			temp.y += 1;
+			
 			my_BlitSurface(mused.analyzer, &src, dest_surface, &temp);
 		}
 	}
