@@ -240,6 +240,7 @@ void pattern_view_inner(GfxDomain *dest_surface, const SDL_Rect *dest, const SDL
 			for (int step = 0 ; step < len ; ++step, text.y += height)
 			{
 				if (text.y < pat.y) continue;
+				if (sp->position + step >= bottom) break;
 				
 				MusStep *s = &mused.song.pattern[sp->pattern].step[step];
 				
