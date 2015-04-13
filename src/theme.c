@@ -412,6 +412,15 @@ void load_theme(const char *name)
 			font_destroy(&mused.buttonfont);
 			font_load_and_set_color(&mused.buttonfont, &res, "7x6.fnt", colors[COLOR_BUTTON_TEXT]);
 		}
+		else
+		{
+			font_set_color(&mused.smallfont, colors[COLOR_SMALL_TEXT]);
+			font_set_color(&mused.shortcutfont, colors[COLOR_MENU_SHORTCUT]);
+			font_set_color(&mused.shortcutfont_selected, colors[COLOR_MENU_SHORTCUT_SELECTED]);
+			font_set_color(&mused.headerfont, colors[COLOR_MENU_HEADER]);
+			font_set_color(&mused.headerfont_selected, colors[COLOR_MENU_HEADER_SELECTED]);
+			font_set_color(&mused.buttonfont, colors[COLOR_BUTTON_TEXT]);
+		}
 		
 		if (bnd_exists(&res, "8x8.fnt"))
 		{
@@ -425,6 +434,12 @@ void load_theme(const char *name)
 			font_destroy(&mused.menufont_selected);
 			font_load_and_set_color(&mused.menufont_selected, &res, "8x8.fnt", colors[COLOR_MENU_SELECTED]);
 		}
+		else
+		{
+			font_set_color(&mused.largefont, colors[COLOR_MAIN_TEXT]);
+			font_set_color(&mused.menufont, colors[COLOR_MENU_NORMAL]);
+			font_set_color(&mused.menufont_selected, colors[COLOR_MENU_SELECTED]);
+		}
 		
 		if (bnd_exists(&res, "4x6.fnt"))
 		{
@@ -434,6 +449,12 @@ void load_theme(const char *name)
 			font_load_and_set_color(&mused.tinyfont_sequence_counter, &res, "4x6.fnt", colors[COLOR_SEQUENCE_COUNTER]);
 			font_destroy(&mused.tinyfont_sequence_normal);
 			font_load_and_set_color(&mused.tinyfont_sequence_normal, &res, "4x6.fnt", colors[COLOR_SEQUENCE_NORMAL]);
+		}
+		else
+		{
+			font_set_color(&mused.tinyfont, colors[COLOR_MAIN_TEXT]);
+			font_set_color(&mused.tinyfont_sequence_counter, colors[COLOR_SEQUENCE_COUNTER]);
+			font_set_color(&mused.tinyfont_sequence_normal, colors[COLOR_SEQUENCE_NORMAL]);
 		}
 				
 		bnd_free(&res);
