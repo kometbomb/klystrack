@@ -111,6 +111,8 @@ void catometer_view(GfxDomain *dest_surface, const SDL_Rect *dest, const SDL_Eve
 	SDL_Rect content;
 	copy_rect(&content, dest);
 	
+	gfx_rect(dest_surface, &content, colors[COLOR_BACKGROUND]);
+	
 	SDL_Rect clip, cat;
 	copy_rect(&cat, &content);
 	cat.w = mused.catometer->surface->w;
