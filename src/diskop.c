@@ -112,6 +112,18 @@ static void write_wavetable_entry(SDL_RWops *f, const CydWavetableEntry *write_w
 	}
 }
 
+
+/*  Write max 255 character string
+ */
+
+static void write_string8(SDL_RWops *f, const char * string)
+{
+	Uint8 len = strlen(string);
+	SDL_RWwrite(f, &len, sizeof(len), 1);
+	if (len)
+		SDL_RWwrite(f, string, sizeof(string[0]), len);
+}
+
 	
 static void save_instrument_inner(SDL_RWops *f, MusInstrument *inst, const CydWavetableEntry *write_wave, const CydWavetableEntry *write_wave_fm)
 {
@@ -147,10 +159,9 @@ static void save_instrument_inner(SDL_RWops *f, MusInstrument *inst, const CydWa
 	SDL_RWwrite(f, &inst->slide_speed, sizeof(inst->slide_speed), 1);
 	SDL_RWwrite(f, &inst->base_note, sizeof(inst->base_note), 1);
 	SDL_RWwrite(f, &inst->finetune, sizeof(inst->finetune), 1);
-	Uint8 len = strlen(inst->name);
-	SDL_RWwrite(f, &len, sizeof(len), 1);
-	if (len)
-		SDL_RWwrite(f, &inst->name, sizeof(inst->name[0]), len);
+	
+	write_string8(f, inst->name);
+	
 	temp16 = inst->cutoff;
 	FIX_ENDIAN(temp16);
 	SDL_RWwrite(f, &temp16, sizeof(temp16), 1);
@@ -218,10 +229,7 @@ static void save_fx_inner(SDL_RWops *f, CydFxSerialized *fx)
 		FIX_ENDIAN(temp.rvb.tap[i].delay);
 	}
 	
-	Uint8 len = strlen(temp.name);
-	SDL_RWwrite(f, &len, sizeof(len), 1);
-	if (len)
-		SDL_RWwrite(f, temp.name, sizeof(temp.name[0]), len);
+	write_string8(f, temp.name);
 	
 	SDL_RWwrite(f, &temp.flags, sizeof(temp.flags), 1);
 	SDL_RWwrite(f, &temp.crush.bit_drop, sizeof(temp.crush.bit_drop), 1);
@@ -470,10 +478,7 @@ int save_song_inner(SDL_RWops *f, SongStats *stats)
 	SDL_RWwrite(f, &mused.song.multiplex_period, 1, sizeof(mused.song.multiplex_period));
 	SDL_RWwrite(f, &mused.song.pitch_inaccuracy, 1, sizeof(mused.song.pitch_inaccuracy));
 	
-	Uint8 len = strlen(mused.song.title);
-	SDL_RWwrite(f, &len, 1, 1);
-	if (len)
-		SDL_RWwrite(f, mused.song.title, 1, len);
+	write_string8(f, mused.song.title);
 	
 	if (stats)
 		stats->size[STATS_HEADER] = SDL_RWtell(f);
