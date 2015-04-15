@@ -233,13 +233,13 @@ void instrument_add_param(int a)
 	
 		case P_ATTACK:
 		
-		clamp(i->adsr.a, a, 0, 31);
+		clamp(i->adsr.a, a, 0, 32 * ENVELOPE_SCALE - 1);
 			
 		break;
 		
 		case P_DECAY:
 		
-		clamp(i->adsr.d, a, 0, 31);
+		clamp(i->adsr.d, a, 0, 32 * ENVELOPE_SCALE - 1);
 			
 		break;
 		
@@ -251,7 +251,7 @@ void instrument_add_param(int a)
 		
 		case P_RELEASE:
 		
-		clamp(i->adsr.r, a, 0, 31);
+		clamp(i->adsr.r, a, 0, 32 * ENVELOPE_SCALE - 1);
 			
 		break;
 		
@@ -427,13 +427,13 @@ void instrument_add_param(int a)
 		
 		case P_FM_ATTACK:
 		
-		clamp(i->fm_adsr.a, a, 0, 31);
+		clamp(i->fm_adsr.a, a, 0, 32 * ENVELOPE_SCALE - 1);
 			
 		break;
 		
 		case P_FM_DECAY:
 		
-		clamp(i->fm_adsr.d, a, 0, 31);
+		clamp(i->fm_adsr.d, a, 0, 32 * ENVELOPE_SCALE - 1);
 			
 		break;
 		
@@ -445,7 +445,7 @@ void instrument_add_param(int a)
 		
 		case P_FM_RELEASE:
 		
-		clamp(i->fm_adsr.r, a, 0, 31);
+		clamp(i->fm_adsr.r, a, 0, 32 * ENVELOPE_SCALE - 1);
 			
 		break;
 		

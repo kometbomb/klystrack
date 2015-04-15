@@ -46,6 +46,13 @@ extern Mused mused;
 
 extern int event_hit;
 
+/*
+
+Cyd envelope length in milliseconds
+
+*/
+ 
+#define envelope_length(slope) (slope!=0?(float)(((slope) * (slope) * 256 / (ENVELOPE_SCALE * ENVELOPE_SCALE))) / ((float)CYD_BASE_FREQ / 1000.0f) :0.0f)
 	
 bool is_selected_param(int focus, int p)
 {
@@ -610,6 +617,18 @@ void info_line(GfxDomain *dest_surface, const SDL_Rect *dest, const SDL_Event *e
 				
 				if (mused.selected_param == P_FXBUS)
 					snprintf(text, sizeof(text) - 1, "%s (%s)", param_desc[mused.selected_param], mused.song.fx[mused.song.instrument[mused.current_instrument].fx_bus].name);
+				else if (mused.selected_param == P_ATTACK)
+					snprintf(text, sizeof(text) - 1, "%s (%.1f ms)", param_desc[mused.selected_param], envelope_length(mused.song.instrument[mused.current_instrument].adsr.a));
+				else if (mused.selected_param == P_DECAY)
+					snprintf(text, sizeof(text) - 1, "%s (%.1f ms)", param_desc[mused.selected_param], envelope_length(mused.song.instrument[mused.current_instrument].adsr.d));
+				else if (mused.selected_param == P_RELEASE)
+					snprintf(text, sizeof(text) - 1, "%s (%.1f ms)", param_desc[mused.selected_param], envelope_length(mused.song.instrument[mused.current_instrument].adsr.r));
+				else if (mused.selected_param == P_FM_ATTACK)
+					snprintf(text, sizeof(text) - 1, "%s (%.1f ms)", param_desc[mused.selected_param], envelope_length(mused.song.instrument[mused.current_instrument].fm_adsr.a));
+				else if (mused.selected_param == P_FM_DECAY)
+					snprintf(text, sizeof(text) - 1, "%s (%.1f ms)", param_desc[mused.selected_param], envelope_length(mused.song.instrument[mused.current_instrument].fm_adsr.d));
+				else if (mused.selected_param == P_FM_RELEASE)
+					snprintf(text, sizeof(text) - 1, "%s (%.1f ms)", param_desc[mused.selected_param], envelope_length(mused.song.instrument[mused.current_instrument].fm_adsr.r));
 				else
 					strcpy(text, param_desc[mused.selected_param]);
 			}
