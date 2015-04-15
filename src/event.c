@@ -96,6 +96,7 @@ void instrument_add_param(int a)
 		switch (mused.selected_param)
 		{
 			case P_BASENOTE: a *= 12; break;
+			case P_BUZZ_SEMI: a *= 12; break;
 			default: a *= 16; break;
 		}
 	}
