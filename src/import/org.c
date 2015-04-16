@@ -178,7 +178,6 @@ int import_org(FILE *f)
 	orgsamp_t orgsamp;
 	
 	int orgsamp_loaded = load_orgsamp(&orgsamp);
-		
 	int real_channels = 0;
 	
 	for (int i = 0 ; i < 16 ; ++i)
