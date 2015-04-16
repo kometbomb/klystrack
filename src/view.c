@@ -170,7 +170,7 @@ char * notename(int note)
 }
 
 
-static void label(const char *_label, const SDL_Rect *area)
+void label(const char *_label, const SDL_Rect *area)
 {
 	SDL_Rect r;
 	
@@ -924,7 +924,7 @@ static void inst_text(const SDL_Event *e, const SDL_Rect *area, int p, const cha
 }
 
 
-static void inst_field(const SDL_Event *e, const SDL_Rect *area, int p, int length, char *text)
+void inst_field(const SDL_Event *e, const SDL_Rect *area, int p, int length, char *text)
 {
 	console_set_color(mused.console,colors[COLOR_MAIN_TEXT]);
 	console_set_clip(mused.console, area);

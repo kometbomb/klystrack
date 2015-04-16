@@ -165,9 +165,12 @@ static const View fx_view_tab[] =
 
 static const View wavetable_view_tab[] =
 {
-	{{0, 0, 204, -INFO-SAMPLEVIEW}, wavetable_view, NULL, -1},
-	{{204, 0, -SCROLLBAR, -INFO-SAMPLEVIEW}, wavetablelist_view, NULL, -1},
-	{{0 - SCROLLBAR, 0, SCROLLBAR, -INFO-SAMPLEVIEW }, slider, &mused.wavetable_list_slider_param, EDITWAVETABLE },
+	{{0, 0, -130, 14}, bevel_view, (void*)BEV_BACKGROUND, -1},
+	{{2, 2, -132, 10}, wavetable_name_view, NULL, -1},
+	{{-130, 0, 130, 14}, instrument_disk_view, MAKEPTR(OD_T_WAVETABLE), -1},
+	{{0, 14, 204, -INFO-SAMPLEVIEW}, wavetable_view, NULL, -1},
+	{{204, 14, -SCROLLBAR, -INFO-SAMPLEVIEW}, wavetablelist_view, NULL, -1},
+	{{0 - SCROLLBAR, 14, SCROLLBAR, -INFO-SAMPLEVIEW }, slider, &mused.wavetable_list_slider_param, EDITWAVETABLE },
 	{{0, -INFO-SAMPLEVIEW, -148, SAMPLEVIEW}, wavetable_sample_area, NULL, -1},
 	{{-148, -INFO-SAMPLEVIEW, 148, SAMPLEVIEW}, wavetable_edit_area, NULL, -1},
 	{{0, 0 - INFO, 0, INFO }, info_line, NULL, -1},

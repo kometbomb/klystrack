@@ -375,6 +375,14 @@ int open_song(FILE *f)
 	for (int i = 0 ; i < mused.song.num_patterns ; ++i)
 		if(mused.song.pattern[i].num_steps == 0)
 			resize_pattern(&mused.song.pattern[i], mused.default_pattern_length);
+		
+	mused.song.wavetable_names = realloc(mused.song.wavetable_names, sizeof(mused.song.wavetable_names[0]) * CYD_WAVE_MAX_ENTRIES);
+	
+	for (int i = mused.song.num_wavetables ; i < CYD_WAVE_MAX_ENTRIES ; ++i)
+	{
+		mused.song.wavetable_names = malloc(MUS_WAVETABLE_NAME_LEN + 1);
+		memset(mused.song.wavetable_names[i], 0, MUS_WAVETABLE_NAME_LEN + 1);
+	}
 	
 	set_channels(mused.song.num_channels);
 	
@@ -574,6 +582,14 @@ int save_song_inner(SDL_RWops *f, SongStats *stats)
 	
 	if (stats)
 		stats->size[STATS_WAVETABLE] = SDL_RWtell(f);
+	
+	for (int i = 0 ; i < max_wt ; ++i)
+	{
+		write_string8(f, mused.song.wavetable_names[i]);
+	}
+	
+	if (stats)
+		stats->size[STATS_WAVETABLE_NAMES] = SDL_RWtell(f);
 	
 	mused.song.num_patterns = NUM_PATTERNS;
 	mused.song.num_instruments = NUM_INSTRUMENTS;

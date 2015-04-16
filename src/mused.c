@@ -201,6 +201,21 @@ void new_song()
 		mused.song.default_panning[i] = 0;
 	}
 	
+	if (mused.song.wavetable_names)
+	{
+		for (int i = 0 ; i < CYD_WAVE_MAX_ENTRIES ; ++i)
+			free(mused.song.wavetable_names[i]);
+		free(mused.song.wavetable_names);
+	}
+	
+	mused.song.wavetable_names = malloc(CYD_WAVE_MAX_ENTRIES * sizeof(char*));
+	
+	for (int i = 0 ; i < CYD_WAVE_MAX_ENTRIES ; ++i)
+	{
+		mused.song.wavetable_names[i] = malloc(MUS_WAVETABLE_NAME_LEN + 1);
+		strcpy(mused.song.wavetable_names[i], "");
+	}
+	
 	if (mused.mus.cyd) cyd_reset_wavetable(mused.mus.cyd);
 	
 	mirror_flags();

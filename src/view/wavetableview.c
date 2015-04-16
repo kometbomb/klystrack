@@ -53,13 +53,6 @@ void wavetable_view(GfxDomain *dest_surface, const SDL_Rect *dest, const SDL_Eve
 		
 		int d;
 				
-		if ((d = generic_field(event, &r, EDITWAVETABLE, W_WAVE, "WAVE", "%02X", MAKEPTR(mused.selected_wavetable), 2)) != 0)
-		{
-			wave_add_param(d);
-		}
-		
-		update_rect(&frame, &r);
-		
 		r.w = 128;
 		
 		if ((d = generic_field(event, &r, EDITWAVETABLE, W_RATE, "RATE", "%6d Hz", MAKEPTR(w->sample_rate), 9)) != 0)
@@ -167,8 +160,8 @@ void wavetablelist_view(GfxDomain *dest_surface, const SDL_Rect *dest, const SDL
 		const CydWavetableEntry *w = &mused.mus.cyd->wavetable_entries[i];
 		char temp[1000] = "";
 		
-		if (w->samples > 0)
-			snprintf(temp, chars, "%u smp %0.1f kHz", w->samples, (float)w->sample_rate / 1000);
+		if (w->samples > 0 || mused.song.wavetable_names[i][0])
+			snprintf(temp, chars, "%s (%u smp)", mused.song.wavetable_names[i][0] ? mused.song.wavetable_names[i] : "No name", w->samples);
 		
 		console_write_args(mused.console, "%02X %s\n", i, temp);
 		
@@ -579,4 +572,40 @@ void wavetable_sample_area(GfxDomain *dest_surface, const SDL_Rect *dest, const 
 		wavegen_preview(dest_surface, dest, event, param);
 	else
 		wavetable_sample_view(dest_surface, dest, event, param);
+}
+
+
+void wavetable_name_view(GfxDomain *dest_surface, const SDL_Rect *dest, const SDL_Event *event, void *param)
+{
+	SDL_Rect farea, larea, tarea;
+	copy_rect(&farea,dest);
+	copy_rect(&larea,dest);
+	copy_rect(&tarea,dest);
+	
+	farea.w = 2 * mused.console->font.w + 2 + 16;
+	
+	larea.w = 32;
+	
+	label("WAVE", &larea);
+	
+	tarea.w = dest->w - farea.w - larea.w - 1;
+	farea.x = larea.w + dest->x;
+	tarea.x = farea.x + farea.w;
+
+	int d;
+	
+	if ((d = generic_field(event, &farea, EDITWAVETABLE, W_WAVE, "WAVE", "%02X", MAKEPTR(mused.selected_wavetable), 2)) != 0)
+	{
+		wave_add_param(d);
+	}
+	
+	inst_field(event, &tarea, W_NAME, MUS_WAVETABLE_NAME_LEN + 1, mused.song.wavetable_names[mused.selected_wavetable]);
+	
+	if ((mused.mode == EDITFX && (mused.edit_buffer == mused.song.fx[mused.fx_bus].name && mused.focus == EDITBUFFER)))
+	{
+		SDL_Rect r;
+		copy_rect(&r, &tarea);
+		adjust_rect(&r, -2);
+		set_cursor(&r);
+	}
 }

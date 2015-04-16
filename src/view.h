@@ -71,5 +71,7 @@ void fx_view(GfxDomain *dest_surface, const SDL_Rect *dest, const SDL_Event *eve
 void bevel_view(GfxDomain *dest_surface, const SDL_Rect *dest, const SDL_Event *event, void *param);
 void toolbar_view(GfxDomain *dest_surface, const SDL_Rect *dest, const SDL_Event *event, void *param);
 void fx_global_view(GfxDomain *dest_surface, const SDL_Rect *dest, const SDL_Event *event, void *param);
+void label(const char *_label, const SDL_Rect *area);
+void inst_field(const SDL_Event *e, const SDL_Rect *area, int p, int length, char *text);
 
 #endif
