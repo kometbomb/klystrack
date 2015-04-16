@@ -617,6 +617,10 @@ void info_line(GfxDomain *dest_surface, const SDL_Rect *dest, const SDL_Event *e
 				
 				if (mused.selected_param == P_FXBUS)
 					snprintf(text, sizeof(text) - 1, "%s (%s)", param_desc[mused.selected_param], mused.song.fx[mused.song.instrument[mused.current_instrument].fx_bus].name);
+				else if (mused.selected_param == P_WAVE_ENTRY)
+					snprintf(text, sizeof(text) - 1, "%s (%s)", param_desc[mused.selected_param], mused.song.wavetable_names[mused.song.instrument[mused.current_instrument].wavetable_entry]);
+				else if (mused.selected_param == P_FM_WAVE_ENTRY)
+					snprintf(text, sizeof(text) - 1, "%s (%s)", param_desc[mused.selected_param], mused.song.wavetable_names[mused.song.instrument[mused.current_instrument].fm_wave]);
 				else if (mused.selected_param == P_ATTACK)
 					snprintf(text, sizeof(text) - 1, "%s (%.1f ms)", param_desc[mused.selected_param], envelope_length(mused.song.instrument[mused.current_instrument].adsr.a));
 				else if (mused.selected_param == P_DECAY)
@@ -1342,7 +1346,7 @@ void fx_name_view(GfxDomain *dest_surface, const SDL_Rect *dest, const SDL_Event
 	fx_text(event, &farea, R_FX_BUS, "FX", "%02X", MAKEPTR(mused.fx_bus), 2);
 	inst_field(event, &tarea, R_FX_BUS_NAME, sizeof(mused.song.fx[mused.fx_bus].name), mused.song.fx[mused.fx_bus].name);
 	
-	if ((mused.mode == EDITFX && (mused.edit_buffer == mused.song.fx[mused.fx_bus].name && mused.focus == EDITBUFFER)))
+	if (is_selected_param(EDITFX, R_FX_BUS_NAME) || (mused.mode == EDITFX && (mused.edit_buffer == mused.song.fx[mused.fx_bus].name && mused.focus == EDITBUFFER)))
 	{
 		SDL_Rect r;
 		copy_rect(&r, &tarea);

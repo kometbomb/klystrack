@@ -47,6 +47,7 @@ int generic_button(const SDL_Event *e, const SDL_Rect *area, int focus, int para
 char * notename(int note);
 void my_separator(const SDL_Rect *parent, SDL_Rect *rect);
 void set_cursor(const SDL_Rect *location);
+bool is_selected_param(int focus, int p);
 
 /* 
 "Controls"

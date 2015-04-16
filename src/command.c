@@ -150,6 +150,10 @@ void get_command_desc(char *text, Uint16 inst)
 	{
 		sprintf(text, "%s (%s)\n", name, mused.song.fx[(inst & 0xf) % CYD_MAX_FX_CHANNELS].name);
 	}
+	else if ((fi & 0x7f00) == MUS_FX_SET_WAVETABLE_ITEM)
+	{
+		sprintf(text, "%s (%s)\n", name, mused.song.wavetable_names[(inst & 0xff)]);
+	}
 	else sprintf(text, "%s\n", name);
 }
 

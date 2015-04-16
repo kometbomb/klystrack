@@ -601,7 +601,7 @@ void wavetable_name_view(GfxDomain *dest_surface, const SDL_Rect *dest, const SD
 	
 	inst_field(event, &tarea, W_NAME, MUS_WAVETABLE_NAME_LEN + 1, mused.song.wavetable_names[mused.selected_wavetable]);
 	
-	if ((mused.mode == EDITFX && (mused.edit_buffer == mused.song.fx[mused.fx_bus].name && mused.focus == EDITBUFFER)))
+	if (is_selected_param(EDITWAVETABLE, W_NAME) || (mused.mode == EDITWAVETABLE && (mused.edit_buffer == mused.song.wavetable_names[mused.selected_wavetable] && mused.focus == EDITBUFFER)))
 	{
 		SDL_Rect r;
 		copy_rect(&r, &tarea);
