@@ -38,6 +38,7 @@ OTHER DEALINGS IN THE SOFTWARE.
 #include "memwriter.h"
 #include <time.h>
 #include <unistd.h>
+#include "wavewriter.h"
 
 extern Mused mused;
 extern GfxDomain *domain;
@@ -698,6 +699,17 @@ int save_song(SDL_RWops *ops)
 }
 
 
+int save_wavetable(FILE *ops)
+{
+	WaveWriter *ww = ww_create(ops, mused.mus.cyd->wavetable_entries[mused.selected_wavetable].sample_rate, 1);
+	
+	ww_write(ww, mused.mus.cyd->wavetable_entries[mused.selected_wavetable].data, mused.mus.cyd->wavetable_entries[mused.selected_wavetable].samples);
+	
+	ww_finish(ww);
+	return 1;
+}
+
+
 void open_data(void *type, void *action, void *_ret)
 {
 	int t = CASTPTR(int, type);
@@ -816,7 +828,7 @@ void open_data(void *type, void *action, void *_ret)
 		else
 			tmp = open_stuff[t].save;
 	
-		if (tmp)
+		if (tmp || ((t == OD_T_WAVETABLE) && (a == 1)))
 		{
 			cyd_lock(&mused.cyd, 1);
 			int r;
@@ -824,8 +836,15 @@ void open_data(void *type, void *action, void *_ret)
 				r = open_stuff[t].open(f);
 			else
 			{	
-				rw = create_memwriter(f);
-				r = open_stuff[t].save(rw);
+				if (t != OD_T_WAVETABLE)
+				{
+					rw = create_memwriter(f);
+					r = open_stuff[t].save(rw);
+				}
+				else
+				{
+					save_wavetable(f);
+				}
 			}
 			
 			cyd_lock(&mused.cyd, 0);
@@ -853,4 +872,3 @@ void open_data(void *type, void *action, void *_ret)
 	
 	change_mode(mused.mode);
 }
-
