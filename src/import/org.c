@@ -44,10 +44,14 @@ int import_org(FILE *f)
 		Uint8 beats_per_step;
 		Uint32 loop_begin;
 		Uint32 loop_end;
-	} __attribute__((__packed__)) header;
+	} header;
 	
-	if (fread(&header, 1, sizeof(header), f) != sizeof(header)) 
-		return 0;
+	fread(&header.sig, 1, sizeof(header.sig), f);
+	fread(&header.tempo, 1, sizeof(header.tempo), f);
+	fread(&header.steps_per_bar, 1, sizeof(header.steps_per_bar), f);
+	fread(&header.beats_per_step, 1, sizeof(header.beats_per_step), f);
+	fread(&header.loop_begin, 1, sizeof(header.loop_begin), f);
+	fread(&header.loop_end, 1, sizeof(header.loop_end), f);
 	
 	if (strncmp("Org-02", header.sig, 6) != 0 && strncmp("Org-03", header.sig, 6) != 0)
 	{
@@ -73,18 +77,23 @@ int import_org(FILE *f)
 		Uint8 instrument;
 		Uint8 pi;
 		Uint16 n_notes;
-	} __attribute__((__packed__)) instrument[16];
+	} instrument[16];
 	
-	if (fread(&instrument, 1, sizeof(instrument), f) != sizeof(instrument)) 
-		return 0;
+	for (int i = 0 ; i < 16 ; ++i)
+	{
+		fread(&instrument[i].pitch, 1, sizeof(instrument[i].pitch), f);
+		fread(&instrument[i].instrument, 1, sizeof(instrument[i].instrument), f);
+		fread(&instrument[i].pi, 1, sizeof(instrument[i].pi), f);
+		fread(&instrument[i].n_notes, 1, sizeof(instrument[i].n_notes), f);
+
+		FIX_ENDIAN(instrument[i].pitch);
+		FIX_ENDIAN(instrument[i].n_notes);
+	}
 		
 	int real_channels = 0;
 	
 	for (int i = 0 ; i < 16 ; ++i)
 	{
-		FIX_ENDIAN(instrument[i].pitch);
-		FIX_ENDIAN(instrument[i].n_notes);
-		
 		if (instrument[i].n_notes)
 		{
 			Uint32 *position = calloc(sizeof(Uint32), instrument[i].n_notes);
