@@ -549,6 +549,7 @@ void info_line(GfxDomain *dest_surface, const SDL_Rect *dest, const SDL_Event *e
 				static const char * param_desc[] = 
 				{
 					"Wavetable item",
+					"Item name",
 					"Sample rate",
 					"Base note",
 					"Base note finetune",
@@ -565,6 +566,7 @@ void info_line(GfxDomain *dest_surface, const SDL_Rect *dest, const SDL_Event *e
 					"Absolute",
 					"Negative",
 					"Wave length",
+					"Randomize & generate"
 					"Generate",
 					"Randomize",
 					"Toolbox"
