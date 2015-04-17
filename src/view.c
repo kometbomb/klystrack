@@ -537,6 +537,35 @@ void info_line(GfxDomain *dest_surface, const SDL_Rect *dest, const SDL_Event *e
 			}
 			break;
 			
+			case EDITWAVETABLE:
+			{
+				static const char * param_desc[] = 
+				{
+					"Wavetable item",
+					"Sample rate",
+					"Base note",
+					"Base note finetune",
+					"Interpolate",
+					"Enable looping",
+					"Loop begin",
+					"Ping-pong looping",
+					"Loop end",
+					"Number of oscillators",
+					"Oscillator type",
+					"Frequency multiplier",
+					"Phase shift",
+					"Oscillator exponent",
+					"Absolute",
+					"Negative",
+					"Wave length",
+					"Generate",
+					"Randomize",
+					"Toolbox"
+				};
+				strcpy(text, param_desc[mused.wavetable_param]);
+			}
+			break;
+			
 			case EDITINSTRUMENT:
 			{
 				static const char * param_desc[] = 
