@@ -343,6 +343,11 @@ void wavetable_tools_view(GfxDomain *dest_surface, const SDL_Rect *dest, const S
 	r.y += r.h;
 	
 	button_text_event(domain, event, &r, mused.slider_bevel, &mused.buttonfont, BEV_BUTTON, BEV_BUTTON_ACTIVE, "WAVEGEN", flip_bit_action, &mused.flags, MAKEPTR(SHOW_WAVEGEN), NULL);
+	
+	if (!(mused.flags & SHOW_WAVEGEN) && mused.wavetable_param >= W_NUMOSCS && mused.wavetable_param <= W_TOOLBOX)
+	{
+		mused.wavetable_param = W_NUMOSCS - 1;
+	}
 }
 
 
