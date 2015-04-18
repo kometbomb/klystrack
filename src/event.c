@@ -2113,6 +2113,12 @@ void wave_event(SDL_Event *e)
 			case SDLK_DOWN:
 			{
 				++mused.wavetable_param;
+				
+				if (!(mused.flags & SHOW_WAVEGEN) && mused.wavetable_param >= W_NUMOSCS && mused.wavetable_param <= W_TOOLBOX)
+				{
+					mused.wavetable_param = W_TOOLBOX + 1;
+				}
+				
 				if (mused.wavetable_param >= W_N_PARAMS) mused.wavetable_param = W_N_PARAMS - 1;
 			}
 			break;
@@ -2120,6 +2126,12 @@ void wave_event(SDL_Event *e)
 			case SDLK_UP:
 			{
 				--mused.wavetable_param;
+				
+				if (!(mused.flags & SHOW_WAVEGEN) && mused.wavetable_param >= W_NUMOSCS && mused.wavetable_param <= W_TOOLBOX)
+				{
+					mused.wavetable_param = W_NUMOSCS - 1;
+				}
+				
 				if (mused.wavetable_param < 0) mused.wavetable_param = 0;
 			}
 			break;
