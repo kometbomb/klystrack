@@ -38,7 +38,8 @@ typedef enum
 	UNDO_SONGINFO,
 	UNDO_MODE,
 	UNDO_WAVE_PARAM,
-	UNDO_WAVE_DATA
+	UNDO_WAVE_DATA,
+	UNDO_WAVE_NAME
 } UndoType;
 
 typedef union
@@ -73,6 +74,10 @@ typedef union
 		Uint32 samples, loop_begin, loop_end;
 		Uint16 base_note;
 	} wave_data;
+	struct {
+		int idx;
+		char *name;
+	} wave_name;
 } UndoEvent;
 
 typedef struct UndoFrame_t
@@ -103,6 +108,7 @@ void undo_store_songinfo(UndoStack *stack, const MusSong *song, bool modified);
 void undo_store_fx(UndoStack *stack, int idx, const CydFxSerialized *fx, Uint8 multiplex_period, bool modified);
 void undo_store_pattern(UndoStack *stack, int idx, const MusPattern *pattern, bool modified);
 void undo_store_wave_data(UndoStack *stack, int idx, const CydWavetableEntry *entry, bool modified);
+void undo_store_wave_name(UndoStack *stack, int idx, const char *name, bool modified);
 void undo_store_wave_param(UndoStack *stack, int idx, const CydWavetableEntry *entry, bool modified);
 
 #ifdef DEBUG

@@ -778,6 +778,18 @@ void do_undo(void *a, void*b, void*c)
 		}
 		break;
 		
+		case UNDO_WAVE_NAME:
+		{
+			mused.selected_wavetable = frame->event.wave_name.idx;
+			
+			undo_store_wave_name(&mused.undo, mused.selected_wavetable, mused.song.wavetable_names[mused.selected_wavetable], mused.modified);
+			
+			strcpy(mused.song.wavetable_names[mused.selected_wavetable], frame->event.wave_name.name);
+			
+			invalidate_wavetable_view();
+		}
+		break;
+		
 		default: warning("Undo type %d not handled", frame->type); break;
 	}
 	

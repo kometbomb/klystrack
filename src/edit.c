@@ -306,6 +306,10 @@ void snapshot_cascade(SHType type, int a, int b)
 			case S_T_WAVE_DATA:
 				undo_store_wave_data(&mused.undo, mused.selected_wavetable, &mused.mus.cyd->wavetable_entries[mused.selected_wavetable], mused.modified);
 				break;
+				
+			case S_T_WAVE_NAME:
+				undo_store_wave_name(&mused.undo, mused.selected_wavetable, mused.song.wavetable_names[mused.selected_wavetable], mused.modified);
+				break;
 			
 			default: warning("SHType %d not implemented", type); break;
 		}

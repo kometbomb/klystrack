@@ -37,6 +37,7 @@ typedef enum
 	S_T_FX,
 	S_T_WAVE_PARAM,
 	S_T_WAVE_DATA,
+	S_T_WAVE_NAME,
 	S_T_INSTRUMENT
 } SHType;
 

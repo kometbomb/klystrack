@@ -1012,8 +1012,10 @@ void inst_field(const SDL_Event *e, const SDL_Rect *area, int p, int length, cha
 			
 		if (text == mused.song.title)
 			snapshot(S_T_SONGINFO);
-		else
+		else if (text == mused.song.instrument[mused.current_instrument].name)
 			snapshot(S_T_INSTRUMENT);
+		else if (text == mused.song.wavetable_names[mused.selected_wavetable])
+			snapshot(S_T_WAVE_NAME);
 	}
 	
 	if (!c && mused.focus == EDITBUFFER && e->type == SDL_MOUSEBUTTONDOWN) change_mode(mused.prev_mode);
