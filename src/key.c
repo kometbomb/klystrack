@@ -49,11 +49,14 @@ void translate_key_event(SDL_KeyboardEvent *e)
 {
 	const int allowed = KMOD_SHIFT|KMOD_CTRL|KMOD_ALT;
 	
-	//debug("key = %u mod = %u %u", e->keysym.sym, e->keysym.mod & allowed, keytrans[0].from_mod);
+	debug("scancode = %x", e->keysym.scancode);
 
-	for (int i = 0 ; i < MAX_KEYTRANS && !(keytrans[i].from_key == 0 && keytrans[i].from_mod == 0) ; ++i)
+	for (int i = 0 ; i < MAX_KEYTRANS && !(keytrans[i].from_key == 0 && keytrans[i].from_mod == 0 && keytrans[i].from_scancode == 0) ; ++i)
 	{
-		if ((keytrans[i].focus == mused.focus || keytrans[i].focus == -1) && e->keysym.sym == keytrans[i].from_key && ((e->keysym.mod & allowed) == keytrans[i].from_mod))
+		if ((keytrans[i].focus == mused.focus || keytrans[i].focus == -1) && 
+			((keytrans[i].type == KEYSYM && e->keysym.sym == keytrans[i].from_key) || 
+			(keytrans[i].type == SCANCODE && e->keysym.scancode == keytrans[i].from_scancode)) && 
+			((e->keysym.mod & allowed) == keytrans[i].from_mod))
 		{
 			e->keysym.sym = keytrans[i].to_key;
 			e->keysym.mod = keytrans[i].to_mod;
@@ -133,10 +136,13 @@ void update_keymap_menu()
 }
 
 
-int parse_key(const char *keys, int *key, int *mod)
+int parse_key(const char *keys, int *key, int *mod, int *scancode)
 {
 	*mod = 0;
 	*key = 0;
+	
+	if (scancode)
+		*scancode = 0;
 	
 	char *temp = strdup(keys);
 	int done = 0;
@@ -173,6 +179,18 @@ int parse_key(const char *keys, int *key, int *mod)
 			}
 		}
 		
+		if (scancode)
+		{
+			int _scancode = 0;
+			
+			if (sscanf(tok, "S_%x", &_scancode) == 1)
+			{
+				debug("Found scancode %x", _scancode);
+				*scancode = _scancode;
+				found = 1;
+			}
+		}
+		
 		if (!found && strlen(tok) > 0)
 		{
 			warning("Unknown token %s", tok);
@@ -191,15 +209,20 @@ int parse_key(const char *keys, int *key, int *mod)
 		*mod = 0;
 	}
 	
-	return (*key != 0);
+	return (*key != 0 || (scancode == NULL || *scancode != 0));
 }
 
 
 int parse_keys(const char *from, const char *to, KeyTran *tran)
 {
-	if (!parse_key(from, &tran->from_key, &tran->from_mod)) return 0;
+	if (!parse_key(from, &tran->from_key, &tran->from_mod, &tran->from_scancode)) return 0;
 	
-	if (!parse_key(to, &tran->to_key, &tran->to_mod)) return 0;
+	if (!parse_key(to, &tran->to_key, &tran->to_mod, NULL)) return 0;
+	
+	if (tran->from_scancode)
+		tran->type = SCANCODE;
+	else
+		tran->type = KEYSYM;
 	
 	return 1;
 }
