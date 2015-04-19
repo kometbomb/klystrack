@@ -5,3 +5,4 @@
 /src/version_number.h
 /src/version.h
 *.dll
+*.exe
