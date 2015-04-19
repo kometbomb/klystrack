@@ -554,7 +554,7 @@ void info_line(GfxDomain *dest_surface, const SDL_Rect *dest, const SDL_Event *e
 					"Oscillator type",
 					"Frequency multiplier",
 					"Phase shift",
-					"Oscillator exponent",
+					"Phase exponent",
 					"Absolute",
 					"Negative",
 					"Wave length",
