@@ -31,6 +31,7 @@ OTHER DEALINGS IN THE SOFTWARE.
 #include "import/import.h"
 #include "midi.h"
 #include "stats.h"
+#include "zap.h"
 
 extern Mused mused;
 
@@ -235,10 +236,22 @@ static const Menu editpatternmenu[] =
 };
 
 
+static const Menu zapmenu[] =
+{
+	{ 0, editmenu, "Zap instruments",  NULL, zap_instruments, 0, 0, 0 },
+	{ 0, editmenu, "Zap sequence",  NULL, zap_sequence, 0, 0, 0 },
+	{ 0, editmenu, "Zap wavetable",  NULL, zap_wavetable, 0, 0, 0 },
+	{ 0, editmenu, "Zap FX",  NULL, zap_wavetable, 0, 0, 0 },
+	{ 0, NULL, NULL }
+};
+
+
 static const Menu editmenu[] =
 {
 	{ 0, mainmenu, "Undo", NULL, do_undo, 0, 0, 0 },
 	{ 0, mainmenu, "Redo", NULL, do_undo, MAKEPTR(1), 0, 0 },
+	{ 0, mainmenu, "", NULL, NULL },
+	{ 0, mainmenu, "Zap", zapmenu, NULL },
 	{ 0, mainmenu, "", NULL, NULL },
 	{ 0, mainmenu, "Copy", NULL, generic_action, copy, 0, 0 },
 	{ 0, mainmenu, "Paste", NULL, generic_action, paste, 0, 0 },
