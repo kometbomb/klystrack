@@ -28,13 +28,18 @@ OTHER DEALINGS IN THE SOFTWARE.
 
 #include "SDL.h"
 
+typedef enum { KEYSYM, SCANCODE } KeyTranType;
+
 typedef struct
 {
+	KeyTranType type;
 	int focus;
 	int from_mod;
 	int from_key;
+	int from_scancode;
 	int to_mod;
 	int to_key;
+	int to_scancode;
 } KeyTran;
 
 typedef struct
