@@ -381,13 +381,20 @@ void split_pattern(void *unused1, void *unused2, void *unused3)
 		return;
 	}
 	
+	int cursor_pos;
+	
+	if (mused.focus == EDITSEQUENCE)
+		cursor_pos = mused.current_sequencepos;
+	else
+		cursor_pos = mused.current_patternpos;
+	
 	int cp = current_pattern();
 	MusPattern *new_pattern = &mused.song.pattern[empty];
 	
 	// Add new pattern in sequence
 	
 	snapshot(S_T_SEQUENCE);
-	add_sequence(mused.current_sequencetrack, mused.current_patternpos, empty, 0);
+	add_sequence(mused.current_sequencetrack, cursor_pos, empty, 0);
 	
 	// Copy latter half to the new pattern
 	
