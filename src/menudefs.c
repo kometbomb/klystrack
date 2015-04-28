@@ -227,6 +227,7 @@ static const Menu editpatternmenu[] =
 {
 	{ 0, editmenu, "Clone",  NULL, clone_pattern, 0, 0, 0 },
 	{ 0, editmenu, "Find empty",  NULL, get_unused_pattern, 0, 0, 0 },
+	{ 0, editmenu, "Split at cursor", NULL, split_pattern, 0, 0, 0 },
 	{ 0, editmenu, "",  NULL },
 	{ 0, editmenu, "Expand 2X",  NULL, expand_pattern, MAKEPTR(2), 0, 0 },
 	{ 0, editmenu, "Shrink 2X",  NULL, shrink_pattern, MAKEPTR(2), 0, 0 },

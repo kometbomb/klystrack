@@ -183,7 +183,10 @@ void expand_pattern(void *factor, void *unused2, void *unused3)
 {
 	if (mused.focus != EDITPATTERN) return;
 	
-	MusPattern *pattern = &mused.song.pattern[current_pattern()];
+	MusPattern *pattern = get_current_pattern();
+	
+	if (!pattern)
+		return;
 	
 	MusStep *temp = malloc(pattern->num_steps * sizeof(pattern->step[0]));
 	memcpy(temp, pattern->step, pattern->num_steps * sizeof(pattern->step[0]));
@@ -214,7 +217,10 @@ void shrink_pattern(void *factor, void *unused2, void *unused3)
 {
 	if (mused.focus != EDITPATTERN) return;
 	
-	MusPattern *pattern = &mused.song.pattern[current_pattern()];
+	MusPattern *pattern = get_current_pattern();
+	
+	if (!pattern)
+		return;
 	
 	if (pattern->num_steps <= CASTPTR(int,factor)) return;
 	
@@ -233,7 +239,10 @@ void interpolate(void *unused1, void *unused2, void *unused3)
 {
 	if (mused.focus != EDITPATTERN || mused.selection.start >= mused.selection.end - 1) return;
 	
-	MusPattern *pat = &mused.song.pattern[current_pattern()];
+	MusPattern *pat = get_current_pattern();
+	
+	if (!pat)
+		return;
 	
 	int start_step = get_patternstep(mused.selection.start, mused.current_sequencetrack);
 	
@@ -328,7 +337,10 @@ void transpose_note_data(void *semitones, void *unused1, void *unused2)
 {
 	if (mused.focus != EDITPATTERN || mused.selection.start >= mused.selection.end - 1) return;
 	
-	MusPattern *pat = &mused.song.pattern[current_pattern()];
+	MusPattern *pat = get_current_pattern();
+	
+	if (!pat)
+		return;
 	
 	snapshot(S_T_PATTERN);
 	
@@ -345,4 +357,48 @@ void transpose_note_data(void *semitones, void *unused1, void *unused2)
 				pat->step[i].note = note;
 		}
 	}
+}
+
+
+void split_pattern(void *unused1, void *unused2, void *unused3)
+{
+	if (mused.focus != EDITPATTERN && mused.focus != EDITSEQUENCE) return;
+	
+	MusPattern *pat = get_current_pattern();
+	
+	if (!pat)
+		return;
+	
+	int step = current_patternstep();
+	
+	if (step <= 0)
+		return;
+	
+	int empty = find_unused_pattern();
+		
+	if (empty == -1 || (current_pattern() == empty && mused.focus == EDITPATTERN))
+	{
+		return;
+	}
+	
+	int cp = current_pattern();
+	MusPattern *new_pattern = &mused.song.pattern[empty];
+	
+	// Add new pattern in sequence
+	
+	snapshot(S_T_SEQUENCE);
+	add_sequence(mused.current_sequencetrack, mused.current_patternpos, empty, 0);
+	
+	// Copy latter half to the new pattern
+	
+	snapshot(S_T_PATTERN);
+	resize_pattern(new_pattern, pat->num_steps - step);
+	memcpy(new_pattern->step, &pat->step[step], sizeof(pat->step[0]) * ((int)pat->num_steps - step));
+	
+	// Resize old pattern
+	
+	snapshot(S_T_PATTERN);
+	resize_pattern(pat, step);
+	
+	set_info_message("Split %02X into %02X and %02X", cp, cp, empty);
 }
