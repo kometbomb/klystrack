@@ -32,6 +32,7 @@ OTHER DEALINGS IN THE SOFTWARE.
 #include "midi.h"
 #include "stats.h"
 #include "zap.h"
+#include "optimize.h"
 
 extern Mused mused;
 
@@ -247,12 +248,20 @@ static const Menu zapmenu[] =
 };
 
 
+static const Menu optimizemenu[] =
+{
+	{ 0, editmenu, "Kill duplicate patterns",  NULL, optimize_patterns_action, 0, 0, 0 },
+	{ 0, NULL, NULL }
+};
+
+
 static const Menu editmenu[] =
 {
 	{ 0, mainmenu, "Undo", NULL, do_undo, 0, 0, 0 },
 	{ 0, mainmenu, "Redo", NULL, do_undo, MAKEPTR(1), 0, 0 },
 	{ 0, mainmenu, "", NULL, NULL },
 	{ 0, mainmenu, "Zap", zapmenu, NULL },
+	{ 0, mainmenu, "Optimize", optimizemenu, NULL },
 	{ 0, mainmenu, "", NULL, NULL },
 	{ 0, mainmenu, "Copy", NULL, generic_action, copy, 0, 0 },
 	{ 0, mainmenu, "Paste", NULL, generic_action, paste, 0, 0 },

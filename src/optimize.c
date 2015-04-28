@@ -153,3 +153,9 @@ void optimize_song(MusSong *song)
 	debug("Optimizing song");
 	optimize_duplicate_patterns(song);
 }
+
+
+void optimize_patterns_action(void *unused1, void *unused2, void *unused3)
+{
+	optimize_duplicate_patterns(&mused.song);
+}

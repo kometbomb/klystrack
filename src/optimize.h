@@ -34,4 +34,6 @@ void optimize_song(MusSong *song);
 bool is_pattern_empty(const MusPattern *a);
 bool is_pattern_equal(const MusPattern *a, const MusPattern *b);
 
+void optimize_patterns_action(void *unused1, void *unused2, void *unused3);
+
 #endif
