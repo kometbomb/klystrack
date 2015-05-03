@@ -388,3 +388,27 @@ void wavetable_randomize_and_create_one_cycle(void *_settings, void *unused2, vo
 	wavegen_randomize(NULL, NULL, NULL);
 	wavetable_create_one_cycle(_settings, NULL, NULL);
 }
+
+
+void wavetable_filter(void *_filter_type, void *unused2, void *unused3)
+{
+	snapshot(S_T_WAVE_DATA);
+		
+	CydWavetableEntry *w = &mused.mus.cyd->wavetable_entries[mused.selected_wavetable];
+	
+	if (w->samples > 0)
+	{
+		int filter_type = CASTPTR(int, _filter_type);
+		
+		for (int s = 0 ; s < w->samples ; ++s)
+		{
+			int filtered = ((int)w->data[(s - 1 + w->samples) % w->samples] + (int)w->data[s % w->samples] * 2 + (int)w->data[(s + 1) % w->samples]) / 4;
+			if (filter_type == 0)
+				w->data[s] = my_max(my_min(filtered, 32767), -32768);
+			else
+				w->data[s] = my_max(my_min(w->data[s] - filtered, 32767), -32768);
+		}
+		
+		invalidate_wavetable_view();
+	}
+}
