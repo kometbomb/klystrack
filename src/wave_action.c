@@ -400,14 +400,20 @@ void wavetable_filter(void *_filter_type, void *unused2, void *unused3)
 	{
 		int filter_type = CASTPTR(int, _filter_type);
 		
+		Sint16 * temp = malloc(sizeof(Sint16) * w->samples);
+		memcpy(temp, w->data, sizeof(Sint16) * w->samples);
+		
 		for (int s = 0 ; s < w->samples ; ++s)
 		{
-			int filtered = ((int)w->data[(s - 1 + w->samples) % w->samples] + (int)w->data[s % w->samples] * 2 + (int)w->data[(s + 1) % w->samples]) / 4;
+			int filtered = ((int)temp[(s - 2 + w->samples) % w->samples] + (int)temp[(s - 1 + w->samples) % w->samples] * 2 + (int)temp[s % w->samples] * 4 + (int)temp[(s + 1) % w->samples] * 2 + (int)temp[(s + 2) % w->samples]) / 10;
+			
 			if (filter_type == 0)
 				w->data[s] = my_max(my_min(filtered, 32767), -32768);
 			else
 				w->data[s] = my_max(my_min(w->data[s] - filtered, 32767), -32768);
 		}
+		
+		free(temp);
 		
 		invalidate_wavetable_view();
 	}
