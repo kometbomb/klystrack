@@ -7,8 +7,10 @@
 
 void zap_instruments(void* no_confirm, void* b, void* c)
 {
-	if (CASTPTR(int, no_confirm) || !confirm(domain, mused.slider_bevel, &mused.largefont, "Zap instruments (no undo)?"))
+	if (!CASTPTR(int, no_confirm) && !confirm(domain, mused.slider_bevel, &mused.largefont, "Zap instruments (no undo)?"))
 		return;
+	
+	debug("Zap instruments");
 	
 	for (int i = 0 ; i < NUM_INSTRUMENTS ; ++i)
 	{
@@ -20,8 +22,10 @@ void zap_instruments(void* no_confirm, void* b, void* c)
 
 void zap_sequence(void* no_confirm, void* b, void* c)
 {
-	if (CASTPTR(int, no_confirm) || !confirm(domain, mused.slider_bevel, &mused.largefont, "Zap sequence (no undo)?"))
+	if (!CASTPTR(int, no_confirm) && !confirm(domain, mused.slider_bevel, &mused.largefont, "Zap sequence (no undo)?"))
 		return;
+	
+	debug("Zap sequence");
 	
 	for (int i = 0 ; i < MUS_MAX_CHANNELS ; ++i)
 	{
@@ -50,8 +54,10 @@ void zap_sequence(void* no_confirm, void* b, void* c)
 
 void zap_fx(void* no_confirm, void* b, void* c)
 {
-	if (CASTPTR(int, no_confirm) || !confirm(domain, mused.slider_bevel, &mused.largefont, "Zap FX (no undo)?"))
+	if (!CASTPTR(int, no_confirm) && !confirm(domain, mused.slider_bevel, &mused.largefont, "Zap FX (no undo)?"))
 		return;
+	
+	debug("Zap FX");
 	
 	mused.song.flags = 0;
 	
@@ -78,8 +84,10 @@ void zap_fx(void* no_confirm, void* b, void* c)
 
 void zap_wavetable(void* no_confirm, void* b, void* c)
 {
-	if (CASTPTR(int, no_confirm) || !confirm(domain, mused.slider_bevel, &mused.largefont, "Zap wavetable (no undo)?"))
+	if (!CASTPTR(int, no_confirm) && !confirm(domain, mused.slider_bevel, &mused.largefont, "Zap wavetable (no undo)?"))
 		return;
+	
+	debug("Zap wavetable");
 	
 	if (mused.song.wavetable_names)
 	{

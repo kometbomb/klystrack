@@ -147,6 +147,8 @@ void clear_pattern_range(MusPattern *pat, int first, int last)
 
 void new_song()
 {
+	debug("New song");
+	
 	zap_instruments(MAKEPTR(1), NULL, NULL);
 	
 	zap_sequence(MAKEPTR(1), NULL, NULL);
@@ -155,6 +157,7 @@ void new_song()
 	mused.song.num_channels = 4;
 	mused.song.num_instruments = NUM_INSTRUMENTS;
 	mused.song.num_patterns = NUM_PATTERNS;
+	mused.song.num_wavetables = CYD_WAVE_MAX_ENTRIES;
 	mused.song.song_speed = 6;
 	mused.song.song_speed2 = 6;
 	mused.song.song_rate = 50;
