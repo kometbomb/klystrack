@@ -33,7 +33,11 @@ void optimize_duplicate_patterns(MusSong *song);
 void optimize_song(MusSong *song);
 bool is_pattern_empty(const MusPattern *a);
 bool is_pattern_equal(const MusPattern *a, const MusPattern *b);
+bool is_instrument_used(const MusSong *song, int instrument);
+bool is_wavetable_used(const MusSong *song, int wavetable);
 
 void optimize_patterns_action(void *unused1, void *unused2, void *unused3);
+void optimize_instruments_action(void *unused1, void *unused2, void *unused3);
+void optimize_wavetables_action(void *unused1, void *unused2, void *unused3);
 
 #endif

@@ -251,6 +251,8 @@ static const Menu zapmenu[] =
 static const Menu optimizemenu[] =
 {
 	{ 0, editmenu, "Kill duplicate patterns",  NULL, optimize_patterns_action, 0, 0, 0 },
+	{ 0, editmenu, "Kill unused instruments",  NULL, optimize_instruments_action, 0, 0, 0 },
+	{ 0, editmenu, "Kill unused wavetables",  NULL, optimize_wavetables_action, 0, 0, 0 },
 	{ 0, NULL, NULL }
 };
 
