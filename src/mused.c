@@ -186,6 +186,7 @@ void new_song()
 		mused.song.fx[fx].chr.rate = 40;
 		mused.song.fx[fx].chr.max_delay = 20;
 		mused.song.fx[fx].rvb.spread = 0;
+		strcpy(mused.song.fx[fx].name, "");
 		for (int i = 0 ; i < CYDRVB_TAPS ; ++i)
 		{
 			mused.song.fx[fx].rvb.tap[i].delay = i * 100 + 50;
