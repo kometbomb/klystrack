@@ -48,8 +48,6 @@ static KeyTran keytrans[MAX_KEYTRANS];
 void translate_key_event(SDL_KeyboardEvent *e)
 {
 	const int allowed = KMOD_SHIFT|KMOD_CTRL|KMOD_ALT;
-	
-	debug("scancode = %x", e->keysym.scancode);
 
 	for (int i = 0 ; i < MAX_KEYTRANS && !(keytrans[i].from_key == 0 && keytrans[i].from_mod == 0 && keytrans[i].from_scancode == 0) ; ++i)
 	{
