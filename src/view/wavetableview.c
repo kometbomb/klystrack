@@ -347,9 +347,23 @@ void wavetable_tools_view(GfxDomain *dest_surface, const SDL_Rect *dest, const S
 		r.w = temp;
 	}
 	
-	button_text_event(domain, event, &r, mused.slider_bevel, &mused.buttonfont, BEV_BUTTON, BEV_BUTTON_ACTIVE, "KILL DC", wavetable_remove_dc, 0, NULL, NULL);
-	
-	r.y += r.h;
+	{
+		int temp_x = r.x;
+		int temp = r.w;
+		
+		r.w /= 2;
+		
+		button_text_event(domain, event, &r, mused.slider_bevel, &mused.buttonfont, BEV_BUTTON, BEV_BUTTON_ACTIVE, "KILL DC", wavetable_remove_dc, 0, NULL, NULL);
+		
+		r.x += r.w;
+		
+		button_text_event(domain, event, &r, mused.slider_bevel, &mused.buttonfont, BEV_BUTTON, BEV_BUTTON_ACTIVE, "FIND ZERO", wavetable_find_zero, NULL, NULL, NULL);
+		
+		r.y += r.h;
+		
+		r.x = temp_x;
+		r.w = temp;
+	}
 	
 	{
 		int temp_x = r.x;

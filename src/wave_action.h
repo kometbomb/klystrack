@@ -16,5 +16,6 @@ void wavetable_amp(void *amp, void *unused2, void *unused3);
 void wavetable_distort(void *amp, void *unused2, void *unused3);
 void wavetable_remove_dc(void *unused1, void *unused2, void *unused3);
 void wavetable_filter(void *filter_type, void *unused2, void *unused3);
+void wavetable_find_zero(void *unused1, void *unused2, void *unused3);
 
 #endif

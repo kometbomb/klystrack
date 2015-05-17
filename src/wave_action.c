@@ -442,3 +442,42 @@ void wavetable_filter(void *_filter_type, void *unused2, void *unused3)
 		invalidate_wavetable_view();
 	}
 }
+
+
+void wavetable_find_zero(void *unused1, void *unused2, void *unused3)
+{
+	snapshot(S_T_WAVE_DATA);
+		
+	CydWavetableEntry *w = &mused.mus.cyd->wavetable_entries[mused.selected_wavetable];
+	
+	if (w->samples > 1)
+	{
+		int zero_crossing = 0;
+		
+		for (int s = 1 ; s < w->samples ; ++s)
+		{
+			if ((w->data[s] >= 0 && w->data[s - 1] < 0) || (w->data[s] <= 0 && w->data[s - 1] > 0))
+			{
+				zero_crossing = s;
+				break;
+			}
+		}
+		
+		debug("zero crossing at %d", zero_crossing);
+		
+		if (zero_crossing > 0)
+		{
+			Sint16 * temp = malloc(sizeof(Sint16) * w->samples);
+			memcpy(temp, w->data, sizeof(Sint16) * w->samples);
+		
+			for (int s = 0 ; s < w->samples ; ++s)
+			{
+				w->data[s] = temp[(s + zero_crossing) % w->samples];
+			}
+			
+			free(temp);
+		}
+		
+		invalidate_wavetable_view();
+	}
+}
