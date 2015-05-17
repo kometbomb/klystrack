@@ -383,6 +383,30 @@ void wavetable_amp(void *_amp, void *unused2, void *unused3)
 }
 
 
+void wavetable_distort(void *_amp, void *unused2, void *unused3)
+{
+	snapshot(S_T_WAVE_DATA);
+		
+	CydWavetableEntry *w = &mused.mus.cyd->wavetable_entries[mused.selected_wavetable];
+	
+	if (w->samples > 0)
+	{
+		for (int s = 0 ; s < w->samples ; ++s)
+		{
+			if (w->data[s] != 0)
+			{
+				float v = (float)w->data[s] / 32768.0;
+				v *= pow(fabs(v), -0.333);
+			
+				w->data[s] = my_max(my_min(v * 32768, 32767), -32768);
+			}
+		}
+		
+		invalidate_wavetable_view();
+	}
+}
+
+
 void wavetable_randomize_and_create_one_cycle(void *_settings, void *unused2, void *unused3)
 {
 	wavegen_randomize(NULL, NULL, NULL);
