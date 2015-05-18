@@ -228,7 +228,7 @@ void init(MusInstrument *instrument, MusPattern *pattern, MusSeqPattern sequence
 	set_info_message("Welcome to klystrack!");
 	
 	default_settings();
-	
+
 	mused.flags = MULTICHANNEL_PREVIEW|ANIMATE_CURSOR|EDIT_MODE|SHOW_LOGO|FOLLOW_PLAY_POSITION|MULTIKEY_JAMMING|START_WITH_TEMPLATE;
 	mused.visible_columns = VC_INSTRUMENT | VC_COMMAND;
 	mused.done = 0;
@@ -299,6 +299,9 @@ void init(MusInstrument *instrument, MusPattern *pattern, MusSeqPattern sequence
 	
 	mused.wgset.num_oscs = 1;
 	mused.wgset.length = 256;
+	
+	mused.prev_wavetable_x = -1;
+	mused.prev_wavetable_y = -1;
 	
 	debug("init done");
 }

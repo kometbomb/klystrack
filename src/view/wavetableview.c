@@ -257,11 +257,39 @@ void wavetable_sample_view(GfxDomain *dest_surface, const SDL_Rect *dest, const 
 		mx /= mused.pixel_scale;
 		my /= mused.pixel_scale;
 		
+		if (mused.prev_wavetable_x == -1)
+		{
+			mused.prev_wavetable_x = mx;
+			mused.prev_wavetable_y = my;
+		}
+		
+		int dx;
+		int d = abs(mx - mused.prev_wavetable_x);
+		
+		if (mx < mused.prev_wavetable_x)
+			dx = 1;
+		else
+			dx = -1;
+		
 		if (mx >= area.x && my >= area.y
 			&& mx < area.x + area.w && my < area.y + area.h)
 		{
-			wavetable_draw((float)(mx - area.x) / area.w, (float)(my - area.y) / area.h, 1.0f / area.w);
+			if (d > 0)
+			{
+				for (int x = mx, i = 0 ; i <= d ; x += dx, ++i)
+					wavetable_draw((float)(x - area.x) / area.w, (float)((my + (mused.prev_wavetable_y - my) * i / d) - area.y) / area.h, 1.0f / area.w);
+			}
+			else
+				wavetable_draw((float)(mx - area.x) / area.w, (float)(my - area.y) / area.h, 1.0f / area.w);
 		}
+		
+		mused.prev_wavetable_x = mx;
+		mused.prev_wavetable_y = my;
+	}
+	else
+	{
+		mused.prev_wavetable_x = -1;
+		mused.prev_wavetable_y = -1;
 	}
 }
 
