@@ -1770,7 +1770,6 @@ void fx_view(GfxDomain *dest_surface, const SDL_Rect *dest, const SDL_Event *eve
 		}
 		
 		r.y += r.h + 4;
-		r.x = 
 		r.h = area.h - r.y + area.y;
 		r.w = area.w;
 		r.x = area.x;
