@@ -380,7 +380,7 @@ int open_song(FILE *f)
 	
 	for (int i = mused.song.num_wavetables ; i < CYD_WAVE_MAX_ENTRIES ; ++i)
 	{
-		mused.song.wavetable_names = malloc(MUS_WAVETABLE_NAME_LEN + 1);
+		mused.song.wavetable_names[i] = malloc(MUS_WAVETABLE_NAME_LEN + 1);
 		memset(mused.song.wavetable_names[i], 0, MUS_WAVETABLE_NAME_LEN + 1);
 	}
 	
@@ -859,7 +859,7 @@ void open_data(void *type, void *action, void *_ret)
 				}
 				else
 				{
-					save_wavetable(f);
+					r = save_wavetable(f);
 				}
 			}
 			
