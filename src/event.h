@@ -189,6 +189,7 @@ enum
 	R_ROOMVOL,
 	R_ROOMDECAY,
 	R_SPREAD,
+	R_TAP,
 	R_DELAY,
 	R_GAIN
 };

@@ -1763,12 +1763,13 @@ void set_room_size(int fx, int size, int vol, int dec)
 	
 	const int min_delay = 5;
 	int ms = (CYDRVB_SIZE - min_delay) * size / 64;
+	int low = CYDRVB_LOW_LIMIT + 300; // +30 dB
 	
 	for (int i = 0 ; i < CYDRVB_TAPS ;++i)
 	{
 		int p = rnd(i * ms / CYDRVB_TAPS, (i + 1) * ms / CYDRVB_TAPS) + min_delay;
 		mused.song.fx[fx].rvb.tap[i].delay = p;
-		mused.song.fx[fx].rvb.tap[i].gain = CYDRVB_LOW_LIMIT-CYDRVB_LOW_LIMIT * pow(1.0 - (double)p / ms, (double)dec / 3) * vol / 16;
+		mused.song.fx[fx].rvb.tap[i].gain = low - low * pow(1.0 - (double)p / ms, (double)dec / 3) * vol / 16;
 	}
 	
 	mus_set_fx(&mused.mus, &mused.song);
@@ -1780,7 +1781,18 @@ void fx_add_param(int d)
 	if (d < 0) d = -1; else if (d > 0) d = 1;
 
 	if (SDL_GetModState() & KMOD_SHIFT)
-		d *= 10;
+	{
+		switch (mused.edit_reverb_param)
+		{
+			case R_DELAY:
+				d *= 100;
+				break;
+			
+			default:
+				d *= 10;
+				break;
+		}
+	}
 		
 	snapshot_cascade(S_T_FX, mused.fx_bus, mused.edit_reverb_param);
 
@@ -1906,19 +1918,23 @@ void fx_add_param(int d)
 		}
 		break;
 		
-		default:
+		case R_TAP:
 		{
-			int p = mused.edit_reverb_param - R_DELAY;
-			int tap = (p & ~1) / 2;
-			if (!(p & 1))
-			{
-				clamp(mused.song.fx[mused.fx_bus].rvb.tap[tap].delay, d * 1, 0, CYDRVB_SIZE - 1);
-			}
-			else
-			{
-				clamp(mused.song.fx[mused.fx_bus].rvb.tap[tap].gain, d * 1, CYDRVB_LOW_LIMIT, 0);
-			}
-			
+			clamp(mused.fx_tap, d, 0, CYDRVB_TAPS - 1);
+		}
+		break;
+		
+		
+		case R_DELAY:
+		{
+			clamp(mused.song.fx[mused.fx_bus].rvb.tap[mused.fx_tap].delay, d * 1, 0, CYDRVB_SIZE - 1);
+			mus_set_fx(&mused.mus, &mused.song);
+		}
+		break;
+		
+		case R_GAIN:
+		{
+			clamp(mused.song.fx[mused.fx_bus].rvb.tap[mused.fx_tap].gain, d * 1, CYDRVB_LOW_LIMIT, 0);
 			mus_set_fx(&mused.mus, &mused.song);
 		}
 		break;
@@ -1938,7 +1954,7 @@ void fx_event(SDL_Event *e)
 			case SDLK_DOWN:
 			{
 				++mused.edit_reverb_param;
-				if (mused.edit_reverb_param >= R_DELAY + CYDRVB_TAPS * 2) mused.edit_reverb_param = R_DELAY + CYDRVB_TAPS * 2 - 1;
+				if (mused.edit_reverb_param > R_GAIN) mused.edit_reverb_param = R_GAIN;
 			}
 			break;
 			

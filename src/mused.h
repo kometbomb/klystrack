@@ -159,7 +159,7 @@ typedef struct
 	int pixel_scale;
 	int mix_rate, mix_buffer;
 	int window_w, window_h;
-	int fx_bus, fx_room_size, fx_room_vol, fx_room_dec;
+	int fx_bus, fx_room_size, fx_room_vol, fx_room_dec, fx_tap;
 	/*---vis---*/
 	int current_visualizer;
 	struct 
@@ -180,6 +180,7 @@ typedef struct
 	/*------------*/
 	GfxSurface *wavetable_preview;
 	Uint16 wavetable_bits;
+	int prev_wavetable_x, prev_wavetable_y;
 	
 #ifdef MIDI
 	Uint32 midi_device;
