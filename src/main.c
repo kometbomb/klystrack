@@ -335,6 +335,10 @@ int main(int argc, char **argv)
 		nos_decrunch(domain);
 		mused.flags |= DISABLE_NOSTALGY;
 	}
+
+#ifdef DEBUG	
+	Uint32 start_ticks = SDL_GetTicks();
+#endif
 		
 	while (1)
 	{
@@ -632,6 +636,9 @@ int main(int argc, char **argv)
 	gfx_domain_free(domain);
 
 #ifdef DEBUG
+
+	debug("Total frames = %d (%.1f fps)", total_frames, (double)total_frames / ((double)(SDL_GetTicks() - start_ticks) / 1000));
+
 	if (total_frames > 0)
 		debug("Draw calls per frame: %.1f", draw_calls / total_frames);
 #endif

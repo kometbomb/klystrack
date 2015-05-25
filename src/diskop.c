@@ -239,12 +239,12 @@ static void save_fx_inner(SDL_RWops *f, CydFxSerialized *fx)
 	SDL_RWwrite(f, &temp.chr.max_delay, sizeof(temp.chr.max_delay), 1);
 	SDL_RWwrite(f, &temp.chr.sep, sizeof(temp.chr.sep), 1);
 	
-	SDL_RWwrite(f, &temp.rvb.spread, sizeof(temp.rvb.spread), 1);
-	
 	for (int i = 0 ; i < CYDRVB_TAPS ; ++i)	
 	{
 		SDL_RWwrite(f, &temp.rvb.tap[i].delay, sizeof(temp.rvb.tap[i].delay), 1);
 		SDL_RWwrite(f, &temp.rvb.tap[i].gain, sizeof(temp.rvb.tap[i].gain), 1);
+		SDL_RWwrite(f, &temp.rvb.tap[i].panning, sizeof(temp.rvb.tap[i].panning), 1);
+		SDL_RWwrite(f, &temp.rvb.tap[i].flags, sizeof(temp.rvb.tap[i].flags), 1);
 	}
 
 	SDL_RWwrite(f, &temp.crushex.downsample, sizeof(temp.crushex.downsample), 1); 

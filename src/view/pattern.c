@@ -126,14 +126,14 @@ void pattern_view_header(GfxDomain *dest_surface, const SDL_Rect *dest, const SD
 		char tmp[4]="\xfa\xf9";
 		
 		if (mused.song.default_panning[channel])
-				snprintf(tmp, sizeof(tmp), "%c%X", mused.song.default_panning[channel] < 0 ? '\xf9' : '\xfa', mused.song.default_panning[channel] == 63 ? 8 : ((abs((int)mused.song.default_panning[channel]) >> 3) & 0xf));
+			snprintf(tmp, sizeof(tmp), "%c%X", mused.song.default_panning[channel] < 0 ? '\xf9' : '\xfa', mused.song.default_panning[channel] == 63 ? 8 : ((abs((int)mused.song.default_panning[channel]) >> 3) & 0xf));
 		
 		if ((d = generic_field(event, &vol, 97, channel, "P", "%s", tmp, 2)))
 		{
 			snapshot_cascade(S_T_SONGINFO, 97, channel);
 			mused.song.default_panning[channel] = my_max(-64, my_min(63, (int)mused.song.default_panning[channel] + d * 8));
 			if (abs(mused.song.default_panning[channel]) < 8)
-					mused.song.default_panning[channel] = 0;
+				mused.song.default_panning[channel] = 0;
 		}
 				
 		vol.x += vol.w + 2;

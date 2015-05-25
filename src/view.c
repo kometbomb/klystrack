@@ -693,10 +693,10 @@ void info_line(GfxDomain *dest_surface, const SDL_Rect *dest, const SDL_Event *e
 					"Room size",
 					"Reverb volume",
 					"Decay",
-					"Stereo spread",
 					"Selected tap",
 					"Tap delay",
-					"Tap gain"
+					"Tap gain",
+					"Tap panning",
 				};
 				
 				int i = mused.edit_reverb_param;
@@ -1629,13 +1629,6 @@ void fx_view(GfxDomain *dest_surface, const SDL_Rect *dest, const SDL_Event *eve
 	r.x = 4;
 	r.y += r.h;
 	
-	if ((d = generic_field(event, &r, EDITFX, R_SPREAD, "SPREAD", "%02X", MAKEPTR(mused.song.fx[mused.fx_bus].rvb.spread), 2)))
-	{
-		fx_add_param(d);
-	}	
-	
-	update_rect(&area, &r);
-	
 	{
 		r.x = 130;
 		r.y -= r.h;
@@ -1742,13 +1735,27 @@ void fx_view(GfxDomain *dest_surface, const SDL_Rect *dest, const SDL_Event *eve
 		else
 			sprintf(value, "%+5.1f", (double)mused.song.fx[mused.fx_bus].rvb.tap[mused.fx_tap].gain * 0.1);
 			
-		d = generic_field(event, &r, EDITFX, R_GAIN, "", "%s dB", value, 8);
-		
 		if ((d = generic_field(event, &r, EDITFX, R_GAIN, "", "%s dB", value, 8))) 
 		{
 			fx_add_param(d);
 		}
 				
+		r.x += r.w + 4;
+		
+		r.w = 40;
+		
+		int panning = (int)mused.song.fx[mused.fx_bus].rvb.tap[mused.fx_tap].panning - CYD_PAN_CENTER;
+		
+		if (panning != 0)
+			snprintf(tmp, sizeof(tmp), "%c%X", panning < 0 ? '\xf9' : '\xfa', panning == 63 ? 8 : ((abs((int)panning) >> 3) & 0xf));
+		else
+			strcpy(tmp, "\xfa\xf9");
+		
+		if ((d = generic_field(event, &r, EDITFX, R_PANNING, "", "%s", tmp, 2))) 
+		{
+			fx_add_param(d);
+		}
+		
 		r.x += r.w + 4;
 		
 		r.w = 32;

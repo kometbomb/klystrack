@@ -1911,13 +1911,6 @@ void fx_add_param(int d)
 		}
 		break;
 		
-		case R_SPREAD:
-		{
-			clamp(mused.song.fx[mused.fx_bus].rvb.spread, d, 0, 0xff);
-			mus_set_fx(&mused.mus, &mused.song);
-		}
-		break;
-		
 		case R_TAP:
 		{
 			clamp(mused.fx_tap, d, 0, CYDRVB_TAPS - 1);
@@ -1935,6 +1928,13 @@ void fx_add_param(int d)
 		case R_GAIN:
 		{
 			clamp(mused.song.fx[mused.fx_bus].rvb.tap[mused.fx_tap].gain, d * 1, CYDRVB_LOW_LIMIT, 0);
+			mus_set_fx(&mused.mus, &mused.song);
+		}
+		break;
+		
+		case R_PANNING:
+		{
+			clamp(mused.song.fx[mused.fx_bus].rvb.tap[mused.fx_tap].panning, d * 8, CYD_PAN_LEFT, CYD_PAN_RIGHT);
 			mus_set_fx(&mused.mus, &mused.song);
 		}
 		break;
