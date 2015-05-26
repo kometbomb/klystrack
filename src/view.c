@@ -1473,27 +1473,59 @@ void fx_reverb_view(GfxDomain *dest_surface, const SDL_Rect *dest, const SDL_Eve
 	
 	c = 0;
 	
-	for (int db = 0 ; db < -CYDRVB_LOW_LIMIT ; db += 100, c++)
+	if (mused.fx_axis == 0)
 	{
-		Uint32 color = colors[COLOR_PATTERN_BAR];
-		if (c & 1)
-			color = colors[COLOR_PATTERN_BEAT];
-		
-		SDL_Rect r = { area.x, area.y + db * area.h / -CYDRVB_LOW_LIMIT, area.w, 1};
-		
-		if (!(c & 1))
+		for (int db = 0 ; db < -CYDRVB_LOW_LIMIT ; db += 100, c++)
 		{
-			SDL_Rect text = { r.x + r.w - 40, r.y + 2, 40, 8};
-			font_write_args(&mused.smallfont, domain, &text, "%3d dB", -db / 10);
+			Uint32 color = colors[COLOR_PATTERN_BAR];
+			if (c & 1)
+				color = colors[COLOR_PATTERN_BEAT];
+			
+			SDL_Rect r = { area.x, area.y + db * area.h / -CYDRVB_LOW_LIMIT, area.w, 1};
+			
+			if (!(c & 1))
+			{
+				SDL_Rect text = { r.x + r.w - 40, r.y + 2, 40, 8};
+				font_write_args(&mused.smallfont, domain, &text, "%3d dB", -db / 10);
+			}
+			
+			if (db != 0)
+				gfx_rect(dest_surface, &r, color);
+		}
+	}
+	else
+	{
+		for (int pan = CYD_PAN_LEFT ; pan < CYD_PAN_RIGHT ; pan += CYD_PAN_CENTER / 2, c++)
+		{
+			Uint32 color = colors[COLOR_PATTERN_BAR];
+			if (c & 1)
+				color = colors[COLOR_PATTERN_BEAT];
+			
+			SDL_Rect r = { area.x, area.y + pan * area.h / CYD_PAN_RIGHT, area.w, 1};
+			
+			if (pan != 0)
+				gfx_rect(dest_surface, &r, color);
 		}
 		
-		if (db != 0)
-			gfx_rect(dest_surface, &r, color);
+		{
+			SDL_Rect text = { area.x + area.w - 6, area.y + 4, 8, 8};
+			font_write(&mused.smallfont, domain, &text, "L");
+		}
+		{
+			SDL_Rect text = { area.x + area.w - 6, area.y + area.h - 16, 8, 8};
+			font_write(&mused.smallfont, domain, &text, "R");
+		}
 	}
 	
 	for (int i = 0 ; i < CYDRVB_TAPS ; ++i)
 	{
-		int h = mused.song.fx[mused.fx_bus].rvb.tap[i].gain * area.h / CYDRVB_LOW_LIMIT;
+		int h;
+		
+		if (mused.fx_axis == 0)
+			h = mused.song.fx[mused.fx_bus].rvb.tap[i].gain * area.h / CYDRVB_LOW_LIMIT;
+		else
+			h = mused.song.fx[mused.fx_bus].rvb.tap[i].panning * area.h / CYD_PAN_RIGHT;
+		
 		SDL_Rect r = { area.x + mused.song.fx[mused.fx_bus].rvb.tap[i].delay * area.w / CYDRVB_SIZE - mused.smallfont.w / 2,  
 			area.y + h - mused.smallfont.h / 2, mused.smallfont.w, mused.smallfont.h};
 			
@@ -1774,6 +1806,13 @@ void fx_view(GfxDomain *dest_surface, const SDL_Rect *dest, const SDL_Event *eve
 			mused.song.fx[mused.fx_bus].rvb.tap[mused.fx_tap].gain = 0;
 			mused.edit_reverb_param = R_GAIN;
 			fx_add_param(0); // update taps
+		}
+		
+		update_rect(&area, &r);
+		
+		if (button_text_event(domain, event, &r, mused.slider_bevel, &mused.buttonfont, BEV_BUTTON, BEV_BUTTON_ACTIVE, mused.fx_axis == 0 ? "GAIN" : "PAN", NULL, NULL, NULL, NULL) & 1)
+		{
+			mused.fx_axis ^= 1;
 		}
 		
 		r.y += r.h + 4;
