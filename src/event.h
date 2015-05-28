@@ -188,10 +188,13 @@ enum
 	R_ROOMSIZE,
 	R_ROOMVOL,
 	R_ROOMDECAY,
+	R_TAPENABLE,
 	R_TAP,
 	R_DELAY,
 	R_GAIN,
-	R_PANNING
+	R_PANNING,
+	/* ---- */
+	R_N_PARAMS
 };
 
 enum

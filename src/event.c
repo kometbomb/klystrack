@@ -1785,9 +1785,12 @@ void fx_add_param(int d)
 		switch (mused.edit_reverb_param)
 		{
 			case R_DELAY:
-				d *= 100;
+				if (mused.flags & SHOW_DELAY_IN_TICKS)
+					d *= (1000 / (float)mused.song.song_rate) * mused.song.song_speed;
+				else
+					d *= 100;
 				break;
-			
+				
 			default:
 				d *= 10;
 				break;
@@ -1938,6 +1941,12 @@ void fx_add_param(int d)
 			mus_set_fx(&mused.mus, &mused.song);
 		}
 		break;
+		
+		case R_TAPENABLE:
+		{
+			flipbit(mused.song.fx[mused.fx_bus].rvb.tap[mused.fx_tap].flags, 1);
+		}
+		break;
 	}
 	
 }
@@ -1954,7 +1963,7 @@ void fx_event(SDL_Event *e)
 			case SDLK_DOWN:
 			{
 				++mused.edit_reverb_param;
-				if (mused.edit_reverb_param > R_GAIN) mused.edit_reverb_param = R_GAIN;
+				if (mused.edit_reverb_param >= R_N_PARAMS) mused.edit_reverb_param = R_N_PARAMS - 1;
 			}
 			break;
 			

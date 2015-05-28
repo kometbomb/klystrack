@@ -693,18 +693,14 @@ void info_line(GfxDomain *dest_surface, const SDL_Rect *dest, const SDL_Event *e
 					"Room size",
 					"Reverb volume",
 					"Decay",
+					"Tap enabled",
 					"Selected tap",
 					"Tap delay",
 					"Tap gain",
 					"Tap panning",
 				};
 				
-				int i = mused.edit_reverb_param;
-				
-				if (i >= R_DELAY)
-					i = (i - R_DELAY) % 2 + R_DELAY;
-				
-				strcpy(text, param_desc[i]);
+				strcpy(text, param_desc[mused.edit_reverb_param]);
 			} break;
 			
 			case EDITPATTERN:
@@ -1712,18 +1708,27 @@ void fx_view(GfxDomain *dest_surface, const SDL_Rect *dest, const SDL_Event *eve
 		char value[20];
 		int d;
 		
-		r.w = 52;
-		r.h = 12;
+		r.w = 32;
+		r.h = 10;
 		
-		if ((d = generic_field(event, &r, EDITFX, R_TAP, "TAP", "%d", MAKEPTR(mused.fx_tap), 1)))
+		Uint32 _flags = mused.song.fx[mused.fx_bus].rvb.tap[mused.fx_tap].flags;
+		
+		generic_flags(event, &r, EDITFX, R_TAPENABLE, "TAP", &_flags, 1);
+		
+		mused.song.fx[mused.fx_bus].rvb.tap[mused.fx_tap].flags = _flags;
+		
+		update_rect(&area, &r);
+		
+		r.w = 32;
+		
+		if ((d = generic_field(event, &r, EDITFX, R_TAP, "", "%02d", MAKEPTR(mused.fx_tap), 2)))
 		{
 			fx_add_param(d);
 		}
 		
 		update_rect(&area, &r);
 
-		r.w = 60;		
-		r.x += 12;
+		r.w = 80;		
 		
 		if (mused.flags & SHOW_DELAY_IN_TICKS)
 		{
@@ -1744,22 +1749,6 @@ void fx_view(GfxDomain *dest_surface, const SDL_Rect *dest, const SDL_Event *eve
 		
 		update_rect(&area, &r);
 		
-		r.w = 22;
-		
-		float spd = 1000.0 / mused.song.song_rate * ((float)(mused.song.song_speed + mused.song.song_speed2) / 2);
-		
-		char tmp[10];
-		snprintf(tmp, sizeof(tmp), "%d", (int)((float)(mused.song.fx[mused.fx_bus].rvb.tap[mused.fx_tap].delay / (int)spd * (int)spd) / spd));
-		
-		if (button_text_event(domain, event, &r, mused.slider_bevel, &mused.buttonfont, BEV_BUTTON, BEV_BUTTON_ACTIVE, tmp, NULL, NULL, NULL, NULL) & 1)
-		{
-			mused.song.fx[mused.fx_bus].rvb.tap[mused.fx_tap].delay = (mused.song.fx[mused.fx_bus].rvb.tap[mused.fx_tap].delay) / (int)spd * (int)spd;
-			mused.edit_reverb_param = R_DELAY;
-			fx_add_param(0); // update taps
-		}
-				
-		update_rect(&area, &r);
-		
 		r.w = 80;
 		
 		if (mused.song.fx[mused.fx_bus].rvb.tap[mused.fx_tap].gain <= CYDRVB_LOW_LIMIT)
@@ -1774,9 +1763,10 @@ void fx_view(GfxDomain *dest_surface, const SDL_Rect *dest, const SDL_Event *eve
 				
 		r.x += r.w + 4;
 		
-		r.w = 40;
+		r.w = 32;
 		
 		int panning = (int)mused.song.fx[mused.fx_bus].rvb.tap[mused.fx_tap].panning - CYD_PAN_CENTER;
+		char tmp[10];
 		
 		if (panning != 0)
 			snprintf(tmp, sizeof(tmp), "%c%X", panning < 0 ? '\xf9' : '\xfa', panning == 63 ? 8 : ((abs((int)panning) >> 3) & 0xf));
@@ -1791,24 +1781,6 @@ void fx_view(GfxDomain *dest_surface, const SDL_Rect *dest, const SDL_Event *eve
 		r.x += r.w + 4;
 		
 		r.w = 32;
-		
-		if (button_text_event(domain, event, &r, mused.slider_bevel, &mused.buttonfont, BEV_BUTTON, BEV_BUTTON_ACTIVE, "-INF", NULL, NULL, NULL, NULL) & 1)
-		{
-			mused.song.fx[mused.fx_bus].rvb.tap[mused.fx_tap].gain = CYDRVB_LOW_LIMIT;
-			mused.edit_reverb_param = R_GAIN;
-			fx_add_param(0);
-		}
-		
-		update_rect(&area, &r);
-		
-		if (button_text_event(domain, event, &r, mused.slider_bevel, &mused.buttonfont, BEV_BUTTON, BEV_BUTTON_ACTIVE, "0", NULL, NULL, NULL, NULL) & 1)
-		{
-			mused.song.fx[mused.fx_bus].rvb.tap[mused.fx_tap].gain = 0;
-			mused.edit_reverb_param = R_GAIN;
-			fx_add_param(0); // update taps
-		}
-		
-		update_rect(&area, &r);
 		
 		if (button_text_event(domain, event, &r, mused.slider_bevel, &mused.buttonfont, BEV_BUTTON, BEV_BUTTON_ACTIVE, mused.fx_axis == 0 ? "GAIN" : "PAN", NULL, NULL, NULL, NULL) & 1)
 		{
