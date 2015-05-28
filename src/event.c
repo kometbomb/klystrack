@@ -1761,15 +1761,41 @@ void set_room_size(int fx, int size, int vol, int dec)
 {
 	snapshot(S_T_FX);
 	
-	const int min_delay = 5;
+	int min_delay = 5;
 	int ms = (CYDRVB_SIZE - min_delay) * size / 64;
+	
+	if (mused.fx_room_ticks)
+	{
+		ms = 1000 * size / 16 * mused.song.song_speed / mused.song.song_rate;
+		min_delay = ms;
+	}
+	
 	int low = CYDRVB_LOW_LIMIT + 300; // +30 dB
 	
 	for (int i = 0 ; i < CYDRVB_TAPS ;++i)
 	{
-		int p = rnd(i * ms / CYDRVB_TAPS, (i + 1) * ms / CYDRVB_TAPS) + min_delay;
+		int p, g, e = 1;
+		
+		if (mused.fx_room_ticks)
+		{
+			p = i * ms + min_delay;
+			g = low - low * pow(1.0 - (double)p / CYDRVB_SIZE, (double)dec / 3) * vol / 16;
+		}
+		else
+		{
+			p = rnd(i * ms / CYDRVB_TAPS, (i + 1) * ms / CYDRVB_TAPS) + min_delay;
+			g = low - low * pow(1.0 - (double)p / ms, (double)dec / 3) * vol / 16;
+		}
+		
+		if (p >= CYDRVB_SIZE)
+		{
+			p = CYDRVB_SIZE - 1;
+			e = 0;
+		}
+		
 		mused.song.fx[fx].rvb.tap[i].delay = p;
-		mused.song.fx[fx].rvb.tap[i].gain = low - low * pow(1.0 - (double)p / ms, (double)dec / 3) * vol / 16;
+		mused.song.fx[fx].rvb.tap[i].gain = g;
+		mused.song.fx[fx].rvb.tap[i].flags = e;
 	}
 	
 	mus_set_fx(&mused.mus, &mused.song);
@@ -1914,12 +1940,17 @@ void fx_add_param(int d)
 		}
 		break;
 		
+		case R_SNAPTICKS:
+		{
+			flipbit(mused.fx_room_ticks, 1);
+		}
+		break;
+		
 		case R_TAP:
 		{
 			clamp(mused.fx_tap, d, 0, CYDRVB_TAPS - 1);
 		}
 		break;
-		
 		
 		case R_DELAY:
 		{

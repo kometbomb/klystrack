@@ -1690,7 +1690,11 @@ void fx_view(GfxDomain *dest_surface, const SDL_Rect *dest, const SDL_Event *eve
 		
 		update_rect(&area, &r);
 		
-		r.w = 32;
+		r.w = 41;
+		
+		generic_flags(event, &r, EDITFX, R_SNAPTICKS, "SNAP", (Uint32*)&mused.fx_room_ticks, 1);
+		
+		update_rect(&area, &r);
 		
 		if (button_text_event(domain, event, &r, mused.slider_bevel, &mused.buttonfont, BEV_BUTTON, BEV_BUTTON_ACTIVE, "SET", NULL, NULL, NULL, NULL) & 1)
 		{
