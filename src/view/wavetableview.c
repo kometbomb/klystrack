@@ -239,12 +239,12 @@ static void update_sample_preview(GfxDomain *dest, const SDL_Rect* area)
 			SDL_FillRect(mused.wavetable_preview->surface, &r, SDL_MapRGB(mused.wavetable_preview->surface->format, (colors[COLOR_WAVETABLE_SAMPLE] >> 16) & 255, (colors[COLOR_WAVETABLE_SAMPLE] >> 8) & 255, colors[COLOR_WAVETABLE_SAMPLE] & 255));
 		}
 		
-		gfx_update_texture(dest, mused.wavetable_preview);
-		
 		debug("Wavetable item bitmask = %x, lowest bit = %d", mused.wavetable_bits, __builtin_ffs(mused.wavetable_bits) - 1);
 		
 		set_info_message("Sample quality %d bits", 16 - (__builtin_ffs(mused.wavetable_bits) - 1));
 	}
+	
+	gfx_update_texture(dest, mused.wavetable_preview);
 }
 
 
