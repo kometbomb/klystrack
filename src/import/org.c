@@ -27,6 +27,7 @@ OTHER DEALINGS IN THE SOFTWARE.
 #include "edit.h"
 #include "mused.h"
 #include "event.h"
+#include "gui/toolutil.h"
 #include "SDL_endian.h"
 #include "snd/freqs.h"
 #include <assert.h>
@@ -49,7 +50,7 @@ typedef struct
 
 int load_orgsamp(orgsamp_t *data)
 {
-	FILE *f = fopen("orgsamp.dat", "rb");
+	FILE *f = open_dialog("rb", "Locate orgsamp.dat", "dat", domain, mused.slider_bevel, &mused.largefont, &mused.smallfont, "orgsamp.dat");
 	
 	memset(data, 0, sizeof(*data));
 	
