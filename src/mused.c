@@ -248,8 +248,8 @@ void init(MusInstrument *instrument, MusPattern *pattern, MusSeqPattern sequence
 	mused.mix_rate = 44100;
 	mused.mix_buffer = 2048;
 	mused.fx_room_size = 16;
-	mused.fx_room_vol = 8;
-	mused.fx_room_dec = 8;
+	mused.fx_room_vol = 16;
+	mused.fx_room_dec = 5;
 	mused.oversample = 2;
 		
 	strcpy(mused.themename, "Default");
