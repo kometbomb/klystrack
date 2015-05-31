@@ -1969,6 +1969,7 @@ void fx_add_param(int d)
 		case R_PANNING:
 		{
 			clamp(mused.song.fx[mused.fx_bus].rvb.tap[mused.fx_tap].panning, d * 8, CYD_PAN_LEFT, CYD_PAN_RIGHT);
+			mused.song.fx[mused.fx_bus].rvb.tap[mused.fx_tap].panning &= ~7;
 			mus_set_fx(&mused.mus, &mused.song);
 		}
 		break;
