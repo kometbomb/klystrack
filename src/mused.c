@@ -34,6 +34,7 @@ OTHER DEALINGS IN THE SOFTWARE.
 #include "edit.h"
 #include "key.h"
 #include "view/wavetableview.h"
+#include "zap.h"
 #include <stdarg.h>
 #include <string.h>
 
@@ -146,65 +147,28 @@ void clear_pattern_range(MusPattern *pat, int first, int last)
 
 void new_song()
 {
-	for (int i = 0 ; i < NUM_INSTRUMENTS ; ++i)
-	{
-		MusInstrument *inst = &mused.song.instrument[i];
-		kt_default_instrument(inst);
-	}
+	debug("New song");
+	
+	zap_instruments(MAKEPTR(1), NULL, NULL);
+	
+	zap_sequence(MAKEPTR(1), NULL, NULL);
 
 	mused.song.master_volume = MAX_VOLUME;
 	mused.song.num_channels = 4;
 	mused.song.num_instruments = NUM_INSTRUMENTS;
 	mused.song.num_patterns = NUM_PATTERNS;
+	mused.song.num_wavetables = CYD_WAVE_MAX_ENTRIES;
 	mused.song.song_speed = 6;
 	mused.song.song_speed2 = 6;
 	mused.song.song_rate = 50;
-	mused.song.song_length = 0;
-	mused.song.loop_point = 0;
-	mused.song.flags = 0;
-	mused.sequence_position = 0;
-	mused.pattern_position = 0;
-	mused.current_sequencepos = 0;
-	mused.current_sequencetrack = 0;
-	update_position_sliders();
+	
 	memset(mused.song.title, 0, sizeof(mused.song.title));
 	strcpy(mused.previous_song_filename, "");
 	strcpy(mused.previous_wav_filename, "");
 	
-	for (int i = 0 ; i < NUM_PATTERNS ; ++i)
-	{
-		clear_pattern_range(&mused.song.pattern[i], 0, mused.song.pattern[i].num_steps);
-	}
+	zap_fx(MAKEPTR(1), NULL, NULL);
 	
-	for (int fx = 0 ; fx < CYD_MAX_FX_CHANNELS ; ++fx)
-	{	
-		mused.song.fx[fx].flags = 0;
-		mused.song.fx[fx].crushex.downsample = 0;
-		mused.song.fx[fx].crush.bit_drop = 4;
-		mused.song.fx[fx].crushex.gain = 128;
-		mused.song.fx[fx].chr.min_delay = 0;
-		mused.song.fx[fx].chr.rate = 40;
-		mused.song.fx[fx].chr.max_delay = 20;
-		mused.song.fx[fx].rvb.spread = 0;
-		strcpy(mused.song.fx[fx].name, "");
-		for (int i = 0 ; i < CYDRVB_TAPS ; ++i)
-		{
-			mused.song.fx[fx].rvb.tap[i].delay = i * 100 + 50;
-			mused.song.fx[fx].rvb.tap[i].gain = (i + 1) * -30;
-		}
-	}
-	
-	for (int i = 0 ; i < MUS_MAX_CHANNELS ; ++i)
-	{
-		memset(mused.song.sequence[i], 0, NUM_SEQUENCES * sizeof(*mused.song.sequence));
-		mused.song.num_sequences[i] = 0;
-		mused.song.default_volume[i] = MAX_VOLUME;
-		mused.song.default_panning[i] = 0;
-	}
-	
-	if (mused.mus.cyd) cyd_reset_wavetable(mused.mus.cyd);
-	
-	mirror_flags();
+	zap_wavetable(MAKEPTR(1), NULL, NULL);
 	
 	undo_deinit(&mused.undo);
 	undo_init(&mused.undo);
@@ -212,8 +176,6 @@ void new_song()
 	undo_init(&mused.redo);
 	
 	mused.modified = false;
-	
-	invalidate_wavetable_view();
 	
 	set_channels(mused.song.num_channels);
 }
@@ -266,7 +228,7 @@ void init(MusInstrument *instrument, MusPattern *pattern, MusSeqPattern sequence
 	set_info_message("Welcome to klystrack!");
 	
 	default_settings();
-	
+
 	mused.flags = MULTICHANNEL_PREVIEW|ANIMATE_CURSOR|EDIT_MODE|SHOW_LOGO|FOLLOW_PLAY_POSITION|MULTIKEY_JAMMING|START_WITH_TEMPLATE;
 	mused.visible_columns = VC_INSTRUMENT | VC_COMMAND;
 	mused.done = 0;
@@ -278,7 +240,7 @@ void init(MusInstrument *instrument, MusPattern *pattern, MusSeqPattern sequence
 	mused.mode = EDITINSTRUMENT;
 	mused.current_patternx = 0;
 	mused.current_sequencepos = 0;
-	mused.default_pattern_length = mused.sequenceview_steps = 16;
+	mused.default_pattern_length = mused.sequenceview_steps = 64;
 	mused.current_sequencetrack = 0;
 	mused.time_signature = 0x0404;
 	mused.prev_mode = 0;
@@ -286,8 +248,8 @@ void init(MusInstrument *instrument, MusPattern *pattern, MusSeqPattern sequence
 	mused.mix_rate = 44100;
 	mused.mix_buffer = 2048;
 	mused.fx_room_size = 16;
-	mused.fx_room_vol = 8;
-	mused.fx_room_dec = 8;
+	mused.fx_room_vol = 16;
+	mused.fx_room_dec = 5;
 	mused.oversample = 2;
 		
 	strcpy(mused.themename, "Default");
@@ -337,6 +299,9 @@ void init(MusInstrument *instrument, MusPattern *pattern, MusSeqPattern sequence
 	
 	mused.wgset.num_oscs = 1;
 	mused.wgset.length = 256;
+	
+	mused.prev_wavetable_x = -1;
+	mused.prev_wavetable_y = -1;
 	
 	debug("init done");
 }

@@ -614,7 +614,7 @@ void change_timesig(void *delta, void *b, void *c)
 	// http://en.wikipedia.org/wiki/Time_signature says the following signatures are common. 
 	// I'm a 4/4 or 3/4 man myself so I'll trust the article :)
 	
-	static const Uint16 sigs[] = { 0x0404, 0x0304, 0x0308, 0x0608, 0x0908, 0x0c08 };
+	static const Uint16 sigs[] = { 0x0404, 0x0304, 0x0604, 0x0308, 0x0608, 0x0908, 0x0c08 };
 	int i;
 	for (i = 0 ; i < sizeof(sigs) / sizeof(sigs[0]) ; ++i)
 	{
@@ -773,6 +773,18 @@ void do_undo(void *a, void*b, void*c)
 			entry->loop_end = frame->event.wave_data.loop_end;
 			entry->flags = frame->event.wave_data.flags;
 			entry->base_note = frame->event.wave_data.base_note;
+			
+			invalidate_wavetable_view();
+		}
+		break;
+		
+		case UNDO_WAVE_NAME:
+		{
+			mused.selected_wavetable = frame->event.wave_name.idx;
+			
+			undo_store_wave_name(&mused.undo, mused.selected_wavetable, mused.song.wavetable_names[mused.selected_wavetable], mused.modified);
+			
+			strcpy(mused.song.wavetable_names[mused.selected_wavetable], frame->event.wave_name.name);
 			
 			invalidate_wavetable_view();
 		}

@@ -28,6 +28,7 @@ OTHER DEALINGS IN THE SOFTWARE.
 #include "snd/freqs.h"
 #include "macros.h"
 #include <string.h>
+#include "mused.h"
 
 static const InstructionDesc instruction_desc[] =
 {
@@ -144,6 +145,14 @@ void get_command_desc(char *text, Uint16 inst)
 	else if ((fi & 0x7f00) == MUS_FX_BUZZ_SHAPE)
 	{
 		sprintf(text, "%s (%c)\n", name, ((inst & 0xf) % 4) + 0xf0);
+	}
+	else if ((fi & 0x7f00) == MUS_FX_SET_FXBUS)
+	{
+		sprintf(text, "%s (%s)\n", name, mused.song.fx[(inst & 0xf) % CYD_MAX_FX_CHANNELS].name);
+	}
+	else if ((fi & 0x7f00) == MUS_FX_SET_WAVETABLE_ITEM)
+	{
+		sprintf(text, "%s (%s)\n", name, mused.song.wavetable_names[(inst & 0xff)]);
 	}
 	else sprintf(text, "%s\n", name);
 }

@@ -31,6 +31,8 @@ OTHER DEALINGS IN THE SOFTWARE.
 #include "import/import.h"
 #include "midi.h"
 #include "stats.h"
+#include "zap.h"
+#include "optimize.h"
 
 extern Mused mused;
 
@@ -176,6 +178,7 @@ static const Menu wavetablemenu[] =
 {
 	{ 0, filemenu, "Kill wave", NULL, kill_wavetable_entry, 0, 0 },
 	{ 0, filemenu, "Open .WAV", NULL, open_data, MAKEPTR(OD_T_WAVETABLE), MAKEPTR(OD_A_OPEN) },
+	{ 0, filemenu, "Save .WAV", NULL, open_data, MAKEPTR(OD_T_WAVETABLE), MAKEPTR(OD_A_SAVE) },
 	{ 0, filemenu, "Open 8-bit signed", NULL, open_data, MAKEPTR(OD_T_WAVETABLE_RAW_S), MAKEPTR(OD_A_OPEN) },
 	{ 0, filemenu, "Open 8-bit unsigned", NULL, open_data, MAKEPTR(OD_T_WAVETABLE_RAW_U), MAKEPTR(OD_A_OPEN) },
 	{ 0, NULL, NULL }
@@ -225,6 +228,7 @@ static const Menu editpatternmenu[] =
 {
 	{ 0, editmenu, "Clone",  NULL, clone_pattern, 0, 0, 0 },
 	{ 0, editmenu, "Find empty",  NULL, get_unused_pattern, 0, 0, 0 },
+	{ 0, editmenu, "Split at cursor", NULL, split_pattern, 0, 0, 0 },
 	{ 0, editmenu, "",  NULL },
 	{ 0, editmenu, "Expand 2X",  NULL, expand_pattern, MAKEPTR(2), 0, 0 },
 	{ 0, editmenu, "Shrink 2X",  NULL, shrink_pattern, MAKEPTR(2), 0, 0 },
@@ -234,10 +238,32 @@ static const Menu editpatternmenu[] =
 };
 
 
+static const Menu zapmenu[] =
+{
+	{ 0, editmenu, "Zap instruments",  NULL, zap_instruments, 0, 0, 0 },
+	{ 0, editmenu, "Zap sequence",  NULL, zap_sequence, 0, 0, 0 },
+	{ 0, editmenu, "Zap wavetable",  NULL, zap_wavetable, 0, 0, 0 },
+	{ 0, editmenu, "Zap FX",  NULL, zap_wavetable, 0, 0, 0 },
+	{ 0, NULL, NULL }
+};
+
+
+static const Menu optimizemenu[] =
+{
+	{ 0, editmenu, "Kill duplicate patterns",  NULL, optimize_patterns_action, 0, 0, 0 },
+	{ 0, editmenu, "Kill unused instruments",  NULL, optimize_instruments_action, 0, 0, 0 },
+	{ 0, editmenu, "Kill unused wavetables",  NULL, optimize_wavetables_action, 0, 0, 0 },
+	{ 0, NULL, NULL }
+};
+
+
 static const Menu editmenu[] =
 {
 	{ 0, mainmenu, "Undo", NULL, do_undo, 0, 0, 0 },
 	{ 0, mainmenu, "Redo", NULL, do_undo, MAKEPTR(1), 0, 0 },
+	{ 0, mainmenu, "", NULL, NULL },
+	{ 0, mainmenu, "Zap", zapmenu, NULL },
+	{ 0, mainmenu, "Optimize", optimizemenu, NULL },
 	{ 0, mainmenu, "", NULL, NULL },
 	{ 0, mainmenu, "Copy", NULL, generic_action, copy, 0, 0 },
 	{ 0, mainmenu, "Paste", NULL, generic_action, paste, 0, 0 },

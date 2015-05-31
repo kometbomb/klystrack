@@ -47,6 +47,7 @@ int generic_button(const SDL_Event *e, const SDL_Rect *area, int focus, int para
 char * notename(int note);
 void my_separator(const SDL_Rect *parent, SDL_Rect *rect);
 void set_cursor(const SDL_Rect *location);
+bool is_selected_param(int focus, int p);
 
 /* 
 "Controls"
@@ -71,5 +72,7 @@ void fx_view(GfxDomain *dest_surface, const SDL_Rect *dest, const SDL_Event *eve
 void bevel_view(GfxDomain *dest_surface, const SDL_Rect *dest, const SDL_Event *event, void *param);
 void toolbar_view(GfxDomain *dest_surface, const SDL_Rect *dest, const SDL_Event *event, void *param);
 void fx_global_view(GfxDomain *dest_surface, const SDL_Rect *dest, const SDL_Event *event, void *param);
+void label(const char *_label, const SDL_Rect *area);
+void inst_field(const SDL_Event *e, const SDL_Rect *area, int p, int length, char *text);
 
 #endif

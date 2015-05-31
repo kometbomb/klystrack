@@ -36,7 +36,10 @@ enum
 	OD_T_INSTRUMENT,
 	OD_T_WAVETABLE,
 	OD_T_WAVETABLE_RAW_S,
-	OD_T_WAVETABLE_RAW_U
+	OD_T_WAVETABLE_RAW_U,
+	OD_T_FX,
+	/*------*/
+	OD_T_N_TYPES
 };
 
 enum
@@ -51,6 +54,8 @@ int save_song_inner(SDL_RWops *f, SongStats *stats);
 int open_wavetable(FILE *f);
 int open_instrument(FILE *f);
 int save_instrument(SDL_RWops *f);
+int open_fx(FILE *f);
+int save_fx(SDL_RWops *f);
 
 /* action */
 void open_data(void *type, void *action, void*c);

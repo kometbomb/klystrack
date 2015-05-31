@@ -37,6 +37,8 @@ OTHER DEALINGS IN THE SOFTWARE.
 #include <string.h>
 #include "memwriter.h"
 #include <time.h>
+#include <unistd.h>
+#include "wavewriter.h"
 
 extern Mused mused;
 extern GfxDomain *domain;
@@ -111,6 +113,18 @@ static void write_wavetable_entry(SDL_RWops *f, const CydWavetableEntry *write_w
 	}
 }
 
+
+/*  Write max 255 character string
+ */
+
+static void write_string8(SDL_RWops *f, const char * string)
+{
+	Uint8 len = strlen(string);
+	SDL_RWwrite(f, &len, sizeof(len), 1);
+	if (len)
+		SDL_RWwrite(f, string, sizeof(string[0]), len);
+}
+
 	
 static void save_instrument_inner(SDL_RWops *f, MusInstrument *inst, const CydWavetableEntry *write_wave, const CydWavetableEntry *write_wave_fm)
 {
@@ -146,10 +160,9 @@ static void save_instrument_inner(SDL_RWops *f, MusInstrument *inst, const CydWa
 	SDL_RWwrite(f, &inst->slide_speed, sizeof(inst->slide_speed), 1);
 	SDL_RWwrite(f, &inst->base_note, sizeof(inst->base_note), 1);
 	SDL_RWwrite(f, &inst->finetune, sizeof(inst->finetune), 1);
-	Uint8 len = strlen(inst->name);
-	SDL_RWwrite(f, &len, sizeof(len), 1);
-	if (len)
-		SDL_RWwrite(f, &inst->name, sizeof(inst->name[0]), len);
+	
+	write_string8(f, inst->name);
+	
 	temp16 = inst->cutoff;
 	FIX_ENDIAN(temp16);
 	SDL_RWwrite(f, &temp16, sizeof(temp16), 1);
@@ -203,6 +216,41 @@ static void save_instrument_inner(SDL_RWops *f, MusInstrument *inst, const CydWa
 			write_wavetable_entry(f, write_wave_fm, true);
 	}
 }
+
+
+static void save_fx_inner(SDL_RWops *f, CydFxSerialized *fx)
+{
+	CydFxSerialized temp;
+	memcpy(&temp, fx, sizeof(temp));
+	
+	FIX_ENDIAN(temp.flags);
+	for (int i = 0 ; i < CYDRVB_TAPS ; ++i)	
+	{
+		FIX_ENDIAN(temp.rvb.tap[i].gain);
+		FIX_ENDIAN(temp.rvb.tap[i].delay);
+	}
+	
+	write_string8(f, temp.name);
+	
+	SDL_RWwrite(f, &temp.flags, sizeof(temp.flags), 1);
+	SDL_RWwrite(f, &temp.crush.bit_drop, sizeof(temp.crush.bit_drop), 1);
+	SDL_RWwrite(f, &temp.chr.rate, sizeof(temp.chr.rate), 1);
+	SDL_RWwrite(f, &temp.chr.min_delay, sizeof(temp.chr.min_delay), 1);
+	SDL_RWwrite(f, &temp.chr.max_delay, sizeof(temp.chr.max_delay), 1);
+	SDL_RWwrite(f, &temp.chr.sep, sizeof(temp.chr.sep), 1);
+	
+	for (int i = 0 ; i < CYDRVB_TAPS ; ++i)	
+	{
+		SDL_RWwrite(f, &temp.rvb.tap[i].delay, sizeof(temp.rvb.tap[i].delay), 1);
+		SDL_RWwrite(f, &temp.rvb.tap[i].gain, sizeof(temp.rvb.tap[i].gain), 1);
+		SDL_RWwrite(f, &temp.rvb.tap[i].panning, sizeof(temp.rvb.tap[i].panning), 1);
+		SDL_RWwrite(f, &temp.rvb.tap[i].flags, sizeof(temp.rvb.tap[i].flags), 1);
+	}
+
+	SDL_RWwrite(f, &temp.crushex.downsample, sizeof(temp.crushex.downsample), 1); 
+	SDL_RWwrite(f, &temp.crushex.gain, sizeof(temp.crushex.gain), 1);
+}
+
 
 
 static void write_packed_pattern(SDL_RWops *f, const MusPattern *pattern, bool skip)
@@ -327,6 +375,14 @@ int open_song(FILE *f)
 	for (int i = 0 ; i < mused.song.num_patterns ; ++i)
 		if(mused.song.pattern[i].num_steps == 0)
 			resize_pattern(&mused.song.pattern[i], mused.default_pattern_length);
+		
+	mused.song.wavetable_names = realloc(mused.song.wavetable_names, sizeof(mused.song.wavetable_names[0]) * CYD_WAVE_MAX_ENTRIES);
+	
+	for (int i = mused.song.num_wavetables ; i < CYD_WAVE_MAX_ENTRIES ; ++i)
+	{
+		mused.song.wavetable_names[i] = malloc(MUS_WAVETABLE_NAME_LEN + 1);
+		memset(mused.song.wavetable_names[i], 0, MUS_WAVETABLE_NAME_LEN + 1);
+	}
 	
 	set_channels(mused.song.num_channels);
 	
@@ -343,6 +399,20 @@ int save_instrument(SDL_RWops *f)
 	SDL_RWwrite(f, &version, 1, sizeof(version));
 	
 	save_instrument_inner(f, &mused.song.instrument[mused.current_instrument], &mused.mus.cyd->wavetable_entries[mused.song.instrument[mused.current_instrument].wavetable_entry], &mused.mus.cyd->wavetable_entries[mused.song.instrument[mused.current_instrument].fm_wave]);
+	
+	return 1;
+}
+
+
+int save_fx(SDL_RWops *f)
+{
+	const Uint8 version = MUS_VERSION;
+				
+	SDL_RWwrite(f, MUS_FX_SIG, strlen(MUS_FX_SIG), sizeof(MUS_FX_SIG[0]));
+	
+	SDL_RWwrite(f, &version, 1, sizeof(version));
+	
+	save_fx_inner(f, &mused.song.fx[mused.fx_bus]);
 	
 	return 1;
 }
@@ -417,10 +487,7 @@ int save_song_inner(SDL_RWops *f, SongStats *stats)
 	SDL_RWwrite(f, &mused.song.multiplex_period, 1, sizeof(mused.song.multiplex_period));
 	SDL_RWwrite(f, &mused.song.pitch_inaccuracy, 1, sizeof(mused.song.pitch_inaccuracy));
 	
-	Uint8 len = strlen(mused.song.title);
-	SDL_RWwrite(f, &len, 1, 1);
-	if (len)
-		SDL_RWwrite(f, mused.song.title, 1, len);
+	write_string8(f, mused.song.title);
 	
 	if (stats)
 		stats->size[STATS_HEADER] = SDL_RWtell(f);
@@ -441,38 +508,7 @@ int save_song_inner(SDL_RWops *f, SongStats *stats)
 	debug("Saving %d fx", n_fx);
 	for (int fx = 0 ; fx < n_fx ; ++fx)
 	{
-		CydFxSerialized temp;
-		memcpy(&temp, &mused.song.fx[fx], sizeof(temp));
-		
-		FIX_ENDIAN(temp.flags);
-		for (int i = 0 ; i < CYDRVB_TAPS ; ++i)	
-		{
-			FIX_ENDIAN(temp.rvb.tap[i].gain);
-			FIX_ENDIAN(temp.rvb.tap[i].delay);
-		}
-		
-		Uint8 len = strlen(temp.name);
-		SDL_RWwrite(f, &len, sizeof(len), 1);
-		if (len)
-			SDL_RWwrite(f, temp.name, sizeof(temp.name[0]), len);
-		
-		SDL_RWwrite(f, &temp.flags, sizeof(temp.flags), 1);
-		SDL_RWwrite(f, &temp.crush.bit_drop, sizeof(temp.crush.bit_drop), 1);
-		SDL_RWwrite(f, &temp.chr.rate, sizeof(temp.chr.rate), 1);
-		SDL_RWwrite(f, &temp.chr.min_delay, sizeof(temp.chr.min_delay), 1);
-		SDL_RWwrite(f, &temp.chr.max_delay, sizeof(temp.chr.max_delay), 1);
-		SDL_RWwrite(f, &temp.chr.sep, sizeof(temp.chr.sep), 1);
-		
-		SDL_RWwrite(f, &temp.rvb.spread, sizeof(temp.rvb.spread), 1);
-		
-		for (int i = 0 ; i < CYDRVB_TAPS ; ++i)	
-		{
-			SDL_RWwrite(f, &temp.rvb.tap[i].delay, sizeof(temp.rvb.tap[i].delay), 1);
-			SDL_RWwrite(f, &temp.rvb.tap[i].gain, sizeof(temp.rvb.tap[i].gain), 1);
-		}
-
-		SDL_RWwrite(f, &temp.crushex.downsample, sizeof(temp.crushex.downsample), 1); 
-		SDL_RWwrite(f, &temp.crushex.gain, sizeof(temp.crushex.gain), 1);
+		save_fx_inner(f, &mused.song.fx[fx]);
 	}
 	
 	if (stats)
@@ -546,6 +582,14 @@ int save_song_inner(SDL_RWops *f, SongStats *stats)
 	
 	if (stats)
 		stats->size[STATS_WAVETABLE] = SDL_RWtell(f);
+	
+	for (int i = 0 ; i < max_wt ; ++i)
+	{
+		write_string8(f, mused.song.wavetable_names[i]);
+	}
+	
+	if (stats)
+		stats->size[STATS_WAVETABLE_NAMES] = SDL_RWtell(f);
 	
 	mused.song.num_patterns = NUM_PATTERNS;
 	mused.song.num_instruments = NUM_INSTRUMENTS;
@@ -649,6 +693,18 @@ int open_instrument(FILE *f)
 }
 
 
+int open_fx(FILE *f)
+{
+	if (!mus_load_fx_file(f, &mused.song.fx[mused.fx_bus])) return 0;
+	
+	mused.modified = true;
+	
+	mus_set_fx(&mused.mus, &mused.song);
+	
+	return 1;
+}
+
+
 int save_song(SDL_RWops *ops)
 {
 	int r = save_song_inner(ops, NULL);
@@ -656,6 +712,17 @@ int save_song(SDL_RWops *ops)
 	mused.modified = false;
 	
 	return r;
+}
+
+
+int save_wavetable(FILE *ops)
+{
+	WaveWriter *ww = ww_create(ops, mused.mus.cyd->wavetable_entries[mused.selected_wavetable].sample_rate, 1);
+	
+	ww_write(ww, mused.mus.cyd->wavetable_entries[mused.selected_wavetable].data, mused.mus.cyd->wavetable_entries[mused.selected_wavetable].samples);
+	
+	ww_finish(ww);
+	return 1;
 }
 
 
@@ -699,7 +766,8 @@ void open_data(void *type, void *action, void *_ret)
 		{ "instrument", "ki", open_instrument, save_instrument },
 		{ "wave", "wav", open_wavetable, NULL },
 		{ "raw signed", "", open_wavetable_raw, NULL },
-		{ "raw unsigned", "", open_wavetable_raw_u, NULL }
+		{ "raw unsigned", "", open_wavetable_raw_u, NULL },
+		{ "FX bus", "kx", open_fx, save_fx }
 	};
 	
 	const char *mode[] = { "rb", "wb" };
@@ -719,6 +787,12 @@ void open_data(void *type, void *action, void *_ret)
 			case OD_T_INSTRUMENT:
 			{
 				snprintf(_def, sizeof(_def), "%s.ki", mused.song.instrument[mused.current_instrument].name);
+			}
+			break;
+			
+			case OD_T_FX:
+			{
+				snprintf(_def, sizeof(_def), "%s.kx", mused.song.fx[mused.fx_bus].name);
 			}
 			break;
 			
@@ -743,8 +817,13 @@ void open_data(void *type, void *action, void *_ret)
 	FILE *f = NULL;
 	SDL_RWops *rw = NULL;
 	
+	if (mused.previous_filebox_path[t][0]) 
+		chdir(mused.previous_filebox_path[t]);
+	
 	if (open_dialog_fn(mode[a], str, open_stuff[t].ext, domain, mused.slider_bevel, &mused.largefont, &mused.smallfont, def, filename, sizeof(filename)))
 	{
+		getcwd(mused.previous_filebox_path[t], sizeof(mused.previous_filebox_path[t]));
+		
 		if (!(mused.flags & DISABLE_BACKUPS) && a == OD_A_SAVE && !create_backup(filename))
 			warning("Could not create backup for %s", filename);
 		
@@ -765,7 +844,7 @@ void open_data(void *type, void *action, void *_ret)
 		else
 			tmp = open_stuff[t].save;
 	
-		if (tmp)
+		if (tmp || ((t == OD_T_WAVETABLE) && (a == 1)))
 		{
 			cyd_lock(&mused.cyd, 1);
 			int r;
@@ -773,8 +852,15 @@ void open_data(void *type, void *action, void *_ret)
 				r = open_stuff[t].open(f);
 			else
 			{	
-				rw = create_memwriter(f);
-				r = open_stuff[t].save(rw);
+				if (t != OD_T_WAVETABLE)
+				{
+					rw = create_memwriter(f);
+					r = open_stuff[t].save(rw);
+				}
+				else
+				{
+					r = save_wavetable(f);
+				}
 			}
 			
 			cyd_lock(&mused.cyd, 0);
@@ -802,4 +888,3 @@ void open_data(void *type, void *action, void *_ret)
 	
 	change_mode(mused.mode);
 }
-

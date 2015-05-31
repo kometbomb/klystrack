@@ -234,13 +234,13 @@ void instrument_add_param(int a)
 	
 		case P_ATTACK:
 		
-		clamp(i->adsr.a, a, 0, 31);
+		clamp(i->adsr.a, a, 0, 32 * ENVELOPE_SCALE - 1);
 			
 		break;
 		
 		case P_DECAY:
 		
-		clamp(i->adsr.d, a, 0, 31);
+		clamp(i->adsr.d, a, 0, 32 * ENVELOPE_SCALE - 1);
 			
 		break;
 		
@@ -252,7 +252,7 @@ void instrument_add_param(int a)
 		
 		case P_RELEASE:
 		
-		clamp(i->adsr.r, a, 0, 31);
+		clamp(i->adsr.r, a, 0, 32 * ENVELOPE_SCALE - 1);
 			
 		break;
 		
@@ -428,13 +428,13 @@ void instrument_add_param(int a)
 		
 		case P_FM_ATTACK:
 		
-		clamp(i->fm_adsr.a, a, 0, 31);
+		clamp(i->fm_adsr.a, a, 0, 32 * ENVELOPE_SCALE - 1);
 			
 		break;
 		
 		case P_FM_DECAY:
 		
-		clamp(i->fm_adsr.d, a, 0, 31);
+		clamp(i->fm_adsr.d, a, 0, 32 * ENVELOPE_SCALE - 1);
 			
 		break;
 		
@@ -446,7 +446,7 @@ void instrument_add_param(int a)
 		
 		case P_FM_RELEASE:
 		
-		clamp(i->fm_adsr.r, a, 0, 31);
+		clamp(i->fm_adsr.r, a, 0, 32 * ENVELOPE_SCALE - 1);
 			
 		break;
 		
@@ -1467,6 +1467,9 @@ void pattern_event(SDL_Event *e)
 							
 							case SDLK_u:						
 							case SDLK_d:
+							case SDLK_l:				
+							case SDLK_r:
+							case SDLK_p:						
 							{
 								int cmd = 0;
 							
@@ -1474,6 +1477,9 @@ void pattern_event(SDL_Event *e)
 								{
 									case SDLK_u: cmd = MUS_NOTE_VOLUME_FADE_UP; break;
 									case SDLK_d: cmd = MUS_NOTE_VOLUME_FADE_DN; break;
+									case SDLK_p: cmd = MUS_NOTE_VOLUME_SET_PAN; break;
+									case SDLK_l: cmd = MUS_NOTE_VOLUME_PAN_LEFT; break;
+									case SDLK_r: cmd = MUS_NOTE_VOLUME_PAN_RIGHT; break;
 									default: break;
 								}
 								
@@ -1510,7 +1516,11 @@ void pattern_event(SDL_Event *e)
 									
 									snapshot(S_T_PATTERN);
 									
-									if ((vol & 0xf0) != MUS_NOTE_VOLUME_FADE_UP && (vol & 0xf0) != MUS_NOTE_VOLUME_FADE_DN)
+									if ((vol & 0xf0) != MUS_NOTE_VOLUME_FADE_UP && 
+										(vol & 0xf0) != MUS_NOTE_VOLUME_FADE_DN &&
+										(vol & 0xf0) != MUS_NOTE_VOLUME_PAN_LEFT &&
+										(vol & 0xf0) != MUS_NOTE_VOLUME_PAN_RIGHT &&
+										(vol & 0xf0) != MUS_NOTE_VOLUME_SET_PAN)
 										mused.song.pattern[current_pattern()].step[current_patternstep()].volume = my_min(MAX_VOLUME, vol); 
 									else mused.song.pattern[current_pattern()].step[current_patternstep()].volume = vol;
 								
@@ -1751,14 +1761,41 @@ void set_room_size(int fx, int size, int vol, int dec)
 {
 	snapshot(S_T_FX);
 	
-	const int min_delay = 5;
+	int min_delay = 5;
 	int ms = (CYDRVB_SIZE - min_delay) * size / 64;
+	
+	if (mused.fx_room_ticks)
+	{
+		ms = 1000 * size / 16 * mused.song.song_speed / mused.song.song_rate;
+		min_delay = ms;
+	}
+	
+	int low = CYDRVB_LOW_LIMIT + 300; // +30 dB
 	
 	for (int i = 0 ; i < CYDRVB_TAPS ;++i)
 	{
-		int p = rnd(i * ms / CYDRVB_TAPS, (i + 1) * ms / CYDRVB_TAPS) + min_delay;
+		int p, g, e = 1;
+		
+		if (mused.fx_room_ticks)
+		{
+			p = i * ms + min_delay;
+			g = low - low * pow(1.0 - (double)p / CYDRVB_SIZE, (double)dec / 3) * vol / 16;
+		}
+		else
+		{
+			p = rnd(i * ms / CYDRVB_TAPS, (i + 1) * ms / CYDRVB_TAPS) + min_delay;
+			g = low - low * pow(1.0 - (double)p / ms, (double)dec / 3) * vol / 16;
+		}
+		
+		if (p >= CYDRVB_SIZE)
+		{
+			p = CYDRVB_SIZE - 1;
+			e = 0;
+		}
+		
 		mused.song.fx[fx].rvb.tap[i].delay = p;
-		mused.song.fx[fx].rvb.tap[i].gain = CYDRVB_LOW_LIMIT-CYDRVB_LOW_LIMIT * pow(1.0 - (double)p / ms, (double)dec / 3) * vol / 16;
+		mused.song.fx[fx].rvb.tap[i].gain = g;
+		mused.song.fx[fx].rvb.tap[i].flags = e;
 	}
 	
 	mus_set_fx(&mused.mus, &mused.song);
@@ -1770,7 +1807,21 @@ void fx_add_param(int d)
 	if (d < 0) d = -1; else if (d > 0) d = 1;
 
 	if (SDL_GetModState() & KMOD_SHIFT)
-		d *= 10;
+	{
+		switch (mused.edit_reverb_param)
+		{
+			case R_DELAY:
+				if (mused.flags & SHOW_DELAY_IN_TICKS)
+					d *= (1000 / (float)mused.song.song_rate) * mused.song.song_speed;
+				else
+					d *= 100;
+				break;
+				
+			default:
+				d *= 10;
+				break;
+		}
+	}
 		
 	snapshot_cascade(S_T_FX, mused.fx_bus, mused.edit_reverb_param);
 
@@ -1889,27 +1940,43 @@ void fx_add_param(int d)
 		}
 		break;
 		
-		case R_SPREAD:
+		case R_SNAPTICKS:
 		{
-			clamp(mused.song.fx[mused.fx_bus].rvb.spread, d, 0, 0xff);
+			flipbit(mused.fx_room_ticks, 1);
+		}
+		break;
+		
+		case R_TAP:
+		{
+			clamp(mused.fx_tap, d, 0, CYDRVB_TAPS - 1);
+		}
+		break;
+		
+		case R_DELAY:
+		{
+			clamp(mused.song.fx[mused.fx_bus].rvb.tap[mused.fx_tap].delay, d * 1, 0, CYDRVB_SIZE - 1);
 			mus_set_fx(&mused.mus, &mused.song);
 		}
 		break;
 		
-		default:
+		case R_GAIN:
 		{
-			int p = mused.edit_reverb_param - R_DELAY;
-			int tap = (p & ~1) / 2;
-			if (!(p & 1))
-			{
-				clamp(mused.song.fx[mused.fx_bus].rvb.tap[tap].delay, d * 1, 0, CYDRVB_SIZE - 1);
-			}
-			else
-			{
-				clamp(mused.song.fx[mused.fx_bus].rvb.tap[tap].gain, d * 1, CYDRVB_LOW_LIMIT, 0);
-			}
-			
+			clamp(mused.song.fx[mused.fx_bus].rvb.tap[mused.fx_tap].gain, d * 1, CYDRVB_LOW_LIMIT, 0);
 			mus_set_fx(&mused.mus, &mused.song);
+		}
+		break;
+		
+		case R_PANNING:
+		{
+			clamp(mused.song.fx[mused.fx_bus].rvb.tap[mused.fx_tap].panning, d * 8, CYD_PAN_LEFT, CYD_PAN_RIGHT);
+			mused.song.fx[mused.fx_bus].rvb.tap[mused.fx_tap].panning &= ~7;
+			mus_set_fx(&mused.mus, &mused.song);
+		}
+		break;
+		
+		case R_TAPENABLE:
+		{
+			flipbit(mused.song.fx[mused.fx_bus].rvb.tap[mused.fx_tap].flags, 1);
 		}
 		break;
 	}
@@ -1928,7 +1995,7 @@ void fx_event(SDL_Event *e)
 			case SDLK_DOWN:
 			{
 				++mused.edit_reverb_param;
-				if (mused.edit_reverb_param >= R_DELAY + CYDRVB_TAPS * 2) mused.edit_reverb_param = R_DELAY + CYDRVB_TAPS * 2 - 1;
+				if (mused.edit_reverb_param >= R_N_PARAMS) mused.edit_reverb_param = R_N_PARAMS - 1;
 			}
 			break;
 			

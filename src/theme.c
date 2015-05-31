@@ -183,7 +183,9 @@ int font_load_and_set_color(Font *font, Bundle *b, char *name, Uint32 color)
 		return 1;
 	}
 	else
+	{
 		return 0;
+	}
 }
 
 

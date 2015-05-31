@@ -74,6 +74,10 @@ void undo_destroy_frame(UndoFrame *frame)
 			free(frame->event.wave_data.data);
 			break;
 			
+		case UNDO_WAVE_NAME:
+			free(frame->event.wave_name.name);
+			break;
+			
 		default: break;
 	}
 
@@ -251,4 +255,15 @@ void undo_store_wave_param(UndoStack *stack, int idx, const CydWavetableEntry *e
 	frame->wave_param.loop_begin = entry->loop_begin;
 	frame->wave_param.loop_end = entry->loop_end;
 	frame->wave_param.base_note = entry->base_note;
+}
+
+
+void undo_store_wave_name(UndoStack *stack, int idx, const char *name, bool modified)
+{
+	UndoEvent *frame = get_frame(UNDO_WAVE_NAME, stack, modified);
+	
+	if (!frame) return;
+	
+	frame->wave_name.idx = idx;
+	frame->wave_name.name = strdup(name);
 }

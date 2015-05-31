@@ -126,14 +126,14 @@ void pattern_view_header(GfxDomain *dest_surface, const SDL_Rect *dest, const SD
 		char tmp[4]="\xfa\xf9";
 		
 		if (mused.song.default_panning[channel])
-				snprintf(tmp, sizeof(tmp), "%c%X", mused.song.default_panning[channel] < 0 ? '\xf9' : '\xfa', mused.song.default_panning[channel] == 63 ? 8 : ((abs((int)mused.song.default_panning[channel]) >> 3) & 0xf));
+			snprintf(tmp, sizeof(tmp), "%c%X", mused.song.default_panning[channel] < 0 ? '\xf9' : '\xfa', mused.song.default_panning[channel] == 63 ? 8 : ((abs((int)mused.song.default_panning[channel]) >> 3) & 0xf));
 		
 		if ((d = generic_field(event, &vol, 97, channel, "P", "%s", tmp, 2)))
 		{
 			snapshot_cascade(S_T_SONGINFO, 97, channel);
 			mused.song.default_panning[channel] = my_max(-64, my_min(63, (int)mused.song.default_panning[channel] + d * 8));
 			if (abs(mused.song.default_panning[channel]) < 8)
-					mused.song.default_panning[channel] = 0;
+				mused.song.default_panning[channel] = 0;
 		}
 				
 		vol.x += vol.w + 2;
@@ -336,7 +336,45 @@ void pattern_view_inner(GfxDomain *dest_surface, const SDL_Rect *dest, const SDL
 								console_set_color(mused.console, diszero(s->volume != MUS_NOTE_NO_VOLUME, color));
 						
 							if (s->volume != MUS_NOTE_NO_VOLUME)
-								font_write_args(&mused.console->font, dest_surface, &pos, "%X", (s->volume >> (4 - (param - PED_VOLUME1) * 4)) & 0xf);
+							{
+								if (param == PED_VOLUME1 && s->volume > MAX_VOLUME)
+								{
+									char c;
+									
+									switch (s->volume & 0xf0)
+									{
+										default:
+											c = '-';
+											break;
+											
+										case MUS_NOTE_VOLUME_SET_PAN:
+											c = 'P';
+											break;
+											
+										case MUS_NOTE_VOLUME_PAN_LEFT:
+											c = 0xf9;
+											break;
+											
+										case MUS_NOTE_VOLUME_PAN_RIGHT:
+											c = 0xfa;
+											break;
+											
+										case MUS_NOTE_VOLUME_FADE_UP:
+											c = 0xfb;
+											break;
+											
+										case MUS_NOTE_VOLUME_FADE_DN:
+											c = 0xfc;
+											break;
+									}
+									
+									font_write_args(&mused.console->font, dest_surface, &pos, "%c", c);
+								}									
+								else
+								{
+									font_write_args(&mused.console->font, dest_surface, &pos, "%X", (s->volume >> (4 - (param - PED_VOLUME1) * 4)) & 0xf);
+								}
+							}
 							else
 								font_write(&mused.console->font, dest_surface, &pos, "-");
 							break;

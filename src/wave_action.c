@@ -383,8 +383,101 @@ void wavetable_amp(void *_amp, void *unused2, void *unused3)
 }
 
 
+void wavetable_distort(void *_amp, void *unused2, void *unused3)
+{
+	snapshot(S_T_WAVE_DATA);
+		
+	CydWavetableEntry *w = &mused.mus.cyd->wavetable_entries[mused.selected_wavetable];
+	
+	if (w->samples > 0)
+	{
+		for (int s = 0 ; s < w->samples ; ++s)
+		{
+			if (w->data[s] != 0)
+			{
+				float v = (float)w->data[s] / 32768.0;
+				v *= pow(fabs(v), -0.333);
+			
+				w->data[s] = my_max(my_min(v * 32768, 32767), -32768);
+			}
+		}
+		
+		invalidate_wavetable_view();
+	}
+}
+
+
 void wavetable_randomize_and_create_one_cycle(void *_settings, void *unused2, void *unused3)
 {
 	wavegen_randomize(NULL, NULL, NULL);
 	wavetable_create_one_cycle(_settings, NULL, NULL);
+}
+
+
+void wavetable_filter(void *_filter_type, void *unused2, void *unused3)
+{
+	snapshot(S_T_WAVE_DATA);
+		
+	CydWavetableEntry *w = &mused.mus.cyd->wavetable_entries[mused.selected_wavetable];
+	
+	if (w->samples > 0)
+	{
+		int filter_type = CASTPTR(int, _filter_type);
+		
+		Sint16 * temp = malloc(sizeof(Sint16) * w->samples);
+		memcpy(temp, w->data, sizeof(Sint16) * w->samples);
+		
+		for (int s = 0 ; s < w->samples ; ++s)
+		{
+			int filtered = ((int)temp[(s - 2 + w->samples) % w->samples] + (int)temp[(s - 1 + w->samples) % w->samples] * 2 + (int)temp[s % w->samples] * 4 + (int)temp[(s + 1) % w->samples] * 2 + (int)temp[(s + 2) % w->samples]) / 10;
+			
+			if (filter_type == 0)
+				w->data[s] = my_max(my_min(filtered, 32767), -32768);
+			else
+				w->data[s] = my_max(my_min(w->data[s] - filtered, 32767), -32768);
+		}
+		
+		free(temp);
+		
+		invalidate_wavetable_view();
+	}
+}
+
+
+void wavetable_find_zero(void *unused1, void *unused2, void *unused3)
+{
+	snapshot(S_T_WAVE_DATA);
+		
+	CydWavetableEntry *w = &mused.mus.cyd->wavetable_entries[mused.selected_wavetable];
+	
+	if (w->samples > 1)
+	{
+		int zero_crossing = 0;
+		
+		for (int s = 1 ; s < w->samples ; ++s)
+		{
+			if ((w->data[s] >= 0 && w->data[s - 1] < 0) || (w->data[s] <= 0 && w->data[s - 1] > 0))
+			{
+				zero_crossing = s;
+				break;
+			}
+		}
+		
+		debug("zero crossing at %d", zero_crossing);
+		
+		if (zero_crossing > 0)
+		{
+			Sint16 * temp = malloc(sizeof(Sint16) * w->samples);
+			memcpy(temp, w->data, sizeof(Sint16) * w->samples);
+		
+			for (int s = 0 ; s < w->samples ; ++s)
+			{
+				w->data[s] = temp[(s + zero_crossing) % w->samples];
+			}
+			
+			free(temp);
+		}
+		
+		invalidate_wavetable_view();
+	}
 }

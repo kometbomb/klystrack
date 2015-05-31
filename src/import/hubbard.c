@@ -459,8 +459,8 @@ int import_hubbard(FILE *f)
 		
 		mused.song.instrument[i].pw = pw;
 		
-		const int attack_tab[] = {0, 1, 1, 1, 2, 2, 2, 2, 3, 4, 6, 7, 8, 0x10, 0x14, 0x18};
-		const int decay_tab[] = {1, 2, 2, 3, 4, 4, 5, 5, 6, 9, 0xC, 0x11, 0x18, 0x1f, 0x1f, 0x1f};
+		const int attack_tab[] = {1, 2, 2, 3, 3, 4, 5, 5, 6, 9, 13, 16, 18, 32, 41, 52};
+		const int decay_tab[] = {1, 3, 4, 5, 6, 7, 8, 9, 10, 16, 22, 28, 32, 55, 63, 63};
 		const int sustain_tab[] = {0, 3, 6, 8, 0xa, 0xc, 0x10, 0x14, 0x1c, 0x1d, 0x1e, 0x1f, 0x1f};
 		
 		mused.song.instrument[i].adsr.a = attack_tab[hub->instrument[i].a];
@@ -477,13 +477,13 @@ int import_hubbard(FILE *f)
 		if (hub->instrument[i].fx & 1)
 		{
 			mused.song.instrument[i].flags |= MUS_INST_DRUM;
-			mused.song.instrument[i].program[0] = 0x0608;
+			mused.song.instrument[i].program[0] = 0x0208;
 			mused.song.instrument[i].program[1] = 0xFF00;
 		}
 		
 		if (hub->instrument[i].fx & 2)
 		{
-			mused.song.instrument[i].program[0] = 0x0604;
+			mused.song.instrument[i].program[0] = 0x0204;
 			mused.song.instrument[i].program[1] = 0xFF00;
 		}
 		

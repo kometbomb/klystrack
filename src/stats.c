@@ -17,15 +17,6 @@ void song_stats(void *unused1, void *unused2, void *unused3)
 	SongStats stats;
 	get_stats(&stats);
 	
-	debug("Header = %d", stats.size[STATS_HEADER]);
-	debug("FX = %d", stats.size[STATS_FX]);
-	debug("Def vol. pan = %d", stats.size[STATS_DEFVOLPAN]);
-	debug("Instruments = %d", stats.size[STATS_INSTRUMENTS]);
-	debug("Sequence = %d", stats.size[STATS_SEQUENCE]);
-	debug("Patterns = %d", stats.size[STATS_PATTERNS]);
-	debug("Wavetable = %d", stats.size[STATS_WAVETABLE]);
-	debug("Total = %d", stats.total_size);
-	
 	char str[1000];
 	snprintf(str, sizeof(str), 
 		"Header:      %6d bytes  %2d %%\n"
@@ -35,6 +26,7 @@ void song_stats(void *unused1, void *unused2, void *unused3)
 		"Sequence:    %6d bytes  %2d %%\n"
 		"Patterns:    %6d bytes  %2d %%\n"
 		"Wavetable:   %6d bytes  %2d %%\n"
+		"Wave names:  %6d bytes  %2d %%\n"
 		"-------------------------------\n"
 		"TOTAL:       %6d bytes",
 		stats.size[STATS_HEADER], stats.size[STATS_HEADER] * 100 / stats.total_size,
@@ -44,6 +36,7 @@ void song_stats(void *unused1, void *unused2, void *unused3)
 		stats.size[STATS_SEQUENCE], stats.size[STATS_SEQUENCE] * 100 / stats.total_size,
 		stats.size[STATS_PATTERNS], stats.size[STATS_PATTERNS] * 100 / stats.total_size,
 		stats.size[STATS_WAVETABLE], stats.size[STATS_WAVETABLE] * 100 / stats.total_size,
+		stats.size[STATS_WAVETABLE_NAMES], stats.size[STATS_WAVETABLE_NAMES] * 100 / stats.total_size,
 		stats.total_size
 	);
 	

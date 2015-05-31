@@ -142,6 +142,7 @@ enum
 enum
 {
 	W_WAVE,
+	W_NAME,
 	W_RATE,
 	W_BASE,
 	W_BASEFINE,
@@ -158,6 +159,7 @@ enum
 	W_OSCABS,
 	W_OSCNEG,
 	W_WAVELENGTH,
+	W_RNDGEN,
 	W_GENERATE,
 	W_RND,
 	W_TOOLBOX,
@@ -186,9 +188,14 @@ enum
 	R_ROOMSIZE,
 	R_ROOMVOL,
 	R_ROOMDECAY,
-	R_SPREAD,
+	R_SNAPTICKS,
+	R_TAPENABLE,
+	R_TAP,
 	R_DELAY,
-	R_GAIN
+	R_GAIN,
+	R_PANNING,
+	/* ---- */
+	R_N_PARAMS
 };
 
 enum

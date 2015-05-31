@@ -53,13 +53,6 @@ void wavetable_view(GfxDomain *dest_surface, const SDL_Rect *dest, const SDL_Eve
 		
 		int d;
 				
-		if ((d = generic_field(event, &r, EDITWAVETABLE, W_WAVE, "WAVE", "%02X", MAKEPTR(mused.selected_wavetable), 2)) != 0)
-		{
-			wave_add_param(d);
-		}
-		
-		update_rect(&frame, &r);
-		
 		r.w = 128;
 		
 		if ((d = generic_field(event, &r, EDITWAVETABLE, W_RATE, "RATE", "%6d Hz", MAKEPTR(w->sample_rate), 9)) != 0)
@@ -167,8 +160,8 @@ void wavetablelist_view(GfxDomain *dest_surface, const SDL_Rect *dest, const SDL
 		const CydWavetableEntry *w = &mused.mus.cyd->wavetable_entries[i];
 		char temp[1000] = "";
 		
-		if (w->samples > 0)
-			snprintf(temp, chars, "%u smp %0.1f kHz", w->samples, (float)w->sample_rate / 1000);
+		if (w->samples > 0 || mused.song.wavetable_names[i][0])
+			snprintf(temp, chars, "%s (%u smp)", mused.song.wavetable_names[i][0] ? mused.song.wavetable_names[i] : "No name", w->samples);
 		
 		console_write_args(mused.console, "%02X %s\n", i, temp);
 		
@@ -264,11 +257,39 @@ void wavetable_sample_view(GfxDomain *dest_surface, const SDL_Rect *dest, const 
 		mx /= mused.pixel_scale;
 		my /= mused.pixel_scale;
 		
+		if (mused.prev_wavetable_x == -1)
+		{
+			mused.prev_wavetable_x = mx;
+			mused.prev_wavetable_y = my;
+		}
+		
+		int dx;
+		int d = abs(mx - mused.prev_wavetable_x);
+		
+		if (mx < mused.prev_wavetable_x)
+			dx = 1;
+		else
+			dx = -1;
+		
 		if (mx >= area.x && my >= area.y
 			&& mx < area.x + area.w && my < area.y + area.h)
 		{
-			wavetable_draw((float)(mx - area.x) / area.w, (float)(my - area.y) / area.h, 1.0f / area.w);
+			if (d > 0)
+			{
+				for (int x = mx, i = 0 ; i <= d ; x += dx, ++i)
+					wavetable_draw((float)(x - area.x) / area.w, (float)((my + (mused.prev_wavetable_y - my) * i / d) - area.y) / area.h, 1.0f / area.w);
+			}
+			else
+				wavetable_draw((float)(mx - area.x) / area.w, (float)(my - area.y) / area.h, 1.0f / area.w);
 		}
+		
+		mused.prev_wavetable_x = mx;
+		mused.prev_wavetable_y = my;
+	}
+	else
+	{
+		mused.prev_wavetable_x = -1;
+		mused.prev_wavetable_y = -1;
 	}
 }
 
@@ -300,9 +321,23 @@ void wavetable_tools_view(GfxDomain *dest_surface, const SDL_Rect *dest, const S
 	
 	r.y += r.h;
 	
-	button_text_event(domain, event, &r, mused.slider_bevel, &mused.buttonfont, BEV_BUTTON, BEV_BUTTON_ACTIVE, "NORMALIZE", wavetable_normalize, MAKEPTR(32768), NULL, NULL);
-	
-	r.y += r.h;
+	{
+		int temp_x = r.x;
+		int temp = r.w;
+		
+		r.w /= 2;
+		
+		button_text_event(domain, event, &r, mused.slider_bevel, &mused.buttonfont, BEV_BUTTON, BEV_BUTTON_ACTIVE, "NORMALIZE", wavetable_normalize, MAKEPTR(32768), NULL, NULL);
+		
+		r.x += r.w;
+		
+		button_text_event(domain, event, &r, mused.slider_bevel, &mused.buttonfont, BEV_BUTTON, BEV_BUTTON_ACTIVE, "DISTORT", wavetable_distort, MAKEPTR((int)(0.891 * 32768)), NULL, NULL);
+		
+		r.y += r.h;
+		
+		r.x = temp_x;
+		r.w = temp;
+	}
 	
 	{
 		int temp_x = r.x;
@@ -322,17 +357,59 @@ void wavetable_tools_view(GfxDomain *dest_surface, const SDL_Rect *dest, const S
 		r.w = temp;
 	}
 	
-	button_text_event(domain, event, &r, mused.slider_bevel, &mused.buttonfont, BEV_BUTTON, BEV_BUTTON_ACTIVE, "CUT TAIL", wavetable_cut_tail, NULL, NULL, NULL);
+	{
+		int temp_x = r.x;
+		int temp = r.w;
+		
+		r.w /= 2;
+		
+		button_text_event(domain, event, &r, mused.slider_bevel, &mused.buttonfont, BEV_BUTTON, BEV_BUTTON_ACTIVE, "CUT TAIL", wavetable_cut_tail, NULL, NULL, NULL);
+		
+		r.x += r.w;
+		
+		button_text_event(domain, event, &r, mused.slider_bevel, &mused.buttonfont, BEV_BUTTON, BEV_BUTTON_ACTIVE, "CUT HEAD", wavetable_cut_head, NULL, NULL, NULL);
+		
+		r.y += r.h;
+		
+		r.x = temp_x;
+		r.w = temp;
+	}
 	
-	r.y += r.h;
+	{
+		int temp_x = r.x;
+		int temp = r.w;
+		
+		r.w /= 2;
+		
+		button_text_event(domain, event, &r, mused.slider_bevel, &mused.buttonfont, BEV_BUTTON, BEV_BUTTON_ACTIVE, "KILL DC", wavetable_remove_dc, 0, NULL, NULL);
+		
+		r.x += r.w;
+		
+		button_text_event(domain, event, &r, mused.slider_bevel, &mused.buttonfont, BEV_BUTTON, BEV_BUTTON_ACTIVE, "FIND ZERO", wavetable_find_zero, NULL, NULL, NULL);
+		
+		r.y += r.h;
+		
+		r.x = temp_x;
+		r.w = temp;
+	}
 	
-	button_text_event(domain, event, &r, mused.slider_bevel, &mused.buttonfont, BEV_BUTTON, BEV_BUTTON_ACTIVE, "CUT HEAD", wavetable_cut_head, NULL, NULL, NULL);
-	
-	r.y += r.h;
-	
-	button_text_event(domain, event, &r, mused.slider_bevel, &mused.buttonfont, BEV_BUTTON, BEV_BUTTON_ACTIVE, "KILL DC", wavetable_remove_dc, 0, NULL, NULL);
-	
-	r.y += r.h;
+	{
+		int temp_x = r.x;
+		int temp = r.w;
+		
+		r.w /= 2;
+		
+		button_text_event(domain, event, &r, mused.slider_bevel, &mused.buttonfont, BEV_BUTTON, BEV_BUTTON_ACTIVE, "LOPASS", wavetable_filter, MAKEPTR(0), NULL, NULL);
+		
+		r.x += r.w;
+		
+		button_text_event(domain, event, &r, mused.slider_bevel, &mused.buttonfont, BEV_BUTTON, BEV_BUTTON_ACTIVE, "HIPASS", wavetable_filter, MAKEPTR(1), NULL, NULL);
+		
+		r.y += r.h;
+		
+		r.x = temp_x;
+		r.w = temp;
+	}
 	
 	button_text_event(domain, event, &r, mused.slider_bevel, &mused.buttonfont, BEV_BUTTON, BEV_BUTTON_ACTIVE, "5TH", wavetable_chord, MAKEPTR(5), NULL, NULL);
 	
@@ -584,4 +661,40 @@ void wavetable_sample_area(GfxDomain *dest_surface, const SDL_Rect *dest, const 
 		wavegen_preview(dest_surface, dest, event, param);
 	else
 		wavetable_sample_view(dest_surface, dest, event, param);
+}
+
+
+void wavetable_name_view(GfxDomain *dest_surface, const SDL_Rect *dest, const SDL_Event *event, void *param)
+{
+	SDL_Rect farea, larea, tarea;
+	copy_rect(&farea,dest);
+	copy_rect(&larea,dest);
+	copy_rect(&tarea,dest);
+	
+	farea.w = 2 * mused.console->font.w + 2 + 16;
+	
+	larea.w = 32;
+	
+	label("WAVE", &larea);
+	
+	tarea.w = dest->w - farea.w - larea.w - 1;
+	farea.x = larea.w + dest->x;
+	tarea.x = farea.x + farea.w;
+
+	int d;
+	
+	if ((d = generic_field(event, &farea, EDITWAVETABLE, W_WAVE, "WAVE", "%02X", MAKEPTR(mused.selected_wavetable), 2)) != 0)
+	{
+		wave_add_param(d);
+	}
+	
+	inst_field(event, &tarea, W_NAME, MUS_WAVETABLE_NAME_LEN + 1, mused.song.wavetable_names[mused.selected_wavetable]);
+	
+	if (is_selected_param(EDITWAVETABLE, W_NAME) || (mused.mode == EDITWAVETABLE && (mused.edit_buffer == mused.song.wavetable_names[mused.selected_wavetable] && mused.focus == EDITBUFFER)))
+	{
+		SDL_Rect r;
+		copy_rect(&r, &tarea);
+		adjust_rect(&r, -2);
+		set_cursor(&r);
+	}
 }

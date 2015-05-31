@@ -153,8 +153,9 @@ static const View sequence_view_tab[] =
 static const View fx_view_tab[] =
 {
 	{{0, 0, 0, 14}, fx_global_view, NULL, -1},
-	{{0, 14, 0, 14}, bevel_view, (void*)BEV_BACKGROUND, -1},
-	{{2, 16, -1, 10}, fx_name_view, NULL, -1},
+	{{0, 14, -130, 14}, bevel_view, (void*)BEV_BACKGROUND, -1},
+	{{2, 16, -132, 10}, fx_name_view, NULL, -1},
+	{{-130, 14, 130, 14}, instrument_disk_view, MAKEPTR(OD_T_FX), -1},
 	{{0, 28, 0, -INFO}, fx_view, NULL, -1},
 	{{0, 0 - INFO, 0, INFO }, info_line, NULL, -1},
 	{{0, 0, 0, 0}, NULL}
@@ -164,9 +165,12 @@ static const View fx_view_tab[] =
 
 static const View wavetable_view_tab[] =
 {
-	{{0, 0, 204, -INFO-SAMPLEVIEW}, wavetable_view, NULL, -1},
-	{{204, 0, -SCROLLBAR, -INFO-SAMPLEVIEW}, wavetablelist_view, NULL, -1},
-	{{0 - SCROLLBAR, 0, SCROLLBAR, -INFO-SAMPLEVIEW }, slider, &mused.wavetable_list_slider_param, EDITWAVETABLE },
+	{{0, 0, -130, 14}, bevel_view, (void*)BEV_BACKGROUND, -1},
+	{{2, 2, -132, 10}, wavetable_name_view, NULL, -1},
+	{{-130, 0, 130, 14}, instrument_disk_view, MAKEPTR(OD_T_WAVETABLE), -1},
+	{{0, 14, 204, -INFO-SAMPLEVIEW}, wavetable_view, NULL, -1},
+	{{204, 14, -SCROLLBAR, -INFO-SAMPLEVIEW}, wavetablelist_view, NULL, -1},
+	{{0 - SCROLLBAR, 14, SCROLLBAR, -INFO-SAMPLEVIEW }, slider, &mused.wavetable_list_slider_param, EDITWAVETABLE },
 	{{0, -INFO-SAMPLEVIEW, -148, SAMPLEVIEW}, wavetable_sample_area, NULL, -1},
 	{{-148, -INFO-SAMPLEVIEW, 148, SAMPLEVIEW}, wavetable_edit_area, NULL, -1},
 	{{0, 0 - INFO, 0, INFO }, info_line, NULL, -1},
@@ -331,6 +335,10 @@ int main(int argc, char **argv)
 		nos_decrunch(domain);
 		mused.flags |= DISABLE_NOSTALGY;
 	}
+
+#ifdef DEBUG	
+	Uint32 start_ticks = SDL_GetTicks();
+#endif
 		
 	while (1)
 	{
@@ -628,6 +636,9 @@ int main(int argc, char **argv)
 	gfx_domain_free(domain);
 
 #ifdef DEBUG
+
+	debug("Total frames = %d (%.1f fps)", total_frames, (double)total_frames / ((double)(SDL_GetTicks() - start_ticks) / 1000));
+
 	if (total_frames > 0)
 		debug("Draw calls per frame: %.1f", draw_calls / total_frames);
 #endif
