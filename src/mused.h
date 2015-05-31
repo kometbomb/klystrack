@@ -159,7 +159,7 @@ typedef struct
 	int pixel_scale;
 	int mix_rate, mix_buffer;
 	int window_w, window_h;
-	int fx_bus, fx_room_size, fx_room_vol, fx_room_dec, fx_tap, fx_axis, fx_room_ticks;
+	int fx_bus, fx_room_size, fx_room_vol, fx_room_dec, fx_tap, fx_axis, fx_room_ticks, fx_room_prev_x, fx_room_prev_y;
 	/*---vis---*/
 	int current_visualizer;
 	struct 

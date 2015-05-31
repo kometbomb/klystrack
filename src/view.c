@@ -1536,6 +1536,48 @@ void fx_reverb_view(GfxDomain *dest_surface, const SDL_Rect *dest, const SDL_Eve
 				mused.fx_tap = i;
 		}
 	}
+	
+	int mx, my;
+	
+	if (mused.mode == EDITFX && (SDL_GetMouseState(&mx, &my) & SDL_BUTTON(1)))
+	{
+		mx /= mused.pixel_scale;
+		my /= mused.pixel_scale;
+
+		if (mused.fx_room_prev_x != -1)
+		{
+			snapshot_cascade(S_T_FX, mused.fx_bus, mused.fx_tap);
+			
+			mused.song.fx[mused.fx_bus].rvb.tap[mused.fx_tap].delay += (mx - mused.fx_room_prev_x) * CYDRVB_SIZE / area.w;
+
+			if (mused.fx_axis == 0)
+			{
+				mused.song.fx[mused.fx_bus].rvb.tap[mused.fx_tap].gain += (my - mused.fx_room_prev_y) * CYDRVB_LOW_LIMIT / area.h;
+				if (mused.song.fx[mused.fx_bus].rvb.tap[mused.fx_tap].gain > 0) 
+					mused.song.fx[mused.fx_bus].rvb.tap[mused.fx_tap].gain = 0;
+				else if (mused.song.fx[mused.fx_bus].rvb.tap[mused.fx_tap].gain < CYDRVB_LOW_LIMIT) 
+					mused.song.fx[mused.fx_bus].rvb.tap[mused.fx_tap].gain = CYDRVB_LOW_LIMIT;
+			}
+			else
+			{
+				mused.song.fx[mused.fx_bus].rvb.tap[mused.fx_tap].panning += (my - mused.fx_room_prev_y) * CYD_PAN_RIGHT / area.h;
+				
+				if (mused.song.fx[mused.fx_bus].rvb.tap[mused.fx_tap].panning < CYD_PAN_LEFT)
+					mused.song.fx[mused.fx_bus].rvb.tap[mused.fx_tap].panning = CYD_PAN_LEFT;
+				
+				if (mused.song.fx[mused.fx_bus].rvb.tap[mused.fx_tap].panning > CYD_PAN_RIGHT)
+					mused.song.fx[mused.fx_bus].rvb.tap[mused.fx_tap].panning = CYD_PAN_RIGHT;
+			}
+		}
+		
+		mused.fx_room_prev_x = mx;
+		mused.fx_room_prev_y = my;
+	}
+	else
+	{
+		mused.fx_room_prev_x = -1;
+		mused.fx_room_prev_y = -1;
+	}
 }
 
 
