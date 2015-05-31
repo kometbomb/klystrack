@@ -1541,7 +1541,14 @@ void fx_reverb_view(GfxDomain *dest_surface, const SDL_Rect *dest, const SDL_Eve
 		if (event->type == SDL_MOUSEBUTTONDOWN)
 		{
 			if (check_event(event, &r, NULL, 0, 0, 0))
+			{
 				mused.fx_tap = i;
+				
+				if (SDL_GetModState() & KMOD_SHIFT)
+				{
+					mused.song.fx[mused.fx_bus].rvb.tap[i].flags ^= 1;
+				}
+			}
 		}
 	}
 	
