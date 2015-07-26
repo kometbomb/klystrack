@@ -200,7 +200,7 @@ void play_position(void *unused1, void *unused2, void *unused3)
 {
 	if (!(mused.flags & LOOP_POSITION))
 	{
-		int p = current_pattern(NULL), len;
+		int p = current_pattern(), len;
 		
 		if (p < 0)
 			len = mused.sequenceview_steps;
@@ -214,6 +214,8 @@ void play_position(void *unused1, void *unused2, void *unused3)
 		
 		mused.song.song_length = mused.current_sequencepos + len;
 		mused.song.loop_point = mused.current_sequencepos;
+		
+		debug("%d Looping %d-%d", p, mused.current_sequencepos, mused.current_sequencepos + len);
 		
 		play(MAKEPTR(1), 0, 0);
 	}
@@ -640,14 +642,14 @@ void export_wav_action(void *a, void*b, void*c)
 	}
 	else
 	{
-		strncpy(def, mused.previous_song_filename, sizeof(mused.previous_song_filename) - 1);
+		strncpy(def, mused.previous_export_filename, sizeof(mused.previous_export_filename) - 1);
 	}
 	
 	char filename[5000];
 	
 	if (open_dialog_fn("wb", "Export .WAV", "wav", domain, mused.slider_bevel, &mused.largefont, &mused.smallfont, def, filename, sizeof(filename)))
 	{
-		strncpy(mused.previous_song_filename, filename, sizeof(mused.previous_song_filename) - 1);
+		strncpy(mused.previous_export_filename, filename, sizeof(mused.previous_export_filename) - 1);
 	
 		FILE *f = fopen(filename, "wb");
 	
