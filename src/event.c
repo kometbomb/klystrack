@@ -532,7 +532,7 @@ static void play_the_jams(int sym, int chn, int state)
 					if (chn == -1 && !(mused.flags & MULTICHANNEL_PREVIEW))
 						chn = 0;
 				
-					mus_trigger_instrument(&mused.mus, chn, &mused.song.instrument[mused.current_instrument], note, CYD_PAN_CENTER);
+					mus_trigger_instrument(&mused.mus, chn, &mused.song.instrument[mused.current_instrument], note << 8, CYD_PAN_CENTER);
 				}
 			}
 		}
@@ -559,7 +559,7 @@ static void wave_the_jams(int sym)
 			inst.cydflags &= ~WAVEFORMS;
 			inst.cydflags |= CYD_CHN_WAVE_OVERRIDE_ENV | CYD_CHN_ENABLE_WAVE;
 			inst.flags &= ~MUS_INST_DRUM;
-			mus_trigger_instrument(&mused.mus, 0, &inst, note, CYD_PAN_CENTER);
+			mus_trigger_instrument(&mused.mus, 0, &inst, note << 8, CYD_PAN_CENTER);
 		}
 	}
 }
@@ -2351,7 +2351,7 @@ void note_event(SDL_Event *e)
 		case MSG_NOTEON:
 			if (find_playing_note(e->user.code) == -1 && e->user.code < FREQ_TAB_SIZE)
 			{
-				int c = mus_trigger_instrument(&mused.mus, -1, &mused.song.instrument[mused.current_instrument], e->user.code, CYD_PAN_CENTER);
+				int c = mus_trigger_instrument(&mused.mus, -1, &mused.song.instrument[mused.current_instrument], e->user.code << 8, CYD_PAN_CENTER);
 				note_playing[c] = e->user.code;
 			}
 			break;
