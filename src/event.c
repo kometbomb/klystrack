@@ -219,6 +219,11 @@ void instrument_add_param(int a)
 		
 		break;
 		
+		case P_RELVOL:
+		
+		flipbit(i->flags, MUS_INST_RELATIVE_VOLUME);
+		
+		break;
 		
 		case P_FX:
 		
