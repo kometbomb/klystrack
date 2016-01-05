@@ -13,8 +13,8 @@ CC := gcc -Werror
 CDEP := gcc -E -MM
 ARCHIVE := klystrack
 INSTALLER := klystrack.exe
-SDL_VER := 2.0.3
-SDL_IMAGEVER := 2.0.0
+SDL_VER := 2.0.4
+SDL_IMAGEVER := 2.0.1
 THEMES :=
 REV := cp -f
 
