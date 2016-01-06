@@ -164,7 +164,7 @@ void new_song()
 	
 	memset(mused.song.title, 0, sizeof(mused.song.title));
 	strcpy(mused.previous_song_filename, "");
-	strcpy(mused.previous_wav_filename, "");
+	strcpy(mused.previous_export_filename, "");
 	
 	zap_fx(MAKEPTR(1), NULL, NULL);
 	

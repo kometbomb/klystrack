@@ -1525,15 +1525,30 @@ void fx_reverb_view(GfxDomain *dest_surface, const SDL_Rect *dest, const SDL_Eve
 		SDL_Rect r = { area.x + mused.song.fx[mused.fx_bus].rvb.tap[i].delay * area.w / CYDRVB_SIZE - mused.smallfont.w / 2,  
 			area.y + h - mused.smallfont.h / 2, mused.smallfont.w, mused.smallfont.h};
 			
-		if (i == mused.fx_tap)
+		if (mused.song.fx[mused.fx_bus].rvb.tap[i].flags & 1)
 			font_write(&mused.smallfont, dest_surface, &r, "\2");
 		else 
 			font_write(&mused.smallfont, dest_surface, &r, "\1");
 		
+		if (i == mused.fx_tap)
+		{
+			SDL_Rect sel;
+			copy_rect(&sel, &r);
+			adjust_rect(&sel, -4);
+			bevelex(domain, &sel, mused.slider_bevel, BEV_CURSOR, BEV_F_STRETCH_ALL);
+		}
+		
 		if (event->type == SDL_MOUSEBUTTONDOWN)
 		{
 			if (check_event(event, &r, NULL, 0, 0, 0))
+			{
 				mused.fx_tap = i;
+				
+				if (SDL_GetModState() & KMOD_SHIFT)
+				{
+					mused.song.fx[mused.fx_bus].rvb.tap[i].flags ^= 1;
+				}
+			}
 		}
 	}
 	
