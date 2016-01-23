@@ -515,6 +515,12 @@ void playstop_view(GfxDomain *dest_surface, const SDL_Rect *dest, const SDL_Even
 }
 
 
+float percent_to_dB(float percent)
+{
+	return 10 * log10(percent);
+}
+
+
 void info_line(GfxDomain *dest_surface, const SDL_Rect *dest, const SDL_Event *event, void *param)
 {
 	SDL_Rect area;
@@ -652,6 +658,8 @@ void info_line(GfxDomain *dest_surface, const SDL_Rect *dest, const SDL_Event *e
 					snprintf(text, sizeof(text) - 1, "%s (%s)", param_desc[mused.selected_param], mused.song.wavetable_names[mused.song.instrument[mused.current_instrument].wavetable_entry]);
 				else if (mused.selected_param == P_FM_WAVE_ENTRY)
 					snprintf(text, sizeof(text) - 1, "%s (%s)", param_desc[mused.selected_param], mused.song.wavetable_names[mused.song.instrument[mused.current_instrument].fm_wave]);
+				else if (mused.selected_param == P_VOLUME)
+					snprintf(text, sizeof(text) - 1, "%s (%+.1f dB)", param_desc[mused.selected_param], percent_to_dB((float)mused.song.instrument[mused.current_instrument].volume / MAX_VOLUME));
 				else if (mused.selected_param == P_ATTACK)
 					snprintf(text, sizeof(text) - 1, "%s (%.1f ms)", param_desc[mused.selected_param], envelope_length(mused.song.instrument[mused.current_instrument].adsr.a));
 				else if (mused.selected_param == P_DECAY)
