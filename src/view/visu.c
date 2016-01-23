@@ -117,7 +117,7 @@ void catometer_view(GfxDomain *dest_surface, const SDL_Rect *dest, const SDL_Eve
 	copy_rect(&cat, &content);
 	cat.w = mused.catometer->surface->w;
 	cat.x = cat.x + content.w / 2 - mused.catometer->surface->w / 2;
-	gfx_domain_set_clip(domain, &clip);
+	gfx_domain_get_clip(domain, &clip);
 	gfx_domain_set_clip(domain, &content);
 	my_BlitSurface(mused.catometer, NULL, dest_surface, &cat);
 	

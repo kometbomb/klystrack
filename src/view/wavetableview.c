@@ -136,8 +136,6 @@ void wavetablelist_view(GfxDomain *dest_surface, const SDL_Rect *dest, const SDL
 	bevelex(dest_surface, &area, mused.slider_bevel, BEV_THIN_FRAME, BEV_F_STRETCH_ALL);
 	adjust_rect(&area, 3);
 	console_set_clip(mused.console, &area);
-	SDL_Rect tmp;
-	gfx_domain_get_clip(dest_surface, &tmp);
 	gfx_domain_set_clip(dest_surface, &area);
 
 	int y = area.y;
@@ -170,7 +168,7 @@ void wavetablelist_view(GfxDomain *dest_surface, const SDL_Rect *dest, const SDL
 		slider_set_params(&mused.wavetable_list_slider_param, 0, CYD_WAVE_MAX_ENTRIES - 1, start, i, &mused.wavetable_list_position, 1, SLIDER_VERTICAL, mused.slider_bevel);
 	}
 	
-	gfx_domain_set_clip(dest_surface, &tmp);
+	gfx_domain_set_clip(dest_surface, NULL);
 	
 	check_mouse_wheel_event(event, dest, &mused.wavetable_list_slider_param);	
 }

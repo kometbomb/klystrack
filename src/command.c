@@ -29,6 +29,7 @@ OTHER DEALINGS IN THE SOFTWARE.
 #include "macros.h"
 #include <string.h>
 #include "mused.h"
+#include "view.h"
 
 static const InstructionDesc instruction_desc[] =
 {
@@ -116,7 +117,7 @@ bool is_valid_command(Uint16 command)
 }
 
 	
-void get_command_desc(char *text, Uint16 inst)
+void get_command_desc(char *text, size_t buffer_size, Uint16 inst)
 {
 	const InstructionDesc *i = get_instruction_desc(inst);
 
@@ -132,29 +133,33 @@ void get_command_desc(char *text, Uint16 inst)
 	if ((fi & 0x7f00) == MUS_FX_SET_WAVEFORM)
 	{
 		if (inst & 0xff)
-			sprintf(text, "%s (%s%s%s%s%s%s)\n", name, (inst & MUS_FX_WAVE_NOISE) ? "N" : "", (inst & MUS_FX_WAVE_SAW) ? "S" : "", (inst & MUS_FX_WAVE_TRIANGLE) ? "T" : "", 
+			snprintf(text, buffer_size, "%s (%s%s%s%s%s%s)\n", name, (inst & MUS_FX_WAVE_NOISE) ? "N" : "", (inst & MUS_FX_WAVE_SAW) ? "S" : "", (inst & MUS_FX_WAVE_TRIANGLE) ? "T" : "", 
 				(inst & MUS_FX_WAVE_PULSE) ? "P" : "", (inst & MUS_FX_WAVE_LFSR) ? "L" : "", (inst & MUS_FX_WAVE_WAVE) ? "W" : "");
 		else
-			sprintf(text, "%s (None)\n", name);
+			snprintf(text, buffer_size, "%s (None)\n", name);
 	}
 	else if ((fi & 0x7f00) == MUS_FX_FILTER_TYPE)
 	{
 		static const char *fn[FLT_TYPES] = {"LP", "HP", "BP"};
-		sprintf(text, "%s (%s)\n", name, fn[(inst & 0xf) % FLT_TYPES]);
+		snprintf(text, buffer_size, "%s (%s)\n", name, fn[(inst & 0xf) % FLT_TYPES]);
 	}
 	else if ((fi & 0x7f00) == MUS_FX_BUZZ_SHAPE)
 	{
-		sprintf(text, "%s (%c)\n", name, ((inst & 0xf) % 4) + 0xf0);
+		snprintf(text, buffer_size, "%s (%c)\n", name, ((inst & 0xf) % 4) + 0xf0);
 	}
 	else if ((fi & 0x7f00) == MUS_FX_SET_FXBUS)
 	{
-		sprintf(text, "%s (%s)\n", name, mused.song.fx[(inst & 0xf) % CYD_MAX_FX_CHANNELS].name);
+		snprintf(text, buffer_size, "%s (%s)\n", name, mused.song.fx[(inst & 0xf) % CYD_MAX_FX_CHANNELS].name);
 	}
 	else if ((fi & 0x7f00) == MUS_FX_SET_WAVETABLE_ITEM)
 	{
-		sprintf(text, "%s (%s)\n", name, mused.song.wavetable_names[(inst & 0xff)]);
+		snprintf(text, buffer_size, "%s (%s)\n", name, mused.song.wavetable_names[(inst & 0xff)]);
 	}
-	else sprintf(text, "%s\n", name);
+	else if ((fi & 0x7f00) == MUS_FX_SET_VOLUME)
+	{
+		snprintf(text, buffer_size, "%s (%+.1f dB)\n", name, percent_to_dB((float)(inst & 0xff) / MAX_VOLUME));
+	}
+	else snprintf(text, buffer_size, "%s\n", name);
 }
 
 
