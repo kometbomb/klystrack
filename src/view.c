@@ -53,6 +53,11 @@ Cyd envelope length in milliseconds
 */
  
 #define envelope_length(slope) (slope!=0?(float)(((slope) * (slope) * 256 / (ENVELOPE_SCALE * ENVELOPE_SCALE))) / ((float)CYD_BASE_FREQ / 1000.0f) :0.0f)
+
+float percent_to_dB(float percent)
+{
+	return 10 * log10(percent);
+}
 	
 bool is_selected_param(int focus, int p)
 {
@@ -515,12 +520,6 @@ void playstop_view(GfxDomain *dest_surface, const SDL_Rect *dest, const SDL_Even
 }
 
 
-float percent_to_dB(float percent)
-{
-	return 10 * log10(percent);
-}
-
-
 void info_line(GfxDomain *dest_surface, const SDL_Rect *dest, const SDL_Event *event, void *param)
 {
 	SDL_Rect area;
@@ -546,7 +545,7 @@ void info_line(GfxDomain *dest_surface, const SDL_Rect *dest, const SDL_Event *e
 			case EDITPROG:
 			{
 				Uint16 inst = mused.song.instrument[mused.current_instrument].program[mused.current_program_step];
-				get_command_desc(text, inst);
+				get_command_desc(text, sizeof(text), inst);
 			}
 			break;
 			
@@ -719,7 +718,7 @@ void info_line(GfxDomain *dest_surface, const SDL_Rect *dest, const SDL_Event *e
 						Uint16 inst = mused.song.pattern[current_pattern()].step[current_patternstep()].command;
 						
 						if (inst != 0)
-							get_command_desc(text, inst);
+							get_command_desc(text, sizeof(text), inst);
 						else
 							strcpy(text, "Command");
 					}
@@ -752,8 +751,10 @@ void info_line(GfxDomain *dest_surface, const SDL_Rect *dest, const SDL_Event *e
 									break;
 							}
 						}
-						else
+						else if (vol == MUS_NOTE_NO_VOLUME)
 							strcpy(text, "Volume");
+						else
+							sprintf(text, "Volume (%+.1f dB)", percent_to_dB((float)vol / MAX_VOLUME));
 					}
 					else
 					{

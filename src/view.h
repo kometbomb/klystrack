@@ -48,6 +48,7 @@ char * notename(int note);
 void my_separator(const SDL_Rect *parent, SDL_Rect *rect);
 void set_cursor(const SDL_Rect *location);
 bool is_selected_param(int focus, int p);
+float percent_to_dB(float percent);
 
 /* 
 "Controls"
