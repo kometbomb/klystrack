@@ -88,6 +88,7 @@ const KeyShortcut shortcuts[] =
 	{ KMOD_SHIFT, SDLK_KP_MINUS, transpose_note_data, (void*)-1, 0, 0, "Transpose selection down" },
 	{ KMOD_ALT, SDLK_s, split_pattern, 0, 0, 0, "Split pattern at cursor position" },
 	{ KMOD_CTRL, SDLK_m, unmute_all_action, 0, 0, 0, "Unmute all channels" },
+	{ KMOD_CTRL|KMOD_SHIFT, SDLK_m, solo_channel, 0, 0, 0, "Solo current channel" },
 	{ KMOD_CTRL, SDLK_z, do_undo, 0, 0, 0, "Undo" },
 	{ KMOD_CTRL, SDLK_y, do_undo, MAKEPTR(1), 0, 0, "Redo" },
 	{ KMOD_CTRL, SDLK_0, set_note_jump, MAKEPTR(0), 0, 0, "Set note jump" },

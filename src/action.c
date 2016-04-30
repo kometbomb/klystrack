@@ -313,15 +313,19 @@ void enable_channel(void *channel, void *unused1, void *unused2)
 }
 
 
-void solo_channel(void *channel, void *unused1, void *unused2)
+void solo_channel(void *_channel, void *unused1, void *unused2)
 {
 	int c = 0;
+	int channel = CASTPTR(int,channel);
+	
+	if (channel == -1)
+		channel = mused.current_sequencetrack;
 	
 	for (int i = 0 ; i < MUS_MAX_CHANNELS ; ++i)
 		if (!(mused.mus.channel[i].flags & MUS_CHN_DISABLED))
 			++c;
 			
-	if (c == 1 && !(mused.mus.channel[CASTPTR(int,channel)].flags & MUS_CHN_DISABLED))
+	if (c == 1 && !(mused.mus.channel[channel].flags & MUS_CHN_DISABLED))
 	{
 		debug("Unmuted all");
 		for (int i = 0 ; i < MUS_MAX_CHANNELS ; ++i)
@@ -335,9 +339,9 @@ void solo_channel(void *channel, void *unused1, void *unused2)
 		for (int i = 0 ; i < MUS_MAX_CHANNELS ; ++i)
 			mused.mus.channel[i].flags |= MUS_CHN_DISABLED;
 			
-		mused.mus.channel[CASTPTR(int,channel)].flags &= ~MUS_CHN_DISABLED;
+		mused.mus.channel[channel].flags &= ~MUS_CHN_DISABLED;
 		
-		set_info_message("Channel %d solo", CASTPTR(int,channel));
+		set_info_message("Channel %d solo", channel);
 	}
 }
 
@@ -661,11 +665,61 @@ void export_wav_action(void *a, void*b, void*c)
 	
 		if (f)
 		{
-			export_wav(&mused.song, mused.mus.cyd->wavetable_entries, f);
+			export_wav(&mused.song, mused.mus.cyd->wavetable_entries, f, -1);
 			fclose(f);
 		}
 	}
 }
+
+
+void export_channels_action(void *a, void*b, void*c)
+{
+	char def[1000];
+	
+	if (strlen(mused.previous_song_filename) == 0)
+	{
+		snprintf(def, sizeof(def), "%s.wav", mused.song.title);
+	}
+	else
+	{
+		strncpy(def, mused.previous_export_filename, sizeof(mused.previous_export_filename) - 1);
+	}
+	
+	char filename[5000];
+	
+	if (open_dialog_fn("wb", "Export .WAV", "wav", domain, mused.slider_bevel, &mused.largefont, &mused.smallfont, def, filename, sizeof(filename)))
+	{
+		strncpy(mused.previous_export_filename, filename, sizeof(mused.previous_export_filename) - 1);
+	
+		for (int i = 0 ; i < mused.song.num_channels ; ++i)
+		{
+			char c_filename[1000], tmp[1000];
+			strncpy(tmp, filename, sizeof(c_filename) - 1);
+			
+			for (int c = strlen(tmp) - 1 ; c >= 0 ; --c) 
+			{
+				if (tmp[c] == '.')
+				{
+					tmp[c] = '\0';
+					break;
+				}
+			}
+			
+			sprintf(c_filename, "%s-%02d.wav", tmp, i);
+			
+			debug("Exporting channel %d to %s", i, c_filename);
+			
+			FILE *f = fopen(c_filename, "wb");
+		
+			if (f)
+			{
+				export_wav(&mused.song, mused.mus.cyd->wavetable_entries, f, i);
+				fclose(f);
+			}
+		}
+	}
+}
+
 
 
 void do_undo(void *a, void*b, void*c)

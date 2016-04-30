@@ -38,7 +38,7 @@ OTHER DEALINGS IN THE SOFTWARE.
 
 extern GfxDomain *domain;
 
-void export_wav(MusSong *song, CydWavetableEntry * entry, FILE *f)
+void export_wav(MusSong *song, CydWavetableEntry * entry, FILE *f, int channel)
 {
 	MusEngine mus;
 	CydEngine cyd;
@@ -53,6 +53,21 @@ void export_wav(MusSong *song, CydWavetableEntry * entry, FILE *f)
 	cyd_set_callback(&cyd, mus_advance_tick, &mus, song->song_rate);
 	mus_set_song(&mus, song, 0);
 	song->flags |= MUS_NO_REPEAT;
+	
+	if (channel >= 0)
+	{
+		// if channel is positive then only export that channel (mute other chans)
+		
+		for (int i = 0 ; i < MUS_MAX_CHANNELS ; ++i)
+			mus.channel[i].flags |= MUS_CHN_DISABLED;
+		
+		mus.channel[channel].flags &= ~MUS_CHN_DISABLED;
+	}
+	else
+	{
+		for (int i = 0 ; i < MUS_MAX_CHANNELS ; ++i)
+			mus.channel[i].flags &= ~MUS_CHN_DISABLED;
+	}
 	
 	const int channels = 2;
 	Sint16 buffer[2000 * channels];
@@ -73,7 +88,7 @@ void export_wav(MusSong *song, CydWavetableEntry * entry, FILE *f)
 		
 		if (song->song_length != 0)
 		{
-			int percentage = mus.song_position * 100 / song->song_length;
+			int percentage = (mus.song_position + (channel == -1 ? 0 : (channel * song->song_length))) * 100 / (song->song_length * (channel == -1 ? 0 : song->num_channels));
 			
 			if (percentage > last_percentage)
 			{

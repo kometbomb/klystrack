@@ -191,6 +191,7 @@ static const Menu filemenu[] =
 	{ 0, mainmenu, "Open song", NULL, open_data, MAKEPTR(OD_T_SONG), MAKEPTR(OD_A_OPEN) },
 	{ 0, mainmenu, "Save song", NULL, open_data, MAKEPTR(OD_T_SONG), MAKEPTR(OD_A_SAVE) },
 	{ 0, mainmenu, "Export .WAV", NULL, export_wav_action },
+	{ 0, mainmenu, "Export tracks as .WAV", NULL, export_channels_action },
 	{ 0, mainmenu, "Import", importmenu },
 	{ 0, mainmenu, "", NULL, NULL },
 	{ 0, mainmenu, "Instrument", instmenu },
