@@ -88,7 +88,7 @@ void export_wav(MusSong *song, CydWavetableEntry * entry, FILE *f, int channel)
 		
 		if (song->song_length != 0)
 		{
-			int percentage = (mus.song_position + (channel == -1 ? 0 : (channel * song->song_length))) * 100 / (song->song_length * (channel == -1 ? 0 : song->num_channels));
+			int percentage = (mus.song_position + (channel == -1 ? 0 : (channel * song->song_length))) * 100 / (song->song_length * (channel == -1 ? 1 : song->num_channels));
 			
 			if (percentage > last_percentage)
 			{
