@@ -29,7 +29,7 @@ void zap_sequence(void* no_confirm, void* b, void* c)
 	
 	for (int i = 0 ; i < MUS_MAX_CHANNELS ; ++i)
 	{
-		memset(mused.song.sequence[i], 0, NUM_SEQUENCES * sizeof(*mused.song.sequence));
+		memset(mused.song.sequence[i], 0, NUM_SEQUENCES * sizeof(MusSeqPattern));
 		mused.song.num_sequences[i] = 0;
 		mused.song.default_volume[i] = MAX_VOLUME;
 		mused.song.default_panning[i] = 0;
