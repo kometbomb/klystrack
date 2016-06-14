@@ -59,6 +59,7 @@ SectionIn RO
   
   File zip\data\key\FT2
   File zip\data\key\AZERTY
+  File zip\data\key\DVORAK
   
   CreateDirectory $INSTDIR\examples
   
@@ -162,6 +163,7 @@ Section Uninstall
   
   Delete FT2
   Delete AZERTY
+  Delete DVORAK
   
   SetOutPath $INSTDIR\examples\instruments
   
