@@ -96,6 +96,7 @@ enum
 	DISABLE_RENDER_TO_TEXTURE = 65536 << 11,
 	DISABLE_BACKUPS = 65536 << 12,
 	START_WITH_TEMPLATE = 65536 << 13,
+	USE_SYSTEM_CURSOR = 65536 << 14,
 };
 
 enum
@@ -151,6 +152,8 @@ typedef struct
 	SDL_TimerID info_message_timer;
 	GfxSurface *slider_bevel, *vu_meter, *analyzer, *logo, *catometer;
 	Font smallfont, largefont, tinyfont, tinyfont_sequence_counter, tinyfont_sequence_normal;
+	SDL_Cursor *mouse_cursor;
+	GfxSurface *mouse_cursor_surface;
 	
 	/* for menu */
 	Font menufont, menufont_selected, headerfont, headerfont_selected, shortcutfont, shortcutfont_selected, buttonfont;

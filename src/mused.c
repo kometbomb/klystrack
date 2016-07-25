@@ -330,6 +330,8 @@ void deinit()
 	if (mused.analyzer) gfx_free_surface(mused.analyzer);
 	if (mused.logo) gfx_free_surface(mused.logo);
 	if (mused.catometer) gfx_free_surface(mused.catometer);
+	if (mused.mouse_cursor_surface) gfx_free_surface(mused.mouse_cursor_surface);
+	if (mused.mouse_cursor) SDL_FreeCursor(mused.mouse_cursor);
 	font_destroy(&mused.smallfont);
 	font_destroy(&mused.largefont);
 	font_destroy(&mused.tinyfont);

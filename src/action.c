@@ -558,6 +558,8 @@ void change_pixel_scale(void *scale, void*b, void*c)
 	domain->scale = mused.pixel_scale;
 	gfx_domain_update(domain, true);
 	
+	set_scaled_cursor();
+	
 	for (int i = 0 ; i < 4; ++i)
 	{
 		if (pixelmenu[i].p1 == scale)
@@ -599,6 +601,16 @@ void toggle_render_to_texture(void *a, void*b, void*c)
 	mouse_released(&e);
 	mused.flags ^= DISABLE_RENDER_TO_TEXTURE;
 	change_render_to_texture(0,0,0);
+}
+
+
+void toggle_mouse_cursor(void *a, void*b, void*c)
+{
+	SDL_Event e;
+	e.button.button = SDL_BUTTON_LEFT;
+	mouse_released(&e);
+	mused.flags ^= USE_SYSTEM_CURSOR;
+	set_scaled_cursor();
 }
 
 

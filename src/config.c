@@ -75,6 +75,7 @@ static const struct { int type; const char *name; void *param; int mask; } confi
 	{ C_BOOL, "disable_render_to_texture", &mused.flags, DISABLE_RENDER_TO_TEXTURE },
 	{ C_BOOL, "disable_backups", &mused.flags, DISABLE_BACKUPS },
 	{ C_BOOL, "start_with_template", &mused.flags, START_WITH_TEMPLATE },
+	{ C_BOOL, "use_system_cursor", &mused.flags, USE_SYSTEM_CURSOR },
 	{ C_END }
 };
 

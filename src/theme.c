@@ -316,6 +316,55 @@ char * query_resource_directory(void)
 #endif
 
 
+void set_scaled_cursor()
+{
+	if (mused.mouse_cursor_surface == NULL)
+		return;
+	
+	if (mused.mouse_cursor) SDL_FreeCursor(mused.mouse_cursor);
+	
+	if (mused.flags & USE_SYSTEM_CURSOR)
+	{
+		mused.mouse_cursor = SDL_CreateSystemCursor(SDL_SYSTEM_CURSOR_ARROW);
+	}
+	else
+	{
+		// We'll use SDL_Renderer here because SDL_BlitScaled seems to have an issue with the alpha channel
+		// Additionally, transparency on a zoomed cursor seems to make the cursor an "XOR" cursor so we need 
+		// to set the transparent color separately after SDL_Renderer has done its thing. SDL bug maybe?
+		
+		SDL_Surface *temp = SDL_CreateRGBSurface(0, mused.mouse_cursor_surface->surface->w * mused.pixel_scale, mused.mouse_cursor_surface->surface->h * mused.pixel_scale, 32, 0, 0, 0, 0);
+		
+		SDL_Renderer *renderer = SDL_CreateSoftwareRenderer(temp);
+		SDL_Texture *tex = SDL_CreateTextureFromSurface(renderer, mused.mouse_cursor_surface->surface);
+		
+		// Draw the texture on a magic pink background
+		SDL_SetRenderDrawColor(renderer, 255, 0, 255, 255);
+		SDL_RenderFillRect(renderer, NULL);
+		SDL_RenderCopy(renderer, tex, NULL, NULL);
+		
+		SDL_DestroyTexture(tex);
+		SDL_DestroyRenderer(renderer);
+		
+		// Make magic pink transparent
+		SDL_SetColorKey(temp, SDL_TRUE, SDL_MapRGB(temp->format, 255, 0, 255));
+		
+		mused.mouse_cursor = SDL_CreateColorCursor(temp, 0, 0);
+		
+		SDL_FreeSurface(temp);
+	}
+	
+	if (mused.mouse_cursor)
+	{
+		SDL_SetCursor(mused.mouse_cursor);
+	}
+	else
+	{
+		warning(SDL_GetError());
+	}
+}
+
+
 void load_theme(const char *name)
 {
 	char tmpname[1000];
@@ -372,6 +421,16 @@ void load_theme(const char *name)
 			mused.catometer = gfx_load_surface_RW(domain, rw, GFX_KEYED);
 		}
 		
+		rw = load_img_if_exists(&res, "cursor");
+		if (rw)
+		{
+			if (mused.mouse_cursor_surface) gfx_free_surface(mused.mouse_cursor_surface);
+			if (mused.mouse_cursor) SDL_FreeCursor(mused.mouse_cursor);
+			mused.mouse_cursor_surface = gfx_load_surface_RW(domain, rw, GFX_KEYED);
+			
+			set_scaled_cursor();
+		}
+				
 		rw = load_img_if_exists(&res, "logo");
 		if (rw)
 		{
