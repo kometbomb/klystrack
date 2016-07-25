@@ -6,3 +6,4 @@
 /src/version.h
 *.dll
 *.exe
+zip/data/Default.kt
