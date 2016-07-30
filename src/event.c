@@ -419,6 +419,12 @@ void instrument_add_param(int a)
 		
 		break;
 		
+		case P_MULTIOSC:
+		
+		flipbit(i->flags, MUS_INST_MULTIOSC);
+		
+		break;
+		
 		case P_FM_MODULATION:
 		
 		clamp(i->fm_modulation, a, 0, 0x7f);

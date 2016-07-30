@@ -637,6 +637,7 @@ void info_line(GfxDomain *dest_surface, const SDL_Rect *dest, const SDL_Event *e
 					"Pulse width modulation shape",
 					"Program period",
 					"Don't restart program on keydown",
+					"Enable multi oscillator",
 					"FM enable",
 					"FM modulation",
 					"FM feedback",
@@ -1250,11 +1251,10 @@ void instrument_view2(GfxDomain *dest_surface, const SDL_Rect *dest, const SDL_E
 	update_rect(&frame, &r);
 	inst_text(event, &r, P_PROGPERIOD, "P.PRD", "%02X", MAKEPTR(inst->prog_period), 2);
 	update_rect(&frame, &r);
-	int tmp = r.w;
-	r.w = frame.w;
-	inst_flags(event, &r, P_NORESTART, "NO PROG RESTART", &inst->flags, MUS_INST_NO_PROG_RESTART);
+	inst_flags(event, &r, P_NORESTART, "NO P. RESTART", &inst->flags, MUS_INST_NO_PROG_RESTART);
 	update_rect(&frame, &r);
-	r.w = tmp;
+	inst_flags(event, &r, P_MULTIOSC, "MULTIOSC", &inst->flags, MUS_INST_MULTIOSC);
+	update_rect(&frame, &r);
 	my_separator(&frame, &r);
 	inst_flags(event, &r, P_FM_ENABLE, "FM", &inst->cydflags, CYD_CHN_ENABLE_FM);
 	update_rect(&frame, &r);
@@ -1262,7 +1262,7 @@ void instrument_view2(GfxDomain *dest_surface, const SDL_Rect *dest, const SDL_E
 	update_rect(&frame, &r);
 	inst_text(event, &r, P_FM_FEEDBACK, "FEEDBACK", "%01X", MAKEPTR(inst->fm_feedback), 1);
 	update_rect(&frame, &r);
-	tmp = r.w;
+	int tmp = r.w;
 	r.w -= 27;
 	inst_text(event, &r, P_FM_HARMONIC_CARRIER, "MUL", "%01X", MAKEPTR(inst->fm_harmonic >> 4), 1);
 	r.x += r.w + 11;
