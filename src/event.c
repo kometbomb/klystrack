@@ -543,7 +543,10 @@ static void play_the_jams(int sym, int chn, int state)
 					if (chn == -1 && !(mused.flags & MULTICHANNEL_PREVIEW))
 						chn = 0;
 				
-					mus_trigger_instrument(&mused.mus, chn, &mused.song.instrument[mused.current_instrument], note << 8, CYD_PAN_CENTER);
+					int c = mus_trigger_instrument(&mused.mus, chn, &mused.song.instrument[mused.current_instrument], note << 8, CYD_PAN_CENTER);
+					
+					mused.mus.song_track[c].extarp1 = 0;
+					mused.mus.song_track[c].extarp2 = 0;
 				}
 			}
 		}
@@ -2364,6 +2367,9 @@ void note_event(SDL_Event *e)
 			{
 				int c = mus_trigger_instrument(&mused.mus, -1, &mused.song.instrument[mused.current_instrument], e->user.code << 8, CYD_PAN_CENTER);
 				note_playing[c] = e->user.code;
+				
+				mused.mus.song_track[c].extarp1 = 0;
+				mused.mus.song_track[c].extarp2 = 0;
 			}
 			break;
 			
