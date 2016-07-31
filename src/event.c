@@ -955,10 +955,14 @@ void sequence_event(SDL_Event *e)
 				snapshot(S_T_SEQUENCE);
 			
 				del_sequence(mused.current_sequencepos, mused.current_sequencepos+mused.sequenceview_steps, mused.current_sequencetrack);
-				for (int i = 0; i < mused.song.num_sequences[mused.current_sequencetrack] ; ++i)
+				
+				if (!(mused.flags & DELETE_EMPTIES))
 				{
-					if (mused.song.sequence[mused.current_sequencetrack][i].position >= mused.current_sequencepos)
-						mused.song.sequence[mused.current_sequencetrack][i].position -= mused.sequenceview_steps;
+					for (int i = 0; i < mused.song.num_sequences[mused.current_sequencetrack] ; ++i)
+					{
+						if (mused.song.sequence[mused.current_sequencetrack][i].position >= mused.current_sequencepos)
+							mused.song.sequence[mused.current_sequencetrack][i].position -= mused.sequenceview_steps;
+					}
 				}
 			}
 			break;
