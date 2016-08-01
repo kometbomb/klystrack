@@ -93,6 +93,7 @@ static const InstructionDesc instruction_desc[] =
 	{MUS_FX_FM_SET_MODULATION, 0x7f00, "Set FM modulation", "FMMod", 0, 0x7f},
 	{MUS_FX_FM_SET_FEEDBACK, 0x7ff0, "Set FM feedback", "FMFB", 0, 7},
 	{MUS_FX_FM_SET_HARMONIC, 0x7f00, "Set FM multiplier", "Mult", 0, 255},
+	{MUS_FX_FM_SET_WAVEFORM, 0x7f00, "Set FM waveform", "FMWave", 0, 255},
 	{0, 0, NULL}
 };
 
