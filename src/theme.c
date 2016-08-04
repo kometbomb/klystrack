@@ -360,7 +360,7 @@ void set_scaled_cursor()
 	}
 	else
 	{
-		warning(SDL_GetError());
+		warning("SDL_SetCursor failed: %s", SDL_GetError());
 	}
 }
 
