@@ -526,9 +526,11 @@ void load_theme(const char *name)
 	}
 	else
 	{
-		debug("Theme loading failed");
+		warning("Theme loading failed");
 		if (strcmp(name, "Default") != 0)
 			load_theme("Default");
+		else
+			fatal("Default theme at '%s' could not be loaded, klystrack will now (most likely) crash", fullpath);
 	}
 }
 
