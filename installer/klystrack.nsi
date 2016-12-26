@@ -103,6 +103,7 @@ SectionIn RO
   File "zip\data\examples\songs\smp_dpintro.kt"
   File "zip\data\examples\songs\smp_dingleberries_fix.kt"
   File "zip\data\examples\songs\Diverted_Experience.kt"
+  File "zip\data\examples\songs\Ocean Loader III.kt"
   
   ; For CreateShortCut
   
@@ -205,6 +206,7 @@ Section Uninstall
   Delete "smp_dpintro.kt"
   Delete "smp_dingleberries_fix.kt"
   Delete "Diverted_Experience.kt"
+  Delete "Ocean Loader III.kt"
   
   SetOutPath $TEMP
   
