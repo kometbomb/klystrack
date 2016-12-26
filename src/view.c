@@ -1251,7 +1251,7 @@ void instrument_view2(GfxDomain *dest_surface, const SDL_Rect *dest, const SDL_E
 	update_rect(&frame, &r);
 	inst_text(event, &r, P_PROGPERIOD, "P.PRD", "%02X", MAKEPTR(inst->prog_period), 2);
 	update_rect(&frame, &r);
-	inst_flags(event, &r, P_NORESTART, "NO P. RESTART", &inst->flags, MUS_INST_NO_PROG_RESTART);
+	inst_flags(event, &r, P_NORESTART, "NO RESTART", &inst->flags, MUS_INST_NO_PROG_RESTART);
 	update_rect(&frame, &r);
 	inst_flags(event, &r, P_MULTIOSC, "MULTIOSC", &inst->flags, MUS_INST_MULTIOSC);
 	update_rect(&frame, &r);
