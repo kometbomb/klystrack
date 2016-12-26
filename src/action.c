@@ -239,12 +239,12 @@ void change_song_speed(void *speed, void *delta, void *unused)
 {
 	if (!speed)
 	{
-		if ((int)mused.song.song_speed + CASTPTR(int,delta) >= 1 && (int)mused.song.song_speed + CASTPTR(int,delta) <= 255)
+		if ((int)mused.song.song_speed + CASTPTR(int,delta) >= 1 && (int)mused.song.song_speed + CASTPTR(int,delta) <= 15)
 			mused.song.song_speed += CASTPTR(int,delta);
 	}
 	else
 	{
-		if ((int)mused.song.song_speed2 + CASTPTR(int,delta) >= 1 && (int)mused.song.song_speed2 + CASTPTR(int,delta) <= 255)
+		if ((int)mused.song.song_speed2 + CASTPTR(int,delta) >= 1 && (int)mused.song.song_speed2 + CASTPTR(int,delta) <= 15)
 		mused.song.song_speed2 += CASTPTR(int,delta);
 	}
 }
