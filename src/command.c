@@ -66,6 +66,8 @@ static const InstructionDesc instruction_desc[] =
 	{MUS_FX_SET_WAVEFORM, 0x7f00, "Set waveform", "Waveform", 0, 0xff},
 	{MUS_FX_SET_WAVETABLE_ITEM, 0x7f00, "Set wavetable item", "Wavetable", 0, CYD_WAVE_MAX_ENTRIES - 1},
 	{MUS_FX_SET_FXBUS, 0x7f00, "Set FX bus", "SetFxBus", 0, CYD_MAX_FX_CHANNELS - 1},
+	{MUS_FX_SET_RINGSRC, 0x7f00, "Set ring modulation source (FF=off)", "SetRingSrc", 0, 0xff},
+	{MUS_FX_SET_SYNCSRC, 0x7f00, "Set sync source (FF=off)", "SetSyncSrc", 0, 0xff},
 	{MUS_FX_SET_DOWNSAMPLE, 0x7f00, "Set downsample", "SetDnSmp", 0, 0xff},
 	{MUS_FX_SET_SPEED, 0x7f00, "Set speed", "Speed", -1, -1},
 	{MUS_FX_SET_RATE, 0x7f00, "Set rate", "Rate", -1, -1},
