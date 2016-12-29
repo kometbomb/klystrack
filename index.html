@@ -1,67 +1,159 @@
-<!doctype html>
-<html>
-  <head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="chrome=1">
-    <title>klystrack</title>
-
-    <link rel="stylesheet" href="stylesheets/styles.css">
-    <link rel="stylesheet" href="stylesheets/pygment_trac.css">
-    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
-    <!--[if lt IE 9]>
-    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+		<meta name="viewport" content=
+				"width=device-width, initial-scale=1" />
+		<!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+		<meta name="description" content="" />
+		<meta name="author" content="" />
+		<link rel="icon" href="favicon.ico" />
+		<title>klystrack - a chiptune tracker</title>
+		<link href="css/bootstrap.css" rel="stylesheet" type=
+				"text/css" />
+		<link href="css/custom.css" rel="stylesheet" type=
+				"text/css" />
+		<link href="css/lightbox.min.css" rel="stylesheet">
+		<!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+		<!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
     <![endif]-->
-  </head>
-  <body>
-  <div id="fb-root"></div>
+	</head>
+	<body>
+		<div id="fb-root"></div>
 <script>(function(d, s, id) {
   var js, fjs = d.getElementsByTagName(s)[0];
   if (d.getElementById(id)) return;
   js = d.createElement(s); js.id = id;
-  js.src = "//connect.facebook.net/fi_FI/sdk.js#xfbml=1&appId=684826574906283&version=v2.0";
+  js.src = "//connect.facebook.net/fi_FI/sdk.js#xfbml=1&version=v2.0";
   fjs.parentNode.insertBefore(js, fjs);
 }(document, 'script', 'facebook-jssdk'));</script>
-    <div class="wrapper">
-      <header>
-        <h1>Klystrack</h1>
-        <p>A chiptune tracker</p>
+		<div class="container">
+			<div class="row dark-section">
+				<div class="col-lg-6 header">
+				<h1>
+					<img alt="klystrack" src="logo.png"
+							class="img-responsive page-logo" />
+				</h1>
+				</div>
+				<div class="col-lg-6 vertical-center">
+				<div class="btn-group download-list">
+					<a href="#" class="btn btn-success btn-lg dl-default"><span class="glyphicon glyphicon-download-alt" aria-hidden="true"></span>&nbsp;&nbsp;Download klystrack</a>
+					<a href="#" class="btn btn-success btn-lg dropdown-toggle" data-toggle="dropdown"><span class="caret"></span>&nbsp;</a>
+					<ul class="dropdown-menu">
+						<li><a href="#" class="dl-info">Release info</a></li>
+						<li class="divider"></li>
+						<li><a href="#" class="dl-arch-win32 dl-ext-exe">Win32 (installer) <span class="badge"></span></a></li>
+						<li><a href="#" class="dl-arch-win32 dl-ext-zip">Win32 (.zip) <span class="badge"></span></a></li>
+						<li><a href="#" class="dl-arch-i386 dl-ext-deb">Linux (.deb) <span class="badge"></span></a></li>
+						<li><a href="#" class="dl-arch-amd64 dl-ext-deb">Linux 64-bit (.deb) <span class="badge"></span></a></li>
+						<!--<li><a href="#" class="dl-arch-osx dl-ext-dmg">OSX</a></li>-->
+						<li class="divider"></li>
+						<li><a href="https://github.com/kometbomb/klystrack/releases/">View all releases</a></li>
+					</ul>
+				</div>
+				<a href="https://github.com/kometbomb/klystrack/" class="btn btn-default btn-lg">View at GitHub</a>
+				<p class="latest-release">Latest release: <span class="dl-latest-release-name"></span> (<span class="dl-latest-release-time"></span>)</p>
+				<div><a href="https://twitter.com/kometbomb" class="twitter-follow-button" data-show-count="false" data-size="small" data-dnt="true">Follow @kometbomb</a>
+<script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+'://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js,fjs);}}(document, 'script', 'twitter-wjs');</script>
+<div class="fb-like" data-href="https://www.facebook.com/klystrack" data-layout="button_count" data-action="like" data-show-faces="false" data-share="true"></div></div>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-lg-6">
+					<div class="screenshots">
+						<a href="screens/ktss (1).png" data-lightbox="image-1" data-title="Main editor view with Cat-o-Meter (AHX theme)."><img src="screens/ktss (1).png" /></a>
+						<a href="screens/ktss (2).png" data-lightbox="image-2" data-title="Main editor view with the sequence editor (Blacklyst theme)."><img src="screens/ktss (2).png" /></a>
+						<a href="screens/ktss (3).png" data-lightbox="image-3" data-title="Instrument editor."><img src="screens/ktss (3).png" /></a>
+						<a href="screens/ktss (4).png" data-lightbox="image-4" data-title="Wave generator with a random generated waveform."><img src="screens/ktss (4).png" /></a>
+						<a href="screens/ktss (5).png" data-lightbox="image-5" data-title="Effect editor with a reverb."><img src="screens/ktss (5).png" /></a>
+						<a href="screens/ktss (6).png" data-lightbox="image-6" data-title="Main editor view (Blackyst theme)."><img src="screens/ktss (6).png" /></a>
+						<a href="screens/ktss (7).png" data-lightbox="image-7" data-title="Main editor view (Default theme)."><img src="screens/ktss (7).png" /></a>
+						<a href="screens/ktss (8).png" data-lightbox="image-8" data-title="Main editor view (Ultimate Proctamed theme)."><img src="screens/ktss (8).png" /></a>
+					</div>
+					<div class="list-group">
+						<div class="youtube-embed">
+							<iframe width="100%" height="400" src="https://www.youtube-nocookie.com/embed/-1V6sbrTYLY?controls=0&amp;showinfo=0" frameborder="0" allowfullscreen></iframe>
+						</div>
+					</div>
+				</div>
+				<div class="col-lg-6">
+					<p><strong>klystrack</strong> is a tracker for making C64/NES/Amiga-style chiptunes on a modern platform. Here are some features:</p>
+					<ul>
+						<li>Sound
+							<ul>
+								<li>Additive synthesis with filters (think SID, Atari, NES etc.)</li>
+								<li>Hard sync and ring modulation (like SID)</li>
+								<li>FM synthesis (think Adlib, MSX, OPL2 etc.)</li>
+								<li>Wavetable for samples or custom waveforms to be used in synthesis (think Amiga, SNES)</li>
+								<li>Built-in wave generator and editor</li>
+								<li>Programmable instruments not limited to simple arpeggios</li>
+							</ul>
+						</li>
+						<li>Sequencer
+							<ul>
+								<li>Tracker with free positioning of patterns</li>
+								<li>Pattern transpose</li>
+								<li>Pattern length is not fixed</li>
+								<li>Hard limit of 32 channels but this can be raised (just ask if you need more... sounds crazy, though)</li>
+								<li>Fully themeable, includes half dozen themes</li>
+							</ul>
+						</li>
+						<li>Effects
+							<ul>
+								<li>Stereo chorus</li>
+								<li>SNES-style multitap echo</li>
+								<li>Bit crusher/decimator</li>
+							</ul>
+						</li>
+						<li>Export
+							<ul>	
+								<li>Own custom format with a tiny playback library to be used in games, demos etc.</li>
+								<li>Export as .WAV</li>
+								<li>Export each track as separate .WAV's</li>
+								<li>Export wavetable items as .WAV's (use klystrack to create one-cycle waveforms)</li>
+							</ul>
+						</li>
+						<li>Import
+							<ul>	
+								<li>Import .WAV's to use as samples</li>
+								<li>Import Protracker and FT2 modules</li>
+								<li>Import C64 SID files (Rob Hubbard player)</li>
+							</ul>
+						</li>
+					</ul>
+					<a href="https://github.com/kometbomb/klystrack/wiki/" class="btn btn-default btn-block">Read more in the wiki</a>
+				</div>
+			</div>
+			<footer>
+			<p>Theme based on <a href="https://bootswatch.com/lumen/">Lumen</a> by <a href="http://thomaspark.me/">Thomas Park</a>.</p>
+			</footer>
+		</div>
 
-        <p><a class="binary-downloads" href="https://github.com/kometbomb/klystrack/releases">Download binaries here</a></p>
-
-		<p>Source code:</p>
-        <ul>
-          <li><a href="https://github.com/kometbomb/klystrack/zipball/master">Download <strong>ZIP File</strong></a></li>
-          <li><a href="https://github.com/kometbomb/klystrack/tarball/master">Download <strong>TAR Ball</strong></a></li>
-          <li><a href="https://github.com/kometbomb/klystrack">View On <strong>GitHub</strong></a></li>
-        </ul>
-		  <a class="twitter-timeline"  href="https://twitter.com/hashtag/klystrack" data-widget-id="578115870787903488">#klystrack Tweets</a>
-            <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+"://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
-          
-      </header>
-      <section>
-	  <div class="fb-like" data-href="http://www.facebook.com/klystrack" data-layout="standard" data-action="like" data-show-faces="false" data-share="true"></div>
-        <p><strong>klystrack</strong> is a little chiptune composing tool that uses <a href="https://github.com/kometbomb/klystron/">klystron</a>. It is comparable to AHX on the Amiga.</p>
-		<p>Main features include basic chiptune emulation, FM synthesis, built-in effects, themeable GUI, wavetable with editor.</p>
-		<p>The <a href="https://github.com/kometbomb/klystrack/wiki/">wiki</a> has some good basic help and I recommend <a href="http://n00bstar.blogspot.ca/p/klystrack-tutorials.html">n00bstar's tutorials</a>.</p>
-		<iframe width="620" height="360" src="https://www.youtube.com/embed/5DIpR_hjflM?rel=0" frameborder="0" allowfullscreen></iframe>
-		
-</section>
-      <footer>
-        <p>This project is maintained by <a href="https://github.com/kometbomb">kometbomb</a></p>
-        <p><small>Hosted on GitHub Pages &mdash; Theme by <a href="https://github.com/orderedlist">orderedlist</a></small></p>
-      </footer>
-    </div>
-    <script src="javascripts/scale.fix.js"></script>
-              <script type="text/javascript">
-            var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
-            document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
-          </script>
-          <script type="text/javascript">
-            try {
-              var pageTracker = _gat._getTracker("UA-1897251-13");
-            pageTracker._trackPageview();
-            } catch(err) {}
-          </script>
-
-  </body>
+		<!-- Bootstrap core JavaScript
+    ================================================== -->
+		<!-- Placed at the end of the document so the pages load faster -->
+		<script src="js/jquery.min.js" type="text/javascript">
+		</script>
+		<script src="js/bootstrap.min.js" type="text/javascript">
+		</script>
+		<script src="js/downloads.js" type="text/javascript">
+		</script>
+		<script src="js/audio.js" type="text/javascript">
+		</script>
+		<script type="text/javascript">
+			var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+			document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+		</script>
+		<script type="text/javascript">
+			try {
+			var pageTracker = _gat._getTracker("UA-1897251-13");
+			pageTracker._trackPageview();
+			} catch(err) {}
+		</script>
+		<script src="js/lightbox.min.js"></script>
+	</body>
 </html>
+

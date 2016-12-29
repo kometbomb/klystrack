@@ -1,0 +1,91 @@
+html {
+  min-height: 100%;
+}
+
+body
+{
+  min-height: 100%;
+  color: #fff;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  background: linear-gradient( 0deg, rgb(0,50,58), rgb(53,62,51) 60%, black 90%, black);
+}
+
+.screenshots img 
+{
+	width: 23%;
+	margin: 4px;
+	border: 1px solid white;
+}
+
+.screenshots 
+{
+	text-align: center;
+	margin: 10px;
+}
+
+.header h1 img
+{
+	width: 100%;
+}
+
+.list-group-item-heading
+{
+	color: #555;
+}
+
+.list-group-item 
+{
+	color: #333;
+	background: rgba(255,255,255,0.8)
+}
+
+.button-play
+{
+	float: right;
+	
+}
+
+@media screen and (max-width: 480px) {
+	.button-play .play-label
+	{
+		display: none;
+	}
+}
+
+.vertical-center {
+	text-align: center;
+}
+
+@media screen and (min-width: 1200px) {
+.vertical-center {
+  margin-top: 60px;
+}
+}
+
+footer
+{
+	color: white;
+	margin-top: 8px;
+}
+
+footer a
+{
+	color: rgb(41, 180, 206);
+}
+
+.latest-release
+{
+	color: #ddd;
+}
+
+.youtube-embed
+{
+	margin-bottom: 8px;
+	border-radius: 4px;
+}
+
+.fb-like
+{
+	top: -3px;
+}
