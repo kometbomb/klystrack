@@ -156,8 +156,9 @@ void paste()
 				resize_pattern(&mused.song.pattern[current_pattern()], items);
 				cp_paste_items(&mused.cp, CP_PATTERN, mused.song.pattern[current_pattern()].step, items, sizeof(mused.song.pattern[current_pattern()].step[0]));
 			}
-			else if (mused.cp.type == CP_PATTERNSEGMENT && (get_pattern(mused.selection.start, mused.current_sequencetrack) != -1))
+			else if (mused.cp.type == CP_PATTERNSEGMENT && (current_pattern() != -1))
 			{
+				debug("paste to pattern %d", current_pattern());
 				snapshot(S_T_PATTERN);
 				cp_paste_items(&mused.cp, CP_PATTERNSEGMENT, &mused.song.pattern[current_pattern()].step[current_patternstep()], mused.song.pattern[current_pattern()].num_steps-current_patternstep(), 
 					sizeof(mused.song.pattern[current_pattern()].step[0]));

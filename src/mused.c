@@ -134,7 +134,7 @@ void clear_pattern(MusPattern *pat)
 
 void clear_pattern_range(MusPattern *pat, int first, int last)
 {
-	for (int i = first ; i < last ; ++i)
+	for (int i = my_max(0, first) ; i < my_min(pat->num_steps, last) ; ++i)
 	{
 		pat->step[i].note = MUS_NOTE_NONE;
 		pat->step[i].instrument = MUS_NOTE_NO_INSTRUMENT;
