@@ -31,7 +31,7 @@ OTHER DEALINGS IN THE SOFTWARE.
 #include "event.h"
 #include "gui/msgbox.h"
 #include "version.h"
-#include "../../klystron/src/version.h"
+#include "klystron_version.h"
 #include "gfx/gfx.h"
 #include "theme.h"
 #include "key.h"
