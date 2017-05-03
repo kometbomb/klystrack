@@ -1,10 +1,11 @@
 TARGET := klystrack
+KLYSTRON=../klystron
 ECHO := echo
 CFG := debug
 MACHINE := 
 NSIS := C:/program\ files\ \(x86\)/nsis/makensis.exe /V2 /NOCD
 WGET := wget --quiet
-MAKEBUNDLE := ../klystron/tools/bin/makebundle.exe
+MAKEBUNDLE := $(KLYSTRON)/tools/bin/makebundle.exe
 UPLOAD := cmd.exe /c upload.bat
 DLLS := zip/data/SDL2_image.dll zip/data/SDL2.dll
 DESTDIR ?= /usr
@@ -46,8 +47,8 @@ else
 endif
 
 EXTFLAGS := -DNOSDL_MIXER -DUSESDLMUTEXES -DENABLEAUDIODUMP -DSTEREOOUTPUT -DUSESDL_IMAGE $(EXTFLAGS)
-LDFLAGS :=  -L ../klystron/bin.$(CFG) -lengine_gfx -lengine_util -lengine_snd -lengine_gui -lm $(SDLLIBS) 
-INCLUDEFLAGS := -I src $(SDLFLAGS) -I ../klystron/src -L../klystron/bin.$(CFG) -DRES_PATH="$(RES_PATH)" -DCONFIG_PATH="$(CONFIG_PATH)" $(EXTFLAGS)
+LDFLAGS :=  -L $(KLYSTRON)/bin.$(CFG) -lengine_gfx -lengine_util -lengine_snd -lengine_gui -lm $(SDLLIBS) 
+INCLUDEFLAGS := -I src $(SDLFLAGS) -I $(KLYSTRON)/src -L$(KLYSTRON)/bin.$(CFG) -DRES_PATH="$(RES_PATH)" -DCONFIG_PATH="$(CONFIG_PATH)" $(EXTFLAGS)
 
 ifdef COMSPEC
 	LDFLAGS := -lmingw32 $(LDFLAGS)
@@ -124,7 +125,7 @@ endef
 
 build: Makefile src/version.h src/version_number.h
 	@touch src/version
-	@make -C ../klystron CFG=$(CFG) EXTFLAGS="$(EXTFLAGS)"
+	@make -C $(KLYSTRON) CFG=$(CFG) EXTFLAGS="$(EXTFLAGS)"
 	@make all CFG=$(CFG) EXTFLAGS="$(EXTFLAGS)"
 
 src/version.h: src/version
@@ -161,7 +162,7 @@ endif
 all: bin.$(CFG)/$(TARGET) $(THEMES)
 	
 zip: doc/* $(THEMES) $(DLLS) examples/instruments/* examples/songs/* linux/Makefile $(DLLS)
-	@make -C ../klystron CFG=release EXTFLAGS="$(EXTFLAGS)"
+	@make -C $(KLYSTRON) CFG=release EXTFLAGS="$(EXTFLAGS)"
 	@make build CFG=release
 	@mkdir -p zip/data/res
 	@mkdir -p zip/data/examples/songs
