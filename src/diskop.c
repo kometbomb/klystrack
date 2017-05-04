@@ -813,9 +813,12 @@ void open_data(void *type, void *action, void *_ret)
 		def = _def;
 	}
 	
-	char filename[5000];
+	char filename[5000], previous_cwd[5000];
 	FILE *f = NULL;
 	SDL_RWops *rw = NULL;
+	
+	// Save current cwd
+	getcwd(previous_cwd, sizeof(previous_cwd));
 	
 	if (mused.previous_filebox_path[t][0]) 
 		chdir(mused.previous_filebox_path[t]);
@@ -885,6 +888,9 @@ void open_data(void *type, void *action, void *_ret)
 	}
 	else
 		if (ret) *ret = 0;
+	
+	// Restore previous cwd
+	chdir(previous_cwd);
 	
 	change_mode(mused.mode);
 }
