@@ -300,11 +300,18 @@ static char cwd[1000] = "";
 
 void init_resources_dir(void)
 {
+	if (SDL_getenv("KLYSTRACK") == NULL)
+	{
 #if RESOURCES_IN_BINARY_DIR
-	getcwd(cwd, sizeof(cwd));
+		getcwd(cwd, sizeof(cwd));
 #else
-	strncpy(cwd, TOSTRING(RES_PATH), sizeof(cwd));
+		strncpy(cwd, TOSTRING(RES_PATH), sizeof(cwd));
 #endif
+	}
+	else
+	{
+		strncpy(cwd, SDL_getenv("KLYSTRACK"), sizeof(cwd));
+	}
 }
 
 char * query_resource_directory(void)
