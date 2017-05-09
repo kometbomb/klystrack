@@ -1,0 +1,26 @@
+# n00bstar's convoluted keymap
+# inspired by protracker and fasttracker
+[global]
+#play/stop
+K_RALT = M_SHIFT K_F6
+K_RCTRL = K_F6
+M_LALT K_RCTRL = K_F5
+#windows
+K_F2 = M_SHIFT K_F4
+K_F4 = M_SHIFT K_F3
+K_F5 = K_F2
+K_F6 = K_F4
+K_F7 = M_SHIFT K_F2
+K_COMMA = K_Q
+K_L = K_2
+K_PERIOD = K_W
+K_SEMICOLON = K_3
+K_SLASH = K_E
+[pattern]
+#tab move
+M_LSHIFT K_TAB = M_CTRL K_LEFT
+K_TAB = M_CTRL K_RIGHT
+[sequence]
+#tab move
+M_LSHIFT K_TAB = K_LEFT
+K_TAB = K_RIGHT
