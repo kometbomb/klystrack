@@ -166,9 +166,13 @@ zip: doc/* $(THEMES) $(DLLS) examples/instruments/* examples/songs/* linux/Makef
 	@make build CFG=release
 	@mkdir -p zip/data/res
 	@mkdir -p zip/data/examples/songs
+	@mkdir -p zip/data/examples/songs/n00bstar-examples
 	@mkdir -p zip/data/examples/instruments
+	@mkdir -p zip/data/examples/instruments/n00bstar-instruments
 	@cp examples/songs/*.kt zip/data/examples/songs
+	@cp examples/songs/n00bstar-examples/*.kt zip/data/examples/songs/n00bstar-examples
 	@cp examples/instruments/*.ki zip/data/examples/instruments
+	@cp examples/instruments/n00bstar-instruments/*.ki zip/data/examples/instruments/n00bstar-instruments
 	@cp res/* zip/data/res
 	@mkdir -p zip/data/key
 	@cp key/* zip/data/key
