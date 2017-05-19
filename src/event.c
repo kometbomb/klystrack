@@ -1483,39 +1483,39 @@ void pattern_event(SDL_Event *e)
 								update_pattern_slider(mused.note_jump);
 								break;
 							
-							case SDLK_u:						
-							case SDLK_d:
-							case SDLK_l:				
-							case SDLK_r:
-							case SDLK_p:						
-							{
-								int cmd = 0;
-							
-								switch (e->key.keysym.sym)
+							default:
+								if (mused.current_patternx == PED_VOLUME1)
 								{
-									case SDLK_u: cmd = MUS_NOTE_VOLUME_FADE_UP; break;
-									case SDLK_d: cmd = MUS_NOTE_VOLUME_FADE_DN; break;
-									case SDLK_p: cmd = MUS_NOTE_VOLUME_SET_PAN; break;
-									case SDLK_l: cmd = MUS_NOTE_VOLUME_PAN_LEFT; break;
-									case SDLK_r: cmd = MUS_NOTE_VOLUME_PAN_RIGHT; break;
-									default: break;
+									int cmd = 0;
+								
+									switch (e->key.keysym.sym)
+									{
+										case SDLK_u: cmd = MUS_NOTE_VOLUME_FADE_UP; break;
+										case SDLK_d: cmd = MUS_NOTE_VOLUME_FADE_DN; break;
+										case SDLK_p: cmd = MUS_NOTE_VOLUME_SET_PAN; break;
+										case SDLK_l: cmd = MUS_NOTE_VOLUME_PAN_LEFT; break;
+										case SDLK_r: cmd = MUS_NOTE_VOLUME_PAN_RIGHT; break;
+										default: break;
+									}
+									
+									snapshot(S_T_PATTERN);
+									
+									if (cmd != 0)
+									{
+										if (mused.song.pattern[current_pattern()].step[current_patternstep()].volume == MUS_NOTE_NO_VOLUME)
+											mused.song.pattern[current_pattern()].step[current_patternstep()].volume = 0;
+								
+										if (mused.current_patternx == PED_VOLUME1)
+											mused.song.pattern[current_pattern()].step[current_patternstep()].volume = 
+												(mused.song.pattern[current_pattern()].step[current_patternstep()].volume & 0xf)
+												| cmd;
+											
+										update_pattern_slider(mused.note_jump);
+										
+										break;
+									}
 								}
 								
-								snapshot(S_T_PATTERN);
-								
-								if (mused.song.pattern[current_pattern()].step[current_patternstep()].volume == MUS_NOTE_NO_VOLUME)
-									mused.song.pattern[current_pattern()].step[current_patternstep()].volume = 0;
-							
-								if (mused.current_patternx == PED_VOLUME1)
-									mused.song.pattern[current_pattern()].step[current_patternstep()].volume = 
-										(mused.song.pattern[current_pattern()].step[current_patternstep()].volume & 0xf)
-										| cmd;
-										
-								update_pattern_slider(mused.note_jump);
-							}	
-							break;
-						
-							default:
 								if (gethex(e->key.keysym.sym) != -1)
 								{
 									Uint8 vol = mused.song.pattern[current_pattern()].step[current_patternstep()].volume;
