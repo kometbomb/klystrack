@@ -135,6 +135,9 @@ void my_draw_view(const View* views, const SDL_Event *_event, GfxDomain *domain)
 		{
 			if (view->focus != -1 && mused.focus != view->focus) 
 			{
+				if (orig_focus == EDITBUFFER)
+					change_mode(view->focus);
+				
 				mused.focus = view->focus;
 				clear_selection(0,0,0);
 			}
