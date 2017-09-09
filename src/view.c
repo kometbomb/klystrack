@@ -574,7 +574,7 @@ void info_line(GfxDomain *dest_surface, const SDL_Rect *dest, const SDL_Event *e
 					"Absolute",
 					"Negative",
 					"Wave length",
-					"Randomize & generate"
+					"Randomize & generate",
 					"Generate",
 					"Randomize",
 					"Toolbox"
