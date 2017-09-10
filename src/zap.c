@@ -38,7 +38,6 @@ void zap_sequence(void* no_confirm, void* b, void* c)
 	for (int i = 0 ; i < NUM_PATTERNS ; ++i)
 	{
 		clear_pattern_range(&mused.song.pattern[i], 0, mused.song.pattern[i].num_steps);
-		resize_pattern(&mused.song.pattern[i], mused.default_pattern_length);
 	}
 	
 	mused.sequence_position = 0;
