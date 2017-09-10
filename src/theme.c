@@ -372,6 +372,12 @@ void set_scaled_cursor()
 }
 
 
+void set_app_icon()
+{
+	SDL_SetWindowIcon(domain->window, mused.icon_surface->surface);
+}
+
+
 void load_theme(const char *name)
 {
 	char tmpname[1000];
@@ -437,6 +443,15 @@ void load_theme(const char *name)
 			
 			set_scaled_cursor();
 		}
+		
+		rw = load_img_if_exists(&res, "icon");
+		if (rw)
+		{
+			if (mused.icon_surface) gfx_free_surface(mused.icon_surface);
+			mused.icon_surface = gfx_load_surface_RW(domain, rw, 0);
+			
+			set_app_icon();
+		}
 				
 		rw = load_img_if_exists(&res, "logo");
 		if (rw)
@@ -444,7 +459,7 @@ void load_theme(const char *name)
 			if (mused.logo) gfx_free_surface(mused.logo);
 			mused.logo = gfx_load_surface_RW(domain, rw, GFX_KEYED);
 		}
-	
+		
 		if (bnd_exists(&res, "colors.txt"))
 		{
 			SDL_RWops *colors = SDL_RWFromBundle(&res, "colors.txt");

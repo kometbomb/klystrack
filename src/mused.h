@@ -154,6 +154,7 @@ typedef struct
 	Font smallfont, largefont, tinyfont, tinyfont_sequence_counter, tinyfont_sequence_normal;
 	SDL_Cursor *mouse_cursor;
 	GfxSurface *mouse_cursor_surface;
+	GfxSurface *icon_surface;
 	
 	/* for menu */
 	Font menufont, menufont_selected, headerfont, headerfont_selected, shortcutfont, shortcutfont_selected, buttonfont;

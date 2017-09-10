@@ -202,49 +202,6 @@ void my_open_menu(const Menu *menu, const Menu *action)
 	open_menu(menu, action, menu_close_hook, shortcuts, &mused.headerfont, &mused.headerfont_selected, &mused.menufont, &mused.menufont_selected, &mused.shortcutfont, &mused.shortcutfont_selected, mused.slider_bevel);
 }
 
-
-#ifdef WIN32
-
-#include "SDL_syswm.h"
-#include <windows.h>
-#include "../windres/resource.h"
-
-/*
-
-Found at <URL:http://forums.indiegamer.com/showthread.php?t=2138> and then gutted
-
-*/
-
-static HICON icon;
-
-void init_icon()
-{
-	/*HWND hwnd;
-	HINSTANCE handle = GetModuleHandle(NULL);
-	icon = LoadIcon(handle, MAKEINTRESOURCE(IDI_MAINICON));
-
-	SDL_SysWMinfo wminfo;
-	
-	SDL_VERSION(&wminfo.version)
-	
-	if (SDL_GetWMInfo(&wminfo) != 1)
-	{
-		return;
-	}
-
-	hwnd = wminfo.window;
-
-	SetClassLong(hwnd, GCL_HICON, (LONG) icon);*/
-}
-
-void deinit_icon()
-{
-	DestroyIcon(icon);
-}
-
-#endif
-
-
 // mingw kludge for console output
 #if defined(DEBUG) && defined(WIN32)
 #undef main
@@ -258,10 +215,6 @@ int main(int argc, char **argv)
 
 	SDL_Init(SDL_INIT_VIDEO|SDL_INIT_AUDIO|SDL_INIT_NOPARACHUTE|SDL_INIT_TIMER);
 	atexit(SDL_Quit);
-	
-#ifdef WIN32
-	init_icon();
-#endif
 	
 	default_settings();
 	load_config(TOSTRING(CONFIG_PATH), false);
@@ -629,10 +582,6 @@ int main(int argc, char **argv)
 	debug("deinit");
 	deinit();
 	
-#ifdef WIN32
-	deinit_icon();
-#endif
-
 	gfx_domain_free(domain);
 
 #ifdef DEBUG
