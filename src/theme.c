@@ -37,10 +37,6 @@ OTHER DEALINGS IN THE SOFTWARE.
 #include "action.h"
 #include "console.h"
 
-#ifdef __APPLE__
-#include <CoreFoundation/CoreFoundation.h>
-#endif
-
 #ifdef WIN32
 
 #include "windows.h"
@@ -212,63 +208,7 @@ static SDL_RWops *load_img_if_exists(Bundle *res, const char *base_name)
 }
 
 
-#ifdef __APPLE__
-// Obtain resources directory - thanks Spenot
-char *query_resource_directory( void )
-{
-	static char *buffer = NULL;
-	
-	if (buffer != NULL)
-	{
-		return buffer;
-	}
-	
-	CFBundleRef mainBundle = CFBundleGetMainBundle();
-	
-	int bufferSize;
-	
-
-	CFURLRef resourceURL = CFBundleCopyBundleURL(mainBundle);
-	CFStringRef fullPathString = CFURLCopyFileSystemPath(resourceURL, kCFURLPOSIXPathStyle);
-	int fullPathLength = CFStringGetLength(fullPathString);
-
-	bufferSize = fullPathLength * 3 + 1;
-	char *bundleBuffer = (char *)calloc(bufferSize, 1);
-	CFStringGetCString(fullPathString, bundleBuffer, bufferSize, kCFStringEncodingUTF8);
-
-	CFRelease(fullPathString);
-	CFRelease(resourceURL);
-
-
-	resourceURL = CFBundleCopyResourcesDirectoryURL(mainBundle);
-	fullPathString = CFURLCopyFileSystemPath(resourceURL, kCFURLPOSIXPathStyle);
-	fullPathLength = CFStringGetLength(fullPathString);
-
-	bufferSize = fullPathLength * 3 + 1;
-	char *resourcesBuffer = (char *)calloc(bufferSize, 1);
-	CFStringGetCString(fullPathString, resourcesBuffer, bufferSize, kCFStringEncodingUTF8);
-
-	CFRelease(fullPathString);
-	CFRelease(resourceURL);
-
-
-	buffer = calloc(strlen(bundleBuffer) + strlen(resourcesBuffer) + 2, 1);
-	strcpy(buffer, bundleBuffer);
-	buffer[strlen(buffer)] = '/';
-	strcat(buffer, resourcesBuffer);
-	
-	free(bundleBuffer);
-	free(resourcesBuffer);
-
-	return buffer;
-}
-
-void init_resources_dir(void)
-{
-}
-
-
-#elif WIN32
+#ifdef WIN32
 
 static char cwd[1000] = "";
 
