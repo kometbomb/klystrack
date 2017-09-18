@@ -489,10 +489,22 @@ void load_theme(const char *name)
 	else
 	{
 		warning("Theme loading failed");
+		
 		if (strcmp(name, "Default") != 0)
+		{
 			load_theme("Default");
+		}
 		else
-			fatal("Default theme at '%s' could not be loaded, klystrack will now (most likely) crash", fullpath);
+		{
+			char message[100];
+			snprintf(message, sizeof(message), "Default theme at '%s' could not be loaded.", fullpath);
+			
+			SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Theme files missing", message, domain->window);
+
+			fatal("Default theme at '%s' could not be loaded.", fullpath);
+			
+			exit(1);
+		}
 	}
 }
 
