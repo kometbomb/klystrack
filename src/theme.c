@@ -37,12 +37,6 @@ OTHER DEALINGS IN THE SOFTWARE.
 #include "action.h"
 #include "console.h"
 
-#ifdef WIN32
-
-#include "windows.h"
-
-#endif
-
 extern Mused mused;
 
 #define MAX_THEMES 64
@@ -208,34 +202,6 @@ static SDL_RWops *load_img_if_exists(Bundle *res, const char *base_name)
 }
 
 
-#ifdef WIN32
-
-static char cwd[1000] = "";
-
-void init_resources_dir(void)
-{
-#if RESOURCES_IN_BINARY_DIR
-	if (GetModuleFileName(NULL, cwd, sizeof(cwd)))
-	{
-		// Get the path component
-		
-		for (int i = strlen(cwd) - 1 ; i >= 0 && cwd[i] != '\\' && cwd[i] != '/' ; --i)
-		{
-			cwd[i] = '\0';
-		}
-	}
-#else
-	strncpy(cwd, TOSTRING(RES_PATH), sizeof(cwd));
-#endif	
-}
-
-char * query_resource_directory(void)
-{
-	return cwd;
-}
-
-#else
-
 static char cwd[1000] = "";
 
 void init_resources_dir(void)
@@ -243,10 +209,10 @@ void init_resources_dir(void)
 	if (SDL_getenv("KLYSTRACK") == NULL)
 	{
 #if RESOURCES_IN_BINARY_DIR
-		getcwd(cwd, sizeof(cwd));
+		strncpy(cwd, SDL_GetBasePath(), sizeof(cwd));
 #else
 		strncpy(cwd, TOSTRING(RES_PATH), sizeof(cwd));
-#endif
+#endif	
 	}
 	else
 	{
@@ -258,9 +224,6 @@ char * query_resource_directory(void)
 {
 	return cwd;
 }
-
-
-#endif
 
 
 void set_scaled_cursor()
