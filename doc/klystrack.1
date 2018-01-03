@@ -1,0 +1,70 @@
+.TH klystrack 1 "December 12 2017"
+.SH NAME
+klystrack \- make C64/NES/Amiga-style chiptunes
+.SH SYNOPSIS
+.B klystrack
+.RI [ options ] " files" ...
+.SH DESCRIPTION
+This manual page documents briefly the
+.B klystrack
+command.
+.PP
+\fBklystrack\fP is a tracker for making C64/NES/Amiga-style chiptunes on a modern
+platform.  It can be used to create audio for games.
+.SH FEATURES
+.B Sound
+.br
+Additive synthesis with filters (think SID, Atari, NES etc.)
+.br
+Hard sync and ring modulation (like SID)
+.br
+FM synthesis (think Adlib, MSX, OPL2 etc.)
+.br
+Wavetable for samples or custom waveforms to be used in synthesis (think Amiga, SNES)
+.br
+Built-in wave generator and editor
+.br
+Programmable instruments not limited to simple arpeggios
+.br
+.B Sequencer
+Tracker with free positioning of patterns
+.br
+Pattern transpose
+.br
+Pattern length is not fixed
+.br
+Hard limit of 32 channels but this can be raised (just ask if you need more... sounds crazy, though)
+.br
+Fully themeable, includes half dozen themes
+.br
+.B Effects
+Stereo chorus
+.br
+SNES-style multitap echo
+.br
+Bit crusher/decimator
+.br
+.B Export
+Own custom format with a tiny playback library to be used in games, demos etc.
+.br
+Export as .WAV
+.br
+Export each track as separate .WAV's
+.br
+Export wavetable items as .WAV's (use klystrack to create one-cycle waveforms for other synths!)
+.br
+.B Import
+Import .WAV's to use as samples
+.br
+Import Protracker and FT2 modules
+.br
+Import C64 SID files (Rob Hubbard player)
+.SH INTERNET TUTORIAL
+http://n00bstar.blogspot.ch/p/klystrack-tutorials.html
+.SH SEE ALSO
+.BR adtrack2 (1),
+.BR protracker (1),
+.BR goattracker (1),
+.BR milkytracker (1),
+.BR schismtracker (1).
+.br
