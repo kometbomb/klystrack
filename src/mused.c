@@ -43,16 +43,16 @@ extern Menu editormenu[];
 extern Menu analyzermenu[];
 
 void set_edit_buffer(char *buffer, size_t size)
-{ 
-	if (mused.edit_backup_buffer) 
-		free(mused.edit_backup_buffer); 
-		
-	mused.edit_backup_buffer = strdup(buffer); 
-	mused.edit_buffer = buffer; 
-	mused.edit_buffer_size = size; 
+{
+	if (mused.edit_backup_buffer)
+		free(mused.edit_backup_buffer);
+
+	mused.edit_backup_buffer = strdup(buffer);
+	mused.edit_buffer = buffer;
+	mused.edit_buffer_size = size;
 	mused.editpos = strlen(mused.edit_buffer);
-	change_mode(EDITBUFFER); 
-} 
+	change_mode(EDITBUFFER);
+}
 
 
 void change_mode(int newmode)
@@ -62,7 +62,7 @@ void change_mode(int newmode)
 	else
 		SDL_StopTextInput();
 
-	if (newmode < VIRTUAL_MODE && mused.mode != MENU) 
+	if (newmode < VIRTUAL_MODE && mused.mode != MENU)
 	{
 		gfx_clear(domain, 0);
 	}
@@ -72,12 +72,12 @@ void change_mode(int newmode)
 		for (int i = 0 ; editormenu[i].parent ; ++i)
 			editormenu[i].flags = (editormenu[i].flags & ~MENU_BULLET) | (mused.mode == CASTPTR(int, editormenu[i].p1) ? MENU_BULLET : 0);
 		mused.prev_mode = mused.mode;
-		
+
 		mused.cursor.w = mused.cursor.h = mused.cursor_target.w = mused.cursor_target.h = 0;
-		
+
 		if (newmode != mused.mode && newmode < VIRTUAL_MODE) snapshot(S_T_MODE);
 	}
-	
+
 	switch (newmode)
 	{
 		case EDITFX:
@@ -85,17 +85,17 @@ void change_mode(int newmode)
 			{
 				mused.fx_bus = mused.song.instrument[mused.current_instrument].fx_bus;
 			}
-			
+
 			break;
-			
+
 		case EDITWAVETABLE:
 			if (mused.mode == EDITINSTRUMENT)
 			{
 				mused.selected_wavetable = mused.song.instrument[mused.current_instrument].wavetable_entry;
 			}
-			
+
 			break;
-	
+
 		case EDITCLASSIC:
 		case EDITPATTERN:
 			if (mused.mode == EDITBUFFER) break;
@@ -114,10 +114,10 @@ void change_mode(int newmode)
 
 	mused.mode = newmode;
 	mused.focus = newmode;
-	
+
 	if (mused.focus == EDITCLASSIC)
 		mused.focus = EDITPATTERN;
-		
+
 	if (mused.mode == EDITCLASSIC || mused.mode == EDITPATTERN)
 	{
 		mused.selected_param = 0;
@@ -148,9 +148,9 @@ void clear_pattern_range(MusPattern *pat, int first, int last)
 void new_song()
 {
 	debug("New song");
-	
+
 	zap_instruments(MAKEPTR(1), NULL, NULL);
-	
+
 	zap_sequence(MAKEPTR(1), NULL, NULL);
 
 	mused.song.master_volume = MAX_VOLUME;
@@ -161,22 +161,22 @@ void new_song()
 	mused.song.song_speed = 6;
 	mused.song.song_speed2 = 6;
 	mused.song.song_rate = 50;
-	
+
 	memset(mused.song.title, 0, sizeof(mused.song.title));
 	strcpy(mused.previous_song_filename, "");
 	strcpy(mused.previous_export_filename, "");
-	
+
 	zap_fx(MAKEPTR(1), NULL, NULL);
-	
+
 	zap_wavetable(MAKEPTR(1), NULL, NULL);
-	
+
 	undo_deinit(&mused.undo);
 	undo_init(&mused.undo);
 	undo_deinit(&mused.redo);
 	undo_init(&mused.redo);
-	
+
 	mused.modified = false;
-	
+
 	set_channels(mused.song.num_channels);
 }
 
@@ -190,10 +190,10 @@ void kt_default_instrument(MusInstrument *inst)
 void resize_pattern(MusPattern * pattern, Uint16 new_size)
 {
 	int old_steps = pattern->num_steps;
-	
+
 	if (new_size == old_steps)
 		return;
-	
+
 	pattern->num_steps = new_size;
 
 	if (new_size > old_steps)
@@ -201,13 +201,13 @@ void resize_pattern(MusPattern * pattern, Uint16 new_size)
 		pattern->step = realloc(pattern->step, sizeof(pattern->step[0]) * (size_t)new_size);
 		clear_pattern_range(pattern, old_steps, new_size);
 	}
-	
-	
+
+
 	if (mused.focus == EDITPATTERN)
 	{
 		mused.selection.start = my_min(mused.selection.start, pattern->num_steps - 1);
 		mused.selection.end = my_min(mused.selection.end, pattern->num_steps - 1);
-	}	
+	}
 }
 
 
@@ -222,14 +222,15 @@ void default_settings()
 void init(MusInstrument *instrument, MusPattern *pattern, MusSeqPattern sequence[MUS_MAX_CHANNELS][NUM_SEQUENCES], MusChannel *channel)
 {
 	debug("init");
-	
+
 	memset(&mused, 0, sizeof(mused));
-	
+
 	set_info_message("Welcome to klystrack!");
-	
+
 	default_settings();
 
-	mused.flags = MULTICHANNEL_PREVIEW|ANIMATE_CURSOR|EDIT_MODE|SHOW_LOGO|FOLLOW_PLAY_POSITION|MULTIKEY_JAMMING|START_WITH_TEMPLATE;
+	mused.flags = MULTICHANNEL_PREVIEW|ANIMATE_CURSOR|EDIT_MODE|SHOW_LOGO|FOLLOW_PLAY_POSITION|
+		MULTIKEY_JAMMING|START_WITH_TEMPLATE|EDIT_SEQUENCE_DIGITS;
 	mused.visible_columns = VC_INSTRUMENT | VC_COMMAND;
 	mused.done = 0;
 	mused.octave = 4;
@@ -251,10 +252,10 @@ void init(MusInstrument *instrument, MusPattern *pattern, MusSeqPattern sequence
 	mused.fx_room_vol = 16;
 	mused.fx_room_dec = 5;
 	mused.oversample = 2;
-		
+
 	strcpy(mused.themename, "Default");
 	strcpy(mused.keymapname, "Default");
-	
+
 	memset(&mused.cp, 0, sizeof(mused.cp));
 	memset(&mused.song, 0, sizeof(mused.song));
 	mused.song.instrument = instrument;
@@ -263,28 +264,28 @@ void init(MusInstrument *instrument, MusPattern *pattern, MusSeqPattern sequence
 
 	for (int i = 0 ; i < MUS_MAX_CHANNELS ; ++i)
 	{
-		mused.song.sequence[i] = sequence[i];	
+		mused.song.sequence[i] = sequence[i];
 	}
-	
+
 	for (int i = 0 ; i < NUM_PATTERNS ; ++i)
 	{
-		mused.song.pattern[i].step = NULL; 
+		mused.song.pattern[i].step = NULL;
 		mused.song.pattern[i].num_steps = 0;
 		mused.song.pattern[i].color = 0;
 		resize_pattern(&mused.song.pattern[i], mused.default_pattern_length);
 	}
-	
+
 	undo_init(&mused.undo);
 	undo_init(&mused.redo);
-	
+
 	enum_themes();
 	enum_keymaps();
-	
+
 	//change_mode(EDITCLASSIC);
 	mused.mode = EDITCLASSIC;
 	mused.focus = EDITPATTERN;
 	mused.single_pattern_edit = 1;
-	
+
 	debug("undo = %p redo = %p", mused.undo, mused.redo);
 
 	for (int i = 0 ; i < WG_CHAIN_OSCS ; ++i)
@@ -296,13 +297,13 @@ void init(MusInstrument *instrument, MusPattern *pattern, MusSeqPattern sequence
 		mused.wgset.chain[i].exp = 50;
 		mused.wgset.chain[i].flags = 0;
 	}
-	
+
 	mused.wgset.num_oscs = 1;
 	mused.wgset.length = 256;
-	
+
 	mused.prev_wavetable_x = -1;
 	mused.prev_wavetable_y = -1;
-	
+
 	debug("init done");
 }
 
@@ -333,7 +334,7 @@ void deinit()
 	if (mused.mouse_cursor_surface) gfx_free_surface(mused.mouse_cursor_surface);
 	if (mused.mouse_cursor) SDL_FreeCursor(mused.mouse_cursor);
 	if (mused.icon_surface) gfx_free_surface(mused.icon_surface);
-	
+
 	font_destroy(&mused.smallfont);
 	font_destroy(&mused.largefont);
 	font_destroy(&mused.tinyfont);
@@ -347,7 +348,7 @@ void deinit()
 	font_destroy(&mused.headerfont_selected);
 	font_destroy(&mused.buttonfont);
 	free_themes();
-	
+
 	if (mused.wavetable_preview)
 		gfx_free_surface(mused.wavetable_preview);
 }
@@ -360,7 +361,7 @@ void mirror_flags()
 	{
 		mused.cyd.fx[fx].flags = mused.song.fx[fx].flags;
 	}
-	
+
 	mused.mus.volume = mused.song.master_volume;
 }
 
@@ -389,7 +390,7 @@ void post_config_load()
 {
 	int new_val = mused.default_pattern_length;
 	mused.default_pattern_length = 16;
-	
+
 	change_default_pattern_length(MAKEPTR(new_val), 0, 0);
 	change_visualizer(mused.current_visualizer);
 }
@@ -413,14 +414,14 @@ void enable_callback(bool state)
 int get_pattern(int abspos, int track)
 {
 	int p = -1;
-	
+
 	const MusSeqPattern *sp = &mused.song.sequence[track][0];
-	
+
 	for (int i = 0 ; i < mused.song.num_sequences[track] && sp->position <= abspos ; ++i, ++sp)
 	{
 		if (sp->position <= abspos && sp->position + mused.song.pattern[sp->pattern].num_steps > abspos) p = sp->pattern;
 	}
-	
+
 	return p;
 }
 
@@ -428,14 +429,14 @@ int get_pattern(int abspos, int track)
 int get_patternstep(int abspos, int track)
 {
 	int p = -1;
-	
+
 	const MusSeqPattern *sp = &mused.song.sequence[track][0];
-	
+
 	for (int i = 0 ; i < mused.song.num_sequences[track] && sp->position <= abspos ; ++i, ++sp)
 	{
 		if (sp->position <= abspos && sp->position + mused.song.pattern[sp->pattern].num_steps > abspos) p = abspos - sp->position;
 	}
-	
+
 	return p;
 }
 
@@ -449,14 +450,14 @@ int current_pattern()
 int current_pattern_for_channel(int channel)
 {
 	int p = -1;
-	
+
 	const MusSeqPattern *sp = &mused.song.sequence[channel][0];
-	
+
 	for (int i = 0 ; i < mused.song.num_sequences[channel] && sp->position <= mused.current_patternpos ; ++i, ++sp)
 	{
 		if (sp->position <= mused.current_patternpos && sp->position + mused.song.pattern[sp->pattern].num_steps > mused.current_patternpos) p = sp->pattern;
 	}
-	
+
 	return p;
 }
 
@@ -464,14 +465,14 @@ int current_pattern_for_channel(int channel)
 int current_patternstep()
 {
 	int p = -1;
-	
+
 	const MusSeqPattern *sp = &mused.song.sequence[mused.current_sequencetrack][0];
-	
+
 	for (int i = 0 ; i < mused.song.num_sequences[mused.current_sequencetrack] && sp->position <= mused.current_patternpos ; ++i, ++sp)
 	{
 		if (sp->position <= mused.current_patternpos && sp->position + mused.song.pattern[sp->pattern].num_steps > mused.current_patternpos) p = mused.current_patternpos - sp->position;
 	}
-	
+
 	return p;
 }
 
@@ -479,10 +480,10 @@ int current_patternstep()
 MusStep * get_current_step()
 {
 	MusPattern *pat = get_current_pattern();
-	
+
 	if (!pat)
 		return NULL;
-		
+
 	return &pat->step[current_patternstep()];
 }
 
@@ -490,10 +491,10 @@ MusStep * get_current_step()
 MusPattern * get_current_pattern()
 {
 	int p = current_pattern();
-	
+
 	if (p < 0)
 		return NULL;
-		
+
 	return &mused.song.pattern[p];
 }
 
@@ -517,14 +518,14 @@ static Uint32 info_message_cb(Uint32 interval, void *param)
 
 void set_info_message(const char *message, ...)
 {
-	if (mused.info_message_timer) 
+	if (mused.info_message_timer)
 		SDL_RemoveTimer(mused.info_message_timer);
-		
+
 	va_list args;
 	va_start(args, message);
 	vsnprintf(mused.info_message, sizeof(mused.info_message), message, args);
 	va_end(args);
-	
+
 	mused.info_message_timer = SDL_AddTimer(5000, info_message_cb, NULL);
 }
 
