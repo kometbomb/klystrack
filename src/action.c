@@ -975,3 +975,27 @@ void toggle_follow_play_position(void *unused1, void *unused2, void *unused3)
 	else
 		set_info_message("Not following song position");
 }
+
+
+void open_recent_file(void *path, void *b, void *c)
+{
+	debug("Opening recent file %s", (char*)path);
+	FILE *f = fopen(path, "rb");
+
+	if (f)
+	{
+		open_song(f);
+		fclose(f);
+
+		// Need to copy this var because update_recent_files_list()
+		// might free the string in *path...
+
+		char *temp = strdup(path);
+		update_recent_files_list(temp);
+		free(temp);
+	}
+	else
+	{
+		warning("Could not open %s", (char*)path);
+	}
+}
