@@ -38,10 +38,11 @@ extern Mused mused;
 
 const Menu mainmenu[];
 static const Menu showmenu[];
-static const Menu filemenu[];
+const Menu filemenu[];
 
 extern Menu thememenu[];
 extern Menu keymapmenu[];
+extern Menu recentmenu[];
 
 Menu editormenu[] =
 {
@@ -186,11 +187,12 @@ static const Menu wavetablemenu[] =
 };
 
 
-static const Menu filemenu[] =
+const Menu filemenu[] =
 {
 	{ 0, mainmenu, "New song", NULL, new_song_action },
 	{ 0, mainmenu, "Open song", NULL, open_data, MAKEPTR(OD_T_SONG), MAKEPTR(OD_A_OPEN) },
 	{ 0, mainmenu, "Save song", NULL, open_data, MAKEPTR(OD_T_SONG), MAKEPTR(OD_A_SAVE) },
+	{ 0, mainmenu, "Open recent", recentmenu },
 	{ 0, mainmenu, "Export .WAV", NULL, export_wav_action },
 	{ 0, mainmenu, "Export tracks as .WAV", NULL, export_channels_action },
 	{ 0, mainmenu, "Import", importmenu },

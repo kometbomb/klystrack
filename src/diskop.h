@@ -60,5 +60,8 @@ int save_fx(SDL_RWops *f);
 /* action */
 void open_data(void *type, void *action, void*c);
 
+void init_recent_files_list();
+void deinit_recent_files_list();
+void update_recent_files_list(const char *path);
 
 #endif

@@ -35,6 +35,7 @@ OTHER DEALINGS IN THE SOFTWARE.
 #include "key.h"
 #include "view/wavetableview.h"
 #include "zap.h"
+#include "diskop.h"
 #include <stdarg.h>
 #include <string.h>
 
@@ -304,6 +305,8 @@ void init(MusInstrument *instrument, MusPattern *pattern, MusSeqPattern sequence
 	mused.prev_wavetable_x = -1;
 	mused.prev_wavetable_y = -1;
 
+	init_recent_files_list();
+
 	debug("init done");
 }
 
@@ -322,6 +325,8 @@ void init_scrollbars()
 
 void deinit()
 {
+	deinit_recent_files_list();
+
 	undo_deinit(&mused.undo);
 	undo_deinit(&mused.redo);
 
