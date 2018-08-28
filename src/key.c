@@ -51,9 +51,9 @@ void translate_key_event(SDL_KeyboardEvent *e)
 
 	for (int i = 0 ; i < MAX_KEYTRANS && !(keytrans[i].from_key == 0 && keytrans[i].from_mod == 0 && keytrans[i].from_scancode == 0) ; ++i)
 	{
-		if ((keytrans[i].focus == mused.focus || keytrans[i].focus == -1) && 
-			((keytrans[i].type == KEYSYM && e->keysym.sym == keytrans[i].from_key) || 
-			(keytrans[i].type == SCANCODE && e->keysym.scancode == keytrans[i].from_scancode)) && 
+		if ((keytrans[i].focus == mused.focus || keytrans[i].focus == -1) &&
+			((keytrans[i].type == KEYSYM && e->keysym.sym == keytrans[i].from_key) ||
+			(keytrans[i].type == SCANCODE && e->keysym.scancode == keytrans[i].from_scancode)) &&
 			((e->keysym.mod & allowed) == keytrans[i].from_mod))
 		{
 			e->keysym.sym = keytrans[i].to_key;
@@ -67,37 +67,37 @@ void translate_key_event(SDL_KeyboardEvent *e)
 void enum_keymaps()
 {
 	memset(keymapmenu, 0, sizeof(keymapmenu));
-	
+
 	// TODO: remove copypastecode and write enum_dir() function that takes a handler
-	
+
 	int maps = 0;
-	
+
 	keymapmenu[maps].parent = prefsmenu;
 	keymapmenu[maps].text = strdup("Default");
 	keymapmenu[maps].action = load_keymap_action;
 	keymapmenu[maps].p1 = (void*)keymapmenu[maps].text;
 	++maps;
-	
+
 	char path[1000];
 	snprintf(path, sizeof(path) - 1, "%s/key", query_resource_directory());
 	DIR *dir = opendir(path);
 	debug("Enumerating keymaps at %s", path);
-	
+
 	if (!dir)
 	{
 		warning("Could not enumerate keymaps at %s", path);
 		return;
 	}
-	
+
 	struct dirent *de = NULL;
-	
+
 	while ((de = readdir(dir)) != NULL)
 	{
 		char fullpath[1000];
-	
+
 		snprintf(fullpath, sizeof(fullpath) - 1, "%s/key/%s", query_resource_directory(), de->d_name);
 		struct stat attribute;
-		
+
 		if (stat(fullpath, &attribute) != -1 && !(attribute.st_mode & S_IFDIR))
 		{
 			if (maps >= MAX_KEYMAPS)
@@ -105,7 +105,7 @@ void enum_keymaps()
 				warning("Maximum keymaps exceeded");
 				break;
 			}
-			
+
 			keymapmenu[maps].parent = prefsmenu;
 			keymapmenu[maps].text = strdup(de->d_name);
 			keymapmenu[maps].action = load_keymap_action;
@@ -113,9 +113,9 @@ void enum_keymaps()
 			++maps;
 		}
 	}
-	
+
 	debug("Got %d keymaps", maps);
-	
+
 	closedir(dir);
 }
 
@@ -138,35 +138,35 @@ int parse_key(const char *keys, int *key, int *mod, int *scancode)
 {
 	*mod = 0;
 	*key = 0;
-	
+
 	if (scancode)
 		*scancode = 0;
-	
+
 	char *temp = strdup(keys);
 	int done = 0;
 	char *tok = strtok(temp, " \t");
-	
+
 	do
 	{
 		if (!tok) break;
 		int found = 0;
-		
+
 		for (int i = 0 ; keydefs[i].name ; ++i)
 		{
 			if (strcasecmp(tok, keydefs[i].name) == 0)
 			{
-				if (*key != 0) 
+				if (*key != 0)
 				{
 					warning("More than one key (%s, was %d) specified", tok, *key);
 					done = 1;
 				}
-				
+
 				*key = keydefs[i].key;
 				found = 1;
 				break;
 			}
 		}
-		
+
 		for (int i = 0 ; moddefs[i].name ; ++i)
 		{
 			if (strcasecmp(tok, moddefs[i].name) == 0)
@@ -176,11 +176,11 @@ int parse_key(const char *keys, int *key, int *mod, int *scancode)
 				break;
 			}
 		}
-		
+
 		if (scancode)
 		{
 			int _scancode = 0;
-			
+
 			if (sscanf(tok, "S_%x", &_scancode) == 1)
 			{
 				debug("Found scancode %x", _scancode);
@@ -188,25 +188,25 @@ int parse_key(const char *keys, int *key, int *mod, int *scancode)
 				found = 1;
 			}
 		}
-		
+
 		if (!found && strlen(tok) > 0)
 		{
 			warning("Unknown token %s", tok);
 			break;
 		}
-		
+
 		tok = strtok(NULL, " \t");
 	}
 	while (!done);
-	
+
 	free(temp);
-	
+
 	if (*key == 0)
 	{
 		warning("No keys specified");
 		*mod = 0;
 	}
-	
+
 	return (*key != 0 || (scancode == NULL || *scancode != 0));
 }
 
@@ -214,14 +214,14 @@ int parse_key(const char *keys, int *key, int *mod, int *scancode)
 int parse_keys(const char *from, const char *to, KeyTran *tran)
 {
 	if (!parse_key(from, &tran->from_key, &tran->from_mod, &tran->from_scancode)) return 0;
-	
+
 	if (!parse_key(to, &tran->to_key, &tran->to_mod, NULL)) return 0;
-	
+
 	if (tran->from_scancode)
 		tran->type = SCANCODE;
 	else
 		tran->type = KEYSYM;
-	
+
 	return 1;
 }
 
@@ -231,31 +231,31 @@ void load_keymap(const char *name)
 	memset(keytrans, 0, sizeof(keytrans));
 
 	char tmpname[1000];
-	strncpy(tmpname, name, sizeof(tmpname));
+	strncpy(tmpname, name, sizeof(tmpname) - 1);
 
 	if (strcmp(name, "Default") == 0)
 	{
-		strncpy(mused.keymapname, tmpname, sizeof(mused.themename));
+		strncpy(mused.keymapname, tmpname, sizeof(mused.keymapname) - 1);
 		update_keymap_menu();
 		return;
-	}	
+	}
 
-	char fullpath[1000];
+	char fullpath[3000];
 	snprintf(fullpath, sizeof(fullpath) - 1, "%s/key/%s", query_resource_directory(), tmpname);
 
-	strncpy(mused.keymapname, tmpname, sizeof(mused.themename));
+	strncpy(mused.keymapname, tmpname, sizeof(mused.keymapname) - 1);
 	update_keymap_menu();
-	
+
 	debug("Loading keymap '%s'", fullpath);
-	
+
 	FILE *f = fopen(fullpath, "rt");
 	int trans = 0;
-	
+
 	if (f)
 	{
 		int lnr = 1;
 		int focus = -1;
-		
+
 		do
 		{
 			char line[100], from[100], to[100];
@@ -264,10 +264,10 @@ void load_keymap(const char *name)
 				warning("Max keytrans exceeded\n");
 				break;
 			}
-			
+
 			if (!fgets(line, sizeof(line) - 1, f)) break;
-			
-			if (line[0] == '#') 
+
+			if (line[0] == '#')
 				continue;
 			else if (sscanf(line, "%*[[]%64[^]]%*[]]", from) == 1)
 			{
@@ -278,7 +278,7 @@ void load_keymap(const char *name)
 				else if (strcasecmp(from, "pattern") == 0)
 				{
 					focus = EDITPATTERN;
-				} 
+				}
 				else if (strcasecmp(from, "sequence") == 0)
 				{
 					focus = EDITSEQUENCE;
@@ -299,17 +299,17 @@ void load_keymap(const char *name)
 			{
 				warning("Keymap line %d is malformed", lnr);
 			}
-			
+
 			++lnr;
 		}
 		while (1);
-	
+
 		fclose(f);
 	}
 	else
 	{
 		debug("Keymap loading failed");
 	}
-	
+
 	debug("Got %d keytrans", trans);
 }
