@@ -283,14 +283,14 @@ void set_app_icon()
 
 void load_theme(const char *name)
 {
-	char tmpname[100];
+	char tmpname[100] = {0};
 	strncpy(tmpname, name, sizeof(tmpname) - 1);
 
 	if (strcmp(name, "Default") != 0)
 		load_theme("Default"); // for default stuff not in selected theme
 
 	Bundle res;
-	char fullpath[2000];
+	char fullpath[2000] = {0};
 
 	snprintf(fullpath, sizeof(fullpath) - 1, "%s/res/%s", query_resource_directory(), tmpname);
 
@@ -459,8 +459,8 @@ void load_theme(const char *name)
 		}
 		else
 		{
-			char message[2000];
-			snprintf(message, sizeof(message), "Default theme at '%s' could not be loaded.", fullpath);
+			char message[3000] = {0};
+			snprintf(message, sizeof(message) - 1, "Default theme at '%s' could not be loaded.", fullpath);
 
 			SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Theme files missing", message, domain->window);
 
