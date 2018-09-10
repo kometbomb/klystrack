@@ -984,7 +984,7 @@ void open_data(void *type, void *action, void *_ret)
 		{
 			// Update recent files list if we are opening/saving a song
 
-			char fullpath[6000] = {0};
+			char fullpath[6001] = {0};
 			snprintf(fullpath, sizeof(fullpath) - 1, "%s/%s", mused.previous_filebox_path[t], filename);
 
 			update_recent_files_list(fullpath);
