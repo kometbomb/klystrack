@@ -4,5 +4,6 @@ jobs:
     docker:
       - image: gcc:8
     steps:
+      - run: apt-get update && apt-get install libsdl2-dev libsdl2-image-dev
       - run: git clone https://github.com/kometbomb/klystron.git && git clone https://github.com/kometbomb/klystrack.git
       - run: cd klystrack && make
