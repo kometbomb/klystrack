@@ -10,4 +10,3 @@ jobs:
       - checkout:
           path: ~/klystrack/klystrack
       - run: make
-          w: ~/klystrack/klystrack
