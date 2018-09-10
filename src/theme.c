@@ -49,14 +49,14 @@ Uint32 colors[NUM_COLORS];
 static void load_colors(const char *cfg)
 {
 	char *temp = strdup(cfg);
-	
+
 	char *token = strtok(temp, "\n");
-	
+
 	while (token)
 	{
 		char name[51], from[51];
 		Uint32 color;
-		
+
 		static const char *names[NUM_COLORS] =
 		{
 			"sequence_counter",
@@ -102,7 +102,7 @@ static void load_colors(const char *cfg)
 			"catometer_eyes",
 			"statusbar_text"
 		};
-		
+
 		if (sscanf(token, "%50[^ =]%*[ =]%x", name, &color) == 2)
 		{
 			int i;
@@ -115,17 +115,17 @@ static void load_colors(const char *cfg)
 #if SDL_BYTEORDER == SDL_BIG_ENDIAN
 // fix so that the color is in the 24 bits of RGB8
 					colors[i] = (colors[i] >> 8) | ((colors[i] & 0xff) << 24);
-#endif					
+#endif
 					break;
 				}
 			}
-			
+
 			if (i >= NUM_COLORS) warning("Unknown color name '%s'", name);
 		}
 		else if (sscanf(token, "%50[^ =]%*[ =]%50s", name, from) == 2)
 		{
 			int from_i, to_i;
-			
+
 			for (from_i = 0 ; from_i < NUM_COLORS ; ++from_i)
 			{
 				if (strcasecmp(names[from_i], from) == 0)
@@ -133,8 +133,8 @@ static void load_colors(const char *cfg)
 					break;
 				}
 			}
-			
-			if (from_i >= NUM_COLORS) 
+
+			if (from_i >= NUM_COLORS)
 				warning("Unknown color name '%s'", name);
 			else
 			{
@@ -146,7 +146,7 @@ static void load_colors(const char *cfg)
 						break;
 					}
 				}
-				
+
 				if (to_i >= NUM_COLORS) warning("Unknown color name '%s'", name);
 				else
 				{
@@ -154,12 +154,12 @@ static void load_colors(const char *cfg)
 					colors[to_i] = colors[from_i];
 				}
 			}
-			
+
 		}
-		
+
 		token = strtok(NULL, "\n");
 	}
-	
+
 	free(temp);
 }
 
@@ -182,14 +182,14 @@ int font_load_and_set_color(Font *font, Bundle *b, char *name, Uint32 color)
 static SDL_RWops *load_img_if_exists(Bundle *res, const char *base_name)
 {
 	/* load base_name.bmp or .png */
-	
+
 	char name[100];
 	const char *ext[] = {"bmp", "png", NULL}, **e;
-	
+
 	for (e = ext ; *e ; ++e)
 	{
 		snprintf(name, sizeof(name), "%s.%s", base_name, *e);
-		
+
 		if (bnd_exists(res, name))
 		{
 			SDL_RWops *rw = SDL_RWFromBundle(res, name);
@@ -197,7 +197,7 @@ static SDL_RWops *load_img_if_exists(Bundle *res, const char *base_name)
 				return rw;
 		}
 	}
-		
+
 	return NULL;
 }
 
@@ -212,7 +212,7 @@ void init_resources_dir(void)
 		strncpy(cwd, SDL_GetBasePath(), sizeof(cwd));
 #else
 		strncpy(cwd, TOSTRING(RES_PATH), sizeof(cwd));
-#endif	
+#endif
 	}
 	else
 	{
@@ -230,9 +230,9 @@ void set_scaled_cursor()
 {
 	if (mused.mouse_cursor_surface == NULL)
 		return;
-	
+
 	if (mused.mouse_cursor) SDL_FreeCursor(mused.mouse_cursor);
-	
+
 	if (mused.flags & USE_SYSTEM_CURSOR)
 	{
 		mused.mouse_cursor = SDL_CreateSystemCursor(SDL_SYSTEM_CURSOR_ARROW);
@@ -240,30 +240,30 @@ void set_scaled_cursor()
 	else
 	{
 		// We'll use SDL_Renderer here because SDL_BlitScaled seems to have an issue with the alpha channel
-		// Additionally, transparency on a zoomed cursor seems to make the cursor an "XOR" cursor so we need 
+		// Additionally, transparency on a zoomed cursor seems to make the cursor an "XOR" cursor so we need
 		// to set the transparent color separately after SDL_Renderer has done its thing. SDL bug maybe?
-		
+
 		SDL_Surface *temp = SDL_CreateRGBSurface(0, mused.mouse_cursor_surface->surface->w * mused.pixel_scale, mused.mouse_cursor_surface->surface->h * mused.pixel_scale, 32, 0, 0, 0, 0);
-		
+
 		SDL_Renderer *renderer = SDL_CreateSoftwareRenderer(temp);
 		SDL_Texture *tex = SDL_CreateTextureFromSurface(renderer, mused.mouse_cursor_surface->surface);
-		
+
 		// Draw the texture on a magic pink background
 		SDL_SetRenderDrawColor(renderer, 255, 0, 255, 255);
 		SDL_RenderFillRect(renderer, NULL);
 		SDL_RenderCopy(renderer, tex, NULL, NULL);
-		
+
 		SDL_DestroyTexture(tex);
 		SDL_DestroyRenderer(renderer);
-		
+
 		// Make magic pink transparent
 		SDL_SetColorKey(temp, SDL_TRUE, SDL_MapRGB(temp->format, 255, 0, 255));
-		
+
 		mused.mouse_cursor = SDL_CreateColorCursor(temp, 0, 0);
-		
+
 		SDL_FreeSurface(temp);
 	}
-	
+
 	if (mused.mouse_cursor)
 	{
 		SDL_SetCursor(mused.mouse_cursor);
@@ -283,86 +283,86 @@ void set_app_icon()
 
 void load_theme(const char *name)
 {
-	char tmpname[1000];
-	strncpy(tmpname, name, sizeof(tmpname));
+	char tmpname[100] = {0};
+	strncpy(tmpname, name, sizeof(tmpname) - 1);
 
 	if (strcmp(name, "Default") != 0)
 		load_theme("Default"); // for default stuff not in selected theme
 
 	Bundle res;
-	char fullpath[1000];
-	
+	char fullpath[3000] = {0};
+
 	snprintf(fullpath, sizeof(fullpath) - 1, "%s/res/%s", query_resource_directory(), tmpname);
-	
+
 	debug("Loading theme '%s'", fullpath);
-	
+
 	if (bnd_open(&res, fullpath))
 	{
 		SDL_RWops *rw;
-		
+
 		rw = load_img_if_exists(&res, "bevel");
 		if (rw)
 		{
 			if (mused.slider_bevel) gfx_free_surface(mused.slider_bevel);
 			mused.slider_bevel = gfx_load_surface_RW(domain, rw, GFX_KEYED);
-					
+
 			/* TODO: do we need to store the surface in the params? */
-	
-			mused.sequence_slider_param.gfx = mused.slider_bevel; 
-			mused.pattern_slider_param.gfx = mused.slider_bevel; 
-			mused.program_slider_param.gfx = mused.slider_bevel; 
+
+			mused.sequence_slider_param.gfx = mused.slider_bevel;
+			mused.pattern_slider_param.gfx = mused.slider_bevel;
+			mused.program_slider_param.gfx = mused.slider_bevel;
 			mused.instrument_list_slider_param.gfx = mused.slider_bevel;
-			mused.pattern_horiz_slider_param.gfx = mused.slider_bevel; 
+			mused.pattern_horiz_slider_param.gfx = mused.slider_bevel;
 			mused.sequence_horiz_slider_param.gfx = mused.slider_bevel;
 		}
-		
+
 		rw = load_img_if_exists(&res, "vu");
 		if (rw)
 		{
 			if (mused.vu_meter) gfx_free_surface(mused.vu_meter);
 			mused.vu_meter = gfx_load_surface_RW(domain, rw, GFX_KEYED);
 		}
-		
+
 		rw = load_img_if_exists(&res, "analyzor");
 		if (rw)
 		{
 			if (mused.analyzer) gfx_free_surface(mused.analyzer);
 			mused.analyzer = gfx_load_surface_RW(domain, rw, GFX_KEYED);
 		}
-		
+
 		rw = load_img_if_exists(&res, "catometer");
 		if (rw)
 		{
 			if (mused.catometer) gfx_free_surface(mused.catometer);
 			mused.catometer = gfx_load_surface_RW(domain, rw, GFX_KEYED);
 		}
-		
+
 		rw = load_img_if_exists(&res, "cursor");
 		if (rw)
 		{
 			if (mused.mouse_cursor_surface) gfx_free_surface(mused.mouse_cursor_surface);
 			if (mused.mouse_cursor) SDL_FreeCursor(mused.mouse_cursor);
 			mused.mouse_cursor_surface = gfx_load_surface_RW(domain, rw, GFX_KEYED);
-			
+
 			set_scaled_cursor();
 		}
-		
+
 		rw = load_img_if_exists(&res, "icon");
 		if (rw)
 		{
 			if (mused.icon_surface) gfx_free_surface(mused.icon_surface);
 			mused.icon_surface = gfx_load_surface_RW(domain, rw, 0);
-			
+
 			set_app_icon();
 		}
-				
+
 		rw = load_img_if_exists(&res, "logo");
 		if (rw)
 		{
 			if (mused.logo) gfx_free_surface(mused.logo);
 			mused.logo = gfx_load_surface_RW(domain, rw, GFX_KEYED);
 		}
-		
+
 		if (bnd_exists(&res, "colors.txt"))
 		{
 			SDL_RWops *colors = SDL_RWFromBundle(&res, "colors.txt");
@@ -373,16 +373,16 @@ void load_theme(const char *name)
 				char *temp = calloc(1, s + 2);
 				SDL_RWseek(colors, 0, SEEK_SET);
 				SDL_RWread(colors, temp, 1, s);
-				
+
 				strcat(temp, "\n");
 
 				SDL_RWclose(colors);
-				
+
 				load_colors(temp);
 				free(temp);
 			}
 		}
-		
+
 		if (bnd_exists(&res, "7x6.fnt"))
 		{
 			font_destroy(&mused.smallfont);
@@ -407,12 +407,12 @@ void load_theme(const char *name)
 			font_set_color(&mused.headerfont_selected, colors[COLOR_MENU_HEADER_SELECTED]);
 			font_set_color(&mused.buttonfont, colors[COLOR_BUTTON_TEXT]);
 		}
-		
+
 		if (bnd_exists(&res, "8x8.fnt"))
 		{
-			if (mused.console) console_destroy(mused.console); 
+			if (mused.console) console_destroy(mused.console);
 			mused.console = console_create(&res);
-		
+
 			font_destroy(&mused.largefont);
 			font_load_and_set_color(&mused.largefont, &res, "8x8.fnt", colors[COLOR_MAIN_TEXT]);
 			font_destroy(&mused.menufont);
@@ -426,7 +426,7 @@ void load_theme(const char *name)
 			font_set_color(&mused.menufont, colors[COLOR_MENU_NORMAL]);
 			font_set_color(&mused.menufont_selected, colors[COLOR_MENU_SELECTED]);
 		}
-		
+
 		if (bnd_exists(&res, "4x6.fnt"))
 		{
 			font_destroy(&mused.tinyfont);
@@ -442,30 +442,31 @@ void load_theme(const char *name)
 			font_set_color(&mused.tinyfont_sequence_counter, colors[COLOR_SEQUENCE_COUNTER]);
 			font_set_color(&mused.tinyfont_sequence_normal, colors[COLOR_SEQUENCE_NORMAL]);
 		}
-				
+
 		bnd_free(&res);
 		strncpy(mused.themename, tmpname, sizeof(mused.themename));
 		update_theme_menu();
-		
+
 		debug("Theme opened ok");
 	}
 	else
 	{
 		warning("Theme loading failed");
-		
+
 		if (strcmp(name, "Default") != 0)
 		{
 			load_theme("Default");
 		}
 		else
 		{
-			char message[100];
-			snprintf(message, sizeof(message), "Default theme at '%s' could not be loaded.", fullpath);
-			
+			char message[4000] = {0};
+
+			snprintf(message, sizeof(message) - 1, "Default theme at '%s' could not be loaded.", fullpath);
+
 			SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Theme files missing", message, domain->window);
 
 			fatal("Default theme at '%s' could not be loaded.", fullpath);
-			
+
 			exit(1);
 		}
 	}
@@ -475,29 +476,29 @@ void load_theme(const char *name)
 void enum_themes()
 {
 	memset(thememenu, 0, sizeof(thememenu));
-	
-	char path[1000];
+
+	char path[2000] = {0};
 	snprintf(path, sizeof(path) - 1, "%s/res", query_resource_directory());
 	DIR *dir = opendir(path);
 	debug("Enumerating themes at %s", path);
-	
+
 	if (!dir)
 	{
 		warning("Could not enumerate themes at %s", path);
 		return;
 	}
-	
+
 	struct dirent *de = NULL;
 	int themes = 0;
-	
+
 	while ((de = readdir(dir)) != NULL)
 	{
-		char fullpath[1000];
-	
+		char fullpath[4000] = {0};
+
 		snprintf(fullpath, sizeof(fullpath) - 1, "%s/res/%s", query_resource_directory(), de->d_name);
-		
+
 		struct stat attribute;
-		
+
 		if (stat(fullpath, &attribute) != -1 && !(attribute.st_mode & S_IFDIR))
 		{
 			if (themes >= MAX_THEMES)
@@ -505,7 +506,7 @@ void enum_themes()
 				warning("Maximum themes exceeded");
 				break;
 			}
-			
+
 			thememenu[themes].parent = prefsmenu;
 			thememenu[themes].text = strdup(de->d_name);
 			thememenu[themes].action = load_theme_action;
@@ -513,9 +514,9 @@ void enum_themes()
 			++themes;
 		}
 	}
-	
+
 	debug("Got %d themes", themes);
-	
+
 	closedir(dir);
 }
 
@@ -540,7 +541,7 @@ void free_themes()
 	{
 		if (thememenu[i].text != NULL) free((void*)thememenu[i].text);
 	}
-	
+
 	memset(thememenu, 0, sizeof(thememenu));
 }
 
@@ -554,10 +555,10 @@ Uint32 mix_colors(Uint32 a, Uint32 b)
 	Sint32 br = (b & 0xff) - ar;
 	Sint32 bg = ((b >> 8) & 0xff) - ag;
 	Sint32 bb = ((b >> 16) & 0xff) - ab;
-	
+
 	Uint32 fr = ar + br * ba / 256;
 	Uint32 fg = ag + bg * ba / 256;
 	Uint32 fb = ab + bb * ba / 256;
-	
+
 	return fr | (fg << 8) | (fb << 16);
 }

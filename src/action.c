@@ -705,8 +705,8 @@ void export_channels_action(void *a, void*b, void*c)
 
 		for (int i = 0 ; i < mused.song.num_channels ; ++i)
 		{
-			char c_filename[1000], tmp[1000];
-			strncpy(tmp, filename, sizeof(c_filename) - 1);
+			char c_filename[1500], tmp[1000];
+			strncpy(tmp, filename, sizeof(tmp) - 1);
 
 			for (int c = strlen(tmp) - 1 ; c >= 0 ; --c)
 			{
@@ -717,7 +717,7 @@ void export_channels_action(void *a, void*b, void*c)
 				}
 			}
 
-			sprintf(c_filename, "%s-%02d.wav", tmp, i);
+			snprintf(c_filename, sizeof(c_filename) - 1, "%s-%02d.wav", tmp, i);
 
 			debug("Exporting channel %d to %s", i, c_filename);
 
