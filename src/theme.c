@@ -290,7 +290,7 @@ void load_theme(const char *name)
 		load_theme("Default"); // for default stuff not in selected theme
 
 	Bundle res;
-	char fullpath[1000];
+	char fullpath[2000];
 
 	snprintf(fullpath, sizeof(fullpath) - 1, "%s/res/%s", query_resource_directory(), tmpname);
 
@@ -459,7 +459,7 @@ void load_theme(const char *name)
 		}
 		else
 		{
-			char message[100];
+			char message[2000];
 			snprintf(message, sizeof(message), "Default theme at '%s' could not be loaded.", fullpath);
 
 			SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Theme files missing", message, domain->window);
