@@ -459,7 +459,7 @@ void load_theme(const char *name)
 		}
 		else
 		{
-			char message[3000] = {0};
+			char message[4000] = {0};
 			snprintf(message, sizeof(message) - 1, "Default theme at '%s' could not be loaded.", fullpath);
 
 			SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Theme files missing", message, domain->window);
@@ -476,7 +476,7 @@ void enum_themes()
 {
 	memset(thememenu, 0, sizeof(thememenu));
 
-	char path[1000];
+	char path[2000] = {0};
 	snprintf(path, sizeof(path) - 1, "%s/res", query_resource_directory());
 	DIR *dir = opendir(path);
 	debug("Enumerating themes at %s", path);
@@ -492,7 +492,7 @@ void enum_themes()
 
 	while ((de = readdir(dir)) != NULL)
 	{
-		char fullpath[1000];
+		char fullpath[4000] = {0};
 
 		snprintf(fullpath, sizeof(fullpath) - 1, "%s/res/%s", query_resource_directory(), de->d_name);
 
