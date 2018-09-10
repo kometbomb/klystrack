@@ -4,6 +4,5 @@ jobs:
     docker:
       - image: gcc:8
     steps:
-      - run: |
-        git clone https://github.com/kometbomb/klystron.git && git clone https://github.com/kometbomb/klystrack.git
+      - run: git clone https://github.com/kometbomb/klystron.git && git clone https://github.com/kometbomb/klystrack.git
       - run: cd klystrack && make
