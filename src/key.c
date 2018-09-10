@@ -230,7 +230,7 @@ void load_keymap(const char *name)
 {
 	memset(keytrans, 0, sizeof(keytrans));
 
-	char tmpname[1000];
+	char tmpname[100] = {0};
 	strncpy(tmpname, name, sizeof(tmpname) - 1);
 
 	if (strcmp(name, "Default") == 0)
@@ -240,7 +240,7 @@ void load_keymap(const char *name)
 		return;
 	}
 
-	char fullpath[3000];
+	char fullpath[3000] = {0};
 	snprintf(fullpath, sizeof(fullpath) - 1, "%s/key/%s", query_resource_directory(), tmpname);
 
 	strncpy(mused.keymapname, tmpname, sizeof(mused.keymapname) - 1);
