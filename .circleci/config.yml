@@ -7,4 +7,7 @@ jobs:
       - run: apt-get update && apt-get install -y libsdl2-dev libsdl2-image-dev
       - run: git clone https://github.com/kometbomb/klystron.git
       - run: git clone https://github.com/kometbomb/klystrack.git && cd klystrack && git checkout $CIRCLE_BRANCH
-      - run: cd klystrack && make
+      - run: cd klystrack && make CFG=release RES_PATH=.
+      - run: cd klystrack && zip /tmp/klystrack.zip bin.release/klystrack res key examples doc/LICENSE doc/SDL.txt doc/SDL_image.txt doc/Default.kt
+    store_artifacts:
+      path: /tmp/klystrack.zip
