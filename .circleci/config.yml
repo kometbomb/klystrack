@@ -3,9 +3,11 @@ jobs:
   build:
     docker:
       - image: gcc:8
+    working_directory: ~/klystrack/klystrack
     steps:
       - run: apt-get update && apt-get install -y libsdl2-dev libsdl2-image-dev
       - run: git clone https://github.com/kometbomb/klystron.git
       - checkout:
           path: ~/klystrack/klystrack
-      - run: cd klystrack && make
+      - run: make
+          w: ~/klystrack/klystrack
