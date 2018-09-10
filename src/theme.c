@@ -290,7 +290,7 @@ void load_theme(const char *name)
 		load_theme("Default"); // for default stuff not in selected theme
 
 	Bundle res;
-	char fullpath[2000] = {0};
+	char fullpath[3000] = {0};
 
 	snprintf(fullpath, sizeof(fullpath) - 1, "%s/res/%s", query_resource_directory(), tmpname);
 
