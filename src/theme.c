@@ -460,7 +460,7 @@ void load_theme(const char *name)
 		else
 		{
 			char message[4000] = {0};
-			sanity_Check();
+
 			snprintf(message, sizeof(message) - 1, "Default theme at '%s' could not be loaded.", fullpath);
 
 			SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Theme files missing", message, domain->window);
