@@ -188,7 +188,7 @@ void deinit_recent_files_list()
 
 int create_backup(char *filename)
 {
-	char new_filename[1000];
+	char new_filename[5000] = {0};
 	time_t now_time;
 	time(&now_time);
 	struct tm *now_tm = localtime(&now_time);
@@ -196,7 +196,7 @@ int create_backup(char *filename)
 	if (!now_tm)
 		return 0;
 
-	snprintf(new_filename, sizeof(new_filename), "%s.%04d%02d%02d-%02d%02d%02d.backup", filename,
+	snprintf(new_filename, sizeof(new_filename) - 1, "%s.%04d%02d%02d-%02d%02d%02d.backup", filename,
 		now_tm->tm_year + 1900, now_tm->tm_mon + 1, now_tm->tm_mday, now_tm->tm_hour, now_tm->tm_min, now_tm->tm_sec);
 
 	return rename(filename, new_filename) == 0;
