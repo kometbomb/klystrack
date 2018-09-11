@@ -10,8 +10,8 @@ UPLOAD := cmd.exe /c upload.bat
 DLLS := zip/data/SDL2_image.dll zip/data/SDL2.dll
 DESTDIR ?= /usr
 EXT := .c
-CC := gcc -Werror
-CDEP := gcc -E -MM
+CC := gcc
+CDEP := $(CC) -E -MM
 ARCHIVE := klystrack
 INSTALLER := klystrack.exe
 SDL_VER := 2.0.8
@@ -19,7 +19,7 @@ SDL_IMAGEVER := 2.0.3
 THEMES :=
 REV := cp -f
 
-CFLAGS := $(MACHINE) -ftree-vectorize -std=gnu99 --no-strict-aliasing
+CFLAGS := $(MACHINE) -ftree-vectorize -std=gnu99 --no-strict-aliasing -Werror
 
 ifdef COMSPEC
 	TARGET := $(TARGET).exe
