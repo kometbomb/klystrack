@@ -1,6 +1,7 @@
 [Desktop Entry]
 Name=Klystrack
 Comment=Chiptune Tracker
+Comment[fr]=Tracker 8-bits
 Exec=klystrack %f
 Type=Application
 Icon=klystrack.png
