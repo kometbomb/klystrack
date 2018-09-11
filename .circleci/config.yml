@@ -4,6 +4,7 @@ jobs:
     docker:
       - image: minextu/sdl2-cross-platform
     steps:
+      - run: sdl2-config --libs
       - run: apt-get update && apt-get install -y zip
       - run: git clone https://github.com/kometbomb/klystron.git
       - run: git clone https://github.com/kometbomb/klystrack.git && cd klystrack && git checkout $CIRCLE_BRANCH
