@@ -10,10 +10,10 @@ jobs:
       - run: cd klystrack && make CC=gcc CFG=release RES_PATH=.
       - run: cd klystrack && zip -j /tmp/klystrack-linux64.zip bin.release/klystrack doc/Default.kt && zip -r /tmp/klystrack-linux64.zip res key examples LICENSE doc/SDL.txt doc/SDL_image.txt
       - run: cd klystrack && make clean
-      - run: COMSPEC=1 && cd klystrack && make CC=CC=x86_64-w32-mingw32-gcc CFG=release RES_PATH=.
+      - run: COMSPEC=1 && cd klystrack && make CC=x86_64-w32-mingw32-gcc CFG=release RES_PATH=.
       - run: cd klystrack && zip -j /tmp/klystrack-win32.zip bin.release/klystrack doc/Default.kt && zip -r /tmp/klystrack-win32.zip res key examples LICENSE doc/SDL.txt doc/SDL_image.txt
       - run: cd klystrack && make clean
-      - run: COMSPEC=1 && cd klystrack && make CC=CC=x86_64-w64-mingw32-gcc CFG=release RES_PATH=.
+      - run: COMSPEC=1 && cd klystrack && make CC=x86_64-w64-mingw32-gcc CFG=release RES_PATH=.
       - run: cd klystrack && zip -j /tmp/klystrack.zip bin.release/klystrack doc/Default.kt && zip -r /tmp/klystrack.zip res key examples LICENSE doc/SDL.txt doc/SDL_image.txt
       - store_artifacts:
           path: /tmp/klystrack-linux64.zip
