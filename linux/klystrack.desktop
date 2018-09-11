@@ -1,0 +1,11 @@
+[Desktop Entry]
+Name=Klystrack
+Comment=Chiptune Tracker
+Comment[fr]=Tracker 8-bits
+Exec=klystrack %f
+Type=Application
+Icon=klystrack.png
+Terminal=false
+Categories=AudioVideo;AudioVideoEditing
+Keywords=tracker;music;chipsong;
+MimeType=audio/kt;

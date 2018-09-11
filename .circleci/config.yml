@@ -4,7 +4,20 @@ jobs:
     docker:
       - image: gcc:8
     steps:
-      - run: apt-get update && apt-get install -y libsdl2-dev libsdl2-image-dev
+      - run: apt-get update && apt-get install -y zip libsdl2-dev libsdl2-image-dev
       - run: git clone https://github.com/kometbomb/klystron.git
       - run: git clone https://github.com/kometbomb/klystrack.git && cd klystrack && git checkout $CIRCLE_BRANCH
-      - run: cd klystrack && make
+      - run: cd klystrack && make CC=gcc CFG=release RES_PATH=.
+      - run: cd klystrack && zip -j /tmp/klystrack-linux64.zip bin.release/klystrack doc/Default.kt && zip -r /tmp/klystrack-linux64.zip res key examples LICENSE doc/SDL.txt doc/SDL_image.txt
+      #- run: cd klystrack && make clean
+      #- run: SDL_ROOT_DIR=/usr/x86_64-win32-mingw32 COMSPEC=1 && cd klystrack && make CC=x86_64-win32-mingw32-gcc CFG=release RES_PATH=.
+      #- run: cd klystrack && zip -j /tmp/klystrack-win32.zip bin.release/klystrack doc/Default.kt && zip -r /tmp/klystrack-win32.zip res key examples LICENSE doc/SDL.txt doc/SDL_image.txt
+      #- run: cd klystrack && make clean
+      #- run: SDL_ROOT_DIR=/usr/x86_64-w64-mingw32 COMSPEC=1 && cd klystrack && make CC=x86_64-w64-mingw32-gcc CFG=release RES_PATH=.
+      #- run: cd klystrack && zip -j /tmp/klystrack.zip bin.release/klystrack doc/Default.kt && zip -r /tmp/klystrack.zip res key examples LICENSE doc/SDL.txt doc/SDL_image.txt
+      #- store_artifacts:
+      #    path: /tmp/klystrack.zip
+      #- store_artifacts:
+      #    path: /tmp/klystrack-win32.zip
+      #- store_artifacts:
+      #    path: /tmp/klystrack-win64.zip
