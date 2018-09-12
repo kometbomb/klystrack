@@ -704,6 +704,7 @@ void info_line(GfxDomain *dest_surface, const SDL_Rect *dest, const SDL_Event *e
 					"Room size",
 					"Reverb volume",
 					"Decay",
+					"Snap taps to ticks",
 					"Tap enabled",
 					"Selected tap",
 					"Tap delay",
