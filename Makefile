@@ -66,7 +66,7 @@ else
   ifeq ($(CFG),release)
    CFLAGS += -O3 -Wall -s
    ifdef COMSPEC
-	 CFLAGS += #-mwindows
+	 CFLAGS += -mwindows
    endif
   else
    @$(ECHO) "Invalid configuration "$(CFG)" specified."
