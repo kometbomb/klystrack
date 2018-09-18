@@ -58,7 +58,7 @@ DIRS := $(notdir $(wildcard src/*))
 THEMEDIRS := $(notdir $(wildcard themes/*))
 
 ifeq ($(CFG),debug)
- CFLAGS += -g -Wall -DDEBUG -fno-inline
+ CFLAGS += -g -Wall -DDEBUG -fno-inline -Wno-strict-aliasing
 else
  ifeq ($(CFG),profile)
   CFLAGS += -O3 -pg -Wall
