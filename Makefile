@@ -58,7 +58,7 @@ DIRS := $(notdir $(wildcard src/*))
 THEMEDIRS := $(notdir $(wildcard themes/*))
 
 ifeq ($(CFG),debug)
- CFLAGS += -g -Wall -DDEBUG -fno-inline -Wno-strict-aliasing
+ CFLAGS += -g -Wall -DDEBUG -fno-inline
 else
  ifeq ($(CFG),profile)
   CFLAGS += -O3 -pg -Wall
@@ -76,6 +76,8 @@ else
   endif
  endif
 endif
+
+CFLAGS += -Wno-strict-aliasing
 
 # $(1) = subdir, $(2) = filename prefix (i.e. subdir without a slash)
 define directory_defs
