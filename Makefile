@@ -1,5 +1,5 @@
 TARGET := klystrack
-KLYSTRON=../klystron
+KLYSTRON=klystron
 ECHO := echo
 CFG := debug
 MACHINE :=
@@ -19,7 +19,7 @@ SDL_IMAGEVER := 2.0.3
 THEMES :=
 REV := cp -f
 
-CFLAGS := $(MACHINE) -ftree-vectorize -std=gnu99 --no-strict-aliasing -Werror
+CFLAGS := $(MACHINE) -ftree-vectorize -std=gnu99 -Wno-strict-aliasing -Werror
 
 ifdef COMSPEC
 	TARGET := $(TARGET).exe
@@ -46,7 +46,7 @@ else
 	CONFIG_PATH := ~/.klystrack
 endif
 
-EXTFLAGS := -DNOSDL_MIXER -DUSESDLMUTEXES -DENABLEAUDIODUMP -DSTEREOOUTPUT -DUSESDL_IMAGE $(EXTFLAGS)
+EXTFLAGS := -DNOSDL_MIXER -DUSESDLMUTEXES -DENABLEAUDIODUMP -DSTEREOOUTPUT -DUSESDL_IMAGE $(EXTFLAGS) $(CFLAGS)
 LDFLAGS :=  -L $(KLYSTRON)/bin.$(CFG) -lengine_gfx -lengine_util -lengine_snd -lengine_gui -lm $(SDLLIBS)
 INCLUDEFLAGS := -I src $(SDLFLAGS) -I $(KLYSTRON)/src -L$(KLYSTRON)/bin.$(CFG) -DRES_PATH="$(RES_PATH)" -DCONFIG_PATH="$(CONFIG_PATH)" $(EXTFLAGS) -DKLYSTRON=$(KLYSTRON)
 
@@ -66,7 +66,7 @@ else
   ifeq ($(CFG),release)
    CFLAGS += -O3 -Wall -s
    ifdef COMSPEC
-	 CFLAGS += -mwindows
+	 CFLAGS += #-mwindows
    endif
   else
    @$(ECHO) "Invalid configuration "$(CFG)" specified."
@@ -200,6 +200,7 @@ nightly: zip
 	@cp zip/$(ARCHIVE) zip/klystrack-nightly-`date +"%Y%m%d" | tr -d '\n'`-win32.zip
 
 clean:
+	make -C klystron clean
 	@rm -rf deps objs.debug objs.release objs.profile bin.release bin.debug bin.profile zip temp res
 
 bin.$(CFG)/$(TARGET): $(OBJS)
