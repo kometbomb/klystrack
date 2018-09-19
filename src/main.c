@@ -177,8 +177,8 @@ static const View wavetable_view_tab[] =
 	{{0, 0, 0, 0}, NULL}
 };
 
-const View *tab[] = 
-{ 
+const View *tab[] =
+{
 	pattern_view_tab,
 	sequence_view_tab,
 	classic_view_tab,
@@ -197,7 +197,7 @@ static void menu_close_hook(void)
 void my_open_menu(const Menu *menu, const Menu *action)
 {
 	debug("Menu opened");
-	
+
 	change_mode(MENU);
 	open_menu(menu, action, menu_close_hook, shortcuts, &mused.headerfont, &mused.headerfont_selected, &mused.menufont, &mused.menufont_selected, &mused.shortcutfont, &mused.shortcutfont_selected, mused.slider_bevel);
 }
@@ -215,41 +215,41 @@ int main(int argc, char **argv)
 
 	SDL_Init(SDL_INIT_VIDEO|SDL_INIT_AUDIO|SDL_INIT_NOPARACHUTE|SDL_INIT_TIMER);
 	atexit(SDL_Quit);
-	
+
 	default_settings();
 	load_config(TOSTRING(CONFIG_PATH), false);
-		
+
 	domain = gfx_create_domain(VERSION_STRING, SDL_WINDOW_RESIZABLE|SDL_WINDOW_OPENGL|((mused.flags & WINDOW_MAXIMIZED)?SDL_WINDOW_MAXIMIZED:0), mused.window_w, mused.window_h, mused.pixel_scale);
 	domain->fps = 30;
 	domain->scale = mused.pixel_scale;
 	domain->window_min_w = 320;
 	domain->window_min_h = 240;
 	gfx_domain_update(domain, false);
-	
+
 	MusInstrument instrument[NUM_INSTRUMENTS];
 	MusPattern pattern[NUM_PATTERNS];
 	MusSeqPattern sequence[MUS_MAX_CHANNELS][NUM_SEQUENCES];
 	MusChannel channel[CYD_MAX_CHANNELS];
-	
+
 	init(instrument, pattern, sequence, channel);
-	
+
 	load_config(TOSTRING(CONFIG_PATH), true);
-	
+
 	post_config_load();
-	
+
 	init_scrollbars();
-	
+
 	cyd_init(&mused.cyd, mused.mix_rate, MUS_MAX_CHANNELS);
 	mus_init_engine(&mused.mus, &mused.cyd);
 	new_song();
-	
+
 	enable_callback(true);
-	
+
 	for (int i = 0 ; i < CYD_MAX_FX_CHANNELS ; ++i)
 		cydfx_set(&mused.cyd.fx[i], &mused.song.fx[i]);
-	
+
 	cyd_register(&mused.cyd, mused.mix_buffer);
-	
+
 	if (argc > 1)
 	{
 		cyd_lock(&mused.cyd, 1);
@@ -272,27 +272,27 @@ int main(int argc, char **argv)
 		}
 		cyd_lock(&mused.cyd, 0);
 	}
-	
+
 #ifdef MIDI
 	midi_init();
 #endif
-	
+
 #ifdef DEBUG
 	float draw_calls = 0;
 	int total_frames = 0;
 #endif
 	int active = 1;
-	
+
 	if (!(mused.flags & DISABLE_NOSTALGY))
 	{
 		nos_decrunch(domain);
 		mused.flags |= DISABLE_NOSTALGY;
 	}
 
-#ifdef DEBUG	
+#ifdef DEBUG
 	Uint32 start_ticks = SDL_GetTicks();
 #endif
-		
+
 	while (1)
 	{
 		SDL_Event e = { 0 };
@@ -303,16 +303,16 @@ int main(int argc, char **argv)
 			{
 				translate_key_event(&e.key);
 			}
-		
+
 			switch (e.type)
 			{
 				case SDL_QUIT:
 				quit_action(0,0,0);
 				break;
-				
+
 				case SDL_WINDOWEVENT:
 					set_repeat_timer(NULL);
-					
+
 					switch (e.window.event) {
 						case SDL_WINDOWEVENT_MINIMIZED:
 							debug("SDL_WINDOWEVENT_MINIMIZED");
@@ -321,47 +321,47 @@ int main(int argc, char **argv)
 							debug("SDL_WINDOWEVENT_RESTORED");
 							mused.flags &= ~WINDOW_MAXIMIZED;
 							break;
-							
+
 						case SDL_WINDOWEVENT_MAXIMIZED:
 							debug("SDL_WINDOWEVENT_MAXIMIZED");
 							mused.flags |= WINDOW_MAXIMIZED;
 							break;
-							
+
 						case SDL_WINDOWEVENT_SIZE_CHANGED:
 							debug("SDL_WINDOWEVENT_SIZE_CHANGED %dx%d", e.window.data1, e.window.data2);
 							break;
-							
+
 						case SDL_WINDOWEVENT_RESIZED:
 							{
 							debug("SDL_WINDOWEVENT_RESIZED %dx%d", e.window.data1, e.window.data2);
-							
+
 							domain->screen_w = my_max(320, e.window.data1 / domain->scale);
 							domain->screen_h = my_max(240, e.window.data2 / domain->scale);
-							
+
 							if (!(mused.flags & FULLSCREEN))
 							{
 								mused.window_w = domain->screen_w * domain->scale;
 								mused.window_h = domain->screen_h * domain->scale;
 							}
-							
+
 							gfx_domain_update(domain, false);
 							}
 							break;
 					}
 					break;
-				
+
 				case SDL_USEREVENT:
 					e.type = SDL_MOUSEBUTTONDOWN;
 				break;
-				
+
 				case SDL_MOUSEMOTION:
 					gfx_convert_mouse_coordinates(domain, &e.motion.x, &e.motion.y);
 					gfx_convert_mouse_coordinates(domain, &e.motion.xrel, &e.motion.yrel);
 				break;
-				
+
 				case SDL_MOUSEBUTTONDOWN:
 					gfx_convert_mouse_coordinates(domain, &e.button.x, &e.button.y);
-					
+
 					if (e.button.button == SDL_BUTTON_RIGHT)
 					{
 						my_open_menu(mainmenu, NULL);
@@ -371,23 +371,23 @@ int main(int argc, char **argv)
 						menu_closed = 1;
 					}
 				break;
-				
+
 				case SDL_MOUSEBUTTONUP:
 				{
 					gfx_convert_mouse_coordinates(domain, &e.button.x, &e.button.y);
-					
+
 					if (e.button.button == SDL_BUTTON_LEFT)
 					{
 						mouse_released(&e);
-						
+
 						if (mused.focus == EDITFX)
-							mus_set_fx(&mused.mus, &mused.song); // for the chorus effect which does a heavy precalc 
+							mus_set_fx(&mused.mus, &mused.song); // for the chorus effect which does a heavy precalc
 					}
-					else if (e.button.button == SDL_BUTTON_RIGHT)	
+					else if (e.button.button == SDL_BUTTON_RIGHT)
 						menu_closed = 1;
 				}
 				break;
-				
+
 				case SDL_TEXTEDITING:
 				case SDL_TEXTINPUT:
 					switch (mused.focus)
@@ -397,7 +397,7 @@ int main(int argc, char **argv)
 						break;
 					}
 					break;
-				
+
 				case SDL_KEYUP:
 				case SDL_KEYDOWN:
 				{
@@ -411,81 +411,81 @@ int main(int argc, char **argv)
 					// We don't care about the special keys and don't want fake keypresses either
 					/*if (e.type == SDL_KEYDOWN && e.key.keysym.sym >= SDLK_a && e.key.keysym.sym <= SDLK_z)
 						break;*/
-						
+
 					// key events should go only to the edited text field
-									
-					if (mused.focus != EDITBUFFER) 
+
+					if (mused.focus != EDITBUFFER)
 					{
 						cyd_lock(&mused.cyd, 1);
 						do_shortcuts(&e.key, shortcuts);
 						cyd_lock(&mused.cyd, 0);
 					}
-					
+
 					if (e.key.keysym.sym != 0)
 					{
 						cyd_lock(&mused.cyd, 1);
-						
+
 						switch (mused.focus)
 						{
 							case EDITBUFFER:
 							edit_text(&e);
 							break;
-							
+
 							case EDITPROG:
 							edit_program_event(&e);
 							break;
-							
+
 							case EDITINSTRUMENT:
 							edit_instrument_event(&e);
 							break;
-							
+
 							case EDITPATTERN:
 							pattern_event(&e);
 							break;
-							
+
 							case EDITSEQUENCE:
 							sequence_event(&e);
 							break;
-							
+
 							case EDITFX:
 							fx_event(&e);
 							break;
-							
+
 							case EDITWAVETABLE:
 							wave_event(&e);
 							break;
-							
+
 							case EDITSONGINFO:
 							songinfo_event(&e);
 							break;
 						}
-						
+
 						cyd_lock(&mused.cyd, 0);
 					}
 				}
 				break;
-				
+
 				case MSG_NOTEON:
 				case MSG_NOTEOFF:
 				case MSG_PROGRAMCHANGE:
 					note_event(&e);
 					break;
 			}
-			
+
 			if (mused.focus == EDITBUFFER && e.type == SDL_KEYDOWN) e.type = SDL_USEREVENT;
-			
+
 			if (e.type != SDL_MOUSEMOTION || (e.motion.state) || (e.type == SDL_MOUSEMOTION && mused.mode == MENU)) ++got_event;
-			
+
 			// ensure the last event is a mouse click so it gets passed to the draw/event code
-			
-			if (e.type == SDL_MOUSEBUTTONDOWN || (e.type == SDL_MOUSEMOTION && e.motion.state)) 
-				break; 
+
+			if (e.type == SDL_MOUSEBUTTONDOWN || (e.type == SDL_MOUSEMOTION && e.motion.state))
+				break;
 		}
-		
+
 		int prev_position = mused.stat_song_position;
-		
+
 		if (active) mus_poll_status(&mused.mus, &mused.stat_song_position, mused.stat_pattern_position, mused.stat_pattern, channel, mused.vis.cyd_env, mused.stat_note, &mused.time_played);
-		
+
 		if (active && (got_event || gfx_domain_is_next_frame(domain) || prev_position != mused.stat_song_position))
 		{
 			if ((mused.flags & FOLLOW_PLAY_POSITION) && (mused.flags & SONG_PLAYING))
@@ -494,35 +494,45 @@ int main(int argc, char **argv)
 				mused.current_patternpos = mused.stat_song_position;
 				update_position_sliders();
 			}
-		
+
 			for (int i = 0 ; i < MUS_MAX_CHANNELS ; ++i)
 			{
 				stat_pattern_number[i] = (stat_pattern[i] - &mused.song.pattern[0])/sizeof(mused.song.pattern[0]);
 			}
-			
+
 			int m = mused.mode >= VIRTUAL_MODE ? mused.prev_mode : mused.mode;
-		
+
+			// Check if new mode is actually out of bounds (i.e. prev mode was not
+			// a mode but a focus...)
+			// TODO: Handle mode and focus changes separately
+
+			if (m == EDITPROG)
+			{
+
+				m = EDITINSTRUMENT;
+			}
+
 			int prev_mode;
-		
+
 			do
 			{
 				prev_mode = mused.mode;
-				
-				if (mused.mode == MENU) 
+
+				if (mused.mode == MENU)
 				{
 					SDL_Event foo = {0};
-					
+
 					my_draw_view(tab[m], &foo, domain);
-					
+
 					draw_menu(domain, &e);
-					
-					if (menu_closed) 
+
+					if (menu_closed)
 					{
 						const Menu *cm = get_current_menu();
 						const Menu *cm_action = get_current_menu_action();
-					
+
 						close_menu();
-						
+
 						if (SDL_GetModState() & KMOD_SHIFT)
 							my_open_menu(cm, cm_action);
 					}
@@ -531,14 +541,14 @@ int main(int argc, char **argv)
 				{
 					my_draw_view(tab[m], &e, domain);
 				}
-				
+
 				e.type = 0;
-				
+
 				// agh
 				mused.current_patternpos = mused.pattern_position;
 			}
 			while (mused.mode != prev_mode); // Eliminates the one-frame long black screen
-			
+
 #ifdef DEBUG
 			total_frames++;
 			draw_calls += domain->calls_per_frame;
@@ -547,41 +557,41 @@ int main(int argc, char **argv)
 		}
 		else
 			SDL_Delay(4);
-		
-		if (mused.done) 
+
+		if (mused.done)
 		{
 			int r;
-			if (mused.modified) 
+			if (mused.modified)
 				r = confirm_ync(domain, mused.slider_bevel, &mused.largefont, "Save song?");
 			else
 				break;
-			
+
 			if (r == 0) mused.done = 0;
 			if (r == -1) break;
-			if (r == 1) 
-			{ 
+			if (r == 1)
+			{
 				int r;
-				
+
 				open_data(MAKEPTR(OD_T_SONG), MAKEPTR(OD_A_SAVE), &r);
-				
-				if (!r) mused.done = 0; else break; 
+
+				if (!r) mused.done = 0; else break;
 			}
 		}
 	}
-	
+
 #ifdef MIDI
 	midi_deinit();
 #endif
-	
+
 	cyd_unregister(&mused.cyd);
 	debug("cyd_deinit");
 	cyd_deinit(&mused.cyd);
-	
+
 	save_config(TOSTRING(CONFIG_PATH));
-	
+
 	debug("deinit");
 	deinit();
-	
+
 	gfx_domain_free(domain);
 
 #ifdef DEBUG
@@ -593,6 +603,6 @@ int main(int argc, char **argv)
 #endif
 
 	debug("klystrack has left the building.");
-	
+
 	return 0;
 }
