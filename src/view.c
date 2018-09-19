@@ -991,7 +991,7 @@ void inst_field(const SDL_Event *e, const SDL_Rect *area, int p, int length, cha
 		int i = my_max(0, mused.editpos - field.w / mused.console->font.w + 1), c = 0;
 		for ( ; text[i] && c < my_min(length, field.w / mused.console->font.w) ; ++i, ++c)
 		{
-			const SDL_Rect *r = console_write_args(mused.console, "%c", mused.editpos == i ? 'ù' : text[i]);
+			const SDL_Rect *r = console_write_args(mused.console, "%c", mused.editpos == i ? 'ß' : text[i]);
 			if (check_event(e, r, NULL, NULL, NULL, NULL))
 			{
 				mused.editpos = i;
@@ -1000,7 +1000,7 @@ void inst_field(const SDL_Event *e, const SDL_Rect *area, int p, int length, cha
 		}
 
 		if (mused.editpos == i && c <= length)
-			console_write(mused.console, "ù");
+			console_write(mused.console, "ß");
 	}
 	else
 	{
