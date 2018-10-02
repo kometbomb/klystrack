@@ -209,6 +209,14 @@ void my_open_menu(const Menu *menu, const Menu *action)
 
 int main(int argc, char **argv)
 {
+#ifdef WIN32
+	// Set directsound as the audio driver because SDL>=2.0.6 sets wasapi as the default
+	// which means no audio on some systems (needs format conversion and that doesn't
+	// exist yet in klystron). Can still be overridden with the environment variable.
+
+	SDL_setenv("SDL_AUDIODRIVER", "directsound", 0);
+#endif
+
 	init_genrand(time(NULL));
 	init_resources_dir();
 	debug("Starting %s", VERSION_STRING);
