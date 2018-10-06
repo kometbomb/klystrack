@@ -195,7 +195,7 @@ endif
 
 installer: zip installer/klystrack.nsi
 ifdef COMSPEC
-	$(NSIS) -DVERSION=`cat src/version` installer/klystrack.nsi
+	$(NSIS) -DVERSION=`cat src/version | tr -d '\r\n'` installer/klystrack.nsi
 endif
 
 nightly: zip
