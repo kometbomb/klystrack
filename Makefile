@@ -14,8 +14,8 @@ CC := gcc
 CDEP := $(CC) -E -MM
 ARCHIVE := klystrack
 INSTALLER := klystrack.exe
-SDL_VER := 2.0.8
-SDL_IMAGEVER := 2.0.3
+SDL_VER := 2.0.9
+SDL_IMAGEVER := 2.0.4
 THEMES :=
 REV := cp -f
 
