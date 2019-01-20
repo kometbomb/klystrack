@@ -135,7 +135,7 @@ src/version.h: src/version
 	@echo '#ifndef VERSION_H' > ./src/version.h
 	@echo '#define VERSION_H' >> ./src/version.h
 	@echo '#include "version_number.h"' >> ./src/version.h
-	@echo -n '#define REVISION "' | tr -d '\n'  >> ./src/version.h
+	@echo '#define REVISION "' | tr -d '\n'  >> ./src/version.h
 	@date +"%Y%m%d" | tr -d '\n' >> ./src/version.h
 	@echo '"' >> ./src/version.h
 	@echo '#define VERSION_STRING "klystrack " VERSION " " REVISION' >> ./src/version.h
@@ -144,8 +144,8 @@ src/version.h: src/version
 src/version_number.h: src/version
 	@echo '#ifndef VERSION_NUMBER' > src/version_number.h
 	@echo '#define VERSION_NUMBER' >> src/version_number.h
-	@echo -n '#define VERSION "' >> src/version_number.h
-	@echo -n `cat src/version | tr -d '\r\n'` >> src/version_number.h
+	@echo '#define VERSION "' | tr -d '\n' >> src/version_number.h
+	@cat src/version | tr -d '\r\n' | tr -d '\n' >> src/version_number.h
 	@echo '"' >> src/version_number.h
 	@echo '#endif' >> src/version_number.h
 
