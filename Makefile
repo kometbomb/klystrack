@@ -19,6 +19,15 @@ SDL_IMAGEVER := 2.0.3
 THEMES :=
 REV := cp -f
 
+# make it possible to do a verbose build by running `make V=1`
+ifeq ($(V),1)
+Q=
+MSG=@true
+else
+Q=@
+MSG=@$(ECHO)
+endif
+
 CFLAGS := $(MACHINE) -ftree-vectorize -std=gnu99 -Wno-strict-aliasing -Werror
 
 ifdef COMSPEC
@@ -89,14 +98,14 @@ define directory_defs
  DEPS := $(DEPS) $$(DEP)
 
 objs.$(CFG)/$(2)%.o: src/$(1)%$(EXT)
-	@$(ECHO) "Compiling $$(notdir $$<)..."
-	@mkdir -p objs.$(CFG)
-	@$(CC) $(INCLUDEFLAGS) -c $(CFLAGS) -o $$@ $$<
+	$(MSG) "Compiling $$(notdir $$<)..."
+	$(Q)mkdir -p objs.$(CFG)
+	$(Q)$(CC) $(INCLUDEFLAGS) -c $(CFLAGS) -o $$@ $$<
 
 deps/$(CFG)_$(2)%.d: src/$(1)%$(EXT)
-	@mkdir -p deps
-	@$(ECHO) "Generating dependencies for $$(notdir $$<)..."
-	@set -e ; $(CDEP) $(INCLUDEFLAGS) $$< > $$@.$$$$$$$$; \
+	$(Q)mkdir -p deps
+	$(MSG) "Generating dependencies for $$(notdir $$<)..."
+	$(Q)set -e ; $(CDEP) $(INCLUDEFLAGS) $$< > $$@.$$$$$$$$; \
 	sed 's,\($$*\)\.o[ :]*,objs.$(CFG)\/$(2)\1.o $$@ : ,g' \
 		< $$@.$$$$$$$$ > $$@; \
 	rm -f $$@.$$$$$$$$
@@ -108,46 +117,46 @@ define theme_defs
 
 res/$(1): themes/$(1)/* #themes/$(1)/font/* themes/$(1)/font7x6/* themes/$(1)/tiny/*
 	@$(ECHO) "Building theme $(1)..."
-	@mkdir -p res
-	@mkdir -p themetemp
-	-@if test -e themes/$(1)/colors.txt; then cp -f themes/$(1)/colors.txt themetemp ; fi
-	-@if test -e themes/$(1)/bevel.*; then cp -f themes/$(1)/bevel.* themetemp ; fi
-	-@if test -e themes/$(1)/vu.*; then cp -f themes/$(1)/vu.* themetemp ; fi
-	-@if test -e themes/$(1)/analyzor.*; then cp -f themes/$(1)/analyzor.* themetemp ; fi
-	-@if test -e themes/$(1)/logo.*; then cp -f themes/$(1)/logo.* themetemp ; fi
-	-@if test -e themes/$(1)/catometer.*; then cp -f themes/$(1)/catometer.* themetemp ; fi
-	-@if test -e themes/$(1)/cursor.*; then cp -f themes/$(1)/cursor.* themetemp ; fi
-	-@if test -e themes/$(1)/icon.*; then cp -f themes/$(1)/icon.* themetemp ; fi
-	-@if test -d themes/$(1)/font; then $(MAKEBUNDLE) themetemp/8x8.fnt themes/$(1)/font ; fi
-	-@if test -d themes/$(1)/font7x6; then $(MAKEBUNDLE) themetemp/7x6.fnt themes/$(1)/font7x6 ; fi
-	-@if test -d themes/$(1)/tiny; then $(MAKEBUNDLE) themetemp/4x6.fnt themes/$(1)/tiny ; fi
-	@-$(MAKEBUNDLE) $$@ themetemp
-	@rm -rf themetemp
+	$(Q)mkdir -p res
+	$(Q)mkdir -p themetemp
+	-$(Q)if test -e themes/$(1)/colors.txt; then cp -f themes/$(1)/colors.txt themetemp ; fi
+	-$(Q)if test -e themes/$(1)/bevel.*; then cp -f themes/$(1)/bevel.* themetemp ; fi
+	-$(Q)if test -e themes/$(1)/vu.*; then cp -f themes/$(1)/vu.* themetemp ; fi
+	-$(Q)if test -e themes/$(1)/analyzor.*; then cp -f themes/$(1)/analyzor.* themetemp ; fi
+	-$(Q)if test -e themes/$(1)/logo.*; then cp -f themes/$(1)/logo.* themetemp ; fi
+	-$(Q)if test -e themes/$(1)/catometer.*; then cp -f themes/$(1)/catometer.* themetemp ; fi
+	-$(Q)if test -e themes/$(1)/cursor.*; then cp -f themes/$(1)/cursor.* themetemp ; fi
+	-$(Q)if test -e themes/$(1)/icon.*; then cp -f themes/$(1)/icon.* themetemp ; fi
+	-$(Q)if test -d themes/$(1)/font; then $(MAKEBUNDLE) themetemp/8x8.fnt themes/$(1)/font ; fi
+	-$(Q)if test -d themes/$(1)/font7x6; then $(MAKEBUNDLE) themetemp/7x6.fnt themes/$(1)/font7x6 ; fi
+	-$(Q)if test -d themes/$(1)/tiny; then $(MAKEBUNDLE) themetemp/4x6.fnt themes/$(1)/tiny ; fi
+	$(Q)-$(MAKEBUNDLE) $$@ themetemp
+	$(Q)rm -rf themetemp
 
 endef
 
 build: Makefile src/version.h src/version_number.h
-	@touch src/version
-	@make -C $(KLYSTRON) CFG=$(CFG) EXTFLAGS="$(EXTFLAGS)"
-	@make all CFG=$(CFG) EXTFLAGS="$(EXTFLAGS)"
+	$(Q)touch src/version
+	$(Q)make -C $(KLYSTRON) CFG=$(CFG) EXTFLAGS="$(EXTFLAGS)"
+	$(Q)make all CFG=$(CFG) EXTFLAGS="$(EXTFLAGS)"
 
 src/version.h: src/version
-	@echo '#ifndef VERSION_H' > ./src/version.h
-	@echo '#define VERSION_H' >> ./src/version.h
-	@echo '#include "version_number.h"' >> ./src/version.h
-	@echo '#define REVISION "' | tr -d '\n'  >> ./src/version.h
-	@date +"%Y%m%d" | tr -d '\n' >> ./src/version.h
-	@echo '"' >> ./src/version.h
-	@echo '#define VERSION_STRING "klystrack " VERSION " " REVISION' >> ./src/version.h
-	@echo '#endif' >> ./src/version.h
+	$(Q)echo '#ifndef VERSION_H' > ./src/version.h
+	$(Q)echo '#define VERSION_H' >> ./src/version.h
+	$(Q)echo '#include "version_number.h"' >> ./src/version.h
+	$(Q)echo '#define REVISION "' | tr -d '\n'  >> ./src/version.h
+	$(Q)date +"%Y%m%d" | tr -d '\n' >> ./src/version.h
+	$(Q)echo '"' >> ./src/version.h
+	$(Q)echo '#define VERSION_STRING "klystrack " VERSION " " REVISION' >> ./src/version.h
+	$(Q)echo '#endif' >> ./src/version.h
 
 src/version_number.h: src/version
-	@echo '#ifndef VERSION_NUMBER' > src/version_number.h
-	@echo '#define VERSION_NUMBER' >> src/version_number.h
-	@echo '#define VERSION "' | tr -d '\n' >> src/version_number.h
-	@cat src/version | tr -d '\r\n' | tr -d '\n' >> src/version_number.h
-	@echo '"' >> src/version_number.h
-	@echo '#endif' >> src/version_number.h
+	$(Q)echo '#ifndef VERSION_NUMBER' > src/version_number.h
+	$(Q)echo '#define VERSION_NUMBER' >> src/version_number.h
+	$(Q)echo '#define VERSION "' | tr -d '\n' >> src/version_number.h
+	$(Q)cat src/version | tr -d '\r\n' | tr -d '\n' >> src/version_number.h
+	$(Q)echo '"' >> src/version_number.h
+	$(Q)echo '#endif' >> src/version_number.h
 
 # root (i.e. src/*.c)
 $(eval $(call directory_defs,,))
@@ -165,32 +174,32 @@ endif
 all: bin.$(CFG)/$(TARGET) $(THEMES)
 
 zip: doc/* $(THEMES) $(DLLS) examples/instruments/* examples/songs/* $(DLLS)
-	@make -C $(KLYSTRON) CFG=release EXTFLAGS="$(EXTFLAGS)"
-	@make build CFG=release
-	@mkdir -p zip/data/res
-	@mkdir -p zip/data/examples/songs
-	@mkdir -p zip/data/examples/songs/n00bstar-examples
-	@mkdir -p zip/data/examples/instruments
-	@mkdir -p zip/data/examples/instruments/n00bstar-instruments
-	@cp examples/songs/*.kt zip/data/examples/songs
-	@cp examples/songs/n00bstar-examples/*.kt zip/data/examples/songs/n00bstar-examples
-	@cp examples/instruments/*.ki zip/data/examples/instruments
-	@cp examples/instruments/n00bstar-instruments/*.ki zip/data/examples/instruments/n00bstar-instruments
-	@cp res/* zip/data/res
-	@mkdir -p zip/data/key
-	@cp key/* zip/data/key
-	@cp LICENSE zip/data/LICENSE
-	@cp doc/SDL.txt zip/data/SDL.txt
-	@cp doc/SDL_image.txt zip/data/SDL_image.txt
-	@cp doc/Default.kt zip/data/Default.kt
-	@cp bin.release/$(TARGET) zip/data/$(TARGET)
+	$(Q)make -C $(KLYSTRON) CFG=release EXTFLAGS="$(EXTFLAGS)"
+	$(Q)make build CFG=release
+	$(Q)mkdir -p zip/data/res
+	$(Q)mkdir -p zip/data/examples/songs
+	$(Q)mkdir -p zip/data/examples/songs/n00bstar-examples
+	$(Q)mkdir -p zip/data/examples/instruments
+	$(Q)mkdir -p zip/data/examples/instruments/n00bstar-instruments
+	$(Q)cp examples/songs/*.kt zip/data/examples/songs
+	$(Q)cp examples/songs/n00bstar-examples/*.kt zip/data/examples/songs/n00bstar-examples
+	$(Q)cp examples/instruments/*.ki zip/data/examples/instruments
+	$(Q)cp examples/instruments/n00bstar-instruments/*.ki zip/data/examples/instruments/n00bstar-instruments
+	$(Q)cp res/* zip/data/res
+	$(Q)mkdir -p zip/data/key
+	$(Q)cp key/* zip/data/key
+	$(Q)cp LICENSE zip/data/LICENSE
+	$(Q)cp doc/SDL.txt zip/data/SDL.txt
+	$(Q)cp doc/SDL_image.txt zip/data/SDL_image.txt
+	$(Q)cp doc/Default.kt zip/data/Default.kt
+	$(Q)cp bin.release/$(TARGET) zip/data/$(TARGET)
 ifdef COMSPEC
 	cd zip/data; rm -f ../$(ARCHIVE); $(ZIP) zip
-	@cp -f zip/klystrack.zip zip/klystrack-`cat src/version | tr -d '\r\n'`-win32.zip
+	$(Q)cp -f zip/klystrack.zip zip/klystrack-`cat src/version | tr -d '\r\n'`-win32.zip
 else
-	-@rm -f zip/data/Makefile
+	-$(Q)rm -f zip/data/Makefile
 	cd zip; cp -r data klystrack-`cat ../src/version | tr -d '\r\n'` ; rm -f $(ARCHIVE); $(ZIP) klystrack-`cat ../src/version`.tar.gz klystrack-`cat ../src/version` ; rm -rf klystrack-`cat ../src/version`
-	@cp -f linux/Makefile zip/data
+	$(Q)cp -f linux/Makefile zip/data
 endif
 
 installer: zip installer/klystrack.nsi
@@ -199,22 +208,22 @@ ifdef COMSPEC
 endif
 
 nightly: zip
-	@cp zip/$(ARCHIVE) zip/klystrack-nightly-`date +"%Y%m%d" | tr -d '\n'`-win32.zip
+	$(Q)cp zip/$(ARCHIVE) zip/klystrack-nightly-`date +"%Y%m%d" | tr -d '\n'`-win32.zip
 
 clean:
 	make -C klystron clean
-	@rm -rf deps objs.debug objs.release objs.profile bin.release bin.debug bin.profile zip temp res
+	$(Q)rm -rf deps objs.debug objs.release objs.profile bin.release bin.debug bin.profile zip temp res
 
 bin.$(CFG)/$(TARGET): $(OBJS)
 	@$(ECHO) "Linking $(TARGET)..."
-	@mkdir -p bin.$(CFG)
-	@$(CC) $(CFLAGS) -o $@ $^ $(LDFLAGS)
+	$(Q)mkdir -p bin.$(CFG)
+	$(Q)$(CC) $(CFLAGS) -o $@ $^ $(LDFLAGS)
 
 release: bin.release/$(TARGET)
 	@$(ECHO) "Building release -->"
 
 #bin.release/$(TARGET):
-#	@make CFG=release
+#	$(Q)make CFG=release
 
 ifneq ($(MAKECMDGOALS),clean)
 -include $(DEPS)
@@ -222,19 +231,19 @@ endif
 
 zip/data/SDL2_image.dll:
 	@$(ECHO) "Downloading "$@"..."
-	@mkdir -p temp
-	@cd temp ; $(CURL) -O http://www.libsdl.org/projects/SDL_image/release/SDL2_image-$(SDL_IMAGEVER)-win32-x86.zip ; $(ZIPEXT) SDL2_image-$(SDL_IMAGEVER)-win32-x86.zip SDL2_image.dll libpng16-16.dll zlib1.dll ; rm SDL2_image-$(SDL_IMAGEVER)-win32-x86.zip
-	@mkdir -p zip/data
-	@mv temp/SDL2_image.dll zip/data/SDL2_image.dll
-	@mv temp/libpng16-16.dll zip/data/libpng16-16.dll
-	@mv temp/zlib1.dll zip/data/zlib1.dll
+	$(Q)mkdir -p temp
+	$(Q)cd temp ; $(CURL) -O http://www.libsdl.org/projects/SDL_image/release/SDL2_image-$(SDL_IMAGEVER)-win32-x86.zip ; $(ZIPEXT) SDL2_image-$(SDL_IMAGEVER)-win32-x86.zip SDL2_image.dll libpng16-16.dll zlib1.dll ; rm SDL2_image-$(SDL_IMAGEVER)-win32-x86.zip
+	$(Q)mkdir -p zip/data
+	$(Q)mv temp/SDL2_image.dll zip/data/SDL2_image.dll
+	$(Q)mv temp/libpng16-16.dll zip/data/libpng16-16.dll
+	$(Q)mv temp/zlib1.dll zip/data/zlib1.dll
 
 zip/data/SDL2.dll:
 	@$(ECHO) "Downloading "$@"..."
-	@mkdir -p temp
-	@cd temp ; $(CURL) -O https://www.libsdl.org/release/SDL2-$(SDL_VER)-win32-x86.zip ; $(ZIPEXT) SDL2-$(SDL_VER)-win32-x86.zip SDL2.dll ; rm SDL2-$(SDL_VER)-win32-x86.zip
-	@mkdir -p zip/data
-	@mv temp/SDL2.dll zip/data/SDL2.dll
+	$(Q)mkdir -p temp
+	$(Q)cd temp ; $(CURL) -O https://www.libsdl.org/release/SDL2-$(SDL_VER)-win32-x86.zip ; $(ZIPEXT) SDL2-$(SDL_VER)-win32-x86.zip SDL2.dll ; rm SDL2-$(SDL_VER)-win32-x86.zip
+	$(Q)mkdir -p zip/data
+	$(Q)mv temp/SDL2.dll zip/data/SDL2.dll
 
 
 objs.$(CFG)/windres.o: windres/* icon/*
