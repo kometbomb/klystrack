@@ -86,12 +86,12 @@ define directory_defs
  OBJS := $(OBJS) $$(OBJ)
  DEPS := $(DEPS) $$(DEP)
 
-objs.$(CFG)/$(2)%.o: src/$(1)%$(EXT)
+objs.$(CFG)/$(2)%.o: src/$(1)%$(EXT) src/version.h src/version_number.h
 	$(MSG) "Compiling $$(notdir $$<)..."
 	$(Q)mkdir -p objs.$(CFG)
 	$(Q)$(CC) $(INCLUDEFLAGS) -c $(CFLAGS) -o $$@ $$<
 
-deps/$(CFG)_$(2)%.d: src/$(1)%$(EXT)
+deps/$(CFG)_$(2)%.d: src/$(1)%$(EXT) src/version.h src/version_number.h
 	$(Q)mkdir -p deps
 	$(MSG) "Generating dependencies for $$(notdir $$<)..."
 	$(Q)set -e ; $(CDEP) $(INCLUDEFLAGS) $$< > $$@.$$$$$$$$; \
