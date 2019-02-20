@@ -26,8 +26,6 @@ CFLAGS := $(MACHINE) -ftree-vectorize -std=gnu99 -Wno-strict-aliasing -Werror
 ifdef COMSPEC
 	TARGET := $(TARGET).exe
 	ARCHIVE := $(ARCHIVE).zip
-	SDLFLAGS := -I c:/mingw/include/SDL2
-	SDLLIBS :=  -lSDL2main -lSDL2 -lSDL2_image -lwinmm
 	CFLAGS += -mthreads
 	ZIP := zip -r ../$(ARCHIVE) .
 	ZIPEXT := unzip
@@ -35,8 +33,6 @@ else
 	ZIP := tar czf
 	DLLS =
 	ARCHIVE := $(ARCHIVE).tar.gz
-	SDLFLAGS := `sdl2-config --cflags` -U_FORTIFY_SOURCE
-	SDLLIBS := `sdl2-config --libs` -lSDL2_image
 endif
 
 ifdef COMSPEC
