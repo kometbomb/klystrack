@@ -2,13 +2,13 @@ TARGET := klystrack
 KLYSTRON=klystron
 ECHO := echo
 CFG := debug
+EXE := bin.$(CFG)/$(TARGET)
 MACHINE :=
 NSIS := C:/program\ files\ \(x86\)/nsis/makensis.exe -V2 -NOCD
 CURL := curl
 MAKEBUNDLE := $(KLYSTRON)/tools/bin/makebundle.exe
 UPLOAD := cmd.exe /c upload.bat
 DLLS := zip/data/SDL2_image.dll zip/data/SDL2.dll
-DESTDIR ?= /usr
 EXT := .c
 CC := gcc
 CDEP := $(CC) -E -MM
@@ -19,6 +19,18 @@ SDL_IMAGEVER := 2.0.3
 THEMES :=
 REV := cp -f
 
+PREFIX ?= /usr
+BINDIR = $(PREFIX)/bin
+ifdef COMSPEC
+	RES_PATH := .
+	CFLAGS += -DRESOURCES_IN_BINARY_DIR
+	CONFIG_PATH := ~/.klystrack
+else
+	RES_PATH = $(PREFIX)/lib/klystrack
+	CONFIG_PATH := ~/.klystrack
+endif
+
+
 include klystron/common.mk
 
 CFLAGS := $(MACHINE) -ftree-vectorize -std=gnu99 -Wno-strict-aliasing -Werror
@@ -26,8 +38,6 @@ CFLAGS := $(MACHINE) -ftree-vectorize -std=gnu99 -Wno-strict-aliasing -Werror
 ifdef COMSPEC
 	TARGET := $(TARGET).exe
 	ARCHIVE := $(ARCHIVE).zip
-	SDLFLAGS := -I c:/mingw/include/SDL2
-	SDLLIBS :=  -lSDL2main -lSDL2 -lSDL2_image -lwinmm
 	CFLAGS += -mthreads
 	ZIP := zip -r ../$(ARCHIVE) .
 	ZIPEXT := unzip
@@ -35,18 +45,10 @@ else
 	ZIP := tar czf
 	DLLS =
 	ARCHIVE := $(ARCHIVE).tar.gz
-	SDLFLAGS := `sdl2-config --cflags` -U_FORTIFY_SOURCE
-	SDLLIBS := `sdl2-config --libs` -lSDL2_image
 endif
 
-ifdef COMSPEC
-	RES_PATH := .
-	CFLAGS += -DRESOURCES_IN_BINARY_DIR
-	CONFIG_PATH := ~/.klystrack
-else
-	RES_PATH ?= $(DESTDIR)/lib/klystrack
-	CONFIG_PATH := ~/.klystrack
-endif
+RESOURCES = $(subst themes,res,$(sort $(wildcard themes/*)))
+KEYS = $(sort $(wildcard key/*))
 
 EXTFLAGS := -DNOSDL_MIXER -DUSESDLMUTEXES -DENABLEAUDIODUMP -DSTEREOOUTPUT -DUSESDL_IMAGE $(EXTFLAGS) $(CFLAGS)
 LDFLAGS :=  -L $(KLYSTRON)/bin.$(CFG) -lengine_gfx -lengine_util -lengine_snd -lengine_gui -lm $(SDLLIBS)
@@ -90,12 +92,12 @@ define directory_defs
  OBJS := $(OBJS) $$(OBJ)
  DEPS := $(DEPS) $$(DEP)
 
-objs.$(CFG)/$(2)%.o: src/$(1)%$(EXT)
+objs.$(CFG)/$(2)%.o: src/$(1)%$(EXT) src/version.h src/version_number.h
 	$(MSG) "Compiling $$(notdir $$<)..."
 	$(Q)mkdir -p objs.$(CFG)
 	$(Q)$(CC) $(INCLUDEFLAGS) -c $(CFLAGS) -o $$@ $$<
 
-deps/$(CFG)_$(2)%.d: src/$(1)%$(EXT)
+deps/$(CFG)_$(2)%.d: src/$(1)%$(EXT) src/version.h src/version_number.h
 	$(Q)mkdir -p deps
 	$(MSG) "Generating dependencies for $$(notdir $$<)..."
 	$(Q)set -e ; $(CDEP) $(INCLUDEFLAGS) $$< > $$@.$$$$$$$$; \
@@ -164,7 +166,7 @@ endif
 
 .PHONY: zip all build nightly installer
 
-all: bin.$(CFG)/$(TARGET) $(THEMES)
+all: $(EXE) $(THEMES)
 
 zip: doc/* $(THEMES) $(DLLS) examples/instruments/* examples/songs/* $(DLLS)
 	$(Q)make -C $(KLYSTRON) CFG=release EXTFLAGS="$(EXTFLAGS)"
@@ -207,13 +209,24 @@ clean:
 	make -C klystron clean
 	$(Q)rm -rf deps objs.debug objs.release objs.profile bin.release bin.debug bin.profile zip temp res
 
-bin.$(CFG)/$(TARGET): $(OBJS)
+$(EXE): $(OBJS)
 	@$(ECHO) "Linking $(TARGET)..."
 	$(Q)mkdir -p bin.$(CFG)
 	$(Q)$(CC) $(CFLAGS) -o $@ $^ $(LDFLAGS)
 
 release: bin.release/$(TARGET)
 	@$(ECHO) "Building release -->"
+
+$(DESTDIR)$(BINDIR)/$(TARGET): $(EXE)
+	install -D -m 755 $< $@
+
+$(DESTDIR)$(RES_PATH)/res/%: res/%
+	install -D -m 644 $< $@
+
+$(DESTDIR)$(RES_PATH)/key/%: key/%
+	install -D -m 644 $< $@
+
+install: $(EXE:bin.$(CFG)/%=$(DESTDIR)$(BINDIR)/%) $(RESOURCES:res/%=$(DESTDIR)$(RES_PATH)/res/%) $(KEYS:key/%=$(DESTDIR)$(RES_PATH)/key/%)
 
 #bin.release/$(TARGET):
 #	$(Q)make CFG=release
