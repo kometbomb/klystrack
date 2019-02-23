@@ -1802,7 +1802,7 @@ void set_room_size(int fx, int size, int vol, int dec)
 		else
 		{
 			p = rnd(i * ms / CYDRVB_TAPS, (i + 1) * ms / CYDRVB_TAPS) + min_delay;
-			g = low - low * pow(1.0 - (double)p / ms, (double)dec / 3) * vol / 16;
+			g = low - low * pow(1.0 - (double)my_min(p, ms - 1) / ms, (double)dec / 3) * vol / 16;
 		}
 
 		if (p >= CYDRVB_SIZE)
