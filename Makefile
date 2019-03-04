@@ -33,7 +33,7 @@ endif
 
 include klystron/common.mk
 
-CFLAGS := $(MACHINE) -ftree-vectorize -std=gnu99 -Wno-strict-aliasing -Werror
+CFLAGS := $(MACHINE) -ftree-vectorize -std=gnu99 -Wno-strict-aliasing
 
 ifdef COMSPEC
 	TARGET := $(TARGET).exe
