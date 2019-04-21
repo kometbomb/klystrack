@@ -132,8 +132,8 @@ endef
 
 build: Makefile src/version.h src/version_number.h
 	$(Q)touch src/version
-	$(Q)make -C $(KLYSTRON) CFG=$(CFG) EXTFLAGS="$(EXTFLAGS)"
-	$(Q)make all CFG=$(CFG) EXTFLAGS="$(EXTFLAGS)"
+	$(Q)make -j8 -C $(KLYSTRON) CFG=$(CFG) EXTFLAGS="$(EXTFLAGS)"
+	$(Q)make -j8 all CFG=$(CFG) EXTFLAGS="$(EXTFLAGS)"
 
 src/version.h: src/version
 	$(Q)echo '#ifndef VERSION_H' > ./src/version.h
