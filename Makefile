@@ -132,8 +132,8 @@ endef
 
 build: Makefile src/version.h src/version_number.h
 	$(Q)touch src/version
-	$(Q)make -j8 -C $(KLYSTRON) CFG=$(CFG) EXTFLAGS="$(EXTFLAGS)"
-	$(Q)make -j8 all CFG=$(CFG) EXTFLAGS="$(EXTFLAGS)"
+	$(Q)$(MAKE) -C $(KLYSTRON) CFG=$(CFG) EXTFLAGS="$(EXTFLAGS)"
+	$(Q)$(MAKE) all CFG=$(CFG) EXTFLAGS="$(EXTFLAGS)"
 
 src/version.h: src/version
 	$(Q)echo '#ifndef VERSION_H' > ./src/version.h
@@ -169,8 +169,8 @@ endif
 all: $(EXE) $(THEMES)
 
 zip: doc/* $(THEMES) $(DLLS) examples/instruments/* examples/songs/* $(DLLS)
-	$(Q)make -C $(KLYSTRON) CFG=release EXTFLAGS="$(EXTFLAGS)"
-	$(Q)make build CFG=release
+	$(Q)$(MAKE) -C $(KLYSTRON) CFG=release EXTFLAGS="$(EXTFLAGS)"
+	$(Q)$(MAKE) build CFG=release
 	$(Q)mkdir -p zip/data/res
 	$(Q)mkdir -p zip/data/examples/songs
 	$(Q)mkdir -p zip/data/examples/songs/n00bstar-examples
@@ -206,7 +206,7 @@ nightly: zip
 	$(Q)cp zip/$(ARCHIVE) zip/klystrack-nightly-`date +"%Y%m%d" | tr -d '\n'`-win32.zip
 
 clean:
-	make -C klystron clean
+	$(MAKE) -C klystron clean
 	$(Q)rm -rf deps objs.debug objs.release objs.profile bin.release bin.debug bin.profile zip temp res
 
 $(EXE): $(OBJS)
