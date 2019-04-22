@@ -11,7 +11,6 @@ UPLOAD := cmd.exe /c upload.bat
 DLLS := zip/data/SDL2_image.dll zip/data/SDL2.dll
 EXT := .c
 CC := gcc
-MAKE ?= make -j4
 CDEP := $(CC) -E -MM
 ARCHIVE := klystrack
 INSTALLER := klystrack.exe
@@ -134,7 +133,7 @@ endef
 build: Makefile src/version.h src/version_number.h
 	$(Q)touch src/version
 	$(Q)$(MAKE) -C $(KLYSTRON) CFG=$(CFG) EXTFLAGS="$(EXTFLAGS)"
-	$(Q)$(MAKE) -j8 all CFG=$(CFG) EXTFLAGS="$(EXTFLAGS)"
+	$(Q)$(MAKE) all CFG=$(CFG) EXTFLAGS="$(EXTFLAGS)"
 
 src/version.h: src/version
 	$(Q)echo '#ifndef VERSION_H' > ./src/version.h
