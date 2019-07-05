@@ -867,7 +867,7 @@ void program_view(GfxDomain *dest_surface, const SDL_Rect *dest, const SDL_Event
 		char box[6], cur = ' ';
 
 		for (int c = 0 ; c < CYD_MAX_CHANNELS ; ++c)
-			if (mused.channel[c].instrument == inst && (mused.cyd.channel[c].flags & CYD_CHN_ENABLE_GATE) && (mused.channel[c].flags & MUS_CHN_PROGRAM_RUNNING) && mused.channel[c].program_tick == i) cur = '';
+			if (mused.channel[c].instrument == inst && (mused.cyd.channel[c].flags & CYD_CHN_ENABLE_GATE) && (mused.channel[c].flags & MUS_CHN_PROGRAM_RUNNING) && mused.channel[c].program_tick == i) cur = 'ï¿½';
 
 		if (inst->program[i] == MUS_FX_NOP)
 		{
@@ -883,7 +883,7 @@ void program_view(GfxDomain *dest_surface, const SDL_Rect *dest, const SDL_Event
 			check_event(event, console_write_args(mused.console, "%02X%c   ", i, cur),
 				select_program_step, MAKEPTR(i), 0, 0);
 			write_command(event, box, i, mused.current_program_step);
-			check_event(event, console_write_args(mused.console, "%c ", (!(inst->program[i] & 0x8000) || (inst->program[i] & 0xf000) == 0xf000) ? '' : '|'),
+			check_event(event, console_write_args(mused.console, "%c ", (!(inst->program[i] & 0x8000) || (inst->program[i] & 0xf000) == 0xf000) ? 'Â´' : '|'),
 				select_program_step, MAKEPTR(i), 0, 0);
 		}
 		else
@@ -991,7 +991,7 @@ void inst_field(const SDL_Event *e, const SDL_Rect *area, int p, int length, cha
 		int i = my_max(0, mused.editpos - field.w / mused.console->font.w + 1), c = 0;
 		for ( ; text[i] && c < my_min(length, field.w / mused.console->font.w) ; ++i, ++c)
 		{
-			const SDL_Rect *r = console_write_args(mused.console, "%c", mused.editpos == i ? '§' : text[i]);
+			const SDL_Rect *r = console_write_args(mused.console, "%c", mused.editpos == i ? 'ï¿½' : text[i]);
 			if (check_event(e, r, NULL, NULL, NULL, NULL))
 			{
 				mused.editpos = i;
@@ -1000,7 +1000,7 @@ void inst_field(const SDL_Event *e, const SDL_Rect *area, int p, int length, cha
 		}
 
 		if (mused.editpos == i && c <= length)
-			console_write(mused.console, "§");
+			console_write(mused.console, "ï¿½");
 	}
 	else
 	{
