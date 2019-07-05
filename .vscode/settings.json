@@ -1,3 +1,4 @@
 {
-    "files.encoding": "windows1252"
+    "files.encoding": "windows1252",
+    "files.autoGuessEncoding": false
 }
