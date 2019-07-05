@@ -8,3 +8,4 @@
 *.exe
 zip/data/Default.kt
 zip
+.vscode/ipch/*

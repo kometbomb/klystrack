@@ -761,7 +761,10 @@ int open_wavetable(FILE *f)
 
 	if (w)
 	{
-		cyd_wave_entry_init(&mused.mus.cyd->wavetable_entries[mused.selected_wavetable], w->data, w->length, w->bits_per_sample == 16 ? CYD_WAVE_TYPE_SINT16 : CYD_WAVE_TYPE_SINT8, w->channels, 1, 1);
+    // http://soundfile.sapp.org/doc/WaveFormat/ says: "8-bit samples are stored as unsigned bytes, ranging from 0 to 255.
+    // 16-bit samples are stored as 2's-complement signed integers, ranging from -32768 to 32767."
+
+		cyd_wave_entry_init(&mused.mus.cyd->wavetable_entries[mused.selected_wavetable], w->data, w->length, w->bits_per_sample == 16 ? CYD_WAVE_TYPE_SINT16 : CYD_WAVE_TYPE_UINT8, w->channels, 1, 1);
 
 		mused.mus.cyd->wavetable_entries[mused.selected_wavetable].flags = 0;
 		mused.mus.cyd->wavetable_entries[mused.selected_wavetable].sample_rate = w->sample_rate;
