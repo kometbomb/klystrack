@@ -113,20 +113,20 @@ define theme_defs
 res/$(1): themes/$(1)/* #themes/$(1)/font/* themes/$(1)/font7x6/* themes/$(1)/tiny/*
 	@$(ECHO) "Building theme $(1)..."
 	$(Q)mkdir -p res
-	$(Q)mkdir -p themetemp
-	-$(Q)if test -e themes/$(1)/colors.txt; then cp -f themes/$(1)/colors.txt themetemp ; fi
-	-$(Q)if test -e themes/$(1)/bevel.*; then cp -f themes/$(1)/bevel.* themetemp ; fi
-	-$(Q)if test -e themes/$(1)/vu.*; then cp -f themes/$(1)/vu.* themetemp ; fi
-	-$(Q)if test -e themes/$(1)/analyzor.*; then cp -f themes/$(1)/analyzor.* themetemp ; fi
+	$(Q)mkdir -p themetemp.$(1)
+	-$(Q)if test -e themes/$(1)/colors.txt; then cp -f themes/$(1)/colors.txt themetemp.$(1) ; fi
+	-$(Q)if test -e themes/$(1)/bevel.*; then cp -f themes/$(1)/bevel.* themetemp.$(1) ; fi
+	-$(Q)if test -e themes/$(1)/vu.*; then cp -f themes/$(1)/vu.* themetemp.$(1) ; fi
+	-$(Q)if test -e themes/$(1)/analyzor.*; then cp -f themes/$(1)/analyzor.* themetemp.$(1) ; fi
 	-$(Q)if test -e themes/$(1)/logo.*; then cp -f themes/$(1)/logo.* themetemp ; fi
-	-$(Q)if test -e themes/$(1)/catometer.*; then cp -f themes/$(1)/catometer.* themetemp ; fi
-	-$(Q)if test -e themes/$(1)/cursor.*; then cp -f themes/$(1)/cursor.* themetemp ; fi
-	-$(Q)if test -e themes/$(1)/icon.*; then cp -f themes/$(1)/icon.* themetemp ; fi
-	-$(Q)if test -d themes/$(1)/font; then $(MAKEBUNDLE) themetemp/8x8.fnt themes/$(1)/font ; fi
-	-$(Q)if test -d themes/$(1)/font7x6; then $(MAKEBUNDLE) themetemp/7x6.fnt themes/$(1)/font7x6 ; fi
-	-$(Q)if test -d themes/$(1)/tiny; then $(MAKEBUNDLE) themetemp/4x6.fnt themes/$(1)/tiny ; fi
-	$(Q)-$(MAKEBUNDLE) $$@ themetemp
-	$(Q)rm -rf themetemp
+	-$(Q)if test -e themes/$(1)/catometer.*; then cp -f themes/$(1)/catometer.* themetemp.$(1) ; fi
+	-$(Q)if test -e themes/$(1)/cursor.*; then cp -f themes/$(1)/cursor.* themetemp.$(1) ; fi
+	-$(Q)if test -e themes/$(1)/icon.*; then cp -f themes/$(1)/icon.* themetemp.$(1) ; fi
+	-$(Q)if test -d themes/$(1)/font; then $(MAKEBUNDLE) themetemp.$(1)/8x8.fnt themes/$(1)/font ; fi
+	-$(Q)if test -d themes/$(1)/font7x6; then $(MAKEBUNDLE) themetemp.$(1)/7x6.fnt themes/$(1)/font7x6 ; fi
+	-$(Q)if test -d themes/$(1)/tiny; then $(MAKEBUNDLE) themetemp.$(1)/4x6.fnt themes/$(1)/tiny ; fi
+	$(Q)-$(MAKEBUNDLE) $$@ themetemp.$(1)
+	$(Q)rm -rf themetemp.$(1)
 
 endef
 
