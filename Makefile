@@ -21,19 +21,21 @@ REV := cp -f
 
 PREFIX ?= /usr
 BINDIR = $(PREFIX)/bin
+CFLAGS := $(MACHINE) -ftree-vectorize -std=gnu99 -Wno-strict-aliasing
+
 ifdef COMSPEC
+	# Compiling for Windows
 	RES_PATH := .
 	CFLAGS += -DRESOURCES_IN_BINARY_DIR
 	CONFIG_PATH := ~/.klystrack
 else
+	# Not compiling for Windows
 	RES_PATH = $(PREFIX)/lib/klystrack
 	CONFIG_PATH := ~/.klystrack
+	CFLAGS += -DCONFIG_DEFAULT_DISABLE_RENDER_TO_TEXTURE
 endif
 
-
 include klystron/common.mk
-
-CFLAGS := $(MACHINE) -ftree-vectorize -std=gnu99 -Wno-strict-aliasing
 
 ifdef COMSPEC
 	TARGET := $(TARGET).exe

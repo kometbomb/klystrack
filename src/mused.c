@@ -232,6 +232,13 @@ void init(MusInstrument *instrument, MusPattern *pattern, MusSeqPattern sequence
 
 	mused.flags = MULTICHANNEL_PREVIEW|ANIMATE_CURSOR|EDIT_MODE|SHOW_LOGO|FOLLOW_PLAY_POSITION|
 		MULTIKEY_JAMMING|START_WITH_TEMPLATE|EDIT_SEQUENCE_DIGITS;
+
+	// Rendering to the intermediary texture is disabled by default on Linux systems
+	// as it causes flashing of screen
+#ifdef CONFIG_DEFAULT_DISABLE_RENDER_TO_TEXTURE
+	mused.flags |= DISABLE_RENDER_TO_TEXTURE;
+#endif
+
 	mused.visible_columns = VC_INSTRUMENT | VC_COMMAND;
 	mused.done = 0;
 	mused.octave = 4;
