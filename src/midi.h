@@ -34,6 +34,7 @@ OTHER DEALINGS IN THE SOFTWARE.
 
 extern Menu midi_menu[];
 
+void midi_event(SDL_Event *e);
 void midi_init();
 void midi_deinit();
 void midi_set_channel(void *chn, void *unused1, void *unused2);

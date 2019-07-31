@@ -477,6 +477,12 @@ int main(int argc, char **argv)
 				case MSG_NOTEOFF:
 				case MSG_PROGRAMCHANGE:
 					note_event(&e);
+				case MSG_CLOCK:
+				case MSG_START:
+				case MSG_CONTINUE:
+				case MSG_STOP:
+				case MSG_SPP:
+					midi_event(&e);
 					break;
 			}
 

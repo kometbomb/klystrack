@@ -52,12 +52,14 @@ endif
 RESOURCES = $(subst themes,res,$(sort $(wildcard themes/*)))
 KEYS = $(sort $(wildcard key/*))
 
-EXTFLAGS := -DNOSDL_MIXER -DUSESDLMUTEXES -DENABLEAUDIODUMP -DSTEREOOUTPUT -DUSESDL_IMAGE $(EXTFLAGS) $(CFLAGS)
+EXTFLAGS := -DNOSDL_MIXER -DUSESDLMUTEXES -DENABLEAUDIODUMP -DSTEREOOUTPUT -DUSESDL_IMAGE -DMIDI $(EXTFLAGS) $(CFLAGS)
 LDFLAGS :=  -L $(KLYSTRON)/bin.$(CFG) -lengine_gfx -lengine_util -lengine_snd -lengine_gui -lm $(SDLLIBS)
 INCLUDEFLAGS := -I src $(SDLFLAGS) -I $(KLYSTRON)/src -L$(KLYSTRON)/bin.$(CFG) -DRES_PATH="$(RES_PATH)" -DCONFIG_PATH="$(CONFIG_PATH)" $(EXTFLAGS) -DKLYSTRON=$(KLYSTRON)
 
 ifdef COMSPEC
 	LDFLAGS := -lmingw32 $(LDFLAGS)
+else
+	LDFLAGS := -lasound $(LDFLAGS)
 endif
 
 DIRS := $(notdir $(wildcard src/*))
@@ -196,7 +198,6 @@ ifdef COMSPEC
 else
 	-$(Q)rm -f zip/data/Makefile
 	cd zip; cp -r data klystrack-`cat ../src/version | tr -d '\r\n'` ; rm -f $(ARCHIVE); $(ZIP) klystrack-`cat ../src/version`.tar.gz klystrack-`cat ../src/version` ; rm -rf klystrack-`cat ../src/version`
-	$(Q)cp -f linux/Makefile zip/data
 endif
 
 installer: zip installer/klystrack.nsi
