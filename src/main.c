@@ -477,6 +477,7 @@ int main(int argc, char **argv)
 				case MSG_NOTEOFF:
 				case MSG_PROGRAMCHANGE:
 					note_event(&e);
+					break;
 				case MSG_CLOCK:
 				case MSG_START:
 				case MSG_CONTINUE:
