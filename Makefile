@@ -14,7 +14,7 @@ CC := gcc
 CDEP := $(CC) -E -MM
 ARCHIVE := klystrack
 INSTALLER := klystrack.exe
-SDL_VER := 2.0.9
+SDL_VER := 2.0.10
 SDL_IMAGEVER := 2.0.5
 THEMES :=
 REV := cp -f
@@ -52,7 +52,7 @@ endif
 RESOURCES = $(subst themes,res,$(sort $(wildcard themes/*)))
 KEYS = $(sort $(wildcard key/*))
 
-EXTFLAGS := -DNOSDL_MIXER -DUSESDLMUTEXES -DENABLEAUDIODUMP -DSTEREOOUTPUT -DUSESDL_IMAGE $(EXTFLAGS) $(CFLAGS)
+EXTFLAGS := -DNOSDL_MIXER -DUSESDLMUTEXES -DENABLEAUDIODUMP -DSTEREOOUTPUT -DUSESDL_IMAGE -DUSESDL_RWOPS $(EXTFLAGS) $(CFLAGS)
 LDFLAGS :=  -L $(KLYSTRON)/bin.$(CFG) -lengine_gfx -lengine_util -lengine_snd -lengine_gui -lm $(SDLLIBS)
 INCLUDEFLAGS := -I src $(SDLFLAGS) -I $(KLYSTRON)/src -L$(KLYSTRON)/bin.$(CFG) -DRES_PATH="$(RES_PATH)" -DCONFIG_PATH="$(CONFIG_PATH)" $(EXTFLAGS) -DKLYSTRON=$(KLYSTRON)
 
