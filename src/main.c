@@ -478,6 +478,13 @@ int main(int argc, char **argv)
 				case MSG_PROGRAMCHANGE:
 					note_event(&e);
 					break;
+				case MSG_CLOCK:
+				case MSG_START:
+				case MSG_CONTINUE:
+				case MSG_STOP:
+				case MSG_SPP:
+					midi_event(&e);
+					break;
 			}
 
 			if (mused.focus == EDITBUFFER && e.type == SDL_KEYDOWN) e.type = SDL_USEREVENT;

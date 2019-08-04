@@ -516,6 +516,51 @@ void instrument_add_param(int a)
 }
 
 
+static int note_playing[MUS_MAX_CHANNELS] = {-1};
+
+
+static int find_playing_note(int n)
+{
+	cyd_lock(&mused.cyd, 1);
+
+	for (int i = 0 ; i < MUS_MAX_CHANNELS && i < mused.cyd.n_channels ; ++i)
+	{
+		if (note_playing[i] == n && mused.mus.channel[i].instrument == &mused.song.instrument[mused.current_instrument])
+		{
+			cyd_lock(&mused.cyd, 0);
+			return i;
+		}
+	}
+
+	cyd_lock(&mused.cyd, 0);
+
+	return -1;
+}
+
+
+static void play_note(int note) {
+	if (find_playing_note(note) == -1 && note < FREQ_TAB_SIZE)
+	{
+		int c = mus_trigger_instrument(&mused.mus, -1, &mused.song.instrument[mused.current_instrument], note << 8, CYD_PAN_CENTER);
+		note_playing[c] = note;
+
+		mused.mus.song_track[c].extarp1 = 0;
+		mused.mus.song_track[c].extarp2 = 0;
+	}
+}
+
+
+static void stop_note(int note)
+{
+	int c;
+	if ((c = find_playing_note(note)) != -1)
+	{
+		mus_release(&mused.mus, c);
+		note_playing[c] = -1;
+	}
+}
+
+
 static void play_the_jams(int sym, int chn, int state)
 {
 	if (sym == SDLK_SPACE && state == 0)
@@ -530,11 +575,10 @@ static void play_the_jams(int sym, int chn, int state)
 		{
 			if (mused.flags & MULTIKEY_JAMMING)
 			{
-				SDL_Event e;
-				e.type = state ? MSG_NOTEON : MSG_NOTEOFF;
-				e.user.code = note;
-				e.user.data1 = NULL;
-				SDL_PushEvent(&e);
+				if (state)
+					play_note(note);
+				else
+					stop_note(note);
 			}
 			else
 			{
@@ -1082,6 +1126,17 @@ static void switch_track(int d)
 }
 
 
+static void write_note(int note)
+{
+	snapshot(S_T_PATTERN);
+
+	mused.song.pattern[current_pattern()].step[current_patternstep()].note = note;
+	mused.song.pattern[current_pattern()].step[current_patternstep()].instrument = mused.current_instrument;
+
+	update_pattern_slider(mused.note_jump);
+}
+
+
 void pattern_event(SDL_Event *e)
 {
 	int last_param = PED_PARAMS - 1;
@@ -1422,13 +1477,7 @@ void pattern_event(SDL_Event *e)
 							if (note != -1)
 							{
 								play_the_jams(e->key.keysym.sym, mused.current_sequencetrack, 1);
-
-								snapshot(S_T_PATTERN);
-
-								mused.song.pattern[current_pattern()].step[current_patternstep()].note = note;
-								mused.song.pattern[current_pattern()].step[current_patternstep()].instrument = mused.current_instrument;
-
-								update_pattern_slider(mused.note_jump);
+								write_note(note);
 							}
 						}
 					}
@@ -2340,51 +2389,23 @@ void songinfo_event(SDL_Event *e)
 }
 
 
-static int note_playing[MUS_MAX_CHANNELS] = {-1};
-
-
-static int find_playing_note(int n)
-{
-	cyd_lock(&mused.cyd, 1);
-
-	for (int i = 0 ; i < MUS_MAX_CHANNELS && i < mused.cyd.n_channels ; ++i)
-	{
-		if (note_playing[i] == n && mused.mus.channel[i].instrument == &mused.song.instrument[mused.current_instrument])
-		{
-			cyd_lock(&mused.cyd, 0);
-			return i;
-		}
-	}
-
-	cyd_lock(&mused.cyd, 0);
-
-	return -1;
-}
-
-
 void note_event(SDL_Event *e)
 {
 	switch (e->type)
 	{
 		case MSG_NOTEON:
-			if (find_playing_note(e->user.code) == -1 && e->user.code < FREQ_TAB_SIZE)
+		{
+			play_note(e->user.code);
+			if (mused.focus == EDITPATTERN && (mused.flags & EDIT_MODE) && get_current_step() && mused.current_patternx == PED_NOTE)
 			{
-				int c = mus_trigger_instrument(&mused.mus, -1, &mused.song.instrument[mused.current_instrument], e->user.code << 8, CYD_PAN_CENTER);
-				note_playing[c] = e->user.code;
-
-				mused.mus.song_track[c].extarp1 = 0;
-				mused.mus.song_track[c].extarp2 = 0;
+				write_note(e->user.code);
 			}
-			break;
+		}
+		break;
 
 		case MSG_NOTEOFF:
 		{
-			int c;
-			if ((c = find_playing_note(e->user.code)) != -1)
-			{
-				mus_release(&mused.mus, c);
-				note_playing[c] = -1;
-			}
+			stop_note(e->user.code);
 		}
 		break;
 
