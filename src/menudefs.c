@@ -248,7 +248,7 @@ static const Menu zapmenu[] =
 	{ 0, editmenu, "Zap instruments",  NULL, zap_instruments, 0, 0, 0 },
 	{ 0, editmenu, "Zap sequence",  NULL, zap_sequence, 0, 0, 0 },
 	{ 0, editmenu, "Zap wavetable",  NULL, zap_wavetable, 0, 0, 0 },
-	{ 0, editmenu, "Zap FX",  NULL, zap_wavetable, 0, 0, 0 },
+	{ 0, editmenu, "Zap FX",  NULL, zap_fx, 0, 0, 0 },
 	{ 0, NULL, NULL }
 };
 
