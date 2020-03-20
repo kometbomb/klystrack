@@ -1,0 +1,4 @@
+# Fix problems with QWERTZ keyboards 
+[pattern]
+K_Z = K_Y
+K_Y = K_Z

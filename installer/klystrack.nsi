@@ -50,6 +50,7 @@ SectionIn RO
 
   File zip\data\key\FT2
   File zip\data\key\AZERTY
+  File zip\data\key\QWERTZ
   File zip\data\key\DVORAK
   File zip\data\key\n00bstar
 
@@ -108,6 +109,7 @@ Section Uninstall
 
   Delete FT2
   Delete AZERTY
+  Delete QWERTZ
   Delete DVORAK
   Delete n00bstar
 
