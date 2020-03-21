@@ -677,8 +677,8 @@ void export_wav_action(void *a, void*b, void*c)
 
 		if (f)
 		{
-			export_wav(&mused.song, mused.mus.cyd->wavetable_entries, f, -1);
-			fclose(f);
+			if(export_wav(&mused.song, mused.mus.cyd->wavetable_entries, f, -1))
+				fclose(f); // Call only if not aborted
 		}
 	}
 }
