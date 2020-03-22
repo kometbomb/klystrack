@@ -29,6 +29,7 @@ OTHER DEALINGS IN THE SOFTWARE.
 #include "gui/filebox.h"
 #include "action.h"
 #include "gfx/gfx.h"
+#include <string.h>
 #include <strings.h>
 
 extern Mused mused;
@@ -102,7 +103,7 @@ void load_config(const char *path, bool apply)
 		{
 			char line[500], name[500];
 			if (!fgets(line, sizeof(line), f)) break;
-			
+
 			if (sscanf(line, "%400[^ =]", name) == 1)
 			{
 				int i;
@@ -128,7 +129,7 @@ void load_config(const char *path, bool apply)
 								}
 							}
 							break;
-							
+
 							case C_INT:
 							{
 								int value;
@@ -138,7 +139,7 @@ void load_config(const char *path, bool apply)
 								}
 							}
 							break;
-							
+
 							case C_STR:
 							{
 								char value[100];
@@ -148,8 +149,8 @@ void load_config(const char *path, bool apply)
 								}
 							}
 							break;
-							
-							default: 
+
+							default:
 								debug("Unhandled configtype %d", confitem[i].type);
 								exit(2);
 							break;
@@ -158,15 +159,15 @@ void load_config(const char *path, bool apply)
 				}
 			}
 		}
-	
+
 		fclose(f);
 	}
-	
+
 	if (apply) apply_config();
-	
+
 	e = expand_tilde("~/.klystrackfavorites");
-	
-	if (e) 
+
+	if (e)
 	{
 		filebox_init(e);
 		free(e);
@@ -188,32 +189,32 @@ void save_config(const char *path)
 				case C_BOOL:
 					fprintf(f, "%s = %s\n", confitem[i].name, *(int*)confitem[i].param & confitem[i].mask ? "yes" : "no");
 				break;
-				
+
 				case C_STR:
 					fprintf(f, "%s = %s\n", confitem[i].name, (char*)confitem[i].param);
 				break;
-				
+
 				case C_INT:
 					fprintf(f, "%s = %d\n", confitem[i].name, *(int*)confitem[i].param);
 				break;
-				
-				default: 
+
+				default:
 					debug("Unhandled configtype %d", confitem[i].type);
 					exit(2);
 				break;
 			}
 		}
-		
+
 		fclose(f);
 	}
 	else
 	{
 		warning("Could not write config (%s)", path);
 	}
-	
+
 	e = expand_tilde("~/.klystrackfavorites");
-	
-	if (e) 
+
+	if (e)
 	{
 		filebox_quit(e);
 		free(e);
