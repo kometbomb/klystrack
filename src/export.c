@@ -38,8 +38,10 @@ OTHER DEALINGS IN THE SOFTWARE.
 
 extern GfxDomain *domain;
 
-void export_wav(MusSong *song, CydWavetableEntry * entry, FILE *f, int channel)
+bool export_wav(MusSong *song, CydWavetableEntry * entry, FILE *f, int channel)
 {
+	bool success = false;
+	
 	MusEngine mus;
 	CydEngine cyd;
 	
@@ -129,6 +131,8 @@ void export_wav(MusSong *song, CydWavetableEntry * entry, FILE *f, int channel)
 		}
 	}
 	
+	success = true;
+	
 abort:;
 	
 	ww_finish(ww);
@@ -138,5 +142,7 @@ abort:;
 	cyd_deinit(&cyd);
 	
 	song->flags &= ~MUS_NO_REPEAT;
+	
+	return success;
 }
 
