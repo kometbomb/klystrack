@@ -28,6 +28,6 @@ OTHER DEALINGS IN THE SOFTWARE.
 
 #include "snd/music.h"
 
-bool export_wav(MusSong *song, CydWavetableEntry * entry, FILE *f, int channel);
+void export_wav(MusSong *song, CydWavetableEntry * entry, FILE *f, int channel);
 
 #endif
