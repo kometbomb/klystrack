@@ -40,6 +40,8 @@ extern GfxDomain *domain;
 
 bool export_wav(MusSong *song, CydWavetableEntry * entry, FILE *f, int channel)
 {
+	bool success = false;
+	
 	MusEngine mus;
 	CydEngine cyd;
 	
@@ -129,7 +131,7 @@ bool export_wav(MusSong *song, CydWavetableEntry * entry, FILE *f, int channel)
 		}
 	}
 	
-	return true; // Successful (not aborted)
+	success = true;
 	
 abort:;
 	
@@ -141,6 +143,6 @@ abort:;
 	
 	song->flags &= ~MUS_NO_REPEAT;
 	
-	return false; // Aborted
+	return success;
 }
 
